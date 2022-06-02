@@ -32,3 +32,21 @@
 
 -   AI돌려서 사용자가 이미 지정한 북마크(의 제목)들과 키워드를 통해 제목을 자동으로 추천해주는 기능...
 -   .
+    .
+    .
+    .
+    .
+
+# 두 가지 서비스중 하나중 어떤 것이 더 나을까?(실현가능성이 있을까?)
+
+-   1. 블로그의 글을 쓸 때 불완전한 문장을 넣으면 완성된 문장 모음을 추천해주기.
+-   2. 완성된 글에서 키워드 뽑아주기. + 요약하기? (북마크 정보까지 포함해서)제목 짓기?
+
+-   1차로 냈던 아이디어 보여드리면 어떨까? ---- 위에 낸 두 가지 아이디어에 굳이 AI를 집어넣을 필요가 있을까??
+    https://local-ironclad-650.notion.site/15c3001b14e74265a9aac3f20726a47d
+    https://www.notion.so/3-39b81738796347c08e23a41ea2dc84af
+    https://locrian-corleggy-03e.notion.site/404ae826150446a393c41575e8f1f519
+    https://elderly-pyrite-90a.notion.site/bfddece30c654deba2e9fe6c48486ef3
+    https://www.notion.so/3-8f9fc7430aed462a8607bafc3857f9bc --> 현재 1번.
+
+https://www.figma.com/file/hYRLuJuJuxIoUvblTTXlZU/Untitled?node-id=0%3A1 --> pigma.
