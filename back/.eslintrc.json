@@ -1,0 +1,14 @@
+{
+    "root": true, //eslint가 상위 디렉터리를 확인하지 않게 루트 디렉터리임을 명시
+    "env": {
+        "es2021": true,
+        "node": true
+    },
+    "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": ["prettier"],
+    "rules": { "prettier/prettier": "error" }
+}
