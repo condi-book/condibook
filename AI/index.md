@@ -15,6 +15,11 @@
 -   https://github.com/ratsgo/embedding --> 한국어 임베딩
 -   https://github.com/lovit/textrank/ --> TextRank 를 이용한 키워드 추출과 핵심 문장 추출 (구현과 실험)
 
+#### 참고자료.
+
+-   https://www.tensorflow.org/tutorials/text/word2vec
+-   https://ebbnflow.tistory.com/246 --> 한국어 전처리 참고.
+
 #### 인풋 내용.
 
 -   https://www.ascentkorea.com/meta-description-seo/#:~:text=%EC%9A%94%EC%95%BD%EB%AC%B8(description)%20%EB%A9%94%ED%83%80%20%ED%83%9C%EA%B7%B8%EB%A5%BC,%EC%9E%90%20%EC%A0%95%EB%8F%84%EA%B0%80%20%EC%A0%81%ED%95%A9%ED%95%98%EB%8B%A4. --> meta-description에 들어가는 내용에 대한 설명
