@@ -1,8 +1,9 @@
 // import { userRouter } from "./user/userRouter";
-import { testRouter } from "./test/testRouter";
+import { userRouter } from "./user/userRouter";
+
 const indexRouter = (app) => {
     // app.use("/auth", userRouter);
-    app.use("/test", testRouter);
+    app.use("/user", userRouter);
 };
 
 export { indexRouter };
