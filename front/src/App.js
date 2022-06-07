@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { loginReducer } from "./reducer";
 import Header from "./layout/Header";
 import Main from "./layout/Main";
+import GlobalStyle from "./GlobalStyle";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -18,6 +19,7 @@ function App() {
       <UserStateContext.Provider value={userState}>
         <Router>
           <Header />
+          <GlobalStyle />
           <Routes>
             <Route path="/" element={<Main />} />
           </Routes>
