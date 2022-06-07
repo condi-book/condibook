@@ -7,14 +7,12 @@ import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./GlobalStyle";
 
-export const UserStateContext = createContext(null);
-export const DispatchContext = createContext(null);
+export const UserStateContext: any = createContext(null);
+export const DispatchContext: any = createContext(null);
 
-function App() {
+const App: React.FC = () => {
   // useReducer 훅을 통해 userState 상태와 dispatch함수를 생성함.
-  const [userState, dispatch] = useReducer(loginReducer, {
-    user: null,
-  });
+  const [userState, dispatch] = useReducer(loginReducer, { user: null });
 
   return (
     <DispatchContext.Provider value={dispatch}>
@@ -31,6 +29,6 @@ function App() {
       </UserStateContext.Provider>
     </DispatchContext.Provider>
   );
-}
+};
 
 export default App;
