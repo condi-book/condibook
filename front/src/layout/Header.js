@@ -16,7 +16,7 @@ const Header = () => {
 
 const Div = styled.div`
   border: 2px black solid;
-  // background: ${(props) => props.theme.mainColor};
+  // background: ${({ theme }) => theme.mainColor};
 
   height: 8vh;
   width: 100vw;
