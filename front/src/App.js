@@ -1,5 +1,7 @@
 import React, { useReducer, createContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import theme from "./theme";
 import { loginReducer } from "./reducer";
 import Header from "./layout/Header";
 import Main from "./layout/Main";
@@ -17,13 +19,15 @@ function App() {
   return (
     <DispatchContext.Provider value={dispatch}>
       <UserStateContext.Provider value={userState}>
-        <Router>
-          <Header />
-          <GlobalStyle />
-          <Routes>
-            <Route path="/" element={<Main />} />
-          </Routes>
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Router>
+            <Header />
+            <GlobalStyle />
+            <Routes>
+              <Route path="/" element={<Main />} />
+            </Routes>
+          </Router>
+        </ThemeProvider>
       </UserStateContext.Provider>
     </DispatchContext.Provider>
   );
