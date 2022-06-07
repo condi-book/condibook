@@ -8,16 +8,6 @@ export default function CommentModel(sequelize, DataTypes) {
                 primaryKey: true,
                 comment: "댓글 ID",
             },
-            user_id: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                comment: "작성자 ID",
-            },
-            board_id: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                comment: "게시글 ID",
-            },
             content: {
                 type: DataTypes.TEXT,
                 allowNull: false,
@@ -32,14 +22,6 @@ export default function CommentModel(sequelize, DataTypes) {
                 {
                     unique: true,
                     fields: ["id"],
-                },
-                {
-                    unique: false,
-                    fields: ["board_id"],
-                },
-                {
-                    unique: false,
-                    fields: ["user_id"],
                 },
             ],
         },

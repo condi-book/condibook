@@ -36,66 +36,90 @@ const Like = LikeModel(sequelize, DataTypes);
 
 // 관계 정의
 User.hasMany(Board, {
-    foreignKey: "user_id",
-    allowNull: false,
-    constraints: true,
+    foreignKey: {
+        name: "author",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "사용자 ID",
+    },
 });
 Board.belongsTo(User, {
-    foreignKey: "user_id",
+    foreignKey: {
+        name: "author",
+        onDelete: "CASCADE",
+    },
 });
 
 Board.hasMany(Comment, {
-    foreignKey: "board_id",
-    allowNull: false,
-    constraints: true,
+    foreignKey: {
+        name: "board_id",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "게시물 ID",
+    },
 });
 Comment.belongsTo(Board, {
-    foreignKey: "board_id",
+    foreignKey: {
+        name: "board_id",
+        onDelete: "CASCADE",
+    },
 });
 
 User.hasMany(Comment, {
-    foreignKey: "user_id",
-    allowNull: false,
-    constraints: true,
+    foreignKey: {
+        name: "author",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "작성자",
+    },
 });
 Comment.belongsTo(User, {
-    foreignKey: "user_id",
+    foreignKey: {
+        name: "author",
+        onDelete: "CASCADE",
+    },
 });
 
 User.hasMany(Like, {
-    foreignKey: "user_id",
-    allowNull: false,
-    constraints: true,
+    foreignKey: {
+        name: "user_id",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "사용자 ID",
+    },
 });
 Like.belongsTo(User, {
-    foreignKey: "user_id",
+    foreignKey: {
+        name: "user_id",
+        onDelete: "CASCADE",
+    },
 });
 
 Board.hasMany(Like, {
-    foreignKey: "board_id",
-    allowNull: false,
-    constraints: true,
+    foreignKey: {
+        name: "board_id",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "게시물 ID",
+    },
 });
 Like.belongsTo(Board, {
-    foreignKey: "board_id",
+    foreignKey: {
+        name: "board_id",
+        onDelete: "CASCADE",
+    },
 });
 
-User.hasMany(ActivityGroup, {
-    foreignKey: "user_id",
-    allowNull: false,
-    constraints: true,
+User.belongsToMany(Group, {
+    through: ActivityGroup,
 });
-ActivityGroup.belongsTo(User, {
-    foreignKey: "user_id",
-});
-
-Group.hasMany(ActivityGroup, {
-    foreignKey: "group_id",
-    allowNull: false,
-    constraints: true,
-});
-ActivityGroup.belongsTo(Group, {
-    foreignKey: "group_id",
+Group.belongsToMany(User, {
+    through: ActivityGroup,
 });
 
 // 모델 동기화
