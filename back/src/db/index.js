@@ -31,7 +31,13 @@ const Attached = AttachedModel(sequelize, DataTypes)
 
 
 // 관계 정의
-
+Website.hasMany(Emoji, {as : "Emojis"})
+Emoji.belongsTo(Website)
+Website.hasMany(Keyword, {as : "Keywords"})
+Keyword.belongsTo(Website)
+Website.hasMany(Bookmark, {as : "Bookmarks"})
+Bookmark.belongsTo(Website)
+Bookmark.hasMany(Attached)
 // 모델 동기화
 sequelize
     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
