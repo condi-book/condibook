@@ -1,6 +1,6 @@
 export default function UserModel(sequelize, DataTypes) {
     return sequelize.define(
-        "user",
+        "users",
         {
             id: {
                 type: DataTypes.UUID,
@@ -8,15 +8,16 @@ export default function UserModel(sequelize, DataTypes) {
                 primaryKey: true,
                 comment: "사용자 ID",
             },
+            email: {
+                type: DataTypes.STRING,
+                unique: true,
+                allowNull: false,
+                comment: "사용자 이메일",
+            },
             nickname: {
                 type: DataTypes.STRING,
                 allowNull: true,
                 comment: "사용자 별명",
-            },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                comment: "사용자 이메일",
             },
             image_url: {
                 type: DataTypes.STRING,
@@ -28,6 +29,16 @@ export default function UserModel(sequelize, DataTypes) {
             charset: "utf8",
             collate: "utf8_general_ci",
             timestamps: true,
+            indexes: [
+                {
+                    unique: true,
+                    fields: ["id"],
+                },
+                {
+                    unique: true,
+                    fields: ["email"],
+                },
+            ],
         },
     );
 }
