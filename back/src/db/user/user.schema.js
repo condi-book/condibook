@@ -1,36 +1,33 @@
-// import { Schema, model } from "mongoose";
-import pkg from "mongoose";
-const { Schema, model } = pkg;
-
-const UserSchema = new Schema(
-    {
-        id: {
-            type: String,
-            required: true,
+export default function UserModel(sequelize, DataTypes) {
+    return sequelize.define(
+        "user",
+        {
+            id: {
+                type: DataTypes.UUID,
+                defaultValue: DataTypes.UUIDV4,
+                primaryKey: true,
+                comment: "사용자 ID",
+            },
+            nickname: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: "사용자 별명",
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                comment: "사용자 이메일",
+            },
+            image_url: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: "사용자 프로필 이미지 url",
+            },
         },
-        email: {
-            type: String,
-            required: true,
+        {
+            charset: "utf8",
+            collate: "utf8_general_ci",
+            timestamps: true,
         },
-        name: {
-            type: String,
-            required: true,
-        },
-        password: {
-            type: String,
-            required: true,
-        },
-        description: {
-            type: String,
-            required: false,
-            default: "설명이 아직 없습니다. 추가해 주세요.",
-        },
-    },
-    {
-        timestamps: true,
-    },
-);
-
-const UserModel = model("User", UserSchema);
-
-export { UserModel };
+    );
+}
