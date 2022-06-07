@@ -16,8 +16,19 @@ const sequelize = new Sequelize(database, username, password, {
 });
 
 // 모델 정의
-import UserModel from "./user/user.schema";
+import UserModel from "./user.schema";
 const User = UserModel(sequelize, DataTypes);
+import BookmarkModel from "./bookmark.schema";
+const Bookmark = BookmarkModel(sequelize, DataTypes)
+import WebsiteModel from "./website.schema"
+const Website = WebsiteModel(sequelize, DataTypes)
+import EmojiModel from "./emoji.schema"
+const Emoji = EmojiModel(sequelize, DataTypes)
+import KeywordModel from "./keyword.schema"
+const Keyword = KeywordModel(sequelize, DataTypes)
+import AttachedModel from "./attached.schema"
+const Attached = AttachedModel(sequelize, DataTypes)
+
 
 // 관계 정의
 
@@ -27,4 +38,4 @@ sequelize
     .then(console.log("모델 동기화 성공✅."))
     .catch(console.log);
 
-export { sequelize, User };
+export { sequelize, User, Bookmark, Website, Emoji, Keyword, Attached};
