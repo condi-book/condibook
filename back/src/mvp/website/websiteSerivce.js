@@ -6,9 +6,15 @@ class websiteSerivce {
     static async createWebsite(url) {
         
         const meta = await parser(url);
-        const meta_title = meta.twitter.title 
-        const meta_description = meta.twitter.description 
-        const result = await Website.create({ url, meta_title, meta_description });
+        const meta_title = meta.og.title
+        const meta_description = meta.og.description
+        
+        if(meta_description == "undefined") {
+            meta_description =meta.meta.description
+        }
+        
+        
+        const result = await Website.create({ url, meta_title, meta_description })
         console.log(result)
         return result;
     }

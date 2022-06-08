@@ -10,6 +10,7 @@ const sequelize = new Sequelize(database, username, password, {
     host: host,
     dialect: dialect,
     logging: console.log, // Logging (디폴트 설정임)
+    query: { raw: true, plain: true },
     define: {
         freezeTableName: true, // 모델과 테이블명 동일시 (전역적 설정)
     },
@@ -210,10 +211,10 @@ Group.belongsToMany(User, {
 });
 
 // 모델 동기화
-sequelize
-    .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
-    .then(console.log("모델 동기화 성공✅."))
-    .catch(console.log);
+// sequelize
+//     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
+//     .then(console.log("모델 동기화 성공✅."))
+//     .catch(console.log);
 
 export {
     sequelize,
