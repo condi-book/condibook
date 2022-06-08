@@ -3,7 +3,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from "styled-components";
-import Arrow from "./Arrow";
+
+// import Arrow from "./Arrow";
 
 const Carousel = () => {
   const settings = {
@@ -13,39 +14,74 @@ const Carousel = () => {
     slidesToShow: 3,
     slidesToScroll: 1,
     dotsClass: "custom-dots",
-    nextArrow: <Arrow />,
+    // nextArrow: <Arrow />,
   };
   return (
     <Section className="page-carousel">
       <Slider {...settings}>
-        <div className="review-box">
-          <img alt="말풍선" />
+        <div className="item">
+          <img src="static/img/review.png" alt="말풍선" />
           <div>
-            서비스 너무 좋네요서비스 너무 좋네요서비스 너무 좋네요서비스 너무
-            좋네요서비스 너무 좋네요서비스 너무 좋네요서비스 너무 좋네요서비스
-            너무 좋네요서비스 너무 좋네요서비스 너무 좋네요서비스 너무
-            좋네요서비스 너무 좋네요서비스 너무 좋네요서비스 너무 좋네요
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
+            dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
+            obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
+            laudantium!
           </div>
-          <img alt="프로필 사진" />
-          <div>이름</div>
-          <div>직업</div>
+
+          <div className="info">
+            <span className="color-font pe-7s-user"></span>
+            <h6>이름</h6>
+            <span>직업</span>
+          </div>
         </div>
-        <div className="review-box"></div>
-        <div className="review-box"></div>
-        <div className="review-box"></div>
-        <div className="review-box"></div>
+        <div className="item"></div>
+        <div className="item"></div>
+        <div className="item"></div>
+        <div className="item"></div>
       </Slider>
     </Section>
   );
 };
 
 const Section = styled.section`
-  .review-box {
-    height: 40vh;
+  .item {
+    height: 60vh;
+    width: 80% !important;
     padding: 10px 20px;
-    display: flex;
+    margin: auto;
+    display: flex !important;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background: white;
+
+    div:first-of-type {
+      width: 70%;
+    }
+
+    .info {
+      margin-top: 30px;
+      text-align: center;
+
+      h6 {
+        font-weight: 700;
+        margin-bottom: 10px;
+        font-size: 20px;
+        margin-top: 20px;
+      }
+    }
+
+    .color-font {
+      background: ${({ theme }) => theme.mainColor};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 60px;
+    }
+
+    img {
+      width: 50px;
+      margin-bottom: 50px;
+    }
   }
   .custom-dots {
     position: absolute;
