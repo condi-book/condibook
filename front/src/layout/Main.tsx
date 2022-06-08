@@ -5,7 +5,26 @@ import Carousel from "./carousel/Carousel";
 const Main = () => {
   return (
     <Container>
-      <div className="part">서비스 대표적으로 소개 및 시작하기 버튼</div>
+      <header className="part header">
+        <div className="container">
+          <div>
+            <div>
+              <div className="caption">
+                <h1>북마크 관리가 쉬워진다</h1>
+                <p>
+                  북마크,
+                  <br />
+                  이제 스마트하게 저장하세요
+                </p>
+                <button>무료로 시작하기</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <img alt="대표이미지" />
+          </div>
+        </div>
+      </header>
       <div className="part even ">
         <div className="title">사용자 후기</div>
         <Carousel />
@@ -20,6 +39,23 @@ const Main = () => {
 const Container = styled.div`
   width: 100vw;
 
+  .header {
+    display: flex;
+    align-items: center;
+
+    .container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+
+      button {
+        background: ${({ theme }) => theme.mainColor};
+        color: white;
+      }
+    }
+  }
   .part {
     height: 85vh;
   }
