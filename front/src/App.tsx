@@ -6,6 +6,7 @@ import { loginReducer } from "./reducer";
 import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./GlobalStyle";
+import Footer from "./layout/Footer";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -24,6 +25,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Main />} />
             </Routes>
+            <Footer />
           </Router>
         </ThemeProvider>
       </UserStateContext.Provider>
