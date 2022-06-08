@@ -1,15 +1,16 @@
 import { Website } from "../../db";
-import  parser  from "html-metadata-parser"
+import { parser } from "url-meta-scraper";
+
 
 class websiteSerivce {
-    static async createWebsite({ url }) {
-        var a = await parser(url);
-        const meta_title = a.meta
-        const meta_description = a.description
+    static async createWebsite(url) {
         
-        // const result = await Website.create({ url, meta_title, meta_description });
-        
-        return meta_title;
+        const meta = await parser(url);
+        const meta_title = meta.twitter.title 
+        const meta_description = meta.twitter.description 
+        const result = await Website.create({ url, meta_title, meta_description });
+        console.log(result)
+        return result;
     }
 }
 

@@ -18,6 +18,8 @@
         "mongoose": "^6.3.0",
         "mysql2": "^2.3.3",
         "sequelize": "^6.20.1",
+        "tslib": "^2.4.0",
+        "url-meta-scraper": "^1.0.3",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
