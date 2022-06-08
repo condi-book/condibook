@@ -30,6 +30,21 @@ import AttachedModel from "./attached.schema"
 const Attached = AttachedModel(sequelize, DataTypes)
 
 
+import BoardModel from "./schema/board";
+const Board = BoardModel(sequelize, DataTypes);
+
+import CommentModel from "./schema/comment";
+const Comment = CommentModel(sequelize, DataTypes);
+
+import GroupModel from "./schema/group";
+const Group = GroupModel(sequelize, DataTypes);
+
+import ActivityGroupModel from "./schema/activityGroup";
+const ActivityGroup = ActivityGroupModel(sequelize, DataTypes);
+
+import LikeModel from "./schema/like";
+const Like = LikeModel(sequelize, DataTypes);
+
 // 관계 정의
 Website.hasMany(Emoji, {as : "Emojis"})
 Emoji.belongsTo(Website)
@@ -41,6 +56,92 @@ Bookmark.hasMany(Attached)
 Attached.belongsToMany(Bookmark, {through: Attached })
 // Attached.belongsToMany(Board, {through: Attached })
 
+User.hasMany(Board, {
+    foreignKey: {
+        name: "author",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "사용자 ID",
+    },
+});
+Board.belongsTo(User, {
+    foreignKey: {
+        name: "author",
+        onDelete: "CASCADE",
+    },
+});
+
+Board.hasMany(Comment, {
+    foreignKey: {
+        name: "board_id",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "게시물 ID",
+    },
+});
+Comment.belongsTo(Board, {
+    foreignKey: {
+        name: "board_id",
+        onDelete: "CASCADE",
+    },
+});
+
+User.hasMany(Comment, {
+    foreignKey: {
+        name: "author",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "작성자",
+    },
+});
+Comment.belongsTo(User, {
+    foreignKey: {
+        name: "author",
+        onDelete: "CASCADE",
+    },
+});
+
+User.hasMany(Like, {
+    foreignKey: {
+        name: "user_id",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "사용자 ID",
+    },
+});
+Like.belongsTo(User, {
+    foreignKey: {
+        name: "user_id",
+        onDelete: "CASCADE",
+    },
+});
+
+Board.hasMany(Like, {
+    foreignKey: {
+        name: "board_id",
+        type: DataTypes.UUID,
+        allowNull: false,
+        onDelete: "CASCADE",
+        comment: "게시물 ID",
+    },
+});
+Like.belongsTo(Board, {
+    foreignKey: {
+        name: "board_id",
+        onDelete: "CASCADE",
+    },
+});
+
+User.belongsToMany(Group, {
+    through: ActivityGroup,
+});
+Group.belongsToMany(User, {
+    through: ActivityGroup,
+});
 
 // 모델 동기화
 sequelize
@@ -48,4 +149,4 @@ sequelize
     .then(console.log("모델 동기화 성공✅."))
     .catch(console.log);
 
-export { sequelize, User, Bookmark, Website, Emoji, Keyword, Attached};
+export { sequelize, User, Bookmark, Website, Emoji, Keyword, Attached, Board, Comment, Group, ActivityGroup, Like};

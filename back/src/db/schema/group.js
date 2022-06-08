@@ -1,28 +1,22 @@
-export default function UserModel(sequelize, DataTypes) {
+export default function GroupModel(sequelize, DataTypes) {
     return sequelize.define(
-        "users",
+        "groups",
         {
             id: {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
-                comment: "사용자 ID",
+                comment: "그룹 ID",
             },
-            email: {
+            name: {
                 type: DataTypes.STRING,
-                unique: true,
                 allowNull: false,
-                comment: "사용자 이메일",
+                comment: "그룹 이름",
             },
-            nickname: {
-                type: DataTypes.STRING,
+            explanation: {
+                type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "사용자 별명",
-            },
-            image_url: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                comment: "사용자 프로필 이미지 url",
+                comment: "그룹 이름",
             },
         },
         {
@@ -32,11 +26,11 @@ export default function UserModel(sequelize, DataTypes) {
             indexes: [
                 {
                     unique: true,
-                    fields: ["id"],
+                    fields: ["id", "name"],
                 },
                 {
-                    unique: true,
-                    fields: ["email"],
+                    unique: false,
+                    fields: ["name"],
                 },
             ],
         },

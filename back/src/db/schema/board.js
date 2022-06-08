@@ -1,28 +1,28 @@
-export default function UserModel(sequelize, DataTypes) {
+export default function BoardModel(sequelize, DataTypes) {
     return sequelize.define(
-        "users",
+        "boards",
         {
             id: {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
-                comment: "사용자 ID",
+                comment: "게시글 ID",
             },
-            email: {
+            title: {
                 type: DataTypes.STRING,
-                unique: true,
                 allowNull: false,
-                comment: "사용자 이메일",
+                comment: "제목",
             },
-            nickname: {
-                type: DataTypes.STRING,
+            content: {
+                type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "사용자 별명",
+                comment: "내용",
             },
-            image_url: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                comment: "사용자 프로필 이미지 url",
+            views: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+                allowNull: false,
+                comment: "조회수",
             },
         },
         {
@@ -33,10 +33,6 @@ export default function UserModel(sequelize, DataTypes) {
                 {
                     unique: true,
                     fields: ["id"],
-                },
-                {
-                    unique: true,
-                    fields: ["email"],
                 },
             ],
         },
