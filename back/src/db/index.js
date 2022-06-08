@@ -213,45 +213,6 @@ Group.belongsToMany(User, {
 sequelize
     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
     .then(console.log("모델 동기화 성공✅."))
-    .then(async () => {
-        // await User.bulkCreate([
-        //     { email: "test@test.com" },
-        //     { email: "test2@test.com" },
-        // ]);
-        const all = await User.findAll({ raw: true });
-        console.log(all);
-        // const board = await Board.bulkCreate([
-        //     { author: all[0].id, title: "frontend" },
-        //     { author: all[1].id, title: "backend" },
-        // ]);
-
-        // console.log(all, board);
-        return all;
-    })
-    .then(async (data) => {
-        const newBoard = await Board.findOne({
-            where: {
-                author: data[0].id,
-            },
-        });
-        console.log(newBoard);
-        return { b: newBoard.id, u: data[1].id };
-    })
-    .then(async ({ b, u }) => {
-        const newLike = await Like.create({
-            user_id: u,
-            board_id: b,
-        });
-        console.log(newLike);
-    })
-    // .then(() => {
-    //     Board.destroy({
-    //         where: { id: "d51365a4-ba6a-45b7-bbfe-c8679a72f5dc" },
-    //     });
-    // })
-    // .then(() => {
-    //     User.destroy({ where: { email: "test2@test.com" } });
-    // })
     .catch(console.log);
 
 export {
