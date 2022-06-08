@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import styled from "styled-components";
 
-// import Arrow from "./Arrow";
+import { NextArrow, PrevArrow } from "./Arrow";
 
 const Carousel = () => {
   const settings = {
@@ -14,7 +14,8 @@ const Carousel = () => {
     slidesToShow: 3,
     slidesToScroll: 1,
     dotsClass: "custom-dots",
-    // nextArrow: <Arrow />,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
   };
   return (
     <Section className="page-carousel">
@@ -44,6 +45,11 @@ const Carousel = () => {
 };
 
 const Section = styled.section`
+  .slick-slider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
   .item {
     height: 60vh;
     width: 80% !important;

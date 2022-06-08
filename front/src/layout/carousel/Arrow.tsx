@@ -6,39 +6,22 @@ interface ArrowProps {
   onClick?: () => void;
 }
 
-const Arrow = ({ onClick }: ArrowProps) => {
+export const NextArrow = ({ onClick }: ArrowProps) => {
+  const blank: string = "0 50px 0 0";
   return (
-    <Div className="next-arrow" onClick={onClick}>
-      누르면 넘어감
-    </Div>
+    <Span blank={blank} className="pe-7s-right-arrow" onClick={onClick}></Span>
   );
 };
 
-const Div = styled.div`
-  .next-arrow {
-    right: -25px;
-    font-size: 20px;
-    line-height: 0;
-    position: absolute;
-    top: 50%;
-    display: block;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    transform: translate(0, -50%);
-    cursor: pointer;
-    color: transparent;
-    border: none;
-    outline: none;
-    background: transparent;
-    transition: 200ms ease-in-out;
+export const PrevArrow = ({ onClick }: ArrowProps) => {
+  const blank: string = "0 0 0 50px";
+  return (
+    <Span blank={blank} className="pe-7s-left-arrow" onClick={onClick}></Span>
+  );
+};
 
-    &:before {
-      line-height: 1;
-      opacity: 0.75;
-      -webkit-font-smoothing: antialiased;
-    }
-  }
+const Span = styled.span<{ blank: string }>`
+  cursor: pointer;
+  font-size: 50px;
+  padding: ${(props) => props.blank};
 `;
-
-export default Arrow;
