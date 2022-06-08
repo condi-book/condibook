@@ -16,17 +16,17 @@ const sequelize = new Sequelize(database, username, password, {
 });
 
 // 모델 정의
-import UserModel from "./user.schema";
+import UserModel from "./schema/user";
 const User = UserModel(sequelize, DataTypes);
-import BookmarkModel from "./bookmark.schema";
+import BookmarkModel from "./schema/bookmark";
 const Bookmark = BookmarkModel(sequelize, DataTypes)
-import WebsiteModel from "./website.schema"
+import WebsiteModel from "./schema/website"
 const Website = WebsiteModel(sequelize, DataTypes)
-import EmojiModel from "./emoji.schema"
+import EmojiModel from "./schema/emoji"
 const Emoji = EmojiModel(sequelize, DataTypes)
-import KeywordModel from "./keyword.schema"
+import KeywordModel from "./schema/keyword"
 const Keyword = KeywordModel(sequelize, DataTypes)
-import AttachedModel from "./attached.schema"
+import AttachedModel from "./schema/attached"
 const Attached = AttachedModel(sequelize, DataTypes)
 
 
