@@ -80,6 +80,10 @@ const Main = () => {
           </div>
         </div>
       </section>
+      <section className="side">
+        <h3>나만의 북마크, 정리부터 공유까지</h3>
+        <button>무료로 시작하기</button>
+      </section>
     </Container>
   );
 };
@@ -127,6 +131,29 @@ const Container = styled.div`
       font-size: 30px;
       text-align: center;
       padding: 40px 0;
+    }
+  }
+
+  .side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 0;
+    background: ${({ theme }) => theme.mainColor};
+    color: white;
+
+    h3 {
+      margin-bottom: 30px;
+    }
+
+    button {
+      cursor: pointer;
+
+      &:hover {
+        background: black;
+        color: white;
+      }
     }
   }
 `;
