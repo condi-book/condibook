@@ -6,10 +6,6 @@ interface ArrowProps {
   onClick?: () => void;
 }
 
-// type ArrowProps = {
-//   onClick?: () => void;
-// };
-
 const Arrow = ({ onClick }: ArrowProps) => {
   return (
     <Div className="next-arrow" onClick={onClick}>
