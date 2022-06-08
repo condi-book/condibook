@@ -29,9 +29,57 @@ const Main = () => {
         <div className="title">사용자 후기</div>
         <Carousel />
       </div>
-      <div className="part">서비스 특징 1</div>
-      <div className="part even">서비스 특징 2</div>
-      <div className="part">서비스 특징 3</div>
+      <section className="part">
+        <div className="container">
+          <div>
+            <img alt="소개이미지" />
+          </div>
+          <div className="content">
+            <h6>서비스 소개 1</h6>
+            <h2>Lorem ipsum dolor sit amet</h2>
+            <p>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
+              ab, eius perspiciatis quae velit minima. Officiis magni minus
+              labore, totam, neque a non temporibus in consequuntur sapiente
+              obcaecati quasi provident.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section className="part even">
+        <div className="container">
+          <div className="content">
+            <h6>서비스 소개 2</h6>
+            <h2>Lorem ipsum dolor sit amet</h2>
+            <p>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
+              ab, eius perspiciatis quae velit minima. Officiis magni minus
+              labore, totam, neque a non temporibus in consequuntur sapiente
+              obcaecati quasi provident.
+            </p>
+          </div>
+          <div>
+            <img alt="소개이미지" />
+          </div>
+        </div>
+      </section>
+      <section className="part">
+        <div className="container">
+          <div>
+            <img alt="소개이미지" />
+          </div>
+          <div className="content">
+            <h6>서비스 소개 3</h6>
+            <h2>Lorem ipsum dolor sit amet</h2>
+            <p>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt
+              ab, eius perspiciatis quae velit minima. Officiis magni minus
+              labore, totam, neque a non temporibus in consequuntur sapiente
+              obcaecati quasi provident.
+            </p>
+          </div>
+        </div>
+      </section>
     </Container>
   );
 };
@@ -58,13 +106,25 @@ const Container = styled.div`
   }
   .part {
     height: 85vh;
+
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+
+      .content {
+        width: 50%;
+      }
+    }
   }
   .even {
     background: #f8f9fc;
 
     .title {
       font-weight: 700;
-      font-size: 42px;
+      font-size: 30px;
       text-align: center;
       padding: 40px 0;
     }
