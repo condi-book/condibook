@@ -8,6 +8,16 @@ export default function LikeModel(sequelize, DataTypes) {
                 primaryKey: true,
                 comment: "좋아요 ID",
             },
+            user_id: {
+                type: DataTypes.UUID,
+                primaryKey: true,
+                comment: "사용자 ID",
+            },
+            board_id: {
+                type: DataTypes.UUID,
+                primaryKey: true,
+                comment: "게시물 ID",
+            },
         },
         {
             charset: "utf8",

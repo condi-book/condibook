@@ -1,17 +1,16 @@
 export default function AttachedModel(sequelize, DataTypes) {
     return sequelize.define(
-        "attached",
+        "attacheds",
         {
-            id: {
+            bookmark_id: {
                 type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
-                comment: "어피치 ID",
+                comment: "북마크 ID",
             },
-            keyword: {
+            board_id: {
                 type: DataTypes.STRING,
-                allowNull: true,
-                comment: "키워드",
+                primaryKey: true,
+                comment: "게시글 ID",
             },
         },
         {

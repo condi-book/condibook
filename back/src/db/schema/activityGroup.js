@@ -2,11 +2,15 @@ export default function ActivityGroupModel(sequelize, DataTypes) {
     return sequelize.define(
         "activity_groups",
         {
-            id: {
-                type: DataTypes.INTEGER,
+            member_id: {
+                type: DataTypes.UUID,
                 primaryKey: true,
-                autoIncrement: true,
-                comment: "활동그룹 ID",
+                comment: "회원 ID",
+            },
+            group_id: {
+                type: DataTypes.UUID,
+                primaryKey: true,
+                comment: "그룹 ID",
             },
         },
         {
@@ -16,7 +20,7 @@ export default function ActivityGroupModel(sequelize, DataTypes) {
             indexes: [
                 {
                     unique: true,
-                    fields: ["id"],
+                    fields: ["member_id", "group_id"],
                 },
             ],
         },

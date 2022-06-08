@@ -1,6 +1,6 @@
 export default function BookmarkModel(sequelize, DataTypes) {
     return sequelize.define(
-        "bookmark",
+        "bookmarks",
         {
             id: {
                 type: DataTypes.UUID,

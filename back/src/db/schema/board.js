@@ -8,6 +8,11 @@ export default function BoardModel(sequelize, DataTypes) {
                 primaryKey: true,
                 comment: "게시글 ID",
             },
+            author: {
+                type: DataTypes.UUID,
+                primaryKey: true,
+                comment: "사용자 ID",
+            },
             title: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -33,6 +38,10 @@ export default function BoardModel(sequelize, DataTypes) {
                 {
                     unique: true,
                     fields: ["id"],
+                },
+                {
+                    unique: false,
+                    fields: ["author"],
                 },
             ],
         },

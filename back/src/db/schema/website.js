@@ -1,6 +1,6 @@
 export default function WebsiteModel(sequelize, DataTypes) {
     return sequelize.define(
-        "website",
+        "websites",
         {
             id: {
                 type: DataTypes.UUID,

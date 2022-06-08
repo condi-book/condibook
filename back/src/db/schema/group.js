@@ -16,7 +16,7 @@ export default function GroupModel(sequelize, DataTypes) {
             explanation: {
                 type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "그룹 이름",
+                comment: "그룹 설명",
             },
         },
         {
