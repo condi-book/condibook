@@ -17,28 +17,70 @@ const Carousel = () => {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
   };
+
+  type reviewer = {
+    name: string;
+    review: string;
+    job: string;
+  };
+
+  const data = [
+    {
+      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
+      dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
+      obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
+      laudantium!`,
+      name: `username`,
+      job: `freelancer`,
+    },
+    {
+      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
+  dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
+  obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
+  laudantium!`,
+      name: `username`,
+      job: `freelancer`,
+    },
+    {
+      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
+dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
+obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
+laudantium!`,
+      name: `username`,
+      job: `freelancer`,
+    },
+    {
+      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
+dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
+obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
+laudantium!`,
+      name: `username`,
+      job: `freelancer`,
+    },
+    {
+      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
+dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
+obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
+laudantium!`,
+      name: `username`,
+      job: `freelancer`,
+    },
+  ];
   return (
     <Section className="page-carousel">
       <Slider {...settings}>
-        <div className="item">
-          <img src="static/img/review.png" alt="말풍선" />
-          <div>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-            dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
-            obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
-            laudantium!
-          </div>
+        {data.map((value: reviewer, index: number) => (
+          <div className="item" key={index}>
+            <img src="static/img/review.png" alt="말풍선" />
+            <div>{value.review}</div>
 
-          <div className="info">
-            <span className="color-font pe-7s-user"></span>
-            <h6>이름</h6>
-            <span>직업</span>
+            <div className="info">
+              <span className="color-font pe-7s-user"></span>
+              <h6>{value.name}</h6>
+              <span>{value.job}</span>
+            </div>
           </div>
-        </div>
-        <div className="item"></div>
-        <div className="item"></div>
-        <div className="item"></div>
-        <div className="item"></div>
+        ))}
       </Slider>
     </Section>
   );
