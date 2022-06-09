@@ -16,7 +16,7 @@ indexRouter(app);
 app.use(errorMiddleware);
 
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Data Project by CODING SOON." });
+    res.json({ message: "Welcome to 'Condibook'AI Project." });
 });
 
 app.listen(PORT, () => {
