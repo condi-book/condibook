@@ -182,10 +182,10 @@ Group.hasMany(Membership, { foreignKey: membership_fk_group });
 Membership.belongsTo(Group, { foreignKey: membership_fk_group });
 
 // 모델 동기화
-sequelize
-    .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
-    .then(console.log("모델 동기화 성공✅."))
-    .catch(console.log);
+// sequelize
+//     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
+//     .then(console.log("모델 동기화 성공✅."))
+//     .catch(console.log);
 
 export {
     sequelize,
