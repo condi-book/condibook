@@ -7,6 +7,7 @@ import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
 import Footer from "./layout/Footer";
+import Mypage from "./mypage/Mypage";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -24,6 +25,7 @@ const App: React.FC = () => {
             <GlobalStyle />
             <Routes>
               <Route path="/" element={<Main />} />
+              <Route path="/mypage" element={<Mypage />} />
             </Routes>
             <Footer />
           </Router>
