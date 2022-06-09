@@ -49,34 +49,4 @@ websiteRouter.get("/:id", async (req, res, next) => {
     }
 });
 
-websiteRouter.put("/:id", async (req, res, next) => {
-    try {
-        const orderId = req.params.orderId;
-
-        const zipcode = req.body.zipcode ?? "";
-        const message = req.body.message ?? "";
-        const paymentMethod = req.body.paymentMethod ?? "";
-        const isPayed = req.body.isPayed ?? false;
-
-        const toUpdate = {
-            zipcode,
-            message,
-            paymentMethod,
-            isPayed,
-        };
-        const updatedOrder = await websiteSerivce.updateOrder({
-            orderId,
-            toUpdate,
-        });
-
-        if (updatedOrder.errorMessage) {
-            throw new Error(updatedOrder.errorMessage);
-        }
-
-        res.status(200).json(updatedOrder);
-    } catch (error) {
-        next(error);
-    }
-});
-
 export { websiteRouter };
