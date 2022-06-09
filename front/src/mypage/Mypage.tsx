@@ -8,15 +8,16 @@ import MypageScrapedBookmark from "./MyPageScrapedBookMark";
 export interface StateProps {
   tab: boolean;
 }
-
-export type FunctionProps = {
-  handleClick: () => void;
-};
+export interface FunctionProps {
+  handleClick: (value: boolean) => void;
+}
 
 const Mypage = () => {
   const [tab, setTab] = useState<StateProps["tab"]>(true);
 
-  const handleClick = () => setTab((prev) => !prev);
+  const handleClick = (value: boolean) => {
+    if (value !== tab) setTab((prev) => !prev);
+  };
 
   return (
     <Div>

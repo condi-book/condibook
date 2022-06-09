@@ -7,8 +7,8 @@ const MypageNavbar = ({ handleClick }: FunctionProps): React.ReactElement => {
     <Div className="container">
       <div>
         <div className="nav-bar">
-          <span onClick={handleClick}>나의 북마크</span>
-          <span onClick={handleClick}>스크랩한 북마크</span>
+          <span onClick={() => handleClick(true)}>나의 북마크</span>
+          <span onClick={() => handleClick(false)}>스크랩한 북마크</span>
         </div>
       </div>
     </Div>
