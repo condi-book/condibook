@@ -1,17 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router";
+import { FunctionProps } from "./MyPage";
 
-const MypageNavbar = () => {
-  const navigate = useNavigate();
+const MypageNavbar = ({ handleClick }: FunctionProps): React.ReactElement => {
   return (
     <Div className="container">
       <div>
         <div className="nav-bar">
-          <span onClick={() => navigate("/mybookmark")}>나의 북마크</span>
-          <span onClick={() => navigate("/scrapbookmark")}>
-            스크랩한 북마크
-          </span>
+          <span onClick={handleClick}>나의 북마크</span>
+          <span onClick={handleClick}>스크랩한 북마크</span>
         </div>
       </div>
     </Div>

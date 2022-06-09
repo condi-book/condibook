@@ -9,6 +9,10 @@ export interface StateProps {
   tab: boolean;
 }
 
+export type FunctionProps = {
+  handleClick: () => void;
+};
+
 const Mypage = () => {
   const [tab, setTab] = useState<StateProps["tab"]>(true);
 
@@ -18,7 +22,7 @@ const Mypage = () => {
     <Div>
       <SideBar />
       <div className="mypage-container">
-        <MypageNavbar {...handleClick} />
+        <MypageNavbar handleClick={handleClick} />
         {tab ? <MypageBookmark /> : <MypageScrapedBookmark />}
       </div>
     </Div>
