@@ -1,7 +1,12 @@
 import React from "react";
+import MypageFavorites from "./MyPageFavorites";
 
 const MypageBookmark = () => {
-  return <div>안녕</div>;
+  return (
+    <div>
+      <MypageFavorites />
+    </div>
+  );
 };
 
 export default MypageBookmark;
