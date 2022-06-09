@@ -33,6 +33,7 @@ const Mypage = () => {
 const Div = styled.div`
   display: flex;
   flex-direction: row;
+  background: #f8f9fc;
 
   .mypage-container {
     width: 90vw;
