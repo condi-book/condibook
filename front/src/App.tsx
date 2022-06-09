@@ -1,11 +1,11 @@
 import React, { useReducer, createContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import theme from "./theme";
+import theme from "./style/theme";
 import { loginReducer } from "./reducer";
 import Header from "./layout/Header";
 import Main from "./layout/Main";
-import GlobalStyle from "./GlobalStyle";
+import GlobalStyle from "./style/GlobalStyle";
 import Footer from "./layout/Footer";
 
 export const UserStateContext: any = createContext(null);
