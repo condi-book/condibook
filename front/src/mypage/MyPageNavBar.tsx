@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { FunctionProps } from "./MyPage";
+import { MypageProps } from "./MyPage";
 
-const MypageNavbar = ({ handleClick }: FunctionProps): React.ReactElement => {
+const MypageNavbar = ({ handleClick }: MypageProps): React.ReactElement => {
   return (
     <Div className="container">
       <div>
@@ -17,19 +17,18 @@ const MypageNavbar = ({ handleClick }: FunctionProps): React.ReactElement => {
 
 const Div = styled.div`
   .nav-bar {
-    padding: 15px 30px;
     border 1px solid rgba(76, 76, 76, 0.1);
     border-radius: 20px;
     display: flex;
-    justify-content: space-around;
 
     span {
-      margin 0 30px;
+      padding: 15px 0;
+      flex: auto;
+      text-align: center;
       font-size: 25px;
       font-weight: 600;
       transition: all 0.4s;
       cursor: pointer;
-
     }
   }
 `;
