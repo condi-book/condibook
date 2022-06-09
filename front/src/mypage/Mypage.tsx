@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import SideBar from "../layout/SideBar";
 import styled from "styled-components";
-import MypageNavbar from "./MypageNavbar";
+import MypageNavbar from "./MyPageNavBar";
+import MypageBookmark from "./MyPageBookMark";
+import MypageScrapedBookmark from "./MyPageScrapedBookMark";
+
+export interface StateProps {
+  tab: boolean;
+}
 
 const Mypage = () => {
+  const [tab, setTab] = useState<StateProps["tab"]>(true);
+
+  const handleClick = () => setTab((prev) => !prev);
+
   return (
     <Div>
       <SideBar />
       <div className="mypage-container">
-        <MypageNavbar />
+        <MypageNavbar {...handleClick} />
+        {tab ? <MypageBookmark /> : <MypageScrapedBookmark />}
       </div>
     </Div>
   );
