@@ -3,15 +3,10 @@ export default function EmojiModel(sequelize, DataTypes) {
         "emojis",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "이모지 ID",
-            },
-            website_id: {
-                type: DataTypes.UUID,
-                primaryKey: true,
-                comment: "사이트 ID",
             },
             emoji: {
                 type: DataTypes.STRING,
@@ -23,6 +18,12 @@ export default function EmojiModel(sequelize, DataTypes) {
             charset: "utf8",
             collate: "utf8_general_ci",
             timestamps: false,
+            indexes: [
+                {
+                    unique: true,
+                    fields: ["id"],
+                },
+            ],
         },
     );
 }

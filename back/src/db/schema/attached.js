@@ -2,21 +2,23 @@ export default function AttachedModel(sequelize, DataTypes) {
     return sequelize.define(
         "attacheds",
         {
-            bookmark_id: {
-                type: DataTypes.UUID,
+            id: {
+                type: DataTypes.INTEGER,
                 primaryKey: true,
-                comment: "북마크 ID",
-            },
-            board_id: {
-                type: DataTypes.STRING,
-                primaryKey: true,
-                comment: "게시글 ID",
+                autoIncrement: true,
+                comment: "첨부 ID",
             },
         },
         {
             charset: "utf8",
             collate: "utf8_general_ci",
             timestamps: false,
+            indexex: [
+                {
+                    unique: true,
+                    fields: ["id"],
+                },
+            ],
         },
     );
 }

@@ -3,9 +3,9 @@ export default function GroupModel(sequelize, DataTypes) {
         "groups",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "그룹 ID",
             },
             name: {
@@ -26,11 +26,7 @@ export default function GroupModel(sequelize, DataTypes) {
             indexes: [
                 {
                     unique: true,
-                    fields: ["id", "name"],
-                },
-                {
-                    unique: false,
-                    fields: ["name"],
+                    fields: ["id"],
                 },
             ],
         },

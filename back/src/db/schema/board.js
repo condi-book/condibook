@@ -3,15 +3,10 @@ export default function BoardModel(sequelize, DataTypes) {
         "boards",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "게시글 ID",
-            },
-            author: {
-                type: DataTypes.UUID,
-                primaryKey: true,
-                comment: "사용자 ID",
             },
             title: {
                 type: DataTypes.STRING,
@@ -38,10 +33,6 @@ export default function BoardModel(sequelize, DataTypes) {
                 {
                     unique: true,
                     fields: ["id"],
-                },
-                {
-                    unique: false,
-                    fields: ["author"],
                 },
             ],
         },

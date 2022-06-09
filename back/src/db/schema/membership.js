@@ -1,23 +1,18 @@
-export default function KeywordModel(sequelize, DataTypes) {
+export default function MembershipModel(sequelize, DataTypes) {
     return sequelize.define(
-        "keywords",
+        "memberships",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "키워드 ID",
-            },
-            keyword: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                comment: "키워드",
+                comment: "멤버십 ID",
             },
         },
         {
             charset: "utf8",
             collate: "utf8_general_ci",
-            timestamps: false,
+            timestamps: true,
             indexes: [
                 {
                     unique: true,

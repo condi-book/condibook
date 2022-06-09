@@ -3,20 +3,10 @@ export default function LikeModel(sequelize, DataTypes) {
         "likes",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "좋아요 ID",
-            },
-            user_id: {
-                type: DataTypes.UUID,
-                primaryKey: true,
-                comment: "사용자 ID",
-            },
-            board_id: {
-                type: DataTypes.UUID,
-                primaryKey: true,
-                comment: "게시물 ID",
             },
         },
         {
@@ -26,15 +16,7 @@ export default function LikeModel(sequelize, DataTypes) {
             indexes: [
                 {
                     unique: true,
-                    fields: ["user_id", "board_id"],
-                },
-                {
-                    unique: false,
-                    fields: ["user_id"],
-                },
-                {
-                    unique: false,
-                    fields: ["board_id"],
+                    fields: ["id"],
                 },
             ],
         },

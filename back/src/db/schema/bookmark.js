@@ -3,9 +3,9 @@ export default function BookmarkModel(sequelize, DataTypes) {
         "bookmarks",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "북마크 ID",
             },
         },
@@ -13,6 +13,12 @@ export default function BookmarkModel(sequelize, DataTypes) {
             charset: "utf8",
             collate: "utf8_general_ci",
             timestamps: true,
+            indexes: [
+                {
+                    unique: true,
+                    fields: ["id"],
+                },
+            ],
         },
     );
 }

@@ -3,9 +3,9 @@ export default function UserModel(sequelize, DataTypes) {
         "users",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "사용자 ID",
             },
             email: {

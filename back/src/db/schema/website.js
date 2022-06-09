@@ -3,9 +3,9 @@ export default function WebsiteModel(sequelize, DataTypes) {
         "websites",
         {
             id: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
+                type: DataTypes.INTEGER,
                 primaryKey: true,
+                autoIncrement: true,
                 comment: "사이트 ID",
             },
             url: {
@@ -28,6 +28,12 @@ export default function WebsiteModel(sequelize, DataTypes) {
             charset: "utf8",
             collate: "utf8_general_ci",
             timestamps: true,
+            indexes: [
+                {
+                    unique: true,
+                    fields: ["id"],
+                },
+            ],
         },
     );
 }
