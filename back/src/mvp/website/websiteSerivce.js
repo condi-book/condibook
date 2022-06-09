@@ -1,16 +1,43 @@
 import { Website } from "../../db";
-import  parser  from "html-metadata-parser"
+import { parser } from "url-meta-scraper";
+import { sequelize } from "../../db";
+
 
 class websiteSerivce {
-    static async createWebsite({ url }) {
-        var a = await parser(url);
-        const meta_title = a.meta
-        const meta_description = a.description
+    static async createWebsite(url) {
         
-        // const result = await Website.create({ url, meta_title, meta_description });
+        const meta = await parser(url); 
+        const meta_title = meta.og.title ?? meta.meta.title
+        const meta_description = meta.og.description ?? meta.meta.description
         
-        return meta_title;
+        const result = await Website.create({ url, meta_title, meta_description })
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+
+        return result;
     }
+    static async getWebsite({id}) {
+        const result = await Website.findAll({where:{id}})
+
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        return result
+    }
+    static async getWebsiteList() {
+        const result = await Website.findAll({})
+        // const result = await sequelize.query('SELECT * FROM condibook.websites;');
+        console.log(result)
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        return result
+    }
+
 }
 
 export { websiteSerivce };
