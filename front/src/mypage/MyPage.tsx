@@ -5,15 +5,14 @@ import MypageNavbar from "./MyPageNavBar";
 import MypageBookmark from "./MyPageBookMark";
 import MypageScrapedBookmark from "./MyPageScrapedBookMark";
 
-export interface StateProps {
-  tab: boolean;
-}
-export interface FunctionProps {
+export interface MypageProps {
   handleClick: (value: boolean) => void;
+  tab: boolean;
+  show?: boolean;
 }
 
 const Mypage = () => {
-  const [tab, setTab] = useState<StateProps["tab"]>(true);
+  const [tab, setTab] = useState<MypageProps["tab"]>(true);
 
   const handleClick = (value: boolean) => {
     if (value !== tab) setTab((prev) => !prev);
@@ -23,7 +22,7 @@ const Mypage = () => {
     <Div>
       <SideBar />
       <div className="mypage-container">
-        <MypageNavbar handleClick={handleClick} />
+        <MypageNavbar tab={tab} handleClick={handleClick} />
         {tab ? <MypageBookmark /> : <MypageScrapedBookmark />}
       </div>
     </Div>
