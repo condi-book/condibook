@@ -65,6 +65,19 @@ class userService {
 
         return account;
     }
+
+    static async setNickname({ nickname, id }) {
+        const affectedRows = await User.update(
+            { nickname },
+            { where: { id: id } },
+        );
+
+        if (affectedRows != 1) {
+            return { errorMessage: "별명을 수정하지 못했습니다." };
+        }
+
+        return { message: "별명을 수정했습니다." };
+    }
 }
 
 export { userService };

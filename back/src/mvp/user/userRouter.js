@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { userService } from "./userService";
+import { loginRequired } from "../../middlewares/loginRequired";
 
 const userRouter = Router();
 
@@ -32,6 +33,22 @@ userRouter.post("/login/kakao", async (req, res, next) => {
 
         // 사용자 정보 + JWT 반환
         res.send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.put("/nickname", loginRequired, async (req, res, next) => {
+    try {
+        const { nickname } = req.body;
+        const id = req.currentUserId;
+
+        const result = await userService.setNickname({ nickname, id });
+        if (result.errorMessage) {
+            throw Error(result.errorMessage);
+        }
+
+        res.status(200).send(result);
     } catch (e) {
         next(e);
     }
