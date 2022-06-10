@@ -7,7 +7,7 @@ import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
 import Footer from "./layout/Footer";
-import Mypage from "./mypage/MyPage";
+import { Mypage } from "./mypage/MyPage";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);

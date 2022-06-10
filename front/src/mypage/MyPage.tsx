@@ -11,7 +11,7 @@ export interface MypageProps {
   show?: boolean;
 }
 
-const Mypage = () => {
+export const Mypage = () => {
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
 
   const handleClick = (value: boolean) => {
@@ -39,5 +39,3 @@ const Div = styled.div`
     border: 2px solid red;
   }
 `;
-
-export default Mypage;
