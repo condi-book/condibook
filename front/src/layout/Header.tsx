@@ -35,6 +35,7 @@ const Div = styled.div`
     img {
       border: 2px solid black;
       width: 20%;
+      height: 6vh;
     }
   }
 
@@ -43,6 +44,7 @@ const Div = styled.div`
     flex-direction: row;
     justify-content: space-around;
     width: 20%;
+    height: 6vh;
 
     button:hover {
       cursor: pointer;
