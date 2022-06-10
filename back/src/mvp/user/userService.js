@@ -13,7 +13,10 @@ class userService {
 
         // JWT 생성
         const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-        const token = jwt.sign({ user_id: user.email }, secretKey);
+        const token = jwt.sign(
+            { user_id: user.id, email: user.email },
+            secretKey,
+        );
 
         // 사용자 정보 + JWT 반환
         const result = {
@@ -43,6 +46,7 @@ class userService {
 
         return token;
     }
+
     static async getKakaoAccount(token) {
         // 토큰으로 사용자 정보 조회
         const account = await axios
