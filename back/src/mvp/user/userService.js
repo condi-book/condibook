@@ -2,7 +2,7 @@ import { User } from "../../db";
 import jwt from "jsonwebtoken";
 
 class userService {
-    static async googleLogin({ nickname, email, image_url }) {
+    static async login({ nickname, email, image_url }) {
         // 사용자 조회
         let user = await User.findOne({ where: { email } });
 
