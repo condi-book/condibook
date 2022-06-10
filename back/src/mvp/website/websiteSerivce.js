@@ -1,4 +1,4 @@
-import { Website } from "../../db";
+import { Website, Emoji, Keyword } from "../../db";
 import { parser } from "url-meta-scraper";
 import { sequelize } from "../../db";
 
@@ -19,7 +19,16 @@ class websiteSerivce {
         return result;
     }
     static async getWebsite({id}) {
-        const result = await Website.findAll({where:{id}})
+        const result = await Website.findAll({
+            where : {id},
+            include: [{
+                model: Keyword,
+                where: {website_id : id},
+                attributes : ['keyword']
+            }],
+            raw: true,
+            nest: true,
+        })
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -28,7 +37,14 @@ class websiteSerivce {
         return result
     }
     static async getWebsiteList() {
-        const result = await Website.findAll({})
+        const result = await Website.findAll({
+            include: [{
+                model: Keyword,
+                attributes : ['keyword']
+            }],
+            raw: true,
+            nest: true,
+        })
         // const result = await sequelize.query('SELECT * FROM condibook.websites;');
         console.log(result)
         if (!result) {
