@@ -7,6 +7,7 @@ import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
 import Footer from "./layout/Footer";
+import CallBackKakaoLogin from "./callBackKakaoLogin";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -23,6 +24,10 @@ const App: React.FC = () => {
             <Header />
             <GlobalStyle />
             <Routes>
+              <Route
+                path="/callback/login/kakao"
+                element={<CallBackKakaoLogin />}
+              />
               <Route path="/" element={<Main />} />
             </Routes>
             <Footer />

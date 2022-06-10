@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import GoogleLogin from "../googleLogin";
+import KakaoLoginBtn from "../kakaoLoginBtn";
+
 const Header = () => {
   return (
     <Div>
@@ -11,6 +13,7 @@ const Header = () => {
           <button className="login-button">로그인 / 회원가입</button>
         </div>
         <GoogleLogin></GoogleLogin>
+        <KakaoLoginBtn></KakaoLoginBtn>
       </div>
     </Div>
   );
