@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-interface MypageBookmarkDetailProps {
+interface MypageBookmarkCardProps {
   item: {
     image: string;
     group: string;
@@ -10,7 +10,7 @@ interface MypageBookmarkDetailProps {
   };
 }
 
-const MypageBookmarkDetail = (item: MypageBookmarkDetailProps["item"]) => {
+const MypageBookmarkDetail = (item: MypageBookmarkCardProps["item"]) => {
   return (
     <Div {...item}>
       <div className="top part">
@@ -58,7 +58,7 @@ const Div = styled.div`
   }
 
   .pe-7s-ribbon {
-    color: ${(item: MypageBookmarkDetailProps["item"]) =>
+    color: ${(item: MypageBookmarkCardProps["item"]) =>
       item.favorite === true ? "red" : "black"};
   }
 `;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import MypageBookmarkDetail from "./MyPageBookMarkDetail";
+import MypageBookmarkCard from "./MyPageBookMarkCard";
 import { MypageBookmarkProps } from "./MyPageBookMark";
 import { MypageProps } from "./MyPage";
 
@@ -14,7 +14,7 @@ const MypageBookmarkLayout = ({ data, title }: MypageBookmarkProps) => {
       <div className="favorites">
         <div className="favorites-list">
           {data.map((item, index) => (
-            <MypageBookmarkDetail {...item} key={index} />
+            <MypageBookmarkCard {...item} key={index} />
           ))}
           {show && <>더보기 내용 부분</>}
         </div>
