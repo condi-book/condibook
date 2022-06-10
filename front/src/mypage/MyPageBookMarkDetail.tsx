@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { MypageFavoritesProps } from "./MyPageFavorites";
 
 const MypageBookmarkDetail = (item: MypageFavoritesProps["item"]) => {
-  // const save:boolean = item.favorite
-
   return (
     <Div {...item}>
       <div className="top part">
