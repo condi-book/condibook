@@ -78,6 +78,16 @@ class userService {
 
         return { message: "별명을 수정했습니다." };
     }
+
+    static async deleteUser({ id }) {
+        const deletedRow = User.destroy({ where: { id: id } });
+
+        if (deletedRow != 1) {
+            return { errorMessage: "계정을 삭제하지 못했습니다." };
+        }
+
+        return { message: "계정을 삭제했습니다." };
+    }
 }
 
 export { userService };

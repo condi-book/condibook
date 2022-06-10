@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userService } from "./userService";
 import { loginRequired } from "../../middlewares/loginRequired";
+import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 
 const userRouter = Router();
 
@@ -14,7 +15,7 @@ userRouter.post("/login/google", async (req, res, next) => {
             image_url,
         });
 
-        res.send(result);
+        res.status(200).send(result);
     } catch (error) {
         next(error);
     }
@@ -32,7 +33,7 @@ userRouter.post("/login/kakao", async (req, res, next) => {
         const result = await userService.login(account);
 
         // 사용자 정보 + JWT 반환
-        res.send(result);
+        res.status(200).send(result);
     } catch (e) {
         next(e);
     }
@@ -44,9 +45,20 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
         const id = req.currentUserId;
 
         const result = await userService.setNickname({ nickname, id });
-        if (result.errorMessage) {
-            throw Error(result.errorMessage);
-        }
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.delete("", loginRequired, async (req, res, next) => {
+    try {
+        const id = req.currentUserId;
+
+        const result = await userService.deleteUser({ id });
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (e) {
