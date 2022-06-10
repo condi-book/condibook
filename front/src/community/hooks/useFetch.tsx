@@ -2,8 +2,26 @@ import React, { useCallback, useEffect, useState } from "react";
 // import * as Api from "../../../api";
 import { Bookmark } from "../CommunityPage";
 
-const useFetch = (page: number, sortState: string) => {
-  const [isLoading, setIsLoading] = useState(true);
+class BookmarkModel {
+  id: string;
+  url: string;
+  created_at: Date;
+  updated_at: Date;
+  meta_title: string;
+  meta_description: string;
+
+  constructor() {
+    this.id = `${Math.floor(Math.random() * 10000)}`;
+    this.url = "http://google.com";
+    this.created_at = new Date();
+    this.updated_at = new Date();
+    this.meta_title = "제목";
+    this.meta_description = "요약";
+  }
+}
+
+const useFetch = (page: number) => {
+  const [isLoading, setIsLoading] = React.useState(true);
   const [bookmarksForScroll, setBookmarksForScroll] = useState<Bookmark[] | []>(
     [],
   );
@@ -21,15 +39,10 @@ const useFetch = (page: number, sortState: string) => {
       // } else {
       //   const { data } = await Api.get(popularURL);
       // }
-      const bookmark: Bookmark = {
-        id: "12345",
-        url: "http://google.com",
-        created_at: new Date(),
-        updated_at: new Date(),
-        meta_title: "제목",
-        meta_description: "요약",
-      };
-      const data: Bookmark[] = Array(20).fill(bookmark);
+
+      const data: Bookmark[] = Array(20)
+        .fill(undefined)
+        .map(() => new BookmarkModel());
 
       if (!data) {
         throw new Error("서버에 오류가 있습니다!");

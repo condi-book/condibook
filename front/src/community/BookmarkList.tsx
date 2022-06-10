@@ -5,16 +5,9 @@ import BookmarkCard from "./BookmarkCard";
 import useFetch from "./hooks/useFetch";
 import { Bookmark } from "./CommunityPage";
 
-interface BookmarkListProps {
-  sortState: string;
-}
-
-const BookmarkList: React.FC<BookmarkListProps> = ({ sortState }) => {
+const BookmarkList = () => {
   const [pageNum, setPageNum] = useState(1);
-  const { bookmarksForScroll, hasMore, isLoading } = useFetch(
-    pageNum,
-    sortState,
-  );
+  const { bookmarksForScroll, hasMore, isLoading } = useFetch(pageNum);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
     useRef(null);
 
@@ -40,7 +33,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({ sortState }) => {
       {/* <Row xs={2} md={4} lg={6} xl={8} xxl={10}> */}
       <Row>
         {bookmarksForScroll.map((bookmark: Bookmark) => (
-          <Col key={bookmark.id}>
+          <Col key={`bookmark-${bookmark.id}`}>
             <BookmarkCard bookmark={bookmark} />
           </Col>
         ))}

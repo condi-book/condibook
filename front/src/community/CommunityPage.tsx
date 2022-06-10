@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Container, Row, ButtonGroup, ToggleButton } from "react-bootstrap";
 import BookmarkList from "./BookmarkList";
 
@@ -12,12 +12,19 @@ export interface Bookmark {
 }
 
 const CommunityPage = () => {
-  const [sortState, setSortState] = useState<string>("newest");
+  const [sortState, setSortState] = React.useState<string>("newest");
+  const radios = React.useMemo(
+    () => [
+      { name: "최신순", value: "newest" },
+      { name: "인기순", value: "popular" },
+    ],
+    [],
+  );
 
-  const radios = [
-    { name: "최신순", value: "newest" },
-    { name: "인기순", value: "popular" },
-  ];
+  const handleToggleChange = React.useCallback((e: React.ChangeEvent) => {
+    const { value } = e.currentTarget as HTMLInputElement;
+    setSortState(value);
+  }, []);
 
   return (
     <>
@@ -27,14 +34,14 @@ const CommunityPage = () => {
             <ButtonGroup>
               {radios.map((radio, idx) => (
                 <ToggleButton
-                  key={idx}
+                  key={`toggle-${idx}`}
                   id={`radio-${idx}`}
                   type="radio"
                   variant={"outline-success"}
                   name="radio"
                   value={radio.value}
                   checked={sortState === radio.value}
-                  onChange={(e) => setSortState(e.currentTarget.value)}
+                  onChange={handleToggleChange}
                 >
                   {radio.name}
                 </ToggleButton>
@@ -44,7 +51,7 @@ const CommunityPage = () => {
         </Row>
         <Row>
           <Container>
-            <BookmarkList sortState={sortState} />
+            <BookmarkList />
           </Container>
         </Row>
       </Container>
