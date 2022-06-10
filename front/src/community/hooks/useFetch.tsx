@@ -2,20 +2,25 @@ import React, { useCallback, useEffect, useState } from "react";
 // import * as Api from "../../../api";
 import { Bookmark } from "../CommunityPage";
 
-const useFetch = (page: number) => {
+const useFetch = (page: number, sortState: string) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [bookmarksForScroll, setBookmarksForScroll] = useState<
-    Bookmark[] | any[]
-  >([]);
+  const [bookmarksForScroll, setBookmarksForScroll] = useState<Bookmark[] | []>(
+    [],
+  );
   const [hasMore, setHasMore] = useState(false);
 
   const sendQuery = useCallback(async () => {
-    // const url = ``;
+    // const newestURL = ``;
+    // const popularURL = ``;
 
     try {
       setIsLoading(true);
 
-      // const { data } = await Api.get(url);
+      // if (sortState === 'newest') {
+      //   const { data } = await Api.get(newestURL);
+      // } else {
+      //   const { data } = await Api.get(popularURL);
+      // }
       const bookmark: Bookmark = {
         id: "12345",
         url: "http://google.com",
@@ -24,13 +29,13 @@ const useFetch = (page: number) => {
         meta_title: "제목",
         meta_description: "요약",
       };
-      const data = Array(20).fill(bookmark);
+      const data: Bookmark[] = Array(20).fill(bookmark);
 
       if (!data) {
         throw new Error("서버에 오류가 있습니다!");
       }
 
-      setBookmarksForScroll((current) => [...current, data]);
+      setBookmarksForScroll((current) => [...current, ...data]);
       setHasMore(data !== undefined);
       setIsLoading(false);
     } catch (err) {

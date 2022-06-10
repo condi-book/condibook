@@ -12,7 +12,7 @@ export interface Bookmark {
 }
 
 const CommunityPage = () => {
-  const [sortState, setSortState] = useState("newest");
+  const [sortState, setSortState] = useState<string>("newest");
 
   const radios = [
     { name: "최신순", value: "newest" },
@@ -21,27 +21,31 @@ const CommunityPage = () => {
 
   return (
     <>
-      <Container fluid>
+      <Container>
         <Row>
-          <ButtonGroup className="mb-2">
-            {radios.map((radio, idx) => (
-              <ToggleButton
-                key={idx}
-                id={`radio-${idx}`}
-                type="radio"
-                variant={"outline-success"}
-                name="radio"
-                value={radio.value}
-                checked={sortState === radio.value}
-                onChange={(e) => setSortState(e.currentTarget.value)}
-              >
-                {radio.name}
-              </ToggleButton>
-            ))}
-            <Container>
-              <BookmarkList />
-            </Container>
-          </ButtonGroup>
+          <Container>
+            <ButtonGroup>
+              {radios.map((radio, idx) => (
+                <ToggleButton
+                  key={idx}
+                  id={`radio-${idx}`}
+                  type="radio"
+                  variant={"outline-success"}
+                  name="radio"
+                  value={radio.value}
+                  checked={sortState === radio.value}
+                  onChange={(e) => setSortState(e.currentTarget.value)}
+                >
+                  {radio.name}
+                </ToggleButton>
+              ))}
+            </ButtonGroup>
+          </Container>
+        </Row>
+        <Row>
+          <Container>
+            <BookmarkList sortState={sortState} />
+          </Container>
         </Row>
       </Container>
     </>

@@ -1,12 +1,20 @@
 import React, { useState, useRef } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import styled from "styled-components";
+import { Container } from "react-bootstrap";
 import BookmarkCard from "./BookmarkCard";
 import useFetch from "./hooks/useFetch";
 import { Bookmark } from "./CommunityPage";
 
-const BookmarkList = () => {
+interface BookmarkListProps {
+  sortState: string;
+}
+
+const BookmarkList: React.FC<BookmarkListProps> = ({ sortState }) => {
   const [pageNum, setPageNum] = useState(1);
-  const { bookmarksForScroll, hasMore, isLoading } = useFetch(pageNum);
+  const { bookmarksForScroll, hasMore, isLoading } = useFetch(
+    pageNum,
+    sortState,
+  );
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
     useRef(null);
 
@@ -29,17 +37,35 @@ const BookmarkList = () => {
 
   return (
     <Container fluid>
-      <Row xs={2} md={4} lg={6} xl={8} xxl={10}>
-        {bookmarksForScroll?.map((bookmark: Bookmark) => (
-          <Col>
-            <BookmarkCard />
+      {/* <Row xs={2} md={4} lg={6} xl={8} xxl={10}> */}
+      <Row>
+        {bookmarksForScroll.map((bookmark: Bookmark) => (
+          <Col key={bookmark.id}>
+            <BookmarkCard bookmark={bookmark} />
           </Col>
         ))}
         <div ref={observer} />
         <>{isLoading && <p>Loading...</p>}</>
       </Row>
+      {/* </Row> */}
     </Container>
   );
 };
 
 export default BookmarkList;
+
+const Col = styled.div`
+  width: 15rem;
+  border: 2px solid;
+  border-radius: 3px;
+  margin: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Row = styled.div`
+  display: flex;
+  margin: -1rem;
+  flex-wrap: wrap;
+`;
