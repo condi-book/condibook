@@ -10,7 +10,7 @@ const sequelize = new Sequelize(database, username, password, {
     host: host,
     dialect: dialect,
     logging: console.log, // Logging (디폴트 설정임)
-    // query: { raw: true, plain: false},
+    query: { raw: true },
     define: {
         freezeTableName: true, // 모델과 테이블명 동일시 (전역적 설정)
     },
