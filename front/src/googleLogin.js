@@ -16,8 +16,9 @@ const GoogleLogin = () => {
         nickname: userObject.name,
         image_url: userObject.picture,
       })
-      .then(setUser(userObject));
-
+      .then((res) => {
+        setUser(res.data);
+      });
     document.getElementById("signInDiv").hidden = true;
   }
 
