@@ -11,9 +11,6 @@ const sequelize = new Sequelize(database, username, password, {
     dialect: dialect,
     logging: console.log, // Logging (디폴트 설정임)
     query: { raw: true },
-    define: {
-        freezeTableName: true, // 모델과 테이블명 동일시 (전역적 설정)
-    },
 });
 
 // 모델 정의
@@ -50,39 +47,30 @@ const Membership = MembershipModel(sequelize, DataTypes);
 import LikeModel from "./schema/like";
 const Like = LikeModel(sequelize, DataTypes);
 
+import FolderModel from "./schema/folder";
+const Folder = FolderModel(sequelize, DataTypes);
+
 // 관계 정의
 
 // Website : Emoji = 1 : 1
 const emojis_fk_website = {
     name: "website_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "사이트 ID",
 };
-Website.hasOne(Emoji, {
-    foreignKey: emojis_fk_website,
-    onDelete: "cascade",
-});
-Emoji.belongsTo(Website, {
-    foreignKey: emojis_fk_website,
-    onDelete: "cascade",
-});
+Website.hasOne(Emoji, { foreignKey: emojis_fk_website });
+Emoji.belongsTo(Website, { foreignKey: emojis_fk_website });
 
 // Website : Keyword = 1 : N
 const keywords_fk_website = {
     name: "website_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "사이트 ID",
 };
-Website.hasMany(Keyword, {
-    foreignKey: keywords_fk_website,
-    onDelete: "cascade",
-});
-Keyword.belongsTo(Website, {
-    foreignKey: keywords_fk_website,
-    onDelete: "cascade",
-});
+Website.hasMany(Keyword, { foreignKey: keywords_fk_website });
+Keyword.belongsTo(Website, { foreignKey: keywords_fk_website });
 
 // User : Bookmark = 1 : N
 const bookmark_fk_user = {
@@ -109,7 +97,7 @@ const attached_fk_bookmark = {
     name: "bookmark_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
-    comment: "사이트 ID",
+    comment: "북마크 ID",
 };
 Bookmark.hasMany(Attached, { foreignKey: attached_fk_bookmark });
 Attached.belongsTo(Bookmark, { foreignKey: attached_fk_bookmark });
@@ -194,6 +182,16 @@ const membership_fk_group = {
 Group.hasMany(Membership, { foreignKey: membership_fk_group });
 Membership.belongsTo(Group, { foreignKey: membership_fk_group });
 
+// Folder : Bookmark = 1 : N
+const bookmark_fk_folder = {
+    name: "folder_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "폴더 ID",
+};
+Folder.hasMany(Bookmark, { foreignKey: bookmark_fk_folder });
+Bookmark.belongsTo(Folder, { foreignKey: bookmark_fk_folder });
+
 // 모델 동기화
 // sequelize
 //     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
@@ -213,4 +211,5 @@ export {
     Group,
     Membership,
     Like,
+    Folder,
 };

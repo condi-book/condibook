@@ -1,6 +1,6 @@
 export default function BookmarkModel(sequelize, DataTypes) {
     return sequelize.define(
-        "bookmarks",
+        "bookmark",
         {
             id: {
                 type: DataTypes.INTEGER,

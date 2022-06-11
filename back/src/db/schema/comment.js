@@ -1,6 +1,6 @@
 export default function CommentModel(sequelize, DataTypes) {
     return sequelize.define(
-        "comments",
+        "comment",
         {
             id: {
                 type: DataTypes.INTEGER,

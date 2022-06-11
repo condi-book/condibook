@@ -1,6 +1,6 @@
 export default function EmojiModel(sequelize, DataTypes) {
     return sequelize.define(
-        "emojis",
+        "emoji",
         {
             id: {
                 type: DataTypes.INTEGER,

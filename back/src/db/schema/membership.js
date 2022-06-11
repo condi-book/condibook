@@ -1,6 +1,6 @@
 export default function MembershipModel(sequelize, DataTypes) {
     return sequelize.define(
-        "memberships",
+        "membership",
         {
             id: {
                 type: DataTypes.INTEGER,

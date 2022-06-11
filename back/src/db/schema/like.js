@@ -1,6 +1,6 @@
 export default function LikeModel(sequelize, DataTypes) {
     return sequelize.define(
-        "likes",
+        "like",
         {
             id: {
                 type: DataTypes.INTEGER,

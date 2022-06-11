@@ -1,22 +1,28 @@
-export default function GroupModel(sequelize, DataTypes) {
+export default function FolderModel(sequelize, DataTypes) {
     return sequelize.define(
-        "group",
+        "folder",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "그룹 ID",
+                comment: "폴더 ID",
             },
-            name: {
+            title: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: "그룹 이름",
+                comment: "폴더 이름",
             },
             explanation: {
-                type: DataTypes.TEXT,
+                type: DataTypes.STRING,
                 allowNull: true,
-                comment: "그룹 설명",
+                comment: "폴더 설명",
+            },
+            favorites: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+                comment: "즐겨찾기 여부",
             },
         },
         {

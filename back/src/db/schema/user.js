@@ -1,6 +1,6 @@
 export default function UserModel(sequelize, DataTypes) {
     return sequelize.define(
-        "users",
+        "user",
         {
             id: {
                 type: DataTypes.INTEGER,

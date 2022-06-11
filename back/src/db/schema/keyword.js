@@ -1,6 +1,6 @@
 export default function KeywordModel(sequelize, DataTypes) {
     return sequelize.define(
-        "keywords",
+        "keyword",
         {
             id: {
                 type: DataTypes.INTEGER,

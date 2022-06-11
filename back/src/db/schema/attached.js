@@ -1,6 +1,6 @@
 export default function AttachedModel(sequelize, DataTypes) {
     return sequelize.define(
-        "attacheds",
+        "attached",
         {
             id: {
                 type: DataTypes.INTEGER,
