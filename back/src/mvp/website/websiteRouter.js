@@ -13,7 +13,7 @@ websiteRouter.post("/", async (req, res, next) => {
             throw new Error(result.errorMessage);
         }
 
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch (error) {
         next(error);
     }
@@ -49,4 +49,43 @@ websiteRouter.get("/:id", async (req, res, next) => {
     }
 });
 
+websiteRouter.put("/:id", async (req, res, next) => {
+    try {
+        const id  = req.params.id;
+        const {url, meta_title, meta_description} = req.body ?? "" ;
+
+        const toUpdate = {
+            url,
+            meta_title,
+            meta_description
+        };
+        await websiteSerivce.updateWebsite({id, toUpdate});
+
+        const result = await websiteSerivce.getWebsite({id});
+
+        if(result.errorMessage){
+            throw new Error(result.errorMessage);
+        };
+
+        res.status(201).send(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+websiteRouter.delete("/:id", async (req, res, next) => {
+    try {
+        
+        const id  = req.params.id;
+        const result = await websiteSerivce.deleteWebsite({id});
+
+        if(result.errorMessage){
+            throw new Error(result.errorMessage);
+        }
+
+        res.status(204).send(result);
+    } catch (error) {
+        next(error);
+    }
+});
 export { websiteRouter };

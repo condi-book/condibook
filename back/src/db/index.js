@@ -59,8 +59,8 @@ const emojis_fk_website = {
     onDelete: "setNull",
     comment: "사이트 ID",
 };
-Website.hasOne(Emoji, { foreignKey: emojis_fk_website });
-Emoji.belongsTo(Website, { foreignKey: emojis_fk_website });
+Website.hasOne(Emoji, { foreignKey: emojis_fk_website, onDelete:"cascade" });
+Emoji.belongsTo(Website, { foreignKey: emojis_fk_website, onDelete:"cascade" });
 
 // Website : Keyword = 1 : N
 const keywords_fk_website = {
@@ -69,8 +69,8 @@ const keywords_fk_website = {
     onDelete: "setNull",
     comment: "사이트 ID",
 };
-Website.hasMany(Keyword, { foreignKey: keywords_fk_website });
-Keyword.belongsTo(Website, { foreignKey: keywords_fk_website });
+Website.hasMany(Keyword, { foreignKey: keywords_fk_website, onDelete:"cascade" });
+Keyword.belongsTo(Website, { foreignKey: keywords_fk_website, onDelete:"cascade" });
 
 // User : Bookmark = 1 : N
 const bookmark_fk_user = {
