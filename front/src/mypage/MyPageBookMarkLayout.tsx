@@ -31,15 +31,12 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    // align-items: center;
-    border: 2px solid blue;
   }
   .favorites-list {
-    border: 2px solid red;
-    // width: 97%;
+    // border: 2px solid red;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    flex-basis: 90%;
   }
   .view-more {
     text-align: center;

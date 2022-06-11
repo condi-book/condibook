@@ -44,6 +44,18 @@ const MypageBookmark = () => {
       link_num: 3,
       favorite: true,
     },
+    {
+      image: "url",
+      group: "14팀",
+      link_num: 3,
+      favorite: true,
+    },
+    {
+      image: "url",
+      group: "14팀",
+      link_num: 3,
+      favorite: true,
+    },
   ];
 
   const filteredData: MypageBookmarkProps["data"] = data.filter(

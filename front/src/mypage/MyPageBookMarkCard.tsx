@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 
 interface MypageBookmarkCardProps {
@@ -10,9 +11,11 @@ interface MypageBookmarkCardProps {
   };
 }
 
-const MypageBookmarkDetail = (item: MypageBookmarkCardProps["item"]) => {
+const MypageBookmarkCard = (item: MypageBookmarkCardProps["item"]) => {
+  const navigate = useNavigate();
+  const handleClick = () => navigate(`/mypage/mybookmark/${item.group}`);
   return (
-    <Div {...item}>
+    <Div {...item} onClick={handleClick}>
       <div className="top part">
         <div>
           <img src={item.image} alt="북마크 이미지"></img>
@@ -39,15 +42,17 @@ const MypageBookmarkDetail = (item: MypageBookmarkCardProps["item"]) => {
 
 const Div = styled.div`
   border: 2px solid black;
-  margin: 10px;
+  margin: 0.833%;
   padding: 10px;
-  width: fit-content;
+  width: 15%;
+  box-sizing: border-box;
   height: 25vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   .part {
-    width: 15vw;
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -63,4 +68,4 @@ const Div = styled.div`
   }
 `;
 
-export default MypageBookmarkDetail;
+export default MypageBookmarkCard;
