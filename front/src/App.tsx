@@ -8,6 +8,7 @@ import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
 import Footer from "./layout/Footer";
 import { Mypage } from "./mypage/MyPage";
+import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -26,6 +27,10 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Main />} />
               <Route path="/mypage" element={<Mypage />} />
+              <Route
+                path="/mypage/mybookmark/:group"
+                element={<MypageBookmarkDetail />}
+              />
             </Routes>
             <Footer />
           </Router>
