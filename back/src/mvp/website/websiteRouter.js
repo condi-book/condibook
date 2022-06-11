@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { websiteSerivce } from "./websiteSerivce";
 const websiteRouter = Router();
 
@@ -23,9 +24,7 @@ websiteRouter.post("/", async (req, res, next) => {
         */
         // await ~ bookmark 생성 부분 필요
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
-        }
+        checkErrorMessage(result);
 
         res.status(201).send(result);
     } catch (error) {
@@ -37,9 +36,7 @@ websiteRouter.get("/list", async (req, res, next) => {
     try {
         const result = await websiteSerivce.getWebsiteList();
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
-        }
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (error) {
@@ -52,9 +49,7 @@ websiteRouter.get("/:id", async (req, res, next) => {
         const id = req.params.id;
         const result = await websiteSerivce.getWebsite({ id });
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
-        }
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (error) {
@@ -79,9 +74,7 @@ websiteRouter.put("/:id", async (req, res, next) => {
 
         const result = await websiteSerivce.getWebsite({ id });
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
-        }
+        checkErrorMessage(result);
 
         res.status(201).send(result);
     } catch (error) {
@@ -94,9 +87,7 @@ websiteRouter.delete("/:id", async (req, res, next) => {
         const id = req.params.id;
         const result = await websiteSerivce.deleteWebsite({ id });
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
-        }
+        checkErrorMessage(result);
 
         res.status(204).send(result);
     } catch (error) {

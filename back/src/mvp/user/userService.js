@@ -1,6 +1,7 @@
 import { User } from "../../db";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import { getQueryResultMsg } from "../../middlewares/errorMiddleware";
 class userService {
     static async login({ nickname, email, image_url }) {
         // 사용자 조회
@@ -73,11 +74,12 @@ class userService {
             { where: { id: id } },
         );
 
-        if (affectedRows != 1) {
-            return { errorMessage: "별명을 수정하지 못했습니다." };
-        }
-
-        return { message: "별명을 수정했습니다." };
+        return getQueryResultMsg({
+            result: affectedRows,
+            expectation: 1,
+            entity: "별명",
+            queryType: "수정",
+        });
     }
 
     static async setIntro({ intro, id }) {
@@ -86,21 +88,23 @@ class userService {
             { where: { id: id } },
         );
 
-        if (affectedRows != 1) {
-            return { errorMessage: "자기소개글을 수정하지 못했습니다." };
-        }
-
-        return { message: "자기소개글을 수정했습니다." };
+        return getQueryResultMsg({
+            result: affectedRows,
+            expectation: 1,
+            entity: "자기소개글",
+            queryType: "수정",
+        });
     }
 
     static async deleteUser({ id }) {
         const deletedRow = User.destroy({ where: { id: id } });
 
-        if (deletedRow != 1) {
-            return { errorMessage: "계정을 삭제하지 못했습니다." };
-        }
-
-        return { message: "계정을 삭제했습니다." };
+        return getQueryResultMsg({
+            result: deletedRow,
+            expectation: 1,
+            entity: "계정",
+            queryType: "삭제",
+        });
     }
 }
 
