@@ -53,6 +53,20 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
     }
 });
 
+userRouter.put("/intro", loginRequired, async (req, res, next) => {
+    try {
+        const { intro } = req.body;
+        const id = req.currentUserId;
+
+        const result = await userService.setIntro({ intro, id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 userRouter.delete("", loginRequired, async (req, res, next) => {
     try {
         const id = req.currentUserId;

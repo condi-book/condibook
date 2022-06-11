@@ -24,6 +24,11 @@ export default function UserModel(sequelize, DataTypes) {
                 allowNull: true,
                 comment: "사용자 프로필 이미지 url",
             },
+            intro: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: "자신에 대한 짧은 소개글",
+            },
         },
         {
             charset: "utf8",

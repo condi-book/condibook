@@ -24,6 +24,7 @@ class userService {
             email: user.email,
             nickname: user.nickname,
             image_url: user.image_url,
+            intro: user.intro,
             token: token,
         };
         return result;
@@ -77,6 +78,19 @@ class userService {
         }
 
         return { message: "별명을 수정했습니다." };
+    }
+
+    static async setIntro({ intro, id }) {
+        const affectedRows = await User.update(
+            { intro },
+            { where: { id: id } },
+        );
+
+        if (affectedRows != 1) {
+            return { errorMessage: "자기소개글을 수정하지 못했습니다." };
+        }
+
+        return { message: "자기소개글을 수정했습니다." };
     }
 
     static async deleteUser({ id }) {
