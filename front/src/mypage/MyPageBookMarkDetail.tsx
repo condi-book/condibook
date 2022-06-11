@@ -11,10 +11,20 @@ import SideBar from "../layout/SideBar";
 const listContent = {
   title: "프론트엔드",
   listItems: [
-    { id: "1", name: "link1" },
-    { id: "2", name: "link2" },
-    { id: "3", name: "link3" },
-    { id: "4", name: "link4" },
+    {
+      id: "1",
+      title: "티스토리",
+      content: "",
+      link: "https://tychejin.tistory.com/231",
+    },
+    {
+      id: "2",
+      title: "okayoon",
+      content: "",
+      link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
+    },
+    { id: "3", title: "nykim", content: "", link: "https://nykim.work/107" },
+    { id: "4", title: "티스토리", content: "", link: "link4" },
   ],
 };
 
@@ -29,6 +39,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const MypageBookmarkDetail = () => {
   const [list, setList] = useState(listContent.listItems);
+  const [link, setLink] = useState("");
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -65,7 +76,11 @@ const MypageBookmarkDetail = () => {
                 >
                   {list.map((item, index) => {
                     return (
-                      <div key={item.id} className="dnd-item">
+                      <div
+                        key={item.id}
+                        className="dnd-item"
+                        onClick={() => setLink(item.link)}
+                      >
                         <Draggable
                           key={item.id}
                           draggableId={item.id}
@@ -81,7 +96,7 @@ const MypageBookmarkDetail = () => {
                                 provided.draggableProps.style,
                               )}
                             >
-                              {item.name}
+                              {item.title}
                             </div>
                           )}
                         </Draggable>
@@ -93,7 +108,9 @@ const MypageBookmarkDetail = () => {
             </Droppable>
           </DragDropContext>
         </div>
-        <div className="content box">링크내용</div>
+        <div className="content box">
+          <iframe src={link} width="100%" height="100%"></iframe>
+        </div>
       </div>
     </Div>
   );
@@ -109,6 +126,7 @@ const Div = styled.div`
     // justify-content: center;
     width: 90vw;
     border: 2px solid green;
+    margin: 10px;
   }
 
   .box {
