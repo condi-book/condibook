@@ -1,6 +1,6 @@
 import React from "react";
 
-import MypageBookmarkLayout from "./MyPageBookMarkLayout";
+import MypageBookmarkList from "./MyPageBookMarkList";
 
 export interface MypageBookmarkProps {
   data: {
@@ -67,8 +67,8 @@ const MypageBookmark = () => {
 
   return (
     <div>
-      <MypageBookmarkLayout data={filteredData} title={title1} />
-      <MypageBookmarkLayout data={data} title={title2} />
+      <MypageBookmarkList data={filteredData} title={title1} />
+      <MypageBookmarkList data={data} title={title2} />
     </div>
   );
 };

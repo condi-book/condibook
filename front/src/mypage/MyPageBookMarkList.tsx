@@ -4,7 +4,7 @@ import MypageBookmarkCard from "./MyPageBookMarkCard";
 import { MypageBookmarkProps } from "./MyPageBookMark";
 import { MypageProps } from "./MyPage";
 
-const MypageBookmarkLayout = ({ data, title }: MypageBookmarkProps) => {
+const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
   return (
     <Div>
@@ -43,4 +43,4 @@ const Div = styled.div`
   }
 `;
 
-export default MypageBookmarkLayout;
+export default MypageBookmarkList;
