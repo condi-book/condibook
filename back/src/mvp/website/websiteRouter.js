@@ -1,15 +1,29 @@
 import { Router } from "express";
 import { websiteSerivce } from "./websiteSerivce";
-
-
 const websiteRouter = Router();
 
 websiteRouter.post("/", async (req, res, next) => {
     try {
-        const url  = req.body.url;
+        const url = req.body.url;
         const result = await websiteSerivce.createWebsite(url);
+        //키워드 이모지 생성 부분
+        /*
+        const website_id = result.id;
+        const ai_keyword = ai 에서 받아올 것
+        const ai_emoji = ai 에서 받아올 것
 
-        if(result.errorMessage){
+        await websiteSerivce.createKeyword({
+            website_id,
+            ai_keyword,
+        });
+        await websiteSerivce.createEmoji({
+            website_id,
+            ai_emoji,
+        });
+        */
+        // await ~ bookmark 생성 부분 필요
+
+        if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
@@ -23,7 +37,7 @@ websiteRouter.get("/list", async (req, res, next) => {
     try {
         const result = await websiteSerivce.getWebsiteList();
 
-        if(result.errorMessage){
+        if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
@@ -35,11 +49,10 @@ websiteRouter.get("/list", async (req, res, next) => {
 
 websiteRouter.get("/:id", async (req, res, next) => {
     try {
-        
-        const id  = req.params.id;
-        const result = await websiteSerivce.getWebsite({id});
+        const id = req.params.id;
+        const result = await websiteSerivce.getWebsite({ id });
 
-        if(result.errorMessage){
+        if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
@@ -51,21 +64,24 @@ websiteRouter.get("/:id", async (req, res, next) => {
 
 websiteRouter.put("/:id", async (req, res, next) => {
     try {
-        const id  = req.params.id;
-        const {url, meta_title, meta_description} = req.body ?? "" ;
+        const id = req.params.id;
+        const { url, meta_title, meta_description, keyword, emoji } =
+            req.body ?? "";
 
         const toUpdate = {
             url,
             meta_title,
-            meta_description
+            meta_description,
+            keyword,
+            emoji,
         };
-        await websiteSerivce.updateWebsite({id, toUpdate});
+        await websiteSerivce.updateWebsite({ id, toUpdate });
 
-        const result = await websiteSerivce.getWebsite({id});
+        const result = await websiteSerivce.getWebsite({ id });
 
-        if(result.errorMessage){
+        if (result.errorMessage) {
             throw new Error(result.errorMessage);
-        };
+        }
 
         res.status(201).send(result);
     } catch (error) {
@@ -75,11 +91,10 @@ websiteRouter.put("/:id", async (req, res, next) => {
 
 websiteRouter.delete("/:id", async (req, res, next) => {
     try {
-        
-        const id  = req.params.id;
-        const result = await websiteSerivce.deleteWebsite({id});
+        const id = req.params.id;
+        const result = await websiteSerivce.deleteWebsite({ id });
 
-        if(result.errorMessage){
+        if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
