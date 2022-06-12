@@ -6,6 +6,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import styled from "styled-components";
+import Modal from "../layout/Modal";
 import SideBar from "../layout/SideBar";
 
 const listContent = {
@@ -57,6 +58,8 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 const MypageBookmarkDetail = () => {
   const [list, setList] = useState(listContent.listItems);
   const [link, setLink] = useState("");
+  const [show, setShow] = useState(false);
+  const [newLink, setNewLink] = useState("");
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -71,18 +74,30 @@ const MypageBookmarkDetail = () => {
   };
 
   const handleClick = () => {
-    alert("링크 추가하는 모달 나오기");
+    setShow((prev) => !prev);
+    console.log(show);
+  };
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setNewLink(e.target.value);
   };
 
   return (
     <Div>
       <SideBar />
+
       <div className="detail-container">
         <div className="list box">
           <div>{listContent.title}</div>
           <div className="add dnd-item" onClick={handleClick}>
             <span className="pe-7s-plus"></span>
           </div>
+          <Modal
+            open={show}
+            close={handleClick}
+            handleChange={handleChange}
+            newLink={newLink}
+          />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">
               {(provided) => (
