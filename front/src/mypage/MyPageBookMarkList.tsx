@@ -10,6 +10,21 @@ const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>("");
 
+  const refinedData = () => {
+    const copied = Array.from(data);
+    let firstCopied = [];
+    if (copied.length > 6 && title === "즐겨찾기") {
+      firstCopied = copied.splice(0, 6);
+    } else if (copied.length > 5 && title === "전체보기") {
+      firstCopied = copied.splice(0, 5);
+    } else {
+      firstCopied = copied;
+    }
+    return { firstCopied, copied };
+  };
+
+  const { firstCopied, copied } = refinedData();
+
   const handleClick = () => {
     setModalShow((prev) => !prev);
   };
@@ -38,10 +53,14 @@ const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
               title={title}
             />
           )}
-          {data.map((item, index) => (
+          {firstCopied.map((item, index) => (
             <MypageBookmarkCard {...item} key={index} />
           ))}
-          {show && <>더보기 내용 부분</>}
+          {show &&
+            copied !== firstCopied &&
+            copied.map((item, index) => (
+              <MypageBookmarkCard {...item} key={index} />
+            ))}
         </div>
         <div className="view-more">
           <button onClick={() => setShow((prev) => !prev)}>더보기</button>
