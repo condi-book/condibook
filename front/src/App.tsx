@@ -7,6 +7,8 @@ import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
 import CommunityPage from "./community/CommunityPage";
+import CommunityUser from "./community/CommunityUser";
+import CommunityPostDetail from "./community/CommunityPostDetail";
 import Footer from "./layout/Footer";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./callBackKakaoLogin";
@@ -32,7 +34,11 @@ const App: React.FC = () => {
                 element={<CallBackKakaoLogin />}
               />
               <Route path="/" element={<Main />} />
-              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community" element={<CommunityPage />}>
+                <Route path="/userId" element={<CommunityUser />}>
+                  <Route path=":postId" element={<CommunityPostDetail />} />
+                </Route>
+              </Route>
               <Route path="/mypage" element={<Mypage />} />
               <Route
                 path="/mypage/mybookmark/:group"

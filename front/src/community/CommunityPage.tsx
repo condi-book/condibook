@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, ButtonGroup, ToggleButton } from "react-bootstrap";
-import CommunityList from "./CommunityList";
+import CommunityPostList from "./CommunityPostList";
 
 export interface PostPreview {
   id: string;
@@ -52,7 +52,7 @@ const CommunityPage = () => {
         </Row>
         <Row>
           <Container>
-            <CommunityList sortState={sortState} />
+            <CommunityPostList sortState={sortState} />
           </Container>
         </Row>
       </Container>

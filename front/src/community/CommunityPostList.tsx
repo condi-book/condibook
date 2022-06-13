@@ -5,11 +5,11 @@ import CommunityCard from "./CommunityCard";
 import useFetch from "./hooks/useFetch";
 import { PostPreview } from "./CommunityPage";
 
-interface CommunityListProps {
+interface CommunityPostListProps {
   sortState: string;
 }
 
-const CommunityList = ({ sortState }: CommunityListProps) => {
+const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
   const [pageNum, setPageNum] = useState(1);
   const { postsForScroll, hasMore, isLoading } = useFetch(pageNum, sortState);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
@@ -49,7 +49,7 @@ const CommunityList = ({ sortState }: CommunityListProps) => {
   );
 };
 
-export default CommunityList;
+export default CommunityPostList;
 
 const Col = styled.div`
   width: 15rem;

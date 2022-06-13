@@ -13,8 +13,9 @@ const CommunityCard = ({ PostPreview }: CommunityCardProps) => {
   const handleDetailClick = React.useCallback((event: React.MouseEvent) => {
     event.preventDefault();
 
-    navigate(`Detail/${PostPreview.id}`);
+    navigate(`/post/${PostPreview.id}`);
   }, []);
+
   return (
     <Card className="text-center">
       <Card.Header>{PostPreview.user_id}</Card.Header>
