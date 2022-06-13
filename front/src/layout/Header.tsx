@@ -1,16 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GoogleLogin from "../googleLogin";
 import KakaoLoginBtn from "../kakaoLoginBtn";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <Div>
       <div className="sub-content">
         <img alt="로고" />
         <div className="button-group">
           <button className="info-button">서비스 소개</button>
-          <button className="login-button">로그인 / 회원가입</button>
+          <button className="login-button" onClick={() => navigate("/login")}>
+            로그인 / 회원가입
+          </button>
         </div>
         <GoogleLogin></GoogleLogin>
         <KakaoLoginBtn></KakaoLoginBtn>
