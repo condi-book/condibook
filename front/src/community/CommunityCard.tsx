@@ -1,19 +1,29 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
-import { Bookmark } from "./CommunityPage";
+import { PostPreview } from "./CommunityPage";
+import { useNavigate } from "react-router-dom";
 
-interface BookmarkCardProps {
-  bookmark: Bookmark;
+interface CommunityCardProps {
+  PostPreview: PostPreview;
 }
 
-const CommunityCard = ({ bookmark }: BookmarkCardProps) => {
+const CommunityCard = ({ PostPreview }: CommunityCardProps) => {
+  const navigate = useNavigate();
+
+  const handleDetailClick = React.useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+
+    navigate(`Detail/${PostPreview.id}`);
+  }, []);
   return (
     <Card className="text-center">
-      <Card.Header>Featured</Card.Header>
+      <Card.Header>{PostPreview.user_id}</Card.Header>
       <Card.Body>
-        <Card.Title>{bookmark.meta_title}</Card.Title>
-        <Card.Text>{bookmark.meta_description}</Card.Text>
-        <Button variant="primary">Detail</Button>
+        <Card.Title>{PostPreview.title}</Card.Title>
+        <Card.Text>{PostPreview.description}</Card.Text>
+        <Button variant="primary" onClick={handleDetailClick}>
+          Detail
+        </Button>
       </Card.Body>
     </Card>
   );

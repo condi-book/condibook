@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Container } from "react-bootstrap";
 import CommunityCard from "./CommunityCard";
 import useFetch from "./hooks/useFetch";
-import { Bookmark } from "./CommunityPage";
+import { PostPreview } from "./CommunityPage";
 
 interface CommunityListProps {
   sortState: string;
@@ -11,10 +11,7 @@ interface CommunityListProps {
 
 const CommunityList = ({ sortState }: CommunityListProps) => {
   const [pageNum, setPageNum] = useState(1);
-  const { bookmarksForScroll, hasMore, isLoading } = useFetch(
-    pageNum,
-    sortState,
-  );
+  const { postsForScroll, hasMore, isLoading } = useFetch(pageNum, sortState);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
     useRef(null);
 
@@ -39,9 +36,9 @@ const CommunityList = ({ sortState }: CommunityListProps) => {
     <Container fluid>
       {/* <Row xs={2} md={4} lg={6} xl={8} xxl={10}> */}
       <Row>
-        {bookmarksForScroll.map((bookmark: Bookmark) => (
-          <Col key={bookmark.id}>
-            <CommunityCard bookmark={bookmark} />
+        {postsForScroll.map((PostPreview: PostPreview) => (
+          <Col key={`preview-${PostPreview.id}`}>
+            <CommunityCard PostPreview={PostPreview} />
           </Col>
         ))}
         <div ref={observer} />

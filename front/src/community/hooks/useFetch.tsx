@@ -1,12 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 // import * as Api from "../../../api";
-import { Bookmark } from "../CommunityPage";
+import { PostPreview } from "../CommunityPage";
+
+class PostPreviewModel {
+  id: string;
+  user_id: string;
+  created_at: Date;
+  title: string;
+  description: string;
+  like: number;
+
+  constructor() {
+    this.id = `${Math.floor(Math.random() * 10000)}`;
+    this.user_id = "hayeong";
+    this.created_at = new Date();
+    this.title = "제목";
+    this.description = "요약";
+    this.like = Math.floor(Math.random() * 10);
+  }
+}
 
 const useFetch = (page: number, sortState: string) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [bookmarksForScroll, setBookmarksForScroll] = useState<Bookmark[] | []>(
-    [],
-  );
+  const [postsForScroll, setPostsForScroll] = useState<PostPreview[]>([]);
   const [hasMore, setHasMore] = useState(false);
 
   const sendQuery = useCallback(async () => {
@@ -21,15 +37,9 @@ const useFetch = (page: number, sortState: string) => {
       // } else {
       //   const { data } = await Api.get(popularURL);
       // }
-      const bookmark: Bookmark = {
-        id: "12345",
-        url: "http://google.com",
-        created_at: new Date(),
-        updated_at: new Date(),
-        meta_title: "제목",
-        meta_description: "요약",
-      };
-      const data: Bookmark[] = Array(20).fill(bookmark);
+      const data: PostPreview[] = Array(20)
+        .fill(undefined)
+        .map(() => new PostPreviewModel());
 
       console.log("sortState", sortState);
 
@@ -37,7 +47,7 @@ const useFetch = (page: number, sortState: string) => {
         throw new Error("서버에 오류가 있습니다!");
       }
 
-      setBookmarksForScroll((current) => [...current, ...data]);
+      setPostsForScroll((current) => [...current, ...data]);
       setHasMore(data !== undefined);
       setIsLoading(false);
     } catch (err) {
@@ -49,7 +59,7 @@ const useFetch = (page: number, sortState: string) => {
     sendQuery();
   }, [sendQuery, page]);
 
-  return { bookmarksForScroll, hasMore, isLoading };
+  return { postsForScroll, hasMore, isLoading };
 };
 
 export default useFetch;

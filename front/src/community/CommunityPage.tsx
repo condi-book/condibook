@@ -2,22 +2,30 @@ import React, { useState } from "react";
 import { Container, Row, ButtonGroup, ToggleButton } from "react-bootstrap";
 import CommunityList from "./CommunityList";
 
-export interface Bookmark {
+export interface PostPreview {
   id: string;
-  url: string;
+  user_id: string;
   created_at: Date;
-  updated_at: Date;
-  meta_title: string;
-  meta_description: string;
+  title: string;
+  description: string;
+  like: number;
 }
 
 const CommunityPage = () => {
   const [sortState, setSortState] = useState<string>("newest");
 
-  const radios = [
-    { name: "최신순", value: "newest" },
-    { name: "인기순", value: "popular" },
-  ];
+  const radios = React.useMemo(
+    () => [
+      { name: "최신순", value: "newest" },
+      { name: "인기순", value: "popular" },
+    ],
+    [],
+  );
+
+  const handleToggleChange = React.useCallback((event: React.ChangeEvent) => {
+    const { value } = event.currentTarget as HTMLInputElement;
+    setSortState(value);
+  }, []);
 
   return (
     <>
@@ -27,14 +35,14 @@ const CommunityPage = () => {
             <ButtonGroup>
               {radios.map((radio, idx) => (
                 <ToggleButton
-                  key={idx}
+                  key={`toggle-${idx}`}
                   id={`radio-${idx}`}
                   type="radio"
                   variant={"outline-success"}
                   name="radio"
                   value={radio.value}
                   checked={sortState === radio.value}
-                  onChange={(e) => setSortState(e.currentTarget.value)}
+                  onChange={handleToggleChange}
                 >
                   {radio.name}
                 </ToggleButton>
