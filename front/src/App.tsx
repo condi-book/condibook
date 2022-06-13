@@ -6,8 +6,8 @@ import { loginReducer } from "./reducer";
 import Header from "./layout/Header";
 import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
+import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
-import CommunityUser from "./community/CommunityUser";
 import CommunityPostDetail from "./community/CommunityPostDetail";
 import Footer from "./layout/Footer";
 import { Mypage } from "./mypage/MyPage";
@@ -34,12 +34,10 @@ const App: React.FC = () => {
                 element={<CallBackKakaoLogin />}
               />
               <Route path="/" element={<Main />} />
-              <Route path="/community" element={<CommunityPage />} />
-              <Route path="/community/:userId" element={<CommunityUser />} />
-              <Route
-                path="/community/:@userId/:postId"
-                element={<CommunityPostDetail />}
-              />
+              <Route path="/community" element={<Community />}>
+                <Route path="" element={<CommunityPage />} />
+                <Route path=":postId" element={<CommunityPostDetail />} />
+              </Route>
               <Route path="/mypage" element={<Mypage />} />
               <Route
                 path="/mypage/mybookmark/:group"
