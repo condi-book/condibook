@@ -1,15 +1,15 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
-import BookmarkCard from "./BookmarkCard";
+import CommunityCard from "./CommunityCard";
 import useFetch from "./hooks/useFetch";
 import { Bookmark } from "./CommunityPage";
 
-interface BookmarkListProps {
+interface CommunityListProps {
   sortState: string;
 }
 
-const BookmarkList: React.FC<BookmarkListProps> = ({ sortState }) => {
+const CommunityList = ({ sortState }: CommunityListProps) => {
   const [pageNum, setPageNum] = useState(1);
   const { bookmarksForScroll, hasMore, isLoading } = useFetch(
     pageNum,
@@ -41,7 +41,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({ sortState }) => {
       <Row>
         {bookmarksForScroll.map((bookmark: Bookmark) => (
           <Col key={bookmark.id}>
-            <BookmarkCard bookmark={bookmark} />
+            <CommunityCard bookmark={bookmark} />
           </Col>
         ))}
         <div ref={observer} />
@@ -52,7 +52,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({ sortState }) => {
   );
 };
 
-export default BookmarkList;
+export default CommunityList;
 
 const Col = styled.div`
   width: 15rem;

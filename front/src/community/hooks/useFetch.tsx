@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // import * as Api from "../../../api";
 import { Bookmark } from "../CommunityPage";
 
@@ -30,6 +30,8 @@ const useFetch = (page: number, sortState: string) => {
         meta_description: "요약",
       };
       const data: Bookmark[] = Array(20).fill(bookmark);
+
+      console.log("sortState", sortState);
 
       if (!data) {
         throw new Error("서버에 오류가 있습니다!");

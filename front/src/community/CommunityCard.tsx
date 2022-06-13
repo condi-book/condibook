@@ -6,7 +6,7 @@ interface BookmarkCardProps {
   bookmark: Bookmark;
 }
 
-const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
+const CommunityCard = ({ bookmark }: BookmarkCardProps) => {
   return (
     <Card className="text-center">
       <Card.Header>Featured</Card.Header>
@@ -19,4 +19,4 @@ const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
   );
 };
 
-export default BookmarkCard;
+export default CommunityCard;

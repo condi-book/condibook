@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container, Row, ButtonGroup, ToggleButton } from "react-bootstrap";
-import BookmarkList from "./BookmarkList";
+import CommunityList from "./CommunityList";
 
 export interface Bookmark {
   id: string;
@@ -44,7 +44,7 @@ const CommunityPage = () => {
         </Row>
         <Row>
           <Container>
-            <BookmarkList sortState={sortState} />
+            <CommunityList sortState={sortState} />
           </Container>
         </Row>
       </Container>
