@@ -3,9 +3,20 @@ import styled from "styled-components";
 import MypageBookmarkCard from "./MyPageBookMarkCard";
 import { MypageBookmarkProps } from "./MyPageBookMark";
 import { MypageProps } from "./MyPage";
+import Modal from "../layout/Modal";
 
 const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
+  const [modalShow, setModalShow] = useState<boolean>(false);
+  const [folderName, setFolderName] = useState<string>("");
+
+  const handleClick = () => {
+    setModalShow((prev) => !prev);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFolderName(e.target.value);
+  };
   return (
     <Div>
       <div>
@@ -14,9 +25,18 @@ const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
       <div className="favorites">
         <div className="favorites-list">
           {title === "전체보기" && (
-            <div className="create-card">
+            <div className="create-card" onClick={handleClick}>
               <span className="pe-7s-plus" />
             </div>
+          )}
+          {modalShow && (
+            <Modal
+              handleChange={handleChange}
+              newLink={folderName}
+              open={modalShow}
+              close={handleClick}
+              title={title}
+            />
           )}
           {data.map((item, index) => (
             <MypageBookmarkCard {...item} key={index} />
@@ -56,6 +76,12 @@ const Div = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    &:hover {
+      cursor: pointer;
+    }
+    .pe-7s-plus {
+      font-size: 3rem;
+    }
   }
 `;
 

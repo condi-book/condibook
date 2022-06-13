@@ -6,8 +6,9 @@ interface props {
   close: () => void;
   newLink: string;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
+  title?: string;
 }
-const Modal = ({ open, close, newLink, handleChange }: props) => {
+const Modal = ({ open, close, newLink, handleChange, title }: props) => {
   return (
     <Div newLink={newLink}>
       <div className={open ? "bg" : ""}></div>
@@ -21,7 +22,11 @@ const Modal = ({ open, close, newLink, handleChange }: props) => {
               <input
                 value={newLink}
                 onChange={handleChange}
-                placeholder="링크를 추가해주세요"
+                placeholder={
+                  title === "전체보기"
+                    ? "폴더를 추가해주세요"
+                    : "링크를 추가해주세요"
+                }
               />
             </div>
             <button disabled={newLink === "" ? true : false}>저장하기</button>
