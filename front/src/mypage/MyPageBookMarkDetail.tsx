@@ -51,7 +51,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   background:
     "linear-gradient(90deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)",
   borderRadius: 10,
-  cursor: "default",
+  cursor: "pointer",
   ...draggableStyle,
 });
 
