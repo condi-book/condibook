@@ -14,7 +14,7 @@ const CommunityCard = ({ PostPreview }: CommunityCardProps) => {
   const handleDetailClick = React.useCallback((event: React.MouseEvent) => {
     event.preventDefault();
 
-    navigate(`/${PostPreview.user_id}/${PostPreview.id}`);
+    navigate(`/community/@${PostPreview.user_id}/${PostPreview.id}`);
   }, []);
 
   return (

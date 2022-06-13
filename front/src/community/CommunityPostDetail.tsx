@@ -9,7 +9,7 @@ const CommunityPostDetail = () => {
   React.useEffect(() => {
     console.log(params);
   }, []);
-  return <></>;
+  return <p>게시글 디테일 페이지 입니다.</p>;
 };
 
 export default CommunityPostDetail;

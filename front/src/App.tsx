@@ -34,11 +34,12 @@ const App: React.FC = () => {
                 element={<CallBackKakaoLogin />}
               />
               <Route path="/" element={<Main />} />
-              <Route path="/community" element={<CommunityPage />}>
-                <Route path="userId" element={<CommunityUser />}>
-                  <Route path=":postId" element={<CommunityPostDetail />} />
-                </Route>
-              </Route>
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community/:userId" element={<CommunityUser />} />
+              <Route
+                path="/community/:@userId/:postId"
+                element={<CommunityPostDetail />}
+              />
               <Route path="/mypage" element={<Mypage />} />
               <Route
                 path="/mypage/mybookmark/:group"
