@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import MypageBookmarkDetail from "./MyPageBookMarkDetail";
+import MypageBookmarkCard from "./MyPageBookMarkCard";
 import { MypageBookmarkProps } from "./MyPageBookMark";
 import { MypageProps } from "./MyPage";
 
-const MypageBookmarkLayout = ({ data, title }: MypageBookmarkProps) => {
+const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
   return (
     <Div>
@@ -14,7 +14,7 @@ const MypageBookmarkLayout = ({ data, title }: MypageBookmarkProps) => {
       <div className="favorites">
         <div className="favorites-list">
           {data.map((item, index) => (
-            <MypageBookmarkDetail {...item} key={index} />
+            <MypageBookmarkCard {...item} key={index} />
           ))}
           {show && <>더보기 내용 부분</>}
         </div>
@@ -31,19 +31,16 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    // align-items: center;
-    border: 2px solid blue;
   }
   .favorites-list {
-    border: 2px solid red;
-    // width: 97%;
+    // border: 2px solid red;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    flex-basis: 90%;
   }
   .view-more {
     text-align: center;
   }
 `;
 
-export default MypageBookmarkLayout;
+export default MypageBookmarkList;

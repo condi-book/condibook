@@ -9,6 +9,8 @@ import GlobalStyle from "./style/GlobalStyle";
 import CommunityPage from "./community/CommunityPage";
 import Footer from "./layout/Footer";
 import { Mypage } from "./mypage/MyPage";
+import CallBackKakaoLogin from "./callBackKakaoLogin";
+import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -25,9 +27,17 @@ const App: React.FC = () => {
             <Header />
             <GlobalStyle />
             <Routes>
+              <Route
+                path="/callback/login/kakao"
+                element={<CallBackKakaoLogin />}
+              />
               <Route path="/" element={<Main />} />
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/mypage" element={<Mypage />} />
+              <Route
+                path="/mypage/mybookmark/:group"
+                element={<MypageBookmarkDetail />}
+              />
             </Routes>
             <Footer />
           </Router>

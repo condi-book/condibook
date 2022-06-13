@@ -1,7 +1,7 @@
 import React from "react";
 
-const BookmarkLoading = () => {
+const CommunityLoading = () => {
   return <></>;
 };
 
-export default BookmarkLoading;
+export default CommunityLoading;

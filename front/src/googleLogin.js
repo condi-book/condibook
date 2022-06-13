@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
+import axios from "axios";
+import { SERVER_URL } from "./config";
 
 const GoogleLogin = () => {
   const [user, setUser] = useState({});
 
-  function handleCallbackResponse(response) {
+  async function handleCallbackResponse(response) {
     const userObject = jwt_decode(response.credential);
-    setUser(userObject);
+
+    const url = SERVER_URL + "/user/login/google";
+    await axios
+      .post(url, {
+        email: userObject.email,
+        nickname: userObject.name,
+        image_url: userObject.picture,
+      })
+      .then((res) => {
+        setUser(res.data);
+      });
     document.getElementById("signInDiv").hidden = true;
   }
 
