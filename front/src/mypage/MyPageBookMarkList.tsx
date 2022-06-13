@@ -13,6 +13,11 @@ const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
       </div>
       <div className="favorites">
         <div className="favorites-list">
+          {title === "전체보기" && (
+            <div className="create-card">
+              <span className="pe-7s-plus" />
+            </div>
+          )}
           {data.map((item, index) => (
             <MypageBookmarkCard {...item} key={index} />
           ))}
@@ -40,6 +45,17 @@ const Div = styled.div`
   }
   .view-more {
     text-align: center;
+  }
+  .create-card {
+    border: 2px solid black;
+    margin: 0.833%;
+    padding: 10px;
+    width: 15%;
+    box-sizing: border-box;
+    height: 25vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
