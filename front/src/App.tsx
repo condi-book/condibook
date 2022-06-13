@@ -35,7 +35,7 @@ const App: React.FC = () => {
               />
               <Route path="/" element={<Main />} />
               <Route path="/community" element={<CommunityPage />}>
-                <Route path="/userId" element={<CommunityUser />}>
+                <Route path="userId" element={<CommunityUser />}>
                   <Route path=":postId" element={<CommunityPostDetail />} />
                 </Route>
               </Route>
