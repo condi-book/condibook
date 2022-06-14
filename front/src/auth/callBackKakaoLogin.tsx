@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SERVER_URL } from "../config";
@@ -32,7 +32,7 @@ const CallBackKakaoLogin = () => {
       .then(navigate("/mypage", { replace: true }));
   }, []);
 
-  // return <div>로그인 처리 중</div>;
+  return <div>로그인 처리 중</div>;
 };
 
 export default CallBackKakaoLogin;

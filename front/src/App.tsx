@@ -9,7 +9,7 @@ import CommunityPage from "./community/CommunityPage";
 import CommunityUser from "./community/CommunityUser";
 import CommunityPostDetail from "./community/CommunityPostDetail";
 import { Mypage } from "./mypage/MyPage";
-import CallBackKakaoLogin from "./callBackKakaoLogin";
+import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
 
