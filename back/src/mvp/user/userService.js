@@ -25,7 +25,7 @@ class userService {
             email: user.email,
             nickname: user.nickname,
             image_url: user.image_url,
-            intro: user.intro,
+            intro: user.intro ?? null,
             token: token,
         };
         return result;
