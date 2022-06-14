@@ -1,13 +1,17 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
-import BookmarkCard from "./BookmarkCard";
+import CommunityCard from "./CommunityCard";
 import useFetch from "./hooks/useFetch";
-import { Bookmark } from "./CommunityPage";
+import { PostPreview } from "./CommunityPage";
 
-const BookmarkList = () => {
+interface CommunityPostListProps {
+  sortState: string;
+}
+
+const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
   const [pageNum, setPageNum] = useState(1);
-  const { bookmarksForScroll, hasMore, isLoading } = useFetch(pageNum);
+  const { postsForScroll, hasMore, isLoading } = useFetch(pageNum, sortState);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
     useRef(null);
 
@@ -32,9 +36,9 @@ const BookmarkList = () => {
     <Container fluid>
       {/* <Row xs={2} md={4} lg={6} xl={8} xxl={10}> */}
       <Row>
-        {bookmarksForScroll.map((bookmark: Bookmark) => (
-          <Col key={`bookmark-${bookmark.id}`}>
-            <BookmarkCard bookmark={bookmark} />
+        {postsForScroll.map((PostPreview: PostPreview) => (
+          <Col key={`preview-${PostPreview.id}`}>
+            <CommunityCard PostPreview={PostPreview} />
           </Col>
         ))}
         <div ref={observer} />
@@ -45,7 +49,7 @@ const BookmarkList = () => {
   );
 };
 
-export default BookmarkList;
+export default CommunityPostList;
 
 const Col = styled.div`
   width: 15rem;

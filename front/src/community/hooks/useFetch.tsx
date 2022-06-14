@@ -1,30 +1,28 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // import * as Api from "../../../api";
-import { Bookmark } from "../CommunityPage";
+import { PostPreview } from "../CommunityPage";
 
-class BookmarkModel {
+class PostPreviewModel {
   id: string;
-  url: string;
+  user_id: string;
   created_at: Date;
-  updated_at: Date;
-  meta_title: string;
-  meta_description: string;
+  title: string;
+  description: string;
+  like: number;
 
   constructor() {
     this.id = `${Math.floor(Math.random() * 10000)}`;
-    this.url = "http://google.com";
+    this.user_id = "hayeong";
     this.created_at = new Date();
-    this.updated_at = new Date();
-    this.meta_title = "제목";
-    this.meta_description = "요약";
+    this.title = "제목";
+    this.description = "요약";
+    this.like = Math.floor(Math.random() * 10);
   }
 }
 
-const useFetch = (page: number) => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [bookmarksForScroll, setBookmarksForScroll] = useState<Bookmark[] | []>(
-    [],
-  );
+const useFetch = (page: number, sortState: string) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [postsForScroll, setPostsForScroll] = useState<PostPreview[]>([]);
   const [hasMore, setHasMore] = useState(false);
 
   const sendQuery = useCallback(async () => {
@@ -39,16 +37,17 @@ const useFetch = (page: number) => {
       // } else {
       //   const { data } = await Api.get(popularURL);
       // }
-
-      const data: Bookmark[] = Array(20)
+      const data: PostPreview[] = Array(20)
         .fill(undefined)
-        .map(() => new BookmarkModel());
+        .map(() => new PostPreviewModel());
+
+      console.log("sortState", sortState);
 
       if (!data) {
         throw new Error("서버에 오류가 있습니다!");
       }
 
-      setBookmarksForScroll((current) => [...current, ...data]);
+      setPostsForScroll((current) => [...current, ...data]);
       setHasMore(data !== undefined);
       setIsLoading(false);
     } catch (err) {
@@ -60,7 +59,7 @@ const useFetch = (page: number) => {
     sendQuery();
   }, [sendQuery, page]);
 
-  return { bookmarksForScroll, hasMore, isLoading };
+  return { postsForScroll, hasMore, isLoading };
 };
 
 export default useFetch;
