@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import GoogleLogin from "../googleLogin";
-import KakaoLoginBtn from "../kakaoLoginBtn";
+import GoogleLogin from "./googleLogin";
+import KakaoLoginBtn from "./kakaoLoginBtn";
 
 const Login = () => {
   return (

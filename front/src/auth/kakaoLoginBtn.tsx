@@ -1,5 +1,5 @@
 import React from "react";
-import { CLIENT_URL, KAKAO_CLIENT_ID } from "./config";
+import { CLIENT_URL, KAKAO_CLIENT_ID } from "../config";
 
 const KakaoLoginBtn = () => {
   const KAKAO_REDIRECT_URI = CLIENT_URL + "/callback/login/kakao";
@@ -7,7 +7,7 @@ const KakaoLoginBtn = () => {
   return (
     <div>
       <a href={KAKAO_REQUEST_URL} id="kakaoSignInDiv">
-        카카오로그인
+        <img src={`static/img/kakaoButton.png`} />
       </a>
     </div>
   );

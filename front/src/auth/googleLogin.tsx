@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { SERVER_URL } from "./config";
+import { SERVER_URL } from "../config";
 import { useNavigate } from "react-router-dom";
-import { DispatchContext } from "./App";
+import { DispatchContext } from "../App";
 
 const GoogleLogin = () => {
   const [user, setUser] = useState<any>({});
@@ -23,10 +23,9 @@ const GoogleLogin = () => {
       .then((res) => {
         setUser(res.data);
         const user = res.data;
-        const jwtToken = user.token;
 
-        sessionStorage.setItem("userToken", jwtToken);
-        sessionStorage.setItem("user", user);
+        sessionStorage.setItem("userToken", user.token);
+        sessionStorage.setItem("user", JSON.stringify(user));
 
         dispatch({
           type: "LOGIN_SUCCESS",
@@ -34,7 +33,8 @@ const GoogleLogin = () => {
         });
 
         navigate("/mypage");
-      });
+      })
+      .catch((error) => alert(error.message));
 
     signInDiv.hidden = true;
   }
