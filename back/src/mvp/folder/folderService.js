@@ -1,18 +1,15 @@
 import { Folder } from "../../db";
-import { getQueryResultMsg } from "../../middlewares/errorMiddleware";
+import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
     static async createFolder({ title, explanation, user_id }) {
-        let folder = await Folder.create({ title, explanation, user_id });
+        try {
+            await Folder.create({ title, explanation, user_id });
 
-        getQueryResultMsg({
-            result: typeof folder,
-            expectation: "object",
-            entity: "폴더",
-            queryType: "생성",
-        });
-
-        return folder;
+            return getSuccessMsg({ entity: "폴더", action: "생성" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
     }
 
     static async getMyFolders({ user_id }) {
@@ -29,14 +26,20 @@ class folderService {
             });
             return result;
         } catch (e) {
-            return {
-                errorMessage: getQueryResultMsg({
-                    result: true,
-                    expectation: false,
-                    entity: "폴더",
-                    queryType: "조회",
-                }),
-            };
+            return { errorMessage: e };
+        }
+    }
+
+    static async deleteFolder({ id, user_id }) {
+        try {
+            const result = await Folder.destroy({ where: { id, user_id } });
+
+            if (result === 0) {
+                return getFailMsg({ entity: "폴더", action: "삭제" });
+            }
+            return getSuccessMsg({ entity: "폴더", action: "삭제" });
+        } catch (e) {
+            return { errorMessage: e };
         }
     }
 }

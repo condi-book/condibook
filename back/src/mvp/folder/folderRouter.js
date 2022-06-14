@@ -28,7 +28,6 @@ folderRouter.get("", loginRequired, async (req, res, next) => {
         const id = req.currentUserId;
 
         const result = await folderService.getMyFolders({ user_id: id });
-        console.log(result);
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -36,4 +35,19 @@ folderRouter.get("", loginRequired, async (req, res, next) => {
         next(e);
     }
 });
+
+folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const user_id = req.currentUserId;
+
+        const result = await folderService.deleteFolder({ id, user_id });
+        checkErrorMessage(result);
+
+        res.status(200).json(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 export { folderRouter };
