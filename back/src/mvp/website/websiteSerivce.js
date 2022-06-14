@@ -18,9 +18,6 @@ class websiteSerivce {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        {
-            ("heelo");
-        }
         return result;
     }
     static async getWebsite({ id }) {
