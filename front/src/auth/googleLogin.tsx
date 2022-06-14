@@ -4,6 +4,7 @@ import axios from "axios";
 import { SERVER_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 import { DispatchContext } from "../App";
+import styled from "styled-components";
 
 const GoogleLogin = () => {
   const [user, setUser] = useState<any>({});
@@ -61,7 +62,7 @@ const GoogleLogin = () => {
   }, []);
 
   return (
-    <div>
+    <ButtonDiv>
       <div id="signInDiv"></div>
       {Object.keys(user).length != 0 && (
         <button onClick={() => handleSignOut()}>Sign out</button>
@@ -69,12 +70,24 @@ const GoogleLogin = () => {
 
       {user && (
         <div>
-          {/* <img src={user.picture}></img> */}
           <h3>{user.name}</h3>
         </div>
       )}
-    </div>
+    </ButtonDiv>
   );
 };
+
+const ButtonDiv = styled.div`
+  width: 100%;
+  iframe {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  #container {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+`;
 
 export default GoogleLogin;

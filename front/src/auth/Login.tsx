@@ -41,6 +41,9 @@ const Div = styled.div`
     .button-group {
       height: 80%;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
   }
 `;
