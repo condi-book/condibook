@@ -54,8 +54,14 @@ const GoogleLogin = () => {
     });
 
     google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+      width: "240px",
+      // maxWidth: "none",
+      // minWidth: "none",
       theme: "outline",
+      height: "50px",
       size: "large",
+      // padding: "0",
+      // margin: "0",
     }); // Sign In With Google
 
     google.accounts.id.prompt(); // One-tap sign-up
@@ -67,18 +73,11 @@ const GoogleLogin = () => {
       {Object.keys(user).length != 0 && (
         <button onClick={() => handleSignOut()}>Sign out</button>
       )}
-
-      {user && (
-        <div>
-          <h3>{user.name}</h3>
-        </div>
-      )}
     </ButtonDiv>
   );
 };
 
 const ButtonDiv = styled.div`
-  width: 100%;
   iframe {
     width: 100% !important;
     margin: 0 !important;
