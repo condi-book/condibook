@@ -30,6 +30,22 @@ class folderService {
         }
     }
 
+    static async updateFolderInfo({ id, title, explanation }) {
+        try {
+            const affectedRows = await Folder.update(
+                { title, explanation },
+                { where: { id: id } },
+            );
+
+            if (affectedRows[0] === 0) {
+                return getFailMsg({ entity: "폴더 정보", action: "수정" });
+            }
+            return getSuccessMsg({ entity: "폴더 정보", action: "수정" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async updateFolderFavorites({ id }) {
         try {
             const [results, metadata] = await sequelize.query(
