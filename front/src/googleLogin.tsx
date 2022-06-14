@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { SERVER_URL } from "./config";
+import { useNavigate } from "react-router-dom";
+import { DispatchContext } from "./App";
 
 const GoogleLogin = () => {
-  const [user, setUser] = useState({});
-
-  async function handleCallbackResponse(response) {
-    const userObject = jwt_decode(response.credential);
+  const [user, setUser] = useState<any>({});
+  const dispatch: any = useContext(DispatchContext);
+  const navigate = useNavigate();
+  const signInDiv = document.getElementById("signInDiv") as HTMLDivElement;
+  async function handleCallbackResponse(response: any) {
+    const userObject: any = jwt_decode(response.credential);
 
     const url = SERVER_URL + "/user/login/google";
     await axios
@@ -18,13 +22,26 @@ const GoogleLogin = () => {
       })
       .then((res) => {
         setUser(res.data);
+        const user = res.data;
+        const jwtToken = user.token;
+
+        sessionStorage.setItem("userToken", jwtToken);
+        sessionStorage.setItem("user", user);
+
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: user,
+        });
+
+        navigate("/mypage");
       });
-    document.getElementById("signInDiv").hidden = true;
+
+    signInDiv.hidden = true;
   }
 
   function handleSignOut() {
     setUser({});
-    document.getElementById("signInDiv").hidden = false;
+    signInDiv.hidden = false;
   }
 
   useEffect(() => {
@@ -47,7 +64,7 @@ const GoogleLogin = () => {
     <div>
       <div id="signInDiv"></div>
       {Object.keys(user).length != 0 && (
-        <button onClick={(e) => handleSignOut(e)}>Sign out</button>
+        <button onClick={() => handleSignOut()}>Sign out</button>
       )}
 
       {user && (
