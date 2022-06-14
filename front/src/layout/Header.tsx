@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import GoogleLogin from "../googleLogin";
-import KakaoLoginBtn from "../kakaoLoginBtn";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,8 +14,6 @@ const Header = () => {
             로그인 / 회원가입
           </button>
         </div>
-        <GoogleLogin></GoogleLogin>
-        <KakaoLoginBtn></KakaoLoginBtn>
       </div>
     </Div>
   );
