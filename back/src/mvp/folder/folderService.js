@@ -2,8 +2,8 @@ import { Folder } from "../../db";
 import { getQueryResultMsg } from "../../middlewares/errorMiddleware";
 
 class folderService {
-    static async createFolder({ title, explanation }) {
-        let folder = await Folder.create({ title, explanation });
+    static async createFolder({ title, explanation, user_id }) {
+        let folder = await Folder.create({ title, explanation, user_id });
 
         getQueryResultMsg({
             result: typeof folder,
@@ -24,7 +24,7 @@ class folderService {
             const result = folders.map((folder) => {
                 return {
                     ...folder,
-                    favorites: folder.favorites == 0 ? true : false,
+                    favorites: folder.favorites == 1 ? true : false,
                 };
             });
             return result;
