@@ -36,6 +36,23 @@ folderRouter.get("", loginRequired, async (req, res, next) => {
     }
 });
 
+folderRouter.put("/:id", loginRequired, async (req, res, next) => {
+    try {
+        const user_id = req.currentUserId;
+        const { id } = req.params;
+
+        const result = await folderService.updateFolderFavorites({
+            id,
+            user_id,
+        });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;

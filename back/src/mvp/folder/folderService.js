@@ -1,4 +1,4 @@
-import { Folder } from "../../db";
+import { Folder, sequelize } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
@@ -25,6 +25,21 @@ class folderService {
                 };
             });
             return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async updateFolderFavorites({ id }) {
+        try {
+            const [results, metadata] = await sequelize.query(
+                `UPDATE folders SET favorites = NOT favorites WHERE id = ${id}`,
+            );
+
+            if (metadata.affectedRows === 0) {
+                return getFailMsg({ entity: "폴더 즐겨찾기", action: "수정" });
+            }
+            return getSuccessMsg({ entity: "폴더 즐겨찾기", action: "수정" });
         } catch (e) {
             return { errorMessage: e };
         }
