@@ -9,6 +9,7 @@ import GlobalStyle from "./style/GlobalStyle";
 import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
 import CommunityPostDetail from "./community/CommunityPostDetail";
+import CommunityPostWrite from "./community/CommunityPostWrite";
 import Footer from "./layout/Footer";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./callBackKakaoLogin";
@@ -35,8 +36,9 @@ const App: React.FC = () => {
               />
               <Route path="/" element={<Main />} />
               <Route path="/community" element={<Community />}>
-                <Route path="" element={<CommunityPage />} />
+                <Route path="*" element={<CommunityPage />} />
                 <Route path=":postId" element={<CommunityPostDetail />} />
+                <Route path="write" element={<CommunityPostWrite />} />
               </Route>
               <Route path="/mypage" element={<Mypage />} />
               <Route
