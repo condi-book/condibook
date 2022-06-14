@@ -102,6 +102,15 @@ class userService {
 
         return { message: "계정을 삭제했습니다." };
     }
+    static async getUserInfo({ id }) {
+        const result = User.findAll({ where: { id: id } });
+
+        if (!result) {
+            return { errorMessage: "해당 유저정보가 없습니다." };
+        }
+
+        return result;
+    }
 }
 
 export { userService };

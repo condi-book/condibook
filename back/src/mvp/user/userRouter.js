@@ -39,6 +39,17 @@ userRouter.post("/login/kakao", async (req, res, next) => {
     }
 });
 
+userRouter.get("/login", loginRequired, async (req, res, next) => {
+    try {
+        const id = req.current.user_id;
+        const result = await userService.getUserInfo({ id });
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 userRouter.put("/nickname", loginRequired, async (req, res, next) => {
     try {
         const { nickname } = req.body;
