@@ -1,0 +1,16 @@
+{
+    "name": "Testing",
+    "version": "1.0",
+    "description": "start!",
+    "permissions": ["activeTab", "<all_urls>", "tabs", "storage"],
+    "content_scripts": [ {
+      "js": ["jquery.min.js"],
+      "matches": ["<all_urls>"]
+    }],
+    "browser_action": {
+      "default_title": "getLink",
+      "default_popup": "popup.html"
+    },
+
+    "manifest_version": 2
+  }
