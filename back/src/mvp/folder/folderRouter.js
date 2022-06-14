@@ -5,21 +5,23 @@ import { loginRequired } from "../../middlewares/loginRequired";
 
 const folderRouter = Router();
 
-// folderRouter.post("", async (req, res, next) => {
-//     try {
-//         const { title, explanation } = req.body;
+folderRouter.post("", loginRequired, async (req, res, next) => {
+    try {
+        const { title, explanation } = req.body;
+        const id = req.currentUserId;
 
-//         const result = await folderService.createFolder({
-//             title,
-//             explanation,
-//         });
-//         checkErrorMessage(result);
+        const result = await folderService.createFolder({
+            title,
+            explanation,
+            user_id: id,
+        });
+        checkErrorMessage(result);
 
-//         res.status(201).send(result);
-//     } catch (e) {
-//         next(e);
-//     }
-// });
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
 
 folderRouter.get("", loginRequired, async (req, res, next) => {
     try {
