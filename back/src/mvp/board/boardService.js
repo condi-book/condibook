@@ -20,8 +20,11 @@ class boardSerivce {
         return result;
     }
     static async getBoard({ id }) {
-        const result = Board.findOne({ where: { id: id } });
-
+        const result = await Board.findAll({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -35,6 +38,36 @@ class boardSerivce {
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
+        }
+        return result;
+    }
+    static async updateBoard({ id, toUpdate }) {
+        let result = await Board.findOne({
+            where: { id },
+        });
+        if (!result) {
+            const errorMessage = "해당 게시글이 없습니다.";
+            return { errorMessage };
+        }
+        if (toUpdate.title) {
+            result = await Board.update(
+                { title: toUpdate.title },
+                {
+                    where: { id },
+                    raw: true,
+                    nest: true,
+                },
+            );
+        }
+        if (toUpdate.content) {
+            result = await Board.update(
+                { content: toUpdate.content },
+                {
+                    where: { id },
+                    raw: true,
+                    nest: true,
+                },
+            );
         }
         return result;
     }

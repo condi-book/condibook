@@ -53,4 +53,28 @@ boardRouter.get("/:id", async (req, res, next) => {
     }
 });
 
+boardRouter.put("/:id", async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const { title, content } = req.body ?? "";
+
+        const toUpdate = {
+            title,
+            content,
+        };
+        const update = await boardSerivce.updateBoard({ id, toUpdate });
+        if (update.errorMessage) {
+            throw new Error(update.errorMessage);
+        }
+        const result = await boardSerivce.getBoard({ id });
+
+        if (result.errorMessage) {
+            throw new Error(result.errorMessage);
+        }
+
+        res.status(201).send("result");
+    } catch (error) {
+        next(error);
+    }
+});
 export { boardRouter };

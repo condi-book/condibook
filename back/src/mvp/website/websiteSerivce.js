@@ -117,30 +117,6 @@ class websiteSerivce {
                 },
             );
         }
-        if (toUpdate.keyword) {
-            result = await Keyword.update(
-                { keyword: toUpdate.keyword },
-                {
-                    where: { website_id: id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (toUpdate.emoji) {
-            result = await Emoji.update(
-                { emoji: toUpdate.emoji },
-                {
-                    where: { website_id: id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (!result) {
-            const errorMessage = "해당 데이터가 없습니다.";
-            return { errorMessage };
-        }
         return result;
     }
     static async deleteWebsite({ id }) {
