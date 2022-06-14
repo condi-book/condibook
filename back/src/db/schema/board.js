@@ -24,6 +24,11 @@ export default function BoardModel(sequelize, DataTypes) {
                 allowNull: false,
                 comment: "조회수",
             },
+            author_name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                comment: "사용자 닉네임",
+            },
         },
         {
             charset: "utf8",
