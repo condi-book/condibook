@@ -129,6 +129,19 @@ class bookmarkService {
             return { errorMessage: e };
         }
     }
+
+    static async deleteBookmark({ id }) {
+        try {
+            const result = await Bookmark.destroy({ where: { id } });
+
+            if (result === 0) {
+                return getFailMsg({ entity: "북마크", action: "삭제" });
+            }
+            return getSuccessMsg({ entity: "북마크", action: "삭제" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
 }
 
 export { bookmarkService };
