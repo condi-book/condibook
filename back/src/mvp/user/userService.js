@@ -119,7 +119,7 @@ class userService {
 
     static async deleteUser({ id }) {
         try {
-            const deletedRow = User.destroy({ where: { id: id } });
+            const deletedRow = await User.destroy({ where: { id: id } });
 
             if (deletedRow !== 1) {
                 return getFailMsg({ entity: "사용자 계정", action: "삭제" });
