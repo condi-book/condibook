@@ -28,7 +28,7 @@ class folderService {
     static async getMyFolders({ user_id }) {
         try {
             let folders = await Folder.findAll({
-                where: { user_id: user_id },
+                where: { user_id },
             });
 
             const result = folders.map((folder) => {

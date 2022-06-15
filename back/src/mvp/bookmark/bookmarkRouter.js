@@ -10,7 +10,7 @@ const bookmarkRouter = Router();
 bookmarkRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const { url } = req.body;
-        const user_id = req.currentUserId;
+        const { user_id } = req.current;
 
         // 웹사이트 생성(키워드, 이모지 생성 -> 미완)
         const website = await websiteSerivce.createWebsite(url);

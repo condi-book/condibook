@@ -8,12 +8,12 @@ const folderRouter = Router();
 folderRouter.post("", loginRequired, async (req, res, next) => {
     try {
         const { title, explanation } = req.body;
-        const id = req.currentUserId;
+        const { user_id } = req.current;
 
         const result = await folderService.createFolder({
             title,
             explanation,
-            user_id: id,
+            user_id,
         });
         checkErrorMessage(result);
 
@@ -25,9 +25,9 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
 
 folderRouter.get("", loginRequired, async (req, res, next) => {
     try {
-        const id = req.currentUserId;
+        const { user_id } = req.current;
 
-        const result = await folderService.getMyFolders({ user_id: id });
+        const result = await folderService.getMyFolders({ user_id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -51,7 +51,7 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
                 explanation,
             });
         } else if (mode === "favorites") {
-            const user_id = req.currentUserId;
+            const { user_id } = req.current;
 
             result = await folderService.updateFolderFavorites({
                 id,
@@ -70,7 +70,7 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
 folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const user_id = req.currentUserId;
+        const { user_id } = req.current;
 
         const result = await folderService.deleteFolder({ id, user_id });
         checkErrorMessage(result);
