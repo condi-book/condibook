@@ -1,16 +1,30 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 const CommunityPostWrite = () => {
+  const navigate = useNavigate();
   const editorRef = React.useRef<ToastEditor>(null);
   const [title, setTitle] = React.useState("");
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setTitle(value);
+  };
+
+  const handleExitButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/", { replace: true });
+    }
   };
   return (
     <Container>
@@ -40,11 +54,11 @@ const CommunityPostWrite = () => {
       </ItemContainer>
       <ItemContainer>
         <ButtonContainer>
-          <button className="post-button">
+          <button className="hoverButton" onClick={handleExitButtonClick}>
             <span>나가기</span>
           </button>
           <div className="postBox">
-            <button className="post-button">
+            <button className="hoverButton">
               <span>등록하기</span>
             </button>
           </div>
@@ -100,7 +114,7 @@ const ButtonContainer = styled.div`
   -webkit-box-align: center;
   align-items: center;
 
-  .post-button {
+  .hoverButton {
     height: 2.5rem;
     padding: 0.5rem 1rem;
     -webkit-box-align: center;

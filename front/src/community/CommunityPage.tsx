@@ -4,11 +4,11 @@ import CommunityPostList from "./CommunityPostList";
 
 export interface PostPreview {
   id: string;
-  user_id: string;
+  author: string;
   created_at: Date;
   title: string;
-  description: string;
-  like: number;
+  content: string;
+  views: number;
 }
 
 const CommunityPage = () => {

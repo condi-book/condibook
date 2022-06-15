@@ -4,19 +4,19 @@ import { PostPreview } from "../CommunityPage";
 
 class PostPreviewModel {
   id: string;
-  user_id: string;
+  author: string;
   created_at: Date;
   title: string;
-  description: string;
-  like: number;
+  content: string;
+  views: number;
 
   constructor() {
     this.id = `${Math.floor(Math.random() * 10000)}`;
-    this.user_id = "hayeong";
+    this.author = "hayeong";
     this.created_at = new Date();
     this.title = "제목";
-    this.description = "요약";
-    this.like = Math.floor(Math.random() * 10);
+    this.content = "요약";
+    this.views = Math.floor(Math.random() * 10);
   }
 }
 
