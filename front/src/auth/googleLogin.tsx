@@ -10,7 +10,7 @@ const GoogleLogin = () => {
   const [user, setUser] = useState<any>({});
   const dispatch: any = useContext(DispatchContext);
   const navigate = useNavigate();
-  const signInDiv = document.getElementById("signInDiv") as HTMLDivElement;
+  // const signInDiv = document.getElementById("signInDiv") as HTMLDivElement;
   async function handleCallbackResponse(response: any) {
     const userObject: any = jwt_decode(response.credential);
 
@@ -37,34 +37,37 @@ const GoogleLogin = () => {
       })
       .catch((error) => alert(error.message));
 
-    signInDiv.hidden = true;
+    // signInDiv.hidden = true;
   }
 
   function handleSignOut() {
     setUser({});
-    signInDiv.hidden = false;
+    // signInDiv.hidden = false;
   }
 
   useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
+    // global window
+    (window as any).google.accounts.id.initialize({
       client_id:
         "1058679633962-bkib34e34p38kbtbmoiiploiup0i3ek5.apps.googleusercontent.com",
       callback: handleCallbackResponse,
     });
 
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      width: "240px",
-      // maxWidth: "none",
-      // minWidth: "none",
-      theme: "outline",
-      height: "50px",
-      size: "large",
-      // padding: "0",
-      // margin: "0",
-    }); // Sign In With Google
+    (window as any).google.accounts.id.renderButton(
+      document.getElementById("signInDiv"),
+      {
+        width: "240px",
+        // maxWidth: "none",
+        // minWidth: "none",
+        theme: "outline",
+        height: "50px",
+        size: "large",
+        // padding: "0",
+        // margin: "0",
+      },
+    ); // Sign In With Google
 
-    google.accounts.id.prompt(); // One-tap sign-up
+    (window as any).google.accounts.id.prompt(); // One-tap sign-up
   }, []);
 
   return (
