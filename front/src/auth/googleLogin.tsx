@@ -34,7 +34,7 @@ const GoogleLogin = () => {
           payload: user,
         });
 
-        navigate("/mypage");
+        navigate("/bookmark");
       })
       .catch((error) => alert(error.message));
 

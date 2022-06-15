@@ -37,10 +37,10 @@ const App: React.FC = () => {
                   <Route path=":postId" element={<CommunityPostDetail />} />
                 </Route>
               </Route>
-              <Route path="/mypage" element={<Mypage />} />
+              <Route path="/bookmark" element={<Mypage />} />
               <Route path="/login" element={<Login />} />
               <Route
-                path="/mypage/mybookmark/:group"
+                path="/bookmark/:group"
                 element={<MypageBookmarkDetail />}
               />
             </Routes>

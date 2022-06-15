@@ -29,7 +29,7 @@ const CallBackKakaoLogin = () => {
 
         alert("로그인 성공");
       })
-      .then(navigate("/mypage", { replace: true }));
+      .then(navigate("/bookmark", { replace: true }));
   }, []);
 
   return <div>로그인 처리 중</div>;
