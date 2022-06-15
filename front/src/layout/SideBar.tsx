@@ -1,15 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
+const iconList = [
+  "pe-7s-user",
+  "pe-7s-home",
+  "pe-7s-folder",
+  "pe-7s-global",
+  "pe-7s-search",
+  "pe-7s-config",
+];
+
 const SideBar = () => {
-  const iconList = [
-    "pe-7s-user",
-    "pe-7s-home",
-    "pe-7s-folder",
-    "pe-7s-global",
-    "pe-7s-search",
-    "pe-7s-config",
-  ];
   return (
     <Section>
       {iconList.map((item: string, index: number) => (
