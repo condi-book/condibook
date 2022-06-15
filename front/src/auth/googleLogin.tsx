@@ -6,12 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { DispatchContext } from "../App";
 import styled from "styled-components";
 
-/* declare global {
-  interface Window {
-    google: any;
-  }
-} */
-
 const GoogleLogin = () => {
   const [user, setUser] = useState<any>({});
   const dispatch: any = useContext(DispatchContext);
