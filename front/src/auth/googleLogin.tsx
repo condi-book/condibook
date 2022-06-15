@@ -11,6 +11,7 @@ const GoogleLogin = () => {
   const dispatch: any = useContext(DispatchContext);
   const navigate = useNavigate();
   // const signInDiv = document.getElementById("signInDiv") as HTMLDivElement;
+
   async function handleCallbackResponse(response: any) {
     const userObject: any = jwt_decode(response.credential);
 
@@ -46,28 +47,21 @@ const GoogleLogin = () => {
   }
 
   useEffect(() => {
-    // global window
-    (window as any).google.accounts.id.initialize({
+    window.google.accounts.id.initialize({
       client_id:
         "1058679633962-bkib34e34p38kbtbmoiiploiup0i3ek5.apps.googleusercontent.com",
       callback: handleCallbackResponse,
     });
 
-    (window as any).google.accounts.id.renderButton(
+    window.google.accounts.id.renderButton(
       document.getElementById("signInDiv"),
       {
-        width: "240px",
-        // maxWidth: "none",
-        // minWidth: "none",
         theme: "outline",
-        height: "50px",
         size: "large",
-        // padding: "0",
-        // margin: "0",
       },
     ); // Sign In With Google
 
-    (window as any).google.accounts.id.prompt(); // One-tap sign-up
+    window.google.accounts.id.prompt(); // One-tap sign-up
   }, []);
 
   return (
