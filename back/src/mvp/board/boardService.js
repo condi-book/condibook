@@ -5,7 +5,7 @@ class boardSerivce {
         const title = toCreate.title;
         const content = toCreate.content;
         const views = toCreate.views;
-        const userinfo = await User.findOne({ where: { id: id } });
+        const userinfo = await User.findOne({ where: { id } });
         const result = await Board.create({
             title,
             content,
@@ -68,6 +68,15 @@ class boardSerivce {
                     nest: true,
                 },
             );
+        }
+        return result;
+    }
+    static async deleteBoard({ id }) {
+        const result = Board.destroy({ where: { id } });
+
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
         }
         return result;
     }

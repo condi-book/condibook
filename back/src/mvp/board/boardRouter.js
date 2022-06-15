@@ -72,7 +72,23 @@ boardRouter.put("/:id", async (req, res, next) => {
             throw new Error(result.errorMessage);
         }
 
-        res.status(201).send("result");
+        res.status(201).send(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+boardRouter.delete("/:id", async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const result = await boardSerivce.deleteBoard({ id });
+
+        if (result.errorMessage) {
+            throw new Error(result.errorMessage);
+        }
+
+        res.status(201).send("삭제가 완료 되었습니다");
     } catch (error) {
         next(error);
     }

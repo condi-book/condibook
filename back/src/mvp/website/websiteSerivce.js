@@ -28,13 +28,13 @@ class websiteSerivce {
         });
         const keywords = await Keyword.findAll({
             where: { website_id: id },
-            attributes: ["keyword"],
+            attributes: ["keyword", "id"],
             raw: true,
             nest: true,
         });
         const emojis = await Emoji.findAll({
             where: { website_id: id },
-            attributes: ["emoji"],
+            attributes: ["emoji", "id"],
             raw: true,
             nest: true,
         });
