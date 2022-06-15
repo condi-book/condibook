@@ -8,14 +8,14 @@ const boardRouter = Router();
 boardRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const { title, content } = req.body;
-        const id = req.current.user_id;
+        const user_id = req.current.user_id;
         const views = 0;
         const toCreate = {
             title,
             content,
             views,
         };
-        const result = await boardSerivce.createBoard({ toCreate, id });
+        const result = await boardSerivce.createBoard({ toCreate, user_id });
         console.log(req.current);
         if (result.errorMessage) {
             throw new Error(result.errorMessage);

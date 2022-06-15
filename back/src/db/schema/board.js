@@ -27,7 +27,7 @@ export default function BoardModel(sequelize, DataTypes) {
             author_name: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: "사용자 닉네임",
+                comment: "게시글 작성자 닉네임",
             },
         },
         {

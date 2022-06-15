@@ -13,6 +13,11 @@ export default function CommentModel(sequelize, DataTypes) {
                 allowNull: false,
                 comment: "댓글 내용",
             },
+            author_name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                comment: "댓글 작성자 닉네임",
+            },
         },
         {
             charset: "utf8",

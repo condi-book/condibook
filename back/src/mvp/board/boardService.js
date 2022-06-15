@@ -1,16 +1,16 @@
 import { Board, User } from "../../db";
 
 class boardSerivce {
-    static async createBoard({ toCreate, id }) {
+    static async createBoard({ toCreate, user_id }) {
         const title = toCreate.title;
         const content = toCreate.content;
         const views = toCreate.views;
-        const userinfo = await User.findOne({ where: { id } });
+        const userinfo = await User.findOne({ where: { id: user_id } });
         const result = await Board.create({
             title,
             content,
             views,
-            author: id,
+            author: user_id,
             author_name: userinfo.nickname,
         });
         if (!result) {
