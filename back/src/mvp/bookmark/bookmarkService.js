@@ -1,4 +1,5 @@
 import { Bookmark, Emoji, Keyword, Website } from "../../db";
+import { getFailMsg } from "../../util/message";
 
 class bookmarkService {
     static async createBookmark({ website_id, folder_id }) {
@@ -25,15 +26,43 @@ class bookmarkService {
         }
     }
 
-    //======================수정해야함======================
-    // static async getTheBookmark({ id }) {
-    //     let bookmark = await Bookmark.findByPk(id);
+    static async getTheBookmark({ id }) {
+        try {
+            let bookmark = await Bookmark.findOne({
+                where: { id },
+                include: [
+                    {
+                        model: Website,
+                    },
+                ],
+                raw: true,
+                nest: true,
+            });
+            if (!bookmark) {
+                return getFailMsg({
+                    entity: "북마크 상세정보",
+                    action: "조회",
+                });
+            }
 
-    //
+            // 키워드 데이터 추가
+            const keywords = await Keyword.findAll({
+                where: { website_id: bookmark.website_id },
+                attributes: ["keyword"],
+            });
+            bookmark["keyword"] = keywords.map((keyword) => keyword.keyword);
 
-    //     return bookmark;
-    // }
-    //====================================================
+            // 이모지 데이터 추가
+            bookmark["emoji"] = await Emoji.findOne({
+                where: { website_id: bookmark.website_id },
+                attributes: ["emoji"],
+            });
+
+            return bookmark;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
 
     static async getBookmarksInTheFolder({ folder_id }) {
         try {
@@ -77,7 +106,6 @@ class bookmarkService {
                     return bookmark;
                 }),
             );
-            console.log(bookmarks);
             return bookmarks;
         } catch (e) {
             return { errorMessage: e };

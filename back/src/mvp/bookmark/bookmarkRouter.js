@@ -37,18 +37,18 @@ bookmarkRouter.post("/", loginRequired, async (req, res, next) => {
     }
 });
 
-// bookmarkRouter.get("/:id", async (req, res, next) => {
-//     try {
-//         const { id } = req.params;
+bookmarkRouter.get("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params;
 
-//         const result = await bookmarkService.getTheBookmark({ id });
-//         checkErrorMessage(result);
+        const result = await bookmarkService.getTheBookmark({ id });
+        checkErrorMessage(result);
 
-//         res.status(200).send(result);
-//     } catch (e) {
-//         next(e);
-//     }
-// });
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
 
 bookmarkRouter.get("", loginRequired, async (req, res, next) => {
     try {
