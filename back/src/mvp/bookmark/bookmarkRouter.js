@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { bookmarkService } from "./bookmarkService";
 import { websiteSerivce } from "../website/websiteSerivce";
-// import { loginRequired } from "../../middlewares/loginRequired";
-import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { folderService } from "../folder/folderService";
+import { loginRequired } from "../../middlewares/loginRequired";
+import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 
 const bookmarkRouter = Router();
 
-bookmarkRouter.post("/", async (req, res, next) => {
+bookmarkRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const { url } = req.body;
-        const user_id = 1; //req.currentUserId;
+        const user_id = req.currentUserId;
 
         // 웹사이트 생성(키워드, 이모지 생성 -> 미완)
         const website = await websiteSerivce.createWebsite(url);
@@ -18,8 +18,9 @@ bookmarkRouter.post("/", async (req, res, next) => {
 
         // 폴더 생성(키워드 중에 단어 골라서 폴더이름으로 설정 -> 미완)
         const folder = await folderService.createFolder({
-            title: "test",
-            explanation: "",
+            title: "temporary folder title",
+            explanation: "temporary folder explanation",
+            user_id,
         });
         checkErrorMessage(folder);
 
@@ -27,7 +28,6 @@ bookmarkRouter.post("/", async (req, res, next) => {
         const result = await bookmarkService.createBookmark({
             website_id: website.id,
             folder_id: folder.id,
-            user_id,
         });
         checkErrorMessage(result);
 

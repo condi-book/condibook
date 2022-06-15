@@ -4,9 +4,22 @@ import { getSuccessMsg, getFailMsg } from "../../util/message";
 class folderService {
     static async createFolder({ title, explanation, user_id }) {
         try {
-            await Folder.create({ title, explanation, user_id });
+            // 이미 존재하는 폴더인지 확인
+            const previous = await Folder.findOne({
+                where: { user_id, title },
+            });
+            if (previous) {
+                return previous;
+            }
 
-            return getSuccessMsg({ entity: "폴더", action: "생성" });
+            // 새 폴더 생성
+            const newFolder = await Folder.create({
+                title,
+                explanation,
+                user_id,
+            });
+
+            return newFolder;
         } catch (e) {
             return { errorMessage: e };
         }
