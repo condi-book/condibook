@@ -18,29 +18,33 @@ class websiteSerivce {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        {
-            ("heelo");
-        }
         return result;
     }
     static async getWebsite({ id }) {
-        const result = await Website.findAll({
-            where: { id },
-            include: [
-                {
-                    model: Keyword,
-                    where: { website_id: id },
-                    attributes: ["keyword"],
-                },
-                {
-                    model: Emoji,
-                    where: { website_id: id },
-                    attributes: ["emoji"],
-                },
-            ],
+        const info = await Website.findOne({
+            where: { id: id },
             raw: true,
             nest: true,
         });
+        const keywords = await Keyword.findAll({
+            where: { website_id: id },
+            attributes: ["keyword", "id"],
+            raw: true,
+            nest: true,
+        });
+        const emojis = await Emoji.findAll({
+            where: { website_id: id },
+            attributes: ["emoji", "id"],
+            raw: true,
+            nest: true,
+        });
+        const keyword_list = keywords.map((v) => {
+            return v.keyword;
+        });
+        const emoji_list = emojis.map((v) => {
+            return v.keyword;
+        });
+        const result = { ...info, keyword_list, emoji_list };
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -50,12 +54,6 @@ class websiteSerivce {
     }
     static async getWebsiteList() {
         const result = await Website.findAll({
-            include: [
-                {
-                    model: Keyword,
-                    attributes: ["keyword"],
-                },
-            ],
             raw: true,
             nest: true,
         });
@@ -118,30 +116,6 @@ class websiteSerivce {
                     nest: true,
                 },
             );
-        }
-        if (toUpdate.keyword) {
-            result = await Keyword.update(
-                { keyword: toUpdate.keyword },
-                {
-                    where: { website_id: id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (toUpdate.emoji) {
-            result = await Emoji.update(
-                { emoji: toUpdate.emoji },
-                {
-                    where: { website_id: id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (!result) {
-            const errorMessage = "해당 데이터가 없습니다.";
-            return { errorMessage };
         }
         return result;
     }

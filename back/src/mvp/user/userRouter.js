@@ -39,10 +39,21 @@ userRouter.post("/login/kakao", async (req, res, next) => {
     }
 });
 
+userRouter.get("/login", loginRequired, async (req, res, next) => {
+    try {
+        const id = req.current.user_id;
+        const result = await userService.getUserInfo({ id });
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 userRouter.put("/nickname", loginRequired, async (req, res, next) => {
     try {
         const { nickname } = req.body;
-        const id = req.currentUserId;
+        const id = req.current.user_id;
 
         const result = await userService.setNickname({ nickname, id });
         checkErrorMessage(result);
@@ -56,7 +67,7 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
 userRouter.put("/intro", loginRequired, async (req, res, next) => {
     try {
         const { intro } = req.body;
-        const id = req.currentUserId;
+        const id = req.current.user_id;
 
         const result = await userService.setIntro({ intro, id });
         checkErrorMessage(result);
@@ -69,7 +80,7 @@ userRouter.put("/intro", loginRequired, async (req, res, next) => {
 
 userRouter.delete("", loginRequired, async (req, res, next) => {
     try {
-        const id = req.currentUserId;
+        const id = req.current.user_id;
 
         const result = await userService.deleteUser({ id });
         checkErrorMessage(result);

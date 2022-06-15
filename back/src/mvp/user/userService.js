@@ -106,6 +106,15 @@ class userService {
             queryType: "삭제",
         });
     }
+    static async getUserInfo({ id }) {
+        const result = User.findOne({ where: { id: id } });
+
+        if (!result) {
+            return { errorMessage: "해당 유저정보가 없습니다." };
+        }
+
+        return result;
+    }
 }
 
 export { userService };

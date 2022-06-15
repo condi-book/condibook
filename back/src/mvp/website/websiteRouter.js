@@ -70,8 +70,10 @@ websiteRouter.put("/:id", async (req, res, next) => {
             keyword,
             emoji,
         };
-        await websiteSerivce.updateWebsite({ id, toUpdate });
-
+        const update = await websiteSerivce.updateWebsite({ id, toUpdate });
+        if (update.errorMessage) {
+            throw new Error(update.errorMessage);
+        }
         const result = await websiteSerivce.getWebsite({ id });
 
         checkErrorMessage(result);
