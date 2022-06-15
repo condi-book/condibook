@@ -1,34 +1,35 @@
-import { Bookmark /*Website*/ } from "../../db";
-import { getQueryResultMsg } from "../../middlewares/errorMiddleware";
+import { Bookmark } from "../../db";
 
 class bookmarkService {
-    static async createBookmark({ user_id, website_id, folder_id }) {
-        let bookmark = await Bookmark.create({
-            user_id,
-            website_id,
-            folder_id,
-        });
+    static async createBookmark({ website_id, folder_id }) {
+        try {
+            // DB에 이미 존재하는 북마크인지 확인
+            const previous = await Bookmark.findOne({
+                where: {
+                    website_id,
+                    folder_id,
+                },
+            });
+            if (previous) {
+                return previous;
+            }
 
-        getQueryResultMsg({
-            result: typeof bookmark,
-            expectation: "object",
-            entity: "북마크",
-            queryType: "생성",
-        });
+            let bookmark = await Bookmark.create({
+                website_id,
+                folder_id,
+            });
 
-        return bookmark;
+            return bookmark;
+        } catch (e) {
+            return { errorMessage: e };
+        }
     }
 
     //======================수정해야함======================
     // static async getTheBookmark({ id }) {
     //     let bookmark = await Bookmark.findByPk(id);
 
-    //     getQueryResultMsg({
-    //         result: typeof bookmark,
-    //         expectation: "object",
-    //         entity: "북마크",
-    //         queryType: "조회",
-    //     });
+    //
 
     //     return bookmark;
     // }

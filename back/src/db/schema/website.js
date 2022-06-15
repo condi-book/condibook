@@ -11,6 +11,7 @@ export default function WebsiteModel(sequelize, DataTypes) {
             url: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                unique: true,
                 comment: "사이트 링크",
             },
             meta_title: {

@@ -3,6 +3,12 @@ import { parser } from "url-meta-scraper";
 
 class websiteSerivce {
     static async createWebsite(url) {
+        // DB에 이미 존재하는 웹사이트인지 확인
+        const previous = await Website.findOne({ where: { url } });
+        if (previous) {
+            return previous;
+        }
+        // 웹사이트 파싱
         const meta = await parser(url);
         const meta_title = meta.og.title ? meta.og.title : meta.meta.title;
         const meta_description = meta.og.description
