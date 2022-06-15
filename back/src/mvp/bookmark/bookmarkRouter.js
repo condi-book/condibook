@@ -65,4 +65,21 @@ bookmarkRouter.get("", loginRequired, async (req, res, next) => {
     }
 });
 
+bookmarkRouter.put("/:id", loginRequired, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { mode } = req.query;
+
+        let result;
+        if (mode === "favorites") {
+            result = await bookmarkService.updateBookmarkFavorites({ id });
+        }
+
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
 export { bookmarkRouter };

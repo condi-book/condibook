@@ -1,5 +1,5 @@
-import { Bookmark, Emoji, Keyword, Website } from "../../db";
-import { getFailMsg } from "../../util/message";
+import { Bookmark, Emoji, Keyword, Website, sequelize } from "../../db";
+import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
     static async createBookmark({ website_id, folder_id }) {
@@ -107,6 +107,24 @@ class bookmarkService {
                 }),
             );
             return bookmarks;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async updateBookmarkFavorites({ id }) {
+        try {
+            const [results, metadata] = await sequelize.query(
+                `UPDATE ${Bookmark.tableName} SET favorites = NOT favorites WHERE id = ${id}`,
+            );
+
+            if (metadata.affectedRows === 0) {
+                return getFailMsg({
+                    entity: "북마크 즐겨찾기",
+                    action: "수정",
+                });
+            }
+            return getSuccessMsg({ entity: "북마크 즐겨찾기", action: "수정" });
         } catch (e) {
             return { errorMessage: e };
         }
