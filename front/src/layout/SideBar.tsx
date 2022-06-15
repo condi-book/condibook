@@ -14,7 +14,7 @@ const SideBar = () => {
   return (
     <Section>
       {iconList.map((item: string, index: number) => (
-        <div key={index}>
+        <div key={`icon-${index}`}>
           <span className={item}></span>
         </div>
       ))}
