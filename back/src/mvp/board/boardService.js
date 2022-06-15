@@ -20,7 +20,7 @@ class boardSerivce {
         return result;
     }
     static async getBoard({ id }) {
-        const result = await Board.findAll({
+        const result = await Board.findOne({
             where: { id },
             raw: true,
             nest: true,
