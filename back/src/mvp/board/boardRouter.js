@@ -62,16 +62,21 @@ boardRouter.get("/:id", async (req, res, next) => {
     }
 });
 
-boardRouter.put("/:id", async (req, res, next) => {
+boardRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
+        const user_id = req.current.user_id;
         const { title, content } = req.body ?? "";
 
         const toUpdate = {
             title,
             content,
         };
-        const update = await boardSerivce.updateBoard({ id, toUpdate });
+        const update = await boardSerivce.updateBoard({
+            id,
+            toUpdate,
+            user_id,
+        });
         if (update.errorMessage) {
             throw new Error(update.errorMessage);
         }
@@ -87,17 +92,17 @@ boardRouter.put("/:id", async (req, res, next) => {
     }
 });
 
-boardRouter.delete("/:id", async (req, res, next) => {
+boardRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
-
-        const result = await boardSerivce.deleteBoard({ id });
+        const user_id = req.current.user_id;
+        const result = await boardSerivce.deleteBoard({ id, user_id });
 
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
-        res.status(201).send("삭제가 완료 되었습니다");
+        res.status(204).send("삭제가 완료되었습니다.");
     } catch (error) {
         next(error);
     }

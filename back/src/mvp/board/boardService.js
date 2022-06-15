@@ -41,10 +41,17 @@ class boardSerivce {
         }
         return result;
     }
-    static async updateBoard({ id, toUpdate }) {
+    static async updateBoard({ id, toUpdate, user_id }) {
         let result = await Board.findOne({
             where: { id },
         });
+        const chack = await Board.findOne({
+            where: { id },
+        });
+        if (chack.author != user_id) {
+            const errorMessage = "글 작성자가 아닙니다.";
+            return { errorMessage };
+        }
         if (!result) {
             const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
@@ -69,15 +76,22 @@ class boardSerivce {
                 },
             );
         }
-        return result;
+        return chack;
     }
-    static async deleteBoard({ id }) {
-        const result = Board.destroy({ where: { id } });
-
-        if (!result) {
+    static async deleteBoard({ id, user_id }) {
+        const chack = await Board.findOne({
+            where: { id },
+        });
+        if (chack.author != user_id) {
+            const errorMessage = "글 작성자가 아닙니다.";
+            return { errorMessage };
+        }
+        if (!chack) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
+        const result = Board.destroy({ where: { id } });
+
         return result;
     }
     static async updateViews({ id }) {
