@@ -80,5 +80,13 @@ class boardSerivce {
         }
         return result;
     }
+    static async updateViews({ id }) {
+        const result = Board.increment({ views: 1 }, { where: { id } });
+
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+    }
 }
 export { boardSerivce };

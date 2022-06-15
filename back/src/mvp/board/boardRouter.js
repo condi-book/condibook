@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { boardSerivce } from "./boardService";
 import { loginRequired } from "../../middlewares/loginRequired";
+import { getUserIP } from "../../middlewares/getUserIP";
 
 const boardRouter = Router();
 
@@ -32,7 +33,6 @@ boardRouter.get("/list", async (req, res, next) => {
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
-
         res.status(200).send(result);
     } catch (error) {
         next(error);
@@ -42,7 +42,16 @@ boardRouter.get("/list", async (req, res, next) => {
 boardRouter.get("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
-        const result = await boardSerivce.getBoard({ id });
+        if (req.cookies[id] == undefined) {
+            // key, value, 옵션을 설정해준다.
+            res.cookie(id, getUserIP(req), {
+                // 유효시간 : 12분
+                maxAge: 720000,
+            });
+            // 조회수 증가 쿼리
+            await boardSerivce.updateViews({ id });
+        }
+        const result = await boardSerivce.getBoard({ id, req });
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
