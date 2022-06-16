@@ -2,6 +2,8 @@ import { User } from "../../db";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
+import { folderService } from "../folder/folderService";
+import { bookmarkService } from "../bookmark/bookmarkService";
 class userService {
     static async login({ nickname, email, image_url }) {
         try {
@@ -21,6 +23,17 @@ class userService {
             );
 
             // 사용자 정보 + JWT 반환
+            const myFolderIds = await folderService.getMyFolderIds({
+                user_id: user.id,
+            });
+
+            let bookmarkCount = 0;
+            if (myFolderIds.length > 0) {
+                bookmarkCount = await bookmarkService.getMyBookmarkCount({
+                    folderIds: myFolderIds,
+                });
+            }
+
             const result = {
                 id: user.id,
                 email: user.email,
@@ -28,6 +41,8 @@ class userService {
                 image_url: user.image_url,
                 intro: user.intro ?? null,
                 token: token,
+                folderCount: myFolderIds.length,
+                bookmarkCount,
             };
 
             return result;
