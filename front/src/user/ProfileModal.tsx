@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import * as Api from "../api";
+import UserDelete from "./UserDelete";
 
 interface ProfileProps {
   open: boolean;
@@ -72,6 +73,7 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
             </div>
 
             <button onClick={handleClick}>저장하기</button>
+            <UserDelete />
           </div>
         )}
       </div>
