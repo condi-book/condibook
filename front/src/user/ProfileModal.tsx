@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import * as Api from "../api";
 
-const ProfileModal = () => {
+interface ProfileProps {
+  open: boolean;
+  close: () => void;
+  data: {
+    nickname: string;
+    email: string;
+    image_url: string;
+    intro: string;
+    folderCount: number;
+    bookmarkCount: number;
+  };
+  handleApply: (value: any) => void;
+}
+
+const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
+  const [userData, setUserData] = useState(data);
+
+  // 프로필 수정 버튼 클릭 함수
+  const handleClick = async () => {
+    await Api.put(`user/nickname`, { nickname: userData.nickname });
+    await Api.put(`user/intro`, { intro: userData.intro });
+    await handleApply(userData);
+    await close();
+  };
+
+  // 프로필 수정 내용 변경 함수
+  const handleChange = (e: any) => {
+    setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
     <Div>
-      {/* <div className={open ? "bg" : ""}></div>
+      <div className={open ? "bg" : ""}></div>
       <div className={open ? "modal active" : "modal"}>
         {open && (
           <div className="area">
@@ -12,20 +42,39 @@ const ProfileModal = () => {
               <span onClick={close} className="pe-7s-close"></span>
             </div>
             <div className="link-box">
-              <input
-                value={newLink}
-                onChange={handleChange}
-                placeholder={
-                  title === "전체보기"
-                    ? "폴더를 추가해주세요"
-                    : "링크를 추가해주세요"
-                }
-              />
+              <div>닉네임</div>
+              <div>
+                <input
+                  className="profile-input"
+                  // value={newLink}
+                  // onChange={handleChange
+                  placeholder="닉네임을 입력해주세요"
+                  maxLength={10}
+                  value={userData.nickname}
+                  name="nickname"
+                  onChange={handleChange}
+                />
+              </div>
+              <p>10자 이하로 작성해주세요</p>
             </div>
-            <button disabled={newLink === "" ? true : false}>저장하기</button>
+            <div className="link-box">
+              <div>소개</div>
+              <textarea
+                className="profile-textarea"
+                maxLength={200}
+                placeholder="소개글을 입력해주세요"
+                value={userData.intro ? userData.intro : ""}
+                name="intro"
+                onChange={handleChange}
+              />
+              <div className="profile-textlimit">0/120</div>
+              <p>120자 이하로 입력해주세요</p>
+            </div>
+
+            <button onClick={handleClick}>저장하기</button>
           </div>
         )}
-      </div> */}
+      </div>
     </Div>
   );
 };
@@ -68,12 +117,34 @@ const Div = styled.div`
       }
     }
 
-    .link-box {
-      height: 60%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  .profile-input {
+    padding-bottom: 10px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    border:none;
+    border-bottom: 1px solid rgb(52, 52, 52);
+  }
+
+  .profile-textarea {
+    width: 290px;
+    height: 100px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    border-bottom: 1px solid rgb(196, 196, 196);
+  }
+
+  .profile-textlimit {
+    position: absolute;
+    right: 50%;
+    top: 55%;
+    color: rgb(196, 196, 196);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 24px;
+  }
 
 `;
 
