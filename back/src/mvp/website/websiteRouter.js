@@ -60,25 +60,21 @@ websiteRouter.get("/:id", async (req, res, next) => {
 websiteRouter.put("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
-        const { url, meta_title, meta_description, keyword, emoji } =
-            req.body ?? "";
+        const { url, meta_title, meta_description } = req.body ?? null;
 
         const toUpdate = {
             url,
             meta_title,
             meta_description,
-            keyword,
-            emoji,
         };
         const update = await websiteSerivce.updateWebsite({ id, toUpdate });
         if (update.errorMessage) {
             throw new Error(update.errorMessage);
         }
-        const result = await websiteSerivce.getWebsite({ id });
 
-        checkErrorMessage(result);
+        checkErrorMessage(update);
 
-        res.status(201).send(result);
+        res.status(201).send(update);
     } catch (error) {
         next(error);
     }

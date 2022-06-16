@@ -1,9 +1,10 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
-import { sequelize } from "./src/db";
-import { indexRouter } from "./src/mvp/index";
-import { errorMiddleware } from "./src/middlewares/errorMiddleware";
+import { sequelize } from "./src/db/index.js";
+import { indexRouter } from "./src/mvp/index.js";
+import { errorMiddleware } from "./src/middlewares/errorMiddleware.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 3030;
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 3030;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 indexRouter(app);
 app.use(errorMiddleware);
 

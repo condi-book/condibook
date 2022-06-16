@@ -1,16 +1,16 @@
 import { Board, User } from "../../db";
 
 class boardSerivce {
-    static async createBoard({ toCreate, id }) {
+    static async createBoard({ toCreate, user_id }) {
         const title = toCreate.title;
         const content = toCreate.content;
         const views = toCreate.views;
-        const userinfo = await User.findOne({ where: { id } });
+        const userinfo = await User.findOne({ where: { id: user_id } });
         const result = await Board.create({
             title,
             content,
             views,
-            author: id,
+            author: user_id,
             author_name: userinfo.nickname,
         });
         if (!result) {
@@ -20,7 +20,7 @@ class boardSerivce {
         return result;
     }
     static async getBoard({ id }) {
-        const result = await Board.findAll({
+        const result = await Board.findOne({
             where: { id },
             raw: true,
             nest: true,
@@ -41,44 +41,55 @@ class boardSerivce {
         }
         return result;
     }
-    static async updateBoard({ id, toUpdate }) {
-        let result = await Board.findOne({
+    static async updateBoard({ id, toUpdate, user_id }) {
+        const chack = await Board.findOne({
             where: { id },
+            raw: true,
+            nest: true,
         });
-        if (!result) {
-            const errorMessage = "해당 게시글이 없습니다.";
+        if (!chack) {
+            const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        if (toUpdate.title) {
-            result = await Board.update(
-                { title: toUpdate.title },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
+        if (chack.author != user_id) {
+            const errorMessage = "글 작성자가 아닙니다.";
+            return { errorMessage };
         }
-        if (toUpdate.content) {
-            result = await Board.update(
-                { content: toUpdate.content },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
+        await Board.update(toUpdate, {
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        const result = await Board.findOne({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
         return result;
     }
-    static async deleteBoard({ id }) {
+    static async deleteBoard({ id, user_id }) {
+        const chack = await Board.findOne({
+            where: { id },
+        });
+        if (chack.author != user_id) {
+            const errorMessage = "글 작성자가 아닙니다.";
+            return { errorMessage };
+        }
+        if (!chack) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
         const result = Board.destroy({ where: { id } });
+
+        return result;
+    }
+    static async updateViews({ id }) {
+        const result = Board.increment({ views: 1 }, { where: { id } });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        return result;
     }
 }
 export { boardSerivce };
