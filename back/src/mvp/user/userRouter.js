@@ -39,10 +39,11 @@ userRouter.post("/login/kakao", async (req, res, next) => {
     }
 });
 
-userRouter.get("/login", loginRequired, async (req, res, next) => {
+userRouter.get("/info", loginRequired, async (req, res, next) => {
     try {
-        const id = req.current.user_id;
-        const result = await userService.getUserInfo({ id });
+        const { user_id } = req.current;
+
+        const result = await userService.getUserInfo({ id: user_id });
 
         res.status(200).send(result);
     } catch (e) {

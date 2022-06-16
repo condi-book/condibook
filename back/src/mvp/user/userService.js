@@ -5,6 +5,41 @@ import { getSuccessMsg, getFailMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
 class userService {
+    static async getUserInfo({ id }) {
+        try {
+            const user = await User.findOne({ where: { id: id } });
+
+            if (!user) {
+                return getFailMsg({ entity: "사용자 계정", action: "조회" });
+            }
+
+            const myFolderIds = await folderService.getMyFolderIds({
+                user_id: user.id,
+            });
+
+            let bookmarkCount = 0;
+            if (myFolderIds.length > 0) {
+                bookmarkCount = await bookmarkService.getMyBookmarkCount({
+                    folderIds: myFolderIds,
+                });
+            }
+
+            const result = {
+                id: user.id,
+                email: user.email,
+                nickname: user.nickname,
+                image_url: user.image_url,
+                intro: user.intro ?? null,
+                folderCount: myFolderIds.length,
+                bookmarkCount,
+            };
+
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async login({ nickname, email, image_url }) {
         try {
             // 사용자 조회
@@ -143,15 +178,6 @@ class userService {
         } catch (e) {
             return { errorMessage: e };
         }
-    }
-    static async getUserInfo({ id }) {
-        const result = User.findOne({ where: { id: id } });
-
-        if (!result) {
-            return { errorMessage: "해당 유저정보가 없습니다." };
-        }
-
-        return result;
     }
 }
 
