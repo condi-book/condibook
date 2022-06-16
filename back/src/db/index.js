@@ -72,15 +72,16 @@ const keywords_fk_website = {
 Website.hasMany(Keyword, { foreignKey: keywords_fk_website });
 Keyword.belongsTo(Website, { foreignKey: keywords_fk_website });
 
+// 사용자 > 폴더 > 북마크 구조로 변경하면서 필요없는 외래키 제외
 // User : Bookmark = 1 : N
-const bookmark_fk_user = {
-    name: "user_id",
-    type: DataTypes.INTEGER,
-    onDelete: "setNull",
-    comment: "사용자 ID",
-};
-User.hasMany(Bookmark, { foreignKey: bookmark_fk_user });
-Bookmark.belongsTo(User, { foreignKey: bookmark_fk_user });
+// const bookmark_fk_user = {
+//     name: "user_id",
+//     type: DataTypes.INTEGER,
+//     onDelete: "setNull",
+//     comment: "사용자 ID",
+// };
+// User.hasMany(Bookmark, { foreignKey: bookmark_fk_user });
+// Bookmark.belongsTo(User, { foreignKey: bookmark_fk_user });
 
 // Website : Bookmark = 1 : N
 const bookmark_fk_website = {
@@ -191,6 +192,26 @@ const bookmark_fk_folder = {
 };
 Folder.hasMany(Bookmark, { foreignKey: bookmark_fk_folder });
 Bookmark.belongsTo(Folder, { foreignKey: bookmark_fk_folder });
+
+// User: Folder = 1 : N
+const folder_fk_user = {
+    name: "user_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "사용자 ID",
+};
+User.hasMany(Folder, { foreignKey: folder_fk_user });
+Folder.belongsTo(User, { foreignKey: folder_fk_user });
+
+// Group : Folder = 1 : N
+const folder_fk_group = {
+    name: "group_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "그룹 ID",
+};
+Group.hasMany(Folder, { foreignKey: folder_fk_group });
+Folder.belongsTo(Group, { foreignKey: folder_fk_group });
 
 // 모델 동기화
 // sequelize

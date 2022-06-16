@@ -134,3 +134,6 @@ dist
 .prettierignore
 
 .env
+
+# test file
+test/
