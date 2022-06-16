@@ -13,7 +13,7 @@ interface MypageBookmarkCardProps {
 
 const MypageBookmarkCard = (item: MypageBookmarkCardProps["item"]) => {
   const navigate = useNavigate();
-  const handleClick = () => navigate(`/mypage/mybookmark/${item.group}`);
+  const handleClick = () => navigate(`/bookmark/${item.group}`);
   return (
     <Div {...item} onClick={handleClick}>
       <div className="top part">

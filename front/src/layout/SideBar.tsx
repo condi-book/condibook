@@ -1,19 +1,47 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const SideBar = () => {
-  const iconList = [
-    "pe-7s-user",
-    "pe-7s-home",
-    "pe-7s-folder",
-    "pe-7s-global",
-    "pe-7s-search",
-    "pe-7s-config",
-  ];
+const iconList = [
+  "pe-7s-user",
+  "pe-7s-home",
+  "pe-7s-folder",
+  "pe-7s-global",
+  "pe-7s-search",
+  "pe-7s-config",
+];
+
+export interface SideBarProps {
+  setProfileShow?: any;
+}
+
+const SideBar = ({ setProfileShow }: SideBarProps) => {
+  const navigate = useNavigate();
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (e.currentTarget.id === "pe-7s-user") {
+      setProfileShow((prev: boolean) => !prev);
+    }
+    if (e.currentTarget.id === "pe-7s-home") {
+      navigate("/");
+    }
+    if (e.currentTarget.id === "pe-7s-folder") {
+      navigate("/bookmark");
+    }
+    if (e.currentTarget.id === "pe-7s-global") {
+      navigate("/community");
+    }
+    if (e.currentTarget.id === "pe-7s-search") {
+      navigate("/search");
+    }
+    if (e.currentTarget.id === "pe-7s-config") {
+      navigate("/config");
+    }
+  };
+
   return (
     <Section>
       {iconList.map((item: string, index: number) => (
-        <div key={index}>
+        <div key={`icon-${index}`} id={item} onClick={handleClick}>
           <span className={item}></span>
         </div>
       ))}

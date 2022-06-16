@@ -70,7 +70,7 @@ laudantium!`,
     <Section className="page-carousel">
       <Slider {...settings}>
         {data.map((value: reviewer, index: number) => (
-          <div className="item" key={index}>
+          <div className="item" key={`carousel-${index}`}>
             <img src="static/img/review.png" alt="말풍선" />
             <div>{value.review}</div>
 

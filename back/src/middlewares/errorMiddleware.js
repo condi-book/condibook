@@ -4,4 +4,18 @@ const errorMiddleware = (error, req, res, next) => {
     res.status(400).send(error.message);
 };
 
-export { errorMiddleware };
+const checkErrorMessage = (result) => {
+    if (result.errorMessage) {
+        throw Error(result.errorMessage);
+    }
+};
+
+const getQueryResultMsg = ({ result, expectation, entity, queryType }) => {
+    if (result !== expectation) {
+        return { errorMessage: `${entity}을(를) ${queryType}하지 못했습니다.` };
+    }
+
+    return { message: `${entity}을(를) ${queryType}했습니다.` };
+};
+
+export { errorMiddleware, checkErrorMessage, getQueryResultMsg };
