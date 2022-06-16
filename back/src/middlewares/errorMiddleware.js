@@ -4,4 +4,10 @@ const errorMiddleware = (error, req, res, next) => {
     res.status(400).send(error.message);
 };
 
-export { errorMiddleware };
+const checkErrorMessage = (result) => {
+    if (result.errorMessage) {
+        throw Error(result.errorMessage);
+    }
+};
+
+export { errorMiddleware, checkErrorMessage };

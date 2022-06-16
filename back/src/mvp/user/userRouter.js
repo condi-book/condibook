@@ -1,142 +1,94 @@
-import is from "@sindresorhus/is";
 import { Router } from "express";
-import { loginRequired } from "../../middlewares/loginRequired";
 import { userService } from "./userService";
+import { loginRequired } from "../../middlewares/loginRequired";
+import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 
 const userRouter = Router();
 
-userRouter.post("/signup", async (req, res, next) => {
+userRouter.post("/login/google", async (req, res, next) => {
     try {
-        if (is.emptyObject(req.body)) {
-            throw new Error(
-                "headers의 Content-Type을 application/json으로 설정해주세요",
-            );
-        }
+        const { nickname, email, image_url } = req.body;
 
-        const name = req.body.name;
-        const email = req.body.email;
-        const password = req.body.password;
-
-        const newUser = await userService.createUser({
-            name,
+        const result = await userService.login({
+            nickname,
             email,
-            password,
+            image_url,
         });
 
-        if (newUser.errorMessage) {
-            throw new Error(newUser.errorMessage);
-        }
-
-        res.status(201).json(newUser);
+        res.status(200).send(result);
     } catch (error) {
         next(error);
     }
 });
 
-userRouter.post("/login", async (req, res, next) => {
+userRouter.post("/login/kakao", async (req, res, next) => {
     try {
-        const email = req.body.email;
-        const password = req.body.password;
+        const { code } = req.body; // authorization code
 
-        const user = await userService.getUser({ email, password });
+        const token = await userService.getKakaoToken(code);
 
-        if (user.errorMessage) {
-            throw new Error(user.errorMessage);
-        }
+        const account = await userService.getKakaoAccount(token);
 
-        res.status(200).json(user);
-    } catch (error) {
-        next(error);
+        // 로그인 또는 사용자 생성
+        const result = await userService.login(account);
+
+        // 사용자 정보 + JWT 반환
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.get("/list", loginRequired, async (req, res, next) => {
+userRouter.get("/info", loginRequired, async (req, res, next) => {
     try {
-        const users = await userService.getAllUsers();
-        res.status(200).json(users);
-    } catch (error) {
-        next(error);
+        const { user_id } = req.current;
+
+        const result = await userService.getUserInfo({ id: user_id });
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.get("/current", loginRequired, async (req, res, next) => {
+userRouter.put("/nickname", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.currentUserId;
-        const currentUserInfo = await userService.getUserInfo({
-            user_id,
-        });
+        const { nickname } = req.body;
+        const id = req.current.user_id;
 
-        if (currentUserInfo.errorMessage) {
-            throw new Error(currentUserInfo.errorMessage);
-        }
+        const result = await userService.setNickname({ nickname, id });
+        checkErrorMessage(result);
 
-        res.status(200).json(currentUserInfo);
-    } catch (error) {
-        next(error);
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.put("/:id", loginRequired, async (req, res, next) => {
+userRouter.put("/intro", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.params.id;
-        const name = req.body.name ?? null;
-        const password = req.body.password ?? null;
-        const description = req.body.description ?? null;
+        const { intro } = req.body;
+        const id = req.current.user_id;
 
-        if (req.currentUserId !== user_id) {
-            throw new Error("접근권한이 없습니다.");
-        }
+        const result = await userService.setIntro({ intro, id });
+        checkErrorMessage(result);
 
-        const toUpdate = { name, password, description };
-        const updatedUser = await userService.updateUser({
-            user_id,
-            toUpdate,
-        });
-
-        if (updatedUser.errorMessage) {
-            throw new Error(updatedUser.errorMessage);
-        }
-
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        next(error);
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.get("/:id", loginRequired, async (req, res, next) => {
+userRouter.delete("", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.params.id;
-        const currentUserInfo = await userService.getUserInfo({
-            user_id,
-        });
+        const id = req.current.user_id;
 
-        if (currentUserInfo.errorMessage) {
-            throw new Error(currentUserInfo.errorMessage);
-        }
+        const result = await userService.deleteUser({ id });
+        checkErrorMessage(result);
 
-        res.status(200).json(currentUserInfo);
-    } catch (error) {
-        next(error);
-    }
-});
-
-userRouter.delete("/:id", loginRequired, async (req, res, next) => {
-    try {
-        const user_id = req.params.id;
-
-        if (req.currentUserId !== user_id) {
-            throw new Error("접근권한이 없습니다.");
-        }
-
-        const deletdUser = await userService.deleteUser({ user_id });
-
-        if (deletdUser.errorMessage) {
-            throw new Error(deletdUser.errorMessage);
-        }
-
-        res.status(200).json(deletdUser);
-    } catch (err) {
-        next(err);
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
