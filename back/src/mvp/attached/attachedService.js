@@ -1,6 +1,6 @@
 import { User, Comment, Board } from "../../db";
 
-class commentSerivce {
+class attachedService {
     static async createComment({ content, user_id, board_id }) {
         if (!content) {
             const errorMessage = "댓글내용이 없습니다.";
@@ -96,4 +96,4 @@ class commentSerivce {
     }
 }
 
-export { commentSerivce };
+export { attachedService };

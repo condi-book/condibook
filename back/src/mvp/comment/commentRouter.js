@@ -66,9 +66,27 @@ commentRouter.put("/:id", loginRequired, async (req, res, next) => {
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch (error) {
         next(error);
     }
 });
+
+commentRouter.delete("/:id", loginRequired, async (req, res, next) => {
+    try {
+        const id = req.params.id; // 댓글아이디
+        const user_id = req.current.user_id;
+        const result = await commentSerivce.deleteComment({
+            id,
+            user_id,
+        });
+        if (result.errorMessage) {
+            throw new Error(result.errorMessage);
+        }
+        res.status(204).send(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
 export { commentRouter };
