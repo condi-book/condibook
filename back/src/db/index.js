@@ -213,6 +213,16 @@ const folder_fk_group = {
 Group.hasMany(Folder, { foreignKey: folder_fk_group });
 Folder.belongsTo(Group, { foreignKey: folder_fk_group });
 
+// User: Group = 1 : N
+const group_fk_user = {
+    name: "manager",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "매니저의 사용자 ID",
+};
+User.hasMany(Group, { foreignKey: group_fk_user });
+Group.belongsTo(User, { foreignKey: group_fk_user });
+
 // 모델 동기화
 // sequelize
 //     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
