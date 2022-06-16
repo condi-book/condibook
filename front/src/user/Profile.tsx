@@ -1,12 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
+import { UserStateContext } from "../App";
 
 const Profile = () => {
   const [show, setShow] = useState(false);
+  const userContext: any = useContext(UserStateContext);
+  const { user } = userContext;
+  const [userInfo, setUserInfo] = useState(user);
+
+  const handleClick = () => {
+    setShow((prev) => !prev);
+  };
+
+  const handleChange = (value: any) => setUserInfo(value);
+
   return (
     <>
-      {show && <ProfileModal />}
+      {show && (
+        <ProfileModal
+          data={userInfo}
+          open={show}
+          close={handleClick}
+          handleApply={handleChange}
+        />
+      )}
       <Div>
         <div className="container">
           <div className="background">
@@ -17,29 +35,27 @@ const Profile = () => {
           <div className="top">
             <div className="box">
               <span className="pe-7s-user"></span>
+              {/* <img src={user.image_url} alt="profile-image" /> */}
               <div className="top-detail">
-                <div>nickname</div>
-                <div>email</div>
+                <div>{userInfo.nickname}</div>
+                <div>{userInfo.email}</div>
               </div>
             </div>
           </div>
           <div className="info">
             <div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo,
-              quasi blanditiis officiis impedit asperiores id. Eos inventore
-              magnam magni. Omnis rem ipsum maxime accusantium voluptates iure
-              dignissimos neque quasi eum.
+              {userInfo.intro ? userInfo.intro : "소개글을 작성해보세요"}
             </div>
           </div>
           <div className="bottom">
             <div className="bottom-box">
               <div>
-                <span>3</span>
-                <span>북마크</span>
+                <span>{userInfo.folderCount}</span>
+                <span>폴더</span>
               </div>
               <div>
-                <span>3</span>
-                <span>링크</span>
+                <span>{userInfo.bookmarkCount}</span>
+                <span>북마크</span>
               </div>
             </div>
           </div>
@@ -74,11 +90,11 @@ const Div = styled.div`
 
   .pe-7s-user {
     font-size: 7rem;
-    margin-right: 20%;
+    margin-right: 10%;
   }
   .top {
     position: absolute;
-    top: 23%;
+    top: 26%;
     display: flex;
     width: 100%;
     height: 30%;
