@@ -22,7 +22,28 @@ class commentSerivce {
         }
         return result;
     }
-    static async updateWebsite({ id, toUpdate }) {
+    static async getComment({ id }) {
+        const result = await Comment.findOne({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        return result;
+    }
+    static async getCommentList({ board_id }) {
+        const result = Comment.findAll({ where: { board_id } });
+
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        return result;
+    }
+    static async updateComment({ id, user_id, content }) {
         const chack = await Comment.findOne({
             where: { id },
             raw: true,
@@ -32,11 +53,18 @@ class commentSerivce {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        await Comment.update(toUpdate, {
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        if (!chack.author == user_id) {
+            const errorMessage = "댓글 작성자가 아닙니다.";
+            return { errorMessage };
+        }
+        await Comment.update(
+            { content },
+            {
+                where: { id },
+                raw: true,
+                nest: true,
+            },
+        );
         const result = await Comment.findOne({
             where: { id },
             raw: true,
