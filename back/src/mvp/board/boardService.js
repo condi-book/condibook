@@ -42,41 +42,30 @@ class boardSerivce {
         return result;
     }
     static async updateBoard({ id, toUpdate, user_id }) {
-        let result = await Board.findOne({
-            where: { id },
-        });
         const chack = await Board.findOne({
             where: { id },
+            raw: true,
+            nest: true,
         });
+        if (!chack) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
         if (chack.author != user_id) {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        if (!result) {
-            const errorMessage = "해당 게시글이 없습니다.";
-            return { errorMessage };
-        }
-        if (toUpdate.title) {
-            result = await Board.update(
-                { title: toUpdate.title },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (toUpdate.content) {
-            result = await Board.update(
-                { content: toUpdate.content },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        return chack;
+        await Board.update(toUpdate, {
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        const result = await Board.findOne({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        return result;
     }
     static async deleteBoard({ id, user_id }) {
         const chack = await Board.findOne({

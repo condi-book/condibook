@@ -22,6 +22,28 @@ class commentSerivce {
         }
         return result;
     }
+    static async updateWebsite({ id, toUpdate }) {
+        const chack = await Comment.findOne({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        if (!chack) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        await Comment.update(toUpdate, {
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        const result = await Comment.findOne({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        return result;
+    }
 }
 
 export { commentSerivce };

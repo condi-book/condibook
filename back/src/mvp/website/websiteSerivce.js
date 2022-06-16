@@ -66,57 +66,25 @@ class websiteSerivce {
         return result;
     }
     static async updateWebsite({ id, toUpdate }) {
-        let result = await Website.findAll({
+        const chack = await Website.findOne({
             where: { id },
-            include: [
-                {
-                    model: Keyword,
-                    where: { website_id: id },
-                    attributes: ["keyword"],
-                },
-                {
-                    model: Emoji,
-                    where: { website_id: id },
-                    attributes: ["emoji"],
-                },
-            ],
             raw: true,
             nest: true,
         });
-        if (!result) {
+        if (!chack) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        if (toUpdate.url) {
-            result = await Website.update(
-                { url: toUpdate.url },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (toUpdate.meta_title) {
-            result = await Website.update(
-                { meta_title: toUpdate.meta_title },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
-        if (toUpdate.meta_description) {
-            result = await Website.update(
-                { meta_description: toUpdate.meta_description },
-                {
-                    where: { id },
-                    raw: true,
-                    nest: true,
-                },
-            );
-        }
+        await Website.update(toUpdate, {
+            where: { id },
+            raw: true,
+            nest: true,
+        });
+        const result = await Website.findOne({
+            where: { id },
+            raw: true,
+            nest: true,
+        });
         return result;
     }
     static async deleteWebsite({ id }) {

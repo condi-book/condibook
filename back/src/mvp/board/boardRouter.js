@@ -80,13 +80,8 @@ boardRouter.put("/:id", loginRequired, async (req, res, next) => {
         if (update.errorMessage) {
             throw new Error(update.errorMessage);
         }
-        const result = await boardSerivce.getBoard({ id });
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
-        }
-
-        res.status(201).send(result);
+        res.status(201).send(update);
     } catch (error) {
         next(error);
     }
