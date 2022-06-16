@@ -8,11 +8,7 @@ import GlobalStyle from "./style/GlobalStyle";
 import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
 import CommunityPostDetail from "./community/CommunityPostDetail";
-<<<<<<< HEAD
 import CommunityPostWrite from "./community/CommunityPostWrite";
-import Footer from "./layout/Footer";
-=======
->>>>>>> 54b6ba22f71e6ccd83a8bd548c3a040fc09850e6
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
@@ -51,32 +47,6 @@ const App: React.FC = () => {
   return (
     <DispatchContext.Provider value={dispatch}>
       <UserStateContext.Provider value={userState}>
-<<<<<<< HEAD
-        <ThemeProvider theme={theme}>
-          <Router>
-            <Header />
-            <GlobalStyle />
-            <Routes>
-              <Route
-                path="/callback/login/kakao"
-                element={<CallBackKakaoLogin />}
-              />
-              <Route path="/" element={<Main />} />
-              <Route path="/community" element={<Community />}>
-                <Route path="" element={<CommunityPage />} />
-                <Route path=":postId" element={<CommunityPostDetail />} />
-                <Route path="write" element={<CommunityPostWrite />} />
-              </Route>
-              <Route path="/mypage" element={<Mypage />} />
-              <Route
-                path="/mypage/mybookmark/:group"
-                element={<MypageBookmarkDetail />}
-              />
-            </Routes>
-            <Footer />
-          </Router>
-        </ThemeProvider>
-=======
         <KeyboardContext.Provider value={sidebarState}>
           <ThemeProvider theme={theme}>
             <Router>
@@ -87,10 +57,10 @@ const App: React.FC = () => {
                   element={<CallBackKakaoLogin />}
                 />
                 <Route path="/" element={<Main />} />
-                <Route path="/community" element={<CommunityPage />}>
-                  <Route path="userId" element={<CommunityUser />}>
-                    <Route path=":postId" element={<CommunityPostDetail />} />
-                  </Route>
+                <Route path="/community" element={<Community />}>
+                  <Route path="" element={<CommunityPage />} />
+                  <Route path=":postId" element={<CommunityPostDetail />} />
+                  <Route path="write" element={<CommunityPostWrite />} />
                 </Route>
                 <Route path="/bookmark" element={<Mypage />} />
                 <Route path="/login" element={<Login />} />
@@ -102,7 +72,6 @@ const App: React.FC = () => {
             </Router>
           </ThemeProvider>
         </KeyboardContext.Provider>
->>>>>>> 54b6ba22f71e6ccd83a8bd548c3a040fc09850e6
       </UserStateContext.Provider>
     </DispatchContext.Provider>
   );
