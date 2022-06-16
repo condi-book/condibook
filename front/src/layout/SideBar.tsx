@@ -11,11 +11,15 @@ const iconList = [
   "pe-7s-config",
 ];
 
-const SideBar = () => {
+export interface SideBarProps {
+  setProfileShow?: any;
+}
+
+const SideBar = ({ setProfileShow }: SideBarProps) => {
   const navigate = useNavigate();
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.currentTarget.id === "pe-7s-user") {
-      navigate("/profile");
+      setProfileShow((prev: boolean) => !prev);
     }
     if (e.currentTarget.id === "pe-7s-home") {
       navigate("/");
