@@ -4,6 +4,8 @@ import { bookmarkRouter } from "./bookmark/bookmarkRouter";
 import { folderRouter } from "./folder/folderRouter";
 import { boardRouter } from "./board/boardRouter";
 import { commentRouter } from "./comment/commentRouter";
+import { teamRouter } from "./team/teamRouter";
+
 const indexRouter = (app) => {
     app.use("/user", userRouter);
     app.use("/website", websiteRouter);
@@ -11,6 +13,7 @@ const indexRouter = (app) => {
     app.use("/folders", folderRouter);
     app.use("/board", boardRouter);
     app.use("/comment", commentRouter);
+    app.use("/teams", teamRouter);
 };
 
 export { indexRouter };
