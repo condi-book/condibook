@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 interface MypageBookmarkCardProps {
   item: {
-    id: number;
+    id: string;
     image: string;
     title: string;
     link_num: number;
@@ -21,6 +21,7 @@ const MypageBookmarkCard = ({
   const [checked, setChecked] = useState<boolean>(item.favorites);
   const navigate = useNavigate();
   const handleClick = () => navigate(`/bookmark/${item.title}`);
+
   const handleFavorites = () => {
     // 즐겨찾기 추가 or 제거
     setChecked((prev) => !prev);

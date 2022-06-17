@@ -5,7 +5,7 @@ import * as Api from "../api";
 
 export interface MypageBookmarkProps {
   folderData: {
-    id: number;
+    id: string;
     image: string;
     title: string;
     link_num: number;
@@ -21,7 +21,11 @@ const MypageBookmark = () => {
   >([]);
   useEffect(() => {
     Api.get(`folders`).then((res) => {
-      setFolderData(res.data);
+      setFolderData(
+        res.data.map((item: any) => {
+          item.id = String(item.id);
+        }),
+      );
       console.log(res.data);
     });
   }, []);
