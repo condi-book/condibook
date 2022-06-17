@@ -38,8 +38,8 @@ const Post = PostModel(sequelize, DataTypes);
 import CommentModel from "./schema/comment";
 const Comment = CommentModel(sequelize, DataTypes);
 
-import GroupModel from "./schema/group";
-const Group = GroupModel(sequelize, DataTypes);
+import TeamModel from "./schema/team";
+const Team = TeamModel(sequelize, DataTypes);
 
 import MembershipModel from "./schema/membership";
 const Membership = MembershipModel(sequelize, DataTypes);
@@ -71,17 +71,6 @@ const keywords_fk_website = {
 };
 Website.hasMany(Keyword, { foreignKey: keywords_fk_website });
 Keyword.belongsTo(Website, { foreignKey: keywords_fk_website });
-
-// 사용자 > 폴더 > 북마크 구조로 변경하면서 필요없는 외래키 제외
-// User : Bookmark = 1 : N
-// const bookmark_fk_user = {
-//     name: "user_id",
-//     type: DataTypes.INTEGER,
-//     onDelete: "setNull",
-//     comment: "사용자 ID",
-// };
-// User.hasMany(Bookmark, { foreignKey: bookmark_fk_user });
-// Bookmark.belongsTo(User, { foreignKey: bookmark_fk_user });
 
 // Website : Bookmark = 1 : N
 const bookmark_fk_website = {
@@ -173,15 +162,15 @@ const membership_fk_user = {
 User.hasMany(Membership, { foreignKey: membership_fk_user });
 Membership.belongsTo(User, { foreignKey: membership_fk_user });
 
-// Group : Membership = 1 : N
-const membership_fk_group = {
-    name: "group_id",
+// Team : Membership = 1 : N
+const membership_fk_team = {
+    name: "team_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
-    comment: "그룹 ID",
+    comment: "팀 ID",
 };
-Group.hasMany(Membership, { foreignKey: membership_fk_group });
-Membership.belongsTo(Group, { foreignKey: membership_fk_group });
+Team.hasMany(Membership, { foreignKey: membership_fk_team });
+Membership.belongsTo(Team, { foreignKey: membership_fk_team });
 
 // Folder : Bookmark = 1 : N
 const bookmark_fk_folder = {
@@ -203,15 +192,25 @@ const folder_fk_user = {
 User.hasMany(Folder, { foreignKey: folder_fk_user });
 Folder.belongsTo(User, { foreignKey: folder_fk_user });
 
-// Group : Folder = 1 : N
-const folder_fk_group = {
-    name: "group_id",
+// Team : Folder = 1 : N
+const folder_fk_team = {
+    name: "team_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
-    comment: "그룹 ID",
+    comment: "팀 ID",
 };
-Group.hasMany(Folder, { foreignKey: folder_fk_group });
-Folder.belongsTo(Group, { foreignKey: folder_fk_group });
+Team.hasMany(Folder, { foreignKey: folder_fk_team });
+Folder.belongsTo(Team, { foreignKey: folder_fk_team });
+
+// User: Team = 1 : N
+const team_fk_user = {
+    name: "manager",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "매니저의 사용자 ID",
+};
+User.hasMany(Team, { foreignKey: team_fk_user });
+Team.belongsTo(User, { foreignKey: team_fk_user });
 
 // 모델 동기화
 // sequelize
@@ -229,7 +228,7 @@ export {
     Attached,
     Post,
     Comment,
-    Group,
+    Team,
     Membership,
     Like,
     Folder,
