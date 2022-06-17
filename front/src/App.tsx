@@ -12,6 +12,7 @@ import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
+import Config from "config/Config";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -67,6 +68,7 @@ const App: React.FC = () => {
                   path="/bookmark/:group"
                   element={<MypageBookmarkDetail />}
                 />
+                <Route path="/config" element={<Config />} />
               </Routes>
             </Router>
           </ThemeProvider>
