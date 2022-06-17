@@ -79,34 +79,45 @@ const CommunityPostDetail = () => {
   }, []);
 
   return (
-    <>
-      <Div>
+    <Div>
+      <div className="sidebarWrapper">
         <SideBar />
-        <Container>
-          <H1>{dummyData.title}</H1>
-          <ButtonGroup>
-            <button className="hoverButton">수정</button>
-            <button className="hoverButton">삭제</button>
-          </ButtonGroup>
-          <InfoGroup>
-            <div>
-              <span className="username">{dummyData.author}</span>
-              <span className="separator">·</span>
-              <span>{calcTime(dummyData.created_at)}</span>
-              <span className="separator">·</span>
-              <span>
-                {updatedTime(dummyData.created_at, dummyData.updated_at)}
-              </span>
-            </div>
-          </InfoGroup>
-          <span>북마크</span>
+      </div>
+      <div className="postWrapper">
+        <div className="detailWrapper">
+          <HeaderContainer>
+            <H1>{dummyData.title}</H1>
+            <ButtonContainer>
+              <button className="hoverButton">수정</button>
+              <button className="hoverButton">삭제</button>
+            </ButtonContainer>
+            <InfoContainer>
+              <div>
+                <span className="username">{dummyData.author}</span>
+                <span className="separator">·</span>
+                <span>{calcTime(dummyData.created_at)}</span>
+                <span className="separator">·</span>
+                <span>
+                  {updatedTime(dummyData.created_at, dummyData.updated_at)}
+                </span>
+              </div>
+            </InfoContainer>
+          </HeaderContainer>
+          <div>
+            <span>북마크</span>
+          </div>
           <div>
             <Viewer initialValue={dummyData.content} />
           </div>
-          <span>댓글</span>
-        </Container>
-      </Div>
-    </>
+          <div>
+            <span>댓글</span>
+          </div>
+        </div>
+        <div className="contentWrapper">
+          <iframe width="100%" height="100%"></iframe>
+        </div>
+      </div>
+    </Div>
   );
 };
 
@@ -116,16 +127,38 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
+
+  .sidebarWrapper {
+    position: fixed;
+  }
+  .postWrapper {
+    margin-left: 130px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border: 2px solid black;
+  }
+  .detailWrapper {
+    min-width: 0px;
+    width: 50%;
+    position: relative;
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid blue;
+  }
+  .contentWrapper {
+    min-width: 0px;
+    width: 50%;
+    padding: 1%;
+    display: block;
+    position: relative;
+    border: 2px solid green;
+  }
 `;
 
-const Container = styled.div`
-  width: 768px;
-  margin-left: auto;
-  margin-right: auto;
-  min-height: 0px;
-  padding-bottom: 4rem;
-  flex: 1 1 0%;
-  display: flex;
+const HeaderContainer = styled.div`
+  box-sizing: inherit;
 `;
 
 const H1 = styled.h1`
@@ -138,7 +171,7 @@ const H1 = styled.h1`
   word-break: keep-all; // 콘텐츠 오버플로 줄바꿈 옵션 keep-all: 줄을 바꿀 때 단어끊김 없음
 `;
 
-const ButtonGroup = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: -1.25rem;
@@ -160,7 +193,7 @@ const ButtonGroup = styled.div`
   }
 `;
 
-const InfoGroup = styled.div`
+const InfoContainer = styled.div`
   align-items: center;
   font-size: 1rem;
   display: flex;
