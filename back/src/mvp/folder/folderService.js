@@ -2,7 +2,7 @@ import { Folder, sequelize } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
-    static async createFolder({ title, explanation, user_id }) {
+    static async createFolder({ title, user_id }) {
         try {
             // 이미 존재하는 폴더인지 확인
             const previous = await Folder.findOne({
@@ -14,9 +14,8 @@ class folderService {
 
             // 새 폴더 생성
             const newFolder = await Folder.create({
-                title,
-                explanation,
                 user_id,
+                title,
             });
 
             return newFolder;
@@ -60,10 +59,10 @@ class folderService {
         }
     }
 
-    static async updateFolderInfo({ id, title, explanation }) {
+    static async updateFolderInfo({ id, title }) {
         try {
             const affectedRows = await Folder.update(
-                { title, explanation },
+                { title },
                 { where: { id: id } },
             );
 
@@ -78,7 +77,7 @@ class folderService {
 
     static async updateFolderFavorites({ id }) {
         try {
-            const [results, metadata] = await sequelize.query(
+            const [metadata] = await sequelize.query(
                 `UPDATE folders SET favorites = NOT favorites WHERE id = ${id}`,
             );
 

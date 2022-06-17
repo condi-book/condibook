@@ -7,12 +7,11 @@ const folderRouter = Router();
 
 folderRouter.post("", loginRequired, async (req, res, next) => {
     try {
-        const { title, explanation } = req.body;
+        const { title } = req.body;
         const { user_id } = req.current;
 
         const result = await folderService.createFolder({
             title,
-            explanation,
             user_id,
         });
         checkErrorMessage(result);
@@ -43,12 +42,11 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
 
         let result;
         if (mode === "info") {
-            const { title, explanation } = req.body;
+            const { title } = req.body;
 
             result = await folderService.updateFolderInfo({
                 id,
                 title,
-                explanation,
             });
         } else if (mode === "favorites") {
             const { user_id } = req.current;
