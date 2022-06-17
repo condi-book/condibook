@@ -49,5 +49,22 @@ class likeService {
         }
         return result;
     }
+    static async deleteLike({ user_id, post_id }) {
+        const chack = await Like.findOne({
+            where: { user_id, post_id },
+        });
+        if (!chack) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        const result = await Like.destroy({
+            where: { user_id, post_id },
+        });
+        if (result == 1) {
+            const message = "삭제가 완료 되었습니다.";
+            return { message };
+        }
+        return result;
+    }
 }
 export { likeService };
