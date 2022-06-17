@@ -21,6 +21,8 @@ const Header = () => {
 
 const Div = styled.div`
   border: 2px black solid;
+  position: fixed;
+  z-index: 10;
   // background: ${({ theme }) => theme.mainColor};
 
   height: 8vh;
