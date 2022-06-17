@@ -81,9 +81,7 @@ class postService {
         }
         Post.destroy({ where: { id } });
 
-        const message = "삭제가 완료 되었습니다.";
-
-        return message;
+        return chack;
     }
     static async updateViews({ id }) {
         const result = Post.increment({ views: 1 }, { where: { id } });

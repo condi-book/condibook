@@ -83,6 +83,7 @@ commentRouter.delete("/:id", loginRequired, async (req, res, next) => {
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
+
         res.status(204).send(result);
     } catch (error) {
         next(error);

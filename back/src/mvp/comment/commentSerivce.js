@@ -86,13 +86,10 @@ class commentSerivce {
             const errorMessage = "댓글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        await Comment.destory({
+        await Comment.destroy({
             where: { id },
-            raw: true,
-            nest: true,
         });
-        const message = "삭제가 완료 되었습니다.";
-        return message;
+        return chack;
     }
 }
 
