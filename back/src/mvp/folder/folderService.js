@@ -147,6 +147,15 @@ class folderService {
 
     static async deleteFolder({ id, user_id }) {
         try {
+            // 사용자의 폴더 소유 여부 확인
+            const folder = await Folder.findOne({ where: { id, user_id } });
+            if (!folder) {
+                return getFailMsg({
+                    entity: "해당 사용자의 폴더",
+                    action: "조회",
+                });
+            }
+
             const result = await Folder.destroy({ where: { id, user_id } });
 
             if (result === 0) {
