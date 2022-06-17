@@ -62,6 +62,7 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { mode } = req.query;
+        const { user_id } = req.current;
 
         let result;
         if (mode === "info") {
@@ -70,6 +71,7 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
             result = await folderService.updateFolderInfo({
                 id,
                 title,
+                user_id,
             });
         } else if (mode === "favorites") {
             const { user_id } = req.current;

@@ -105,8 +105,17 @@ class folderService {
         }
     }
 
-    static async updateFolderInfo({ id, title }) {
+    static async updateFolderInfo({ id, title, user_id }) {
         try {
+            // 사용자의 폴더 소유 여부 확인
+            const folder = await Folder.findOne({ where: { id, user_id } });
+            if (!folder) {
+                return getFailMsg({
+                    entity: "해당 사용자의 폴더",
+                    action: "조회",
+                });
+            }
+
             const affectedRows = await Folder.update(
                 { title },
                 { where: { id: id } },
