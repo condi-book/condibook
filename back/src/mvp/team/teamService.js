@@ -7,7 +7,7 @@ class teamService {
             const user = await User.findOne({ where: { id: manager } });
             if (!user) {
                 return getFailMsg({
-                    entity: "매니저로 지정한 사용자",
+                    entity: "사용자",
                     action: "조회",
                 });
             }
