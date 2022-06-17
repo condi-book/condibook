@@ -126,8 +126,6 @@ const Container = styled.div`
   padding-bottom: 4rem;
   flex: 1 1 0%;
   display: flex;
-  flex-direction: column;
-  position: relative;
 `;
 
 const H1 = styled.h1`
@@ -142,14 +140,12 @@ const H1 = styled.h1`
 
 const ButtonGroup = styled.div`
   display: flex;
-  -webkit-box-pack: end;
   justify-content: flex-end;
   margin-bottom: -1.25rem;
 
   .hoverButton {
     height: 2.5rem;
     padding: 0.5rem 1rem;
-    -webkit-box-align: center;
     align-items: center;
     background: none;
     border-radius: 4px;
@@ -165,12 +161,9 @@ const ButtonGroup = styled.div`
 `;
 
 const InfoGroup = styled.div`
-  -webkit-box-align: center;
   align-items: center;
   font-size: 1rem;
-  color: var(--text2);
   display: flex;
-  -webkit-box-pack: justify;
   justify-content: space-between;
 
   .username {

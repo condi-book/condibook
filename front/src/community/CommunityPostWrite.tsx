@@ -163,18 +163,13 @@ const ButtonContainer = styled.div`
   padding-right: 1rem;
   height: 4rem;
   width: 100%;
-  box-shadow: rgb(0 0 0 / 10%) 0px 0px 8px;
-  background: var(--editor-footer);
   display: flex;
-  -webkit-box-pack: justify;
   justify-content: space-between;
-  -webkit-box-align: center;
   align-items: center;
 
   .hoverButton {
     height: 2.5rem;
     padding: 0.5rem 1rem;
-    -webkit-box-align: center;
     align-items: center;
     background: none;
     border-radius: 4px;
@@ -189,9 +184,7 @@ const ButtonContainer = styled.div`
   }
 
   .postBox {
-    -webkit-box-pack: end;
     justify-content: flex-end;
-    -webkit-box-align: center;
     align-items: center;
   }
 `;

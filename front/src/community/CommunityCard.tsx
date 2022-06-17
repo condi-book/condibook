@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { PostPreview } from "./CommunityPage";
 import { useNavigate } from "react-router-dom";
 
@@ -23,9 +23,7 @@ const CommunityCard = ({ PostPreview }: CommunityCardProps) => {
       <Card.Body>
         <Card.Title>{PostPreview.title}</Card.Title>
         <Card.Text>{PostPreview.content}</Card.Text>
-        <Button variant="primary" onClick={handleDetailClick}>
-          Detail
-        </Button>
+        <button onClick={handleDetailClick}>Detail</button>
       </Card.Body>
     </Card>
   );
