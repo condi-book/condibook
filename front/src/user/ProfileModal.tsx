@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import * as Api from "../api";
-import UserDelete from "./UserDelete";
+// import UserDelete from "./UserDelete";
 
 interface ProfileProps {
   open: boolean;
@@ -26,6 +26,7 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
     await Api.put(`user/nickname`, { nickname: userData.nickname });
     await Api.put(`user/intro`, { intro: userData.intro });
     await handleApply(userData);
+    await alert("수정이 완료되었습니다.");
     await close();
   };
 
@@ -44,12 +45,10 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
               <span onClick={close} className="pe-7s-close"></span>
             </div>
             <div className="link-box">
-              <div>닉네임</div>
+              <div className="title">닉네임</div>
               <div>
                 <input
                   className="profile-input"
-                  // value={newLink}
-                  // onChange={handleChange
                   placeholder="닉네임을 입력해주세요"
                   maxLength={10}
                   value={userData.nickname}
@@ -60,7 +59,7 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
               <p>10자 이하로 작성해주세요</p>
             </div>
             <div className="link-box">
-              <div>소개</div>
+              <div className="title">소개</div>
               <textarea
                 className="profile-textarea"
                 maxLength={200}
@@ -69,12 +68,15 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
                 name="intro"
                 onChange={handleChange}
               />
-              <div className="profile-textlimit">0/120</div>
+              <div className="profile-textlimit">
+                {userData.intro.length}/120
+              </div>
               <p>120자 이하로 입력해주세요</p>
             </div>
-
-            <button onClick={handleClick}>저장하기</button>
-            <UserDelete />
+            <div className="btn-box">
+              <button onClick={handleClick}>저장하기</button>
+              {/* <UserDelete /> */}
+            </div>
           </div>
         )}
       </div>
@@ -83,6 +85,21 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
 };
 
 const Div = styled.div`
+  .btn-box {
+    width: 100%;
+    margin: 10% 0;
+    button {
+      width: 100%;
+
+      &:hover {
+        background: ${({ theme }) => theme.profileBackground};
+        color: white;
+      }
+    }
+  }
+  .title {
+    margin-bottom: 3%;
+  }
   .bg {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -105,8 +122,9 @@ const Div = styled.div`
     .area {
       background: white;
       width: 30%;
-      height: 40%;
+      height: 50%;
       border-radius: 10px;
+      padding: 0 2%;
     }
     .close {
       text-align: right;
@@ -119,6 +137,7 @@ const Div = styled.div`
         cursor: pointer;
       }
     }
+  }
 
   .profile-input {
     padding-bottom: 10px;
@@ -126,29 +145,40 @@ const Div = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
-    border:none;
+    border: none;
     border-bottom: 1px solid rgb(52, 52, 52);
+
+    &:focus {
+      outline: none;
+      border-bottom: 1px solid rgb(50, 46, 255);
+    }
   }
 
   .profile-textarea {
-    width: 290px;
+    width: 100%;
     height: 100px;
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
+    border: none;
     border-bottom: 1px solid rgb(196, 196, 196);
+    resize: none;
+
+    &:focus {
+      outline: none;
+      border-bottom: 1px solid rgb(50, 46, 255);
+    }
   }
 
   .profile-textlimit {
     position: absolute;
-    right: 50%;
-    top: 55%;
+    left: 60%;
+    top: 58%;
     color: rgb(196, 196, 196);
     font-size: 12px;
     font-weight: 400;
     line-height: 24px;
   }
-
 `;
 
 export default ProfileModal;

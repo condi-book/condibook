@@ -78,6 +78,7 @@ const Div = styled.div`
   background-color: #f8f9fc;
   margin-left: 120px;
   margin-top: 10px;
+  z-index: 5;
 
   .container {
     height: 100%;
@@ -92,6 +93,7 @@ const Div = styled.div`
     width: 100%;
     height: 50%;
     background: ${({ theme }) => theme.profileBackground};
+    text-align: right;
   }
 
   .pe-7s-user {
