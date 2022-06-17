@@ -60,6 +60,23 @@ class folderService {
         }
     }
 
+    static async getTeamFolderIds({ team_id }) {
+        try {
+            let ids = await Folder.findAll({
+                where: { team_id },
+                attributes: ["id"],
+                raw: true,
+            });
+
+            // 배열 안에 {id: 2}형태로 반환하기 때문에 추가 처리 부분 필요
+            ids = ids.map((item) => item.id);
+
+            return ids;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async updateFolderInfo({ id, title, explanation }) {
         try {
             const affectedRows = await Folder.update(
