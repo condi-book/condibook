@@ -32,6 +32,7 @@ class teamService {
             return { errorMessage: e };
         }
     }
+
     static async getTeamByName({ name }) {
         try {
             const [results] = await sequelize.query(
@@ -39,6 +40,23 @@ class teamService {
             );
 
             return results;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getTeamInfo({ id }) {
+        try {
+            const result = await Team.findOne({
+                where: { id },
+                include: [User],
+                raw: true,
+                nest: true,
+            });
+            if (!result) {
+                return getFailMsg({ entity: "팀 상세정보", action: "조회" });
+            }
+            return result;
         } catch (e) {
             return { errorMessage: e };
         }
