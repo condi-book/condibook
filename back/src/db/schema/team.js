@@ -1,22 +1,22 @@
-export default function GroupModel(sequelize, DataTypes) {
+export default function TeamModel(sequelize, DataTypes) {
     return sequelize.define(
-        "group",
+        "team",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "그룹 ID",
+                comment: "팀 ID",
             },
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: "그룹 이름",
+                comment: "팀 이름",
             },
             explanation: {
                 type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "그룹 설명",
+                comment: "팀 설명",
             },
         },
         {
