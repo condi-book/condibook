@@ -24,7 +24,7 @@ class teamService {
         }
     }
 
-    static async findTeamAll() {
+    static async getTeamAll() {
         try {
             const teams = await Team.findAll({});
             return teams;
@@ -32,7 +32,7 @@ class teamService {
             return { errorMessage: e };
         }
     }
-    static async findTeamByName({ name }) {
+    static async getTeamByName({ name }) {
         try {
             const [results] = await sequelize.query(
                 `SELECT * FROM ${Team.tableName} WHERE name LIKE '%${name}%'`,

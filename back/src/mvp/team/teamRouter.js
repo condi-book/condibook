@@ -27,9 +27,9 @@ teamRouter.get("", async (req, res, next) => {
 
         let result;
         if (name) {
-            result = await teamService.findTeamByName({ name });
+            result = await teamService.getTeamByName({ name });
         } else {
-            result = await teamService.findTeamAll();
+            result = await teamService.getTeamAll();
         }
 
         res.status(200).send(result);
