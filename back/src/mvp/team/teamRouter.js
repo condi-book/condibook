@@ -21,4 +21,21 @@ teamRouter.post("", loginRequired, async (req, res, next) => {
     }
 });
 
+teamRouter.get("", async (req, res, next) => {
+    try {
+        const { name } = req.query;
+
+        let result;
+        if (name) {
+            result = await teamService.findTeamByName({ name });
+        } else {
+            result = await teamService.findTeamAll();
+        }
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 export { teamRouter };

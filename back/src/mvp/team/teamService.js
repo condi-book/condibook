@@ -1,4 +1,4 @@
-import { Team, User } from "../../db";
+import { sequelize, Team, User } from "../../db";
 import { getFailMsg } from "../../util/message";
 
 class teamService {
@@ -19,6 +19,26 @@ class teamService {
             });
 
             return newTeam;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async findTeamAll() {
+        try {
+            const teams = await Team.findAll({});
+            return teams;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+    static async findTeamByName({ name }) {
+        try {
+            const [results] = await sequelize.query(
+                `SELECT * FROM ${Team.tableName} WHERE name LIKE '%${name}%'`,
+            );
+
+            return results;
         } catch (e) {
             return { errorMessage: e };
         }
