@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import * as Api from "../api";
+import Profile from "../user/Profile";
 
 const iconList = [
   "pe-7s-user",
@@ -11,15 +13,20 @@ const iconList = [
   "pe-7s-config",
 ];
 
-export interface SideBarProps {
-  setProfileShow?: any;
-}
+const SideBar = () => {
+  useEffect(() => {
+    Api.get(`user`, `info`).then((res) => setData(res.data));
+  }, []);
 
-const SideBar = ({ setProfileShow }: SideBarProps) => {
+  const [show, setShow] = useState(false);
+  const [data, setData] = useState<any>({});
   const navigate = useNavigate();
+
+  const handleApply = (value: any) => setData(value);
+
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.currentTarget.id === "pe-7s-user") {
-      setProfileShow((prev: boolean) => !prev);
+      setShow((prev: boolean) => !prev);
     }
     if (e.currentTarget.id === "pe-7s-home") {
       navigate("/");
@@ -39,13 +46,16 @@ const SideBar = ({ setProfileShow }: SideBarProps) => {
   };
 
   return (
-    <Section>
-      {iconList.map((item: string, index: number) => (
-        <div key={`icon-${index}`} id={item} onClick={handleClick}>
-          <span className={item}></span>
-        </div>
-      ))}
-    </Section>
+    <>
+      <Section>
+        {iconList.map((item: string, index: number) => (
+          <div key={`icon-${index}`} id={item} onClick={handleClick}>
+            <span className={item}></span>
+          </div>
+        ))}
+      </Section>
+      {show && <Profile data={data} handleApply={handleApply} />}
+    </>
   );
 };
 
