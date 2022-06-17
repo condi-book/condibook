@@ -134,6 +134,17 @@ class bookmarkService {
         }
     }
 
+    static async getBookmarkCountInFolders({ folderIds }) {
+        try {
+            const result = await Bookmark.count({
+                where: { folder_id: folderIds },
+            }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async updateBookmarkFavorites({ id }) {
         try {
             const [results, metadata] = await sequelize.query(

@@ -1,9 +1,16 @@
-import { Folder, Membership, sequelize } from "../../db";
+import { Folder, Membership, sequelize, User } from "../../db";
+import { bookmarkService } from "../bookmark/bookmarkService";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
     static async createFolderForUser({ user_id, title }) {
         try {
+            // 존재하는 사용자인지 확인
+            const user = await User.findOne({ where: { id: user_id } });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+
             // 새 폴더 생성
             const newFolder = await Folder.create({
                 user_id,
@@ -71,6 +78,29 @@ class folderService {
             ids = ids.map((item) => item.id);
 
             return ids;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getFolderInfo({ id }) {
+        try {
+            let info = await Folder.findOne({
+                where: { id },
+                attributes: ["id", "title"],
+            });
+            if (!info) {
+                return getFailMsg({ entity: "폴더 상세정보", action: "조회" });
+            }
+
+            // 폴더에 속한 북마크 개수
+            const bookmarkCount =
+                await bookmarkService.getBookmarkCountInFolders({
+                    folderIds: [id],
+                });
+            info["bookmarkCount"] = bookmarkCount;
+
+            return info;
         } catch (e) {
             return { errorMessage: e };
         }

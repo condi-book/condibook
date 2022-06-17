@@ -45,6 +45,19 @@ folderRouter.get("", loginRequired, async (req, res, next) => {
     }
 });
 
+folderRouter.get("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params; // 폴더 아이디
+
+        const result = await folderService.getFolderInfo({ id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
