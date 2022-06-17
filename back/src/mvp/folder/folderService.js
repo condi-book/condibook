@@ -94,11 +94,10 @@ class folderService {
             }
 
             // 폴더에 속한 북마크 개수
-            const bookmarkCount =
+            info["bookmarkCount"] =
                 await bookmarkService.getBookmarkCountInFolders({
                     folderIds: [id],
                 });
-            info["bookmarkCount"] = bookmarkCount;
 
             return info;
         } catch (e) {
