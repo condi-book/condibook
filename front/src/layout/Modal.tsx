@@ -11,7 +11,7 @@ interface props {
 }
 const Modal = ({ open, close, newLink, handleChange, title }: props) => {
   const handleClick = () => {
-    Api.post(`folders`, { title: newLink }).then(() => {
+    Api.post(`folders?owner=user`, { title: newLink }).then(() => {
       close();
     });
   };

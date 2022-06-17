@@ -15,25 +15,26 @@ export interface MypageBookmarkProps {
   handleRemove: (value: any) => void;
 }
 
+interface BookmarkItem {
+  id: number;
+  image: string;
+  title: string;
+  link_num: number;
+  favorites: boolean;
+}
+
 const MypageBookmark = () => {
   const [folderData, setFolderData] = useState<
     MypageBookmarkProps["folderData"]
   >([]);
-  useEffect(() => {
-    Api.get(`folders`).then((res) => {
-      setFolderData(
-        res.data.map((item: any) => {
-          item.id = String(item.id);
-        }),
-      );
-      console.log(res.data);
-    });
-  }, []);
 
   // 즐겨찾기 데이터
-  const filteredData: MypageBookmarkProps["folderData"] = folderData.filter(
-    (item) => item.favorites === true,
-  );
+  const filteredData: MypageBookmarkProps["folderData"] = React.useMemo(() => {
+    if (folderData.length) {
+      return folderData.filter((item) => item.favorites === true);
+    }
+    return [];
+  }, [folderData]);
 
   const title1 = "즐겨찾기";
   const title2 = "전체보기";
@@ -45,6 +46,22 @@ const MypageBookmark = () => {
     const filtered = folderData.filter((item) => item.id !== value.id);
     setFolderData(filtered);
   };
+
+  useEffect(() => {
+    Api.get(`folders`).then((res) => {
+      setFolderData(
+        res.data.map((item: BookmarkItem) => {
+          return {
+            id: String(item.id),
+            image: item.image,
+            title: item.title,
+            link_num: item.link_num,
+            favorites: item.favorites,
+          };
+        }),
+      );
+    });
+  }, []);
 
   return (
     <div>
