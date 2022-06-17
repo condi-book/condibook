@@ -22,7 +22,8 @@ const MypageBookmarkCard = ({
   const navigate = useNavigate();
   const handleClick = () => navigate(`/bookmark/${item.title}`);
 
-  const handleFavorites = () => {
+  const handleFavorites = (e: React.MouseEvent) => {
+    e.stopPropagation();
     // 즐겨찾기 추가 or 제거
     setChecked((prev) => !prev);
     console.log(checked);
