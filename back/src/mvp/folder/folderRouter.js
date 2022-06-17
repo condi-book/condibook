@@ -7,13 +7,23 @@ const folderRouter = Router();
 
 folderRouter.post("", loginRequired, async (req, res, next) => {
     try {
-        const { title } = req.body;
+        const { owner } = req.query;
+        const { id, title } = req.body; // id는 팀아이디이자 유저아이디
         const { user_id } = req.current;
 
-        const result = await folderService.createFolder({
-            title,
-            user_id,
-        });
+        let result;
+        if (owner === "user") {
+            result = await folderService.createFolderForUser({
+                user_id,
+                title,
+            });
+        } else if (owner === "team") {
+            result = await folderService.createFolderForTeam({
+                team_id: id,
+                title,
+                user_id,
+            });
+        }
         checkErrorMessage(result);
 
         res.status(201).send(result);
@@ -35,10 +45,24 @@ folderRouter.get("", loginRequired, async (req, res, next) => {
     }
 });
 
+folderRouter.get("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params; // 폴더 아이디
+
+        const result = await folderService.getFolderInfo({ id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { mode } = req.query;
+        const { user_id } = req.current;
 
         let result;
         if (mode === "info") {
@@ -47,6 +71,7 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
             result = await folderService.updateFolderInfo({
                 id,
                 title,
+                user_id,
             });
         } else if (mode === "favorites") {
             const { user_id } = req.current;
