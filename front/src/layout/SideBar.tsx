@@ -15,7 +15,7 @@ const iconList = [
 
 const SideBar = () => {
   useEffect(() => {
-    Api.get(`user`, `info`).then((res) => setData(res.data));
+    Api.get(`user/info`).then((res) => setData(res.data));
   }, []);
 
   const [show, setShow] = useState(false);
