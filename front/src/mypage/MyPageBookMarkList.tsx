@@ -63,7 +63,11 @@ const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
             ))}
         </div>
         <div className="view-more">
-          <button onClick={() => setShow((prev) => !prev)}>더보기</button>
+          {firstCopied !== copied && (
+            <button onClick={() => setShow((prev) => !prev)}>
+              {show ? "숨기기" : "더보기"}
+            </button>
+          )}
         </div>
       </div>
     </Div>
@@ -84,6 +88,16 @@ const Div = styled.div`
   }
   .view-more {
     text-align: center;
+
+    button {
+      background: black;
+      color: white;
+
+      &:hover {
+        background: white;
+        color: black;
+      }
+    }
   }
   .create-card {
     border: 2px solid black;
