@@ -1,20 +1,37 @@
-import { Folder, sequelize } from "../../db";
+import { Folder, Membership, sequelize } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
-    static async createFolder({ title, user_id }) {
+    static async createFolderForUser({ user_id, title }) {
         try {
-            // 이미 존재하는 폴더인지 확인
-            const previous = await Folder.findOne({
-                where: { user_id, title },
+            // 새 폴더 생성
+            const newFolder = await Folder.create({
+                user_id,
+                title,
             });
-            if (previous) {
-                return previous;
+
+            return newFolder;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async createFolderForTeam({ team_id, title, user_id }) {
+        try {
+            // 사용자의 팀 소속 여부 확인
+            const member = await Membership.findOne({
+                where: { team_id, member_id: user_id },
+            });
+            if (!member) {
+                return getFailMsg({
+                    entity: "사용자가 팀에 속해 있는지",
+                    action: "확인",
+                });
             }
 
             // 새 폴더 생성
             const newFolder = await Folder.create({
-                user_id,
+                team_id,
                 title,
             });
 

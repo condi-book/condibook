@@ -7,13 +7,23 @@ const folderRouter = Router();
 
 folderRouter.post("", loginRequired, async (req, res, next) => {
     try {
-        const { title } = req.body;
+        const { owner } = req.query;
+        const { id, title } = req.body; // id는 팀아이디이자 유저아이디
         const { user_id } = req.current;
 
-        const result = await folderService.createFolder({
-            title,
-            user_id,
-        });
+        let result;
+        if (owner === "user") {
+            result = await folderService.createFolderForUser({
+                user_id,
+                title,
+            });
+        } else if (owner === "team") {
+            result = await folderService.createFolderForTeam({
+                team_id: id,
+                title,
+                user_id,
+            });
+        }
         checkErrorMessage(result);
 
         res.status(201).send(result);
