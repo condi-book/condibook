@@ -5,12 +5,14 @@ import * as Api from "../api";
 
 export interface MypageBookmarkProps {
   folderData: {
+    id: number;
     image: string;
     title: string;
     link_num: number;
     favorites: boolean;
   }[];
   title: string;
+  handleRemove: (value: any) => void;
 }
 
 const MypageBookmark = () => {
@@ -24,6 +26,7 @@ const MypageBookmark = () => {
     });
   }, []);
 
+  // 즐겨찾기 데이터
   const filteredData: MypageBookmarkProps["folderData"] = folderData.filter(
     (item) => item.favorites === true,
   );
@@ -31,10 +34,26 @@ const MypageBookmark = () => {
   const title1 = "즐겨찾기";
   const title2 = "전체보기";
 
+  // 폴더 삭제 함수
+  const handleRemove = (value: any) => {
+    Api.delete(`folders`, `${value.id}`).then(() => console.log("삭제 성공"));
+
+    const filtered = folderData.filter((item) => item.id !== value.id);
+    setFolderData(filtered);
+  };
+
   return (
     <div>
-      <MypageBookmarkList folderData={filteredData} title={title1} />
-      <MypageBookmarkList folderData={folderData} title={title2} />
+      <MypageBookmarkList
+        folderData={filteredData}
+        title={title1}
+        handleRemove={handleRemove}
+      />
+      <MypageBookmarkList
+        folderData={folderData}
+        title={title2}
+        handleRemove={handleRemove}
+      />
     </div>
   );
 };

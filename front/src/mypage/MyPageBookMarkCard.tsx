@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+// import * as Api from "../api";
 
 interface MypageBookmarkCardProps {
   item: {
+    id: number;
     image: string;
     title: string;
     link_num: number;
     favorites: boolean;
   };
+  handleRemove: (value: any) => void;
 }
 
-const MypageBookmarkCard = (item: MypageBookmarkCardProps["item"]) => {
+const MypageBookmarkCard = ({
+  item,
+  handleRemove,
+}: MypageBookmarkCardProps) => {
   const [checked, setChecked] = useState<boolean>(item.favorites);
   const navigate = useNavigate();
   const handleClick = () => navigate(`/bookmark/${item.title}`);
@@ -19,7 +25,9 @@ const MypageBookmarkCard = (item: MypageBookmarkCardProps["item"]) => {
     // 즐겨찾기 추가 or 제거
     setChecked((prev) => !prev);
     console.log(checked);
+    // Api.put(`folders/${item.id}?mode=favorites`, {})
   };
+
   return (
     <Div {...item} onClick={handleClick}>
       <div className="top part">
@@ -28,6 +36,7 @@ const MypageBookmarkCard = (item: MypageBookmarkCardProps["item"]) => {
         </div>
         <div>
           <span className="pe-7s-more"></span>
+          <button onClick={() => handleRemove(item)}>삭제</button>
         </div>
       </div>
       <div className="middle part">

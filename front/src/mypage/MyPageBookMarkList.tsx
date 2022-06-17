@@ -5,7 +5,11 @@ import { MypageBookmarkProps } from "./MyPageBookMark";
 import { MypageProps } from "./MyPage";
 import Modal from "../layout/Modal";
 
-const MypageBookmarkList = ({ folderData, title }: MypageBookmarkProps) => {
+const MypageBookmarkList = ({
+  folderData,
+  title,
+  handleRemove,
+}: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>("");
@@ -54,12 +58,20 @@ const MypageBookmarkList = ({ folderData, title }: MypageBookmarkProps) => {
             />
           )}
           {firstCopied.map((item, index) => (
-            <MypageBookmarkCard {...item} key={index} />
+            <MypageBookmarkCard
+              item={item}
+              key={index}
+              handleRemove={handleRemove}
+            />
           ))}
           {show &&
             copied !== firstCopied &&
             copied.map((item, index) => (
-              <MypageBookmarkCard {...item} key={index} />
+              <MypageBookmarkCard
+                item={item}
+                key={index}
+                handleRemove={handleRemove}
+              />
             ))}
         </div>
         <div className="view-more">
