@@ -15,20 +15,25 @@ interface MypageBookmarkCardProps {
   handleRemove: (e: React.MouseEvent, value: any) => void;
 }
 
+// 스타일 컴포넌트 프롭 인터페이스
 interface StyleProps {
   item: MypageBookmarkCardProps["item"];
   view: boolean;
 }
 
+// 북마크 폴더 컴포넌트
 const MypageBookmarkCard = ({
   item,
   handleRemove,
 }: MypageBookmarkCardProps) => {
+  // 즐겨찾기 상태값, 더보기 상태값, 더보기 ref 값
   const [checked, setChecked] = useState<boolean>(item.favorites);
-  const navigate = useNavigate();
-  const handleClick = () => navigate(`/bookmark/${item.title}`);
   const [view, setView] = useState<boolean>(false);
   const viewMore: any = useRef([]);
+
+  const navigate = useNavigate();
+  // 폴더 디테일 페이지로 이동 함수
+  const handleClick = () => navigate(`/bookmark/${item.title}`);
 
   useEffect(() => {
     document.addEventListener("mousedown", clickOutside);
@@ -45,6 +50,7 @@ const MypageBookmarkCard = ({
     }
   };
 
+  // 아직 기능 완성 안됨
   const handleFavorites = (e: React.MouseEvent) => {
     e.stopPropagation();
     // 즐겨찾기 추가 or 제거
@@ -53,6 +59,7 @@ const MypageBookmarkCard = ({
     // Api.put(`folders/${item.id}?mode=favorites`, {})
   };
 
+  // 더보기 상태값 변경 함수
   const handleViewMore = (e: React.MouseEvent) => {
     e.stopPropagation();
     setView((prev) => !prev);
