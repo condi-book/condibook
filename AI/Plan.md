@@ -22,14 +22,12 @@
 
         -   logic.(making? or just use or more finetuning?)
 
-            1. word Tokenization.(어떤 모델을 사용하면 좋을지 고민중..maybe kss? + 문법 체크?는 필요할까?)
-            2. 형태소 분석: 카카오의 Khaiii? : https://github.com/kakao/khaiii
-            3. stopwords 제거(stemming은 keyword를 뽑는 모델의 특성상 필요가 없을 것으로 생각됨.)
-                - 한국어 특성상 N-gram 사용.(필수!!)
-
-        -   logic에 따른 problem.
-            1. 한국어의 특성에 따라 매우 많은 고려사항이 들어가야 함.
-            2. meta.description을 따로 설정하지 않았을 때 어떤 default값들이 존재하는데 이 경우 제목만으로 판단할 필요가 있고, 불안정한 키워드를 뽑을 가능성이 매우 높아짐.
+            1. BE로부터 데이터 받기.(title 정보와 description 정보(최대 약 160자))
+            2. title로부터 단어들 추출(4개 이하 예상, = lst1)
+            3. description에서도 단어들 추출(= lst2).
+            4. Model1으로부터 lst1에 있는 모든 단어들을 lst2에 대한 similarity sum을 뽑기.
+            5. 가장 similarity sum이 높은 2개 이하의 lst1 안의 단어와 두 단어와 상관관계가 가장 깊은 단어 하나(혹은 2개)를 마찬가지로 Model1을 사용해서 추출(= lst3).
+            6. lst3을 BE로 보내주기.
 
     -   이 프로젝트의 맥락과 배경이 유사한 인공지능 기반 서비스의 활용 사례 및 참고 논문
 
