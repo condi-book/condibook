@@ -1,4 +1,4 @@
-import { sequelize, Team, User } from "../../db";
+import { Membership, sequelize, Team, User } from "../../db";
 import { getFailMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
@@ -77,6 +77,26 @@ class teamService {
                 });
             }
             result["bookmarkCount"] = bookmarkCount;
+
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getTeamList({ user_id }) {
+        try {
+            // 사용자 존재 확인
+            const user = await User.findOne({ where: { id: user_id } });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+
+            // 팀 조회
+            const result = await Membership.findAll({
+                where: { member_id: user.id },
+                include: [Team],
+            });
 
             return result;
         } catch (e) {

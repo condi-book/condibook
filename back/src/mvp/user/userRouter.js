@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { userService } from "./userService";
+import { teamService } from "../team/teamService";
 import { loginRequired } from "../../middlewares/loginRequired";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 
@@ -48,6 +49,19 @@ userRouter.get("/info", loginRequired, async (req, res, next) => {
         const { user_id } = req.current;
 
         const result = await userService.getUserInfo({ id: user_id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.get("/teams", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+
+        const result = await teamService.getTeamList({ user_id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
