@@ -5,13 +5,13 @@ import { MypageBookmarkProps } from "./MyPageBookMark";
 import { MypageProps } from "./MyPage";
 import Modal from "../layout/Modal";
 
-const MypageBookmarkList = ({ data, title }: MypageBookmarkProps) => {
+const MypageBookmarkList = ({ folderData, title }: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>("");
 
   const refinedData = () => {
-    const copied = Array.from(data);
+    const copied = Array.from(folderData);
     let firstCopied = [];
     if (copied.length > 6 && title === "즐겨찾기") {
       firstCopied = copied.splice(0, 6);

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import * as Api from "../api";
 
 interface props {
   open: boolean;
@@ -9,6 +10,11 @@ interface props {
   title?: string;
 }
 const Modal = ({ open, close, newLink, handleChange, title }: props) => {
+  const handleClick = () => {
+    Api.post(`folders`, { title: newLink }).then(() => {
+      close();
+    });
+  };
   return (
     <Div newLink={newLink}>
       <div className={open ? "bg" : ""}></div>
@@ -29,7 +35,12 @@ const Modal = ({ open, close, newLink, handleChange, title }: props) => {
                 }
               />
             </div>
-            <button disabled={newLink === "" ? true : false}>저장하기</button>
+            <button
+              onClick={handleClick}
+              disabled={newLink === "" ? true : false}
+            >
+              저장하기
+            </button>
           </div>
         )}
       </div>

@@ -16,10 +16,6 @@ export const Mypage = () => {
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
   const keyboardContext: any = useContext(KeyboardContext);
 
-  // 프로필 정보 보이기/숨기기 상태 값
-  // const [profileShow, setProfileShow] =
-  //   useState<ProfileProps["profileShow"]>(false);
-
   const handleClick = (value: boolean) => {
     if (value !== tab) setTab((prev) => !prev);
   };
@@ -39,9 +35,12 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
+  height: 100vh;
 
   .mypage-container {
+    margin: auto;
     width: 90vw;
     border: 2px solid red;
+    height: 100%;
   }
 `;

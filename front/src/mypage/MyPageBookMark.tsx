@@ -1,65 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import MypageBookmarkList from "./MyPageBookMarkList";
+import * as Api from "../api";
 
 export interface MypageBookmarkProps {
-  data: {
+  folderData: {
     image: string;
-    group: string;
+    title: string;
     link_num: number;
-    favorite: boolean;
+    favorites: boolean;
   }[];
   title: string;
 }
 
 const MypageBookmark = () => {
-  const data: MypageBookmarkProps["data"] = [
-    {
-      image: "url",
-      group: "프론트엔드",
-      link_num: 3,
-      favorite: true,
-    },
-    {
-      image: "url",
-      group: "백엔드",
-      link_num: 3,
-      favorite: false,
-    },
-    {
-      image: "url",
-      group: "AI",
-      link_num: 3,
-      favorite: true,
-    },
-    {
-      image: "url",
-      group: "엘리스",
-      link_num: 3,
-      favorite: false,
-    },
-    {
-      image: "url",
-      group: "14팀",
-      link_num: 3,
-      favorite: true,
-    },
-    {
-      image: "url",
-      group: "14팀",
-      link_num: 3,
-      favorite: true,
-    },
-    {
-      image: "url",
-      group: "14팀",
-      link_num: 3,
-      favorite: true,
-    },
-  ];
+  const [folderData, setFolderData] = useState<
+    MypageBookmarkProps["folderData"]
+  >([]);
+  useEffect(() => {
+    Api.get(`folders`).then((res) => {
+      setFolderData(res.data);
+      console.log(res.data);
+    });
+  }, []);
 
-  const filteredData: MypageBookmarkProps["data"] = data.filter(
-    (item) => item.favorite === true,
+  const filteredData: MypageBookmarkProps["folderData"] = folderData.filter(
+    (item) => item.favorites === true,
   );
 
   const title1 = "즐겨찾기";
@@ -67,8 +33,8 @@ const MypageBookmark = () => {
 
   return (
     <div>
-      <MypageBookmarkList data={filteredData} title={title1} />
-      <MypageBookmarkList data={data} title={title2} />
+      <MypageBookmarkList folderData={filteredData} title={title1} />
+      <MypageBookmarkList folderData={folderData} title={title2} />
     </div>
   );
 };
