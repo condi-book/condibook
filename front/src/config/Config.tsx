@@ -1,4 +1,4 @@
-import SideBar from "layout/SideBar";
+import SideBar from "../layout/SideBar";
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { KeyboardContext } from "App";
