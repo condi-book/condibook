@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Carousel from "./carousel/Carousel";
 import Footer from "./Footer";
 import Header from "./Header";
 
 const Main = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Header />
@@ -20,12 +22,14 @@ const Main = () => {
                     <br />
                     이제 스마트하게 저장하세요
                   </p>
-                  <button>무료로 시작하기</button>
+                  <button onClick={() => navigate("/login")}>
+                    무료로 시작하기
+                  </button>
                 </div>
               </div>
             </div>
-            <div>
-              <img alt="대표이미지" />
+            <div className="main-image">
+              <img src="/static/img/main.svg" alt="대표이미지" />
             </div>
           </div>
         </header>
@@ -86,7 +90,7 @@ const Main = () => {
         </section>
         <section className="side">
           <h3>나만의 북마크, 정리부터 공유까지</h3>
-          <button>무료로 시작하기</button>
+          <button onClick={() => navigate("/login")}>무료로 시작하기</button>
         </section>
       </Container>
       <Footer />
@@ -113,6 +117,11 @@ const Container = styled.div`
         color: white;
       }
     }
+  }
+
+  .main-image {
+    background: ${({ theme }) => theme.mainColor};
+    border-radius: 50%;
   }
   .part {
     height: 85vh;
