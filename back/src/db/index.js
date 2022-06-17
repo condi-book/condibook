@@ -32,8 +32,8 @@ const Keyword = KeywordModel(sequelize, DataTypes);
 import AttachedModel from "./schema/attached";
 const Attached = AttachedModel(sequelize, DataTypes);
 
-import BoardModel from "./schema/board";
-const Board = BoardModel(sequelize, DataTypes);
+import PostModel from "./schema/post";
+const Post = PostModel(sequelize, DataTypes);
 
 import CommentModel from "./schema/comment";
 const Comment = CommentModel(sequelize, DataTypes);
@@ -92,35 +92,35 @@ const attached_fk_bookmark = {
 Bookmark.hasMany(Attached, { foreignKey: attached_fk_bookmark });
 Attached.belongsTo(Bookmark, { foreignKey: attached_fk_bookmark });
 
-// Attached : Board = 1 : N
-const attached_fk_board = {
-    name: "board_id",
+// Attached : Post = 1 : N
+const attached_fk_post = {
+    name: "post_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
     comment: "게시물 ID",
 };
-Board.hasMany(Attached, { foreignKey: attached_fk_board });
-Attached.belongsTo(Board, { foreignKey: attached_fk_board });
+Post.hasMany(Attached, { foreignKey: attached_fk_post });
+Attached.belongsTo(Post, { foreignKey: attached_fk_post });
 
-// User : Board = 1 : N
-const board_fk_user = {
+// User : Post = 1 : N
+const post_fk_user = {
     name: "author",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(Board, { foreignKey: board_fk_user });
-Board.belongsTo(User, { foreignKey: board_fk_user });
+User.hasMany(Post, { foreignKey: post_fk_user });
+Post.belongsTo(User, { foreignKey: post_fk_user });
 
-// Board : Comment = 1 : N
-const comment_fk_board = {
-    name: "board_id",
+// Post : Comment = 1 : N
+const comment_fk_post = {
+    name: "post_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
     comment: "게시물 ID",
 };
-Board.hasMany(Comment, { foreignKey: comment_fk_board });
-Comment.belongsTo(Board, { foreignKey: comment_fk_board });
+Post.hasMany(Comment, { foreignKey: comment_fk_post });
+Comment.belongsTo(Post, { foreignKey: comment_fk_post });
 
 // User : Comment = 1 : N
 const comment_fk_user = {
@@ -142,15 +142,15 @@ const like_fk_user = {
 User.hasMany(Like, { foreignKey: like_fk_user });
 Like.belongsTo(User, { foreignKey: like_fk_user });
 
-// Board : Like = 1 : N
-const like_fk_board = {
-    name: "board_id",
+// Post : Like = 1 : N
+const like_fk_post = {
+    name: "post_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
     comment: "게시물 ID",
 };
-Board.hasMany(Like, { foreignKey: like_fk_board });
-Like.belongsTo(Board, { foreignKey: like_fk_board });
+Post.hasMany(Like, { foreignKey: like_fk_post });
+Like.belongsTo(Post, { foreignKey: like_fk_post });
 
 // User : Membership = 1 : N
 const membership_fk_user = {
@@ -226,7 +226,7 @@ export {
     Emoji,
     Keyword,
     Attached,
-    Board,
+    Post,
     Comment,
     Team,
     Membership,

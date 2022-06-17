@@ -1,12 +1,12 @@
-import { Board, User } from "../../db";
+import { Post, User } from "../../db";
 
-class boardSerivce {
-    static async createBoard({ toCreate, user_id }) {
+class postService {
+    static async createPost({ toCreate, user_id }) {
         const title = toCreate.title;
         const content = toCreate.content;
         const views = toCreate.views;
         const userinfo = await User.findOne({ where: { id: user_id } });
-        const result = await Board.create({
+        const result = await Post.create({
             title,
             content,
             views,
@@ -19,8 +19,8 @@ class boardSerivce {
         }
         return result;
     }
-    static async getBoard({ id }) {
-        const result = await Board.findOne({
+    static async getPost({ id }) {
+        const result = await Post.findOne({
             where: { id },
             raw: true,
             nest: true,
@@ -31,9 +31,9 @@ class boardSerivce {
         }
         return result;
     }
-    static async getBoardList() {
+    static async getPostList() {
         const query = { exclude: ["content"] };
-        const result = Board.findAll({ attributes: query });
+        const result = Post.findAll({ attributes: query });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -41,8 +41,8 @@ class boardSerivce {
         }
         return result;
     }
-    static async updateBoard({ id, toUpdate, user_id }) {
-        const chack = await Board.findOne({
+    static async updatePost({ id, toUpdate, user_id }) {
+        const chack = await Post.findOne({
             where: { id },
             raw: true,
             nest: true,
@@ -55,20 +55,20 @@ class boardSerivce {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        await Board.update(toUpdate, {
+        await Post.update(toUpdate, {
             where: { id },
             raw: true,
             nest: true,
         });
-        const result = await Board.findOne({
+        const result = await Post.findOne({
             where: { id },
             raw: true,
             nest: true,
         });
         return result;
     }
-    static async deleteBoard({ id, user_id }) {
-        const chack = await Board.findOne({
+    static async deletePost({ id, user_id }) {
+        const chack = await Post.findOne({
             where: { id },
         });
         if (chack.author != user_id) {
@@ -79,12 +79,12 @@ class boardSerivce {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        const result = Board.destroy({ where: { id } });
+        Post.destroy({ where: { id } });
 
-        return result;
+        return chack;
     }
     static async updateViews({ id }) {
-        const result = Board.increment({ views: 1 }, { where: { id } });
+        const result = Post.increment({ views: 1 }, { where: { id } });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -92,4 +92,4 @@ class boardSerivce {
         }
     }
 }
-export { boardSerivce };
+export { postService };
