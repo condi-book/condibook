@@ -97,6 +97,7 @@ const MypageBookmarkDetail = () => {
             close={handleClick}
             handleChange={handleChange}
             newLink={newLink}
+            handlePushData={() => console.log("sss")}
           />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">

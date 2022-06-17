@@ -8,11 +8,21 @@ interface props {
   newLink: string;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
   title?: string;
+  handlePushData: (data: any) => void;
 }
-const Modal = ({ open, close, newLink, handleChange, title }: props) => {
+const Modal = ({
+  open,
+  close,
+  newLink,
+  handleChange,
+  title,
+  handlePushData,
+}: props) => {
   const handleClick = () => {
-    Api.post(`folders?owner=user`, { title: newLink }).then(() => {
+    Api.post(`folders?owner=user`, { title: newLink }).then((res) => {
       close();
+      console.log(res.data);
+      handlePushData(res.data);
     });
   };
   return (

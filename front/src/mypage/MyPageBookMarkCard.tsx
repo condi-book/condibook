@@ -10,6 +10,7 @@ interface MypageBookmarkCardProps {
     title: string;
     link_num: number;
     favorites: boolean;
+    createdAt: string;
   };
   handleRemove: (e: React.MouseEvent, value: any) => void;
 }

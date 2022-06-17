@@ -10,17 +10,20 @@ export interface MypageBookmarkProps {
     title: string;
     link_num: number;
     favorites: boolean;
+    createdAt: string;
   }[];
   title: string;
   handleRemove: (e: React.MouseEvent, value: any) => void;
+  handlePushData: (value: BookmarkItem) => void;
 }
 
 interface BookmarkItem {
-  id: number;
+  id: string;
   image: string;
   title: string;
   link_num: number;
   favorites: boolean;
+  createdAt: string;
 }
 
 const MypageBookmark = () => {
@@ -48,19 +51,27 @@ const MypageBookmark = () => {
     setFolderData(filtered);
   };
 
+  const handlePushData = (value: BookmarkItem) => {
+    const copied = [...folderData];
+    copied.splice(0, 0, value);
+
+    setFolderData(copied);
+  };
+
   useEffect(() => {
     Api.get(`folders`).then((res) => {
-      setFolderData(
-        res.data.map((item: BookmarkItem) => {
-          return {
-            id: String(item.id),
-            image: item.image,
-            title: item.title,
-            link_num: item.link_num,
-            favorites: item.favorites,
-          };
-        }),
+      const data = res.data.map((item: BookmarkItem) => ({
+        id: String(item.id),
+        image: item.image,
+        title: item.title,
+        link_num: item.link_num,
+        favorites: item.favorites,
+        createdAt: item.createdAt,
+      }));
+      const orderedData = data.sort(
+        (a: any, b: any) => +new Date(b.createdAt) - +new Date(a.createdAt),
       );
+      setFolderData(orderedData);
     });
   }, []);
 
@@ -70,11 +81,13 @@ const MypageBookmark = () => {
         folderData={filteredData}
         title={title1}
         handleRemove={handleRemove}
+        handlePushData={handlePushData}
       />
       <MypageBookmarkList
         folderData={folderData}
         title={title2}
         handleRemove={handleRemove}
+        handlePushData={handlePushData}
       />
     </div>
   );
