@@ -4,7 +4,6 @@ import styled from "styled-components";
 import MypageNavbar from "./MyPageNavBar";
 import MypageBookmark from "./MyPageBookMark";
 import MypageScrapedBookmark from "./MyPageScrapedBookMark";
-import Profile from "../user/Profile";
 import { KeyboardContext } from "../App";
 
 export interface MypageProps {
@@ -13,17 +12,13 @@ export interface MypageProps {
   show?: boolean;
 }
 
-interface ProfileProps {
-  profileShow: boolean;
-}
-
 export const Mypage = () => {
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
   const keyboardContext: any = useContext(KeyboardContext);
 
   // 프로필 정보 보이기/숨기기 상태 값
-  const [profileShow, setProfileShow] =
-    useState<ProfileProps["profileShow"]>(false);
+  // const [profileShow, setProfileShow] =
+  //   useState<ProfileProps["profileShow"]>(false);
 
   const handleClick = (value: boolean) => {
     if (value !== tab) setTab((prev) => !prev);
@@ -31,12 +26,9 @@ export const Mypage = () => {
 
   return (
     <Div>
-      {keyboardContext.sidebar === true && (
-        <SideBar setProfileShow={setProfileShow} />
-      )}
+      {keyboardContext.sidebar === true && <SideBar />}
       <div className="mypage-container">
         <MypageNavbar tab={tab} handleClick={handleClick} />
-        {profileShow && <Profile />}
         {tab ? <MypageBookmark /> : <MypageScrapedBookmark />}
       </div>
     </Div>

@@ -1,28 +1,34 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
-import { UserStateContext } from "../App";
 
-const Profile = () => {
+interface ProfileProps {
+  data: {
+    nickname: string;
+    email: string;
+    image_url: string;
+    intro: string;
+    folderCount: number;
+    bookmarkCount: number;
+    id: number;
+  };
+  handleApply: (value: any) => void;
+}
+const Profile = ({ data, handleApply }: ProfileProps) => {
   const [show, setShow] = useState(false);
-  const userContext: any = useContext(UserStateContext);
-  const { user } = userContext;
-  const [userInfo, setUserInfo] = useState(user);
 
   const handleClick = () => {
     setShow((prev) => !prev);
   };
 
-  const handleChange = (value: any) => setUserInfo(value);
-
   return (
     <>
       {show && (
         <ProfileModal
-          data={userInfo}
+          data={data}
           open={show}
           close={handleClick}
-          handleApply={handleChange}
+          handleApply={handleApply}
         />
       )}
       <Div>
@@ -34,27 +40,25 @@ const Profile = () => {
           </div>
           <div className="top">
             <div className="box">
-              <span className="pe-7s-user"></span>
-              {/* <img src={user.image_url} alt="profile-image" /> */}
+              {/* <span className="pe-7s-user"></span> */}
+              <img src={data.image_url} alt="profile-image" />
               <div className="top-detail">
-                <div>{userInfo.nickname}</div>
-                <div>{userInfo.email}</div>
+                <div>{data.nickname}</div>
+                <div>{data.email}</div>
               </div>
             </div>
           </div>
           <div className="info">
-            <div>
-              {userInfo.intro ? userInfo.intro : "소개글을 작성해보세요"}
-            </div>
+            <div>{data.intro ? data.intro : "소개글을 작성해보세요"}</div>
           </div>
           <div className="bottom">
             <div className="bottom-box">
               <div>
-                <span>{userInfo.folderCount}</span>
+                <span>{data.folderCount}</span>
                 <span>폴더</span>
               </div>
               <div>
-                <span>{userInfo.bookmarkCount}</span>
+                <span>{data.bookmarkCount}</span>
                 <span>북마크</span>
               </div>
             </div>
@@ -72,6 +76,8 @@ const Div = styled.div`
   border: 2px solid black;
   border-radius: 10px;
   background-color: #f8f9fc;
+  margin-left: 120px;
+  margin-top: 10px;
 
   .container {
     height: 100%;
@@ -90,6 +96,10 @@ const Div = styled.div`
 
   .pe-7s-user {
     font-size: 7rem;
+    margin-right: 10%;
+  }
+  img {
+    border-radius: 50%;
     margin-right: 10%;
   }
   .top {

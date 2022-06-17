@@ -13,6 +13,7 @@ interface ProfileProps {
     intro: string;
     folderCount: number;
     bookmarkCount: number;
+    id: number;
   };
   handleApply: (value: any) => void;
 }
