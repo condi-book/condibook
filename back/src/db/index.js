@@ -167,7 +167,7 @@ const membership_fk_team = {
     name: "team_id",
     type: DataTypes.INTEGER,
     onDelete: "setNull",
-    comment: "그룹 ID",
+    comment: "팀 ID",
 };
 Team.hasMany(Membership, { foreignKey: membership_fk_team });
 Membership.belongsTo(Team, { foreignKey: membership_fk_team });
