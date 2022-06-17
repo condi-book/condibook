@@ -12,7 +12,7 @@ export interface MypageBookmarkProps {
     favorites: boolean;
   }[];
   title: string;
-  handleRemove: (value: any) => void;
+  handleRemove: (e: React.MouseEvent, value: any) => void;
 }
 
 interface BookmarkItem {
@@ -40,7 +40,8 @@ const MypageBookmark = () => {
   const title2 = "전체보기";
 
   // 폴더 삭제 함수
-  const handleRemove = (value: any) => {
+  const handleRemove = (e: React.MouseEvent, value: any) => {
+    e.stopPropagation();
     Api.delete(`folders`, `${value.id}`).then(() => console.log("삭제 성공"));
 
     const filtered = folderData.filter((item) => item.id !== value.id);

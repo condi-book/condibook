@@ -11,7 +11,7 @@ interface MypageBookmarkCardProps {
     link_num: number;
     favorites: boolean;
   };
-  handleRemove: (value: any) => void;
+  handleRemove: (e: React.MouseEvent, value: any) => void;
 }
 
 const MypageBookmarkCard = ({
@@ -38,7 +38,7 @@ const MypageBookmarkCard = ({
         </div>
         <div>
           <span className="pe-7s-more"></span>
-          <button onClick={() => handleRemove(item)}>삭제</button>
+          <button onClick={(e) => handleRemove(e, item)}>삭제</button>
         </div>
       </div>
       <div className="middle part">
