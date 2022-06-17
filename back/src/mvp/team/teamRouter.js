@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { teamService } from "./teamService";
 import { loginRequired } from "../../middlewares/loginRequired";
+import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 
 const teamRouter = Router();
 
@@ -14,6 +15,7 @@ teamRouter.post("", loginRequired, async (req, res, next) => {
             name,
             explanation,
         });
+        checkErrorMessage(result);
 
         res.status(201).send(result);
     } catch (e) {
@@ -31,6 +33,7 @@ teamRouter.get("", async (req, res, next) => {
         } else {
             result = await teamService.getTeamAll();
         }
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (e) {
@@ -43,6 +46,7 @@ teamRouter.get("/:id/info", async (req, res, next) => {
         const { id } = req.params;
 
         const result = await teamService.getTeamInfo({ id });
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (e) {

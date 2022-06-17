@@ -14,6 +14,7 @@ userRouter.post("/login/google", async (req, res, next) => {
             email,
             image_url,
         });
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (error) {
@@ -26,11 +27,14 @@ userRouter.post("/login/kakao", async (req, res, next) => {
         const { code } = req.body; // authorization code
 
         const token = await userService.getKakaoToken(code);
+        checkErrorMessage(token);
 
         const account = await userService.getKakaoAccount(token);
+        checkErrorMessage(account);
 
         // 로그인 또는 사용자 생성
         const result = await userService.login(account);
+        checkErrorMessage(result);
 
         // 사용자 정보 + JWT 반환
         res.status(200).send(result);
@@ -44,6 +48,7 @@ userRouter.get("/info", loginRequired, async (req, res, next) => {
         const { user_id } = req.current;
 
         const result = await userService.getUserInfo({ id: user_id });
+        checkErrorMessage(result);
 
         res.status(200).send(result);
     } catch (e) {
