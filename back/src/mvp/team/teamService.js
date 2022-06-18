@@ -6,6 +6,7 @@ import { bookmarkService } from "../bookmark/bookmarkService";
 class teamService {
     static async createTeam({ manager, name, explanation }) {
         try {
+            // 사용자 존재 확인
             const user = await User.findOne({ where: { id: manager } });
             if (!user) {
                 return getFailMsg({
@@ -14,10 +15,17 @@ class teamService {
                 });
             }
 
+            // 팀 생성
             const newTeam = await Team.create({
                 manager: user.id,
                 name,
                 explanation,
+            });
+
+            // 팀의 첫번째 멤버(팀 매니저) 생성
+            await Membership.create({
+                member_id: user.id,
+                team_id: newTeam.id,
             });
 
             return newTeam;
@@ -47,36 +55,28 @@ class teamService {
         }
     }
 
-    static async getTeamInfo({ id }) {
+    static async getTeamInfo({ ids }) {
         try {
-            const result = await Team.findOne({
-                where: { id },
+            let result = await Team.findOne({
+                where: { id: ids },
                 include: [User],
                 raw: true,
                 nest: true,
             });
 
-            if (!result) {
+            if (result.length === 0) {
                 return getFailMsg({ entity: "팀 상세정보", action: "조회" });
             } else {
-                result["manager"] = result["user"];
-                delete result["user"];
-            }
-
-            // 폴더 갯수
-            const folderIds = await folderService.getTeamFolderIds({
-                team_id: id,
-            });
-            result["folderCount"] = folderIds.length;
-
-            // 북마크 갯수
-            let bookmarkCount = 0;
-            if (folderIds.length > 0) {
-                bookmarkCount = await bookmarkService.getMyBookmarkCount({
-                    folderIds: folderIds,
+                result.map((team) => {
+                    team["manager"] = team["user"];
+                    delete team["user"];
+                    await folderService.getFolderCntBookmarkCnt({ team_id })
+                    return team;
                 });
             }
-            result["bookmarkCount"] = bookmarkCount;
+
+
+            
 
             return result;
         } catch (e) {
@@ -93,10 +93,13 @@ class teamService {
             }
 
             // 팀 조회
-            const result = await Membership.findAll({
+            const teamIds = await Membership.findAll({
                 where: { member_id: user.id },
-                include: [Team],
+                attributes: ["team_id"],
+                raw: true,
+                nest: true,
             });
+            const result = await teamService.getTeamInfo;
 
             return result;
         } catch (e) {

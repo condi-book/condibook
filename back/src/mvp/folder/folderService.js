@@ -1,4 +1,5 @@
 import { Folder, sequelize } from "../../db";
+import { bookmarkService } from "../bookmark/bookmarkService";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
@@ -72,6 +73,31 @@ class folderService {
             ids = ids.map((item) => item.id);
 
             return ids;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getFolderCntBookmarkCnt({ team_id }) {
+        try {
+            let result = {};
+
+            // 폴더 갯수
+            const folderIds = await folderService.getTeamFolderIds({
+                team_id,
+            });
+            result["folderCount"] = folderIds.length;
+
+            // 북마크 갯수
+            let bookmarkCount = 0;
+            if (folderIds.length > 0) {
+                bookmarkCount = await bookmarkService.getMyBookmarkCount({
+                    folderIds: folderIds,
+                });
+            }
+            result["bookmarkCount"] = bookmarkCount;
+
+            return result;
         } catch (e) {
             return { errorMessage: e };
         }
