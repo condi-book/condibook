@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import CommunityCard from "./CommunityCard";
+import CommunityPostCard from "./CommunityPostCard";
 import useFetch from "./hooks/useFetch";
 import { PostPreview } from "./CommunityPage";
 
@@ -33,17 +33,15 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
 
   return (
     <Div>
-      {/* <Row xs={2} md={4} lg={6} xl={8} xxl={10}> */}
       <Row>
         {postsForScroll.map((PostPreview: PostPreview) => (
           <Col key={`preview-${PostPreview.id}`}>
-            <CommunityCard PostPreview={PostPreview} />
+            <CommunityPostCard PostPreview={PostPreview} />
           </Col>
         ))}
         <div ref={observer} />
         <>{isLoading && <p>Loading...</p>}</>
       </Row>
-      {/* </Row> */}
     </Div>
   );
 };
@@ -63,6 +61,7 @@ const Col = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 `;
 
 const Row = styled.div`

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Viewer } from "@toast-ui/react-editor";
 
 import SideBar from "../layout/SideBar";
+import CalcDate from "./tools/CalcDate";
 
 // import * from "../Api";
 const dummyData = {
@@ -21,43 +22,14 @@ const CommunityPostDetail = () => {
   const params = useParams();
 
   // 시간 계산 함수
-  const calcTime = (date: Date) => {
-    const seconds = 1;
-    const minute = seconds * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-
-    let today = new Date();
-    let calculatedTime = Math.floor((today.getTime() - date.getTime()) / 1000);
-
-    let resultText = "";
-    if (calculatedTime < seconds) {
-      resultText = "방금 전";
-    } else if (calculatedTime < minute) {
-      resultText = "약 " + calculatedTime + "초 전";
-    } else if (calculatedTime < hour) {
-      resultText = "약 " + Math.floor(calculatedTime / minute) + "분 전";
-    } else if (calculatedTime < day) {
-      resultText = "약 " + Math.floor(calculatedTime / hour) + "시간 전";
-    } else if (calculatedTime < day * 15) {
-      resultText = "약 " + Math.floor(calculatedTime / day) + "일 전";
-    } else {
-      resultText =
-        date.getFullYear().toString() +
-        "-" +
-        (date.getMonth() + 1).toString().padStart(2, "0") +
-        "-" +
-        date.getDate().toString().padStart(2, "0");
-    }
-    return resultText;
-  };
+  const createdTime = CalcDate(dummyData.created_at);
 
   const updatedTime = (createdDate: Date, updatedDate: Date) => {
     let resultText = "";
     if (createdDate.getTime() === updatedDate.getTime()) {
       return resultText;
     } else {
-      resultText = "(" + calcTime(updatedDate) + "수정 됨)";
+      resultText = "(" + CalcDate(updatedDate) + "수정 됨)";
       return resultText;
     }
   };
@@ -95,7 +67,7 @@ const CommunityPostDetail = () => {
               <div>
                 <span className="username">{dummyData.author}</span>
                 <span className="separator">·</span>
-                <span>{calcTime(dummyData.created_at)}</span>
+                <span>{createdTime}</span>
                 <span className="separator">·</span>
                 <span>
                   {updatedTime(dummyData.created_at, dummyData.updated_at)}

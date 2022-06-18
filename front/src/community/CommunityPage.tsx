@@ -46,7 +46,7 @@ const CommunityPage = () => {
       <div className="sidebarWrapper">
         <SideBar />
       </div>
-      <Container fluid>
+      <div className="listWrapper">
         <Row>
           <Container>
             <ButtonGroup>
@@ -72,7 +72,7 @@ const CommunityPage = () => {
             <CommunityPostList sortState={sortState} />
           </Container>
         </Row>
-      </Container>
+      </div>
     </Div>
   );
 };
@@ -87,6 +87,13 @@ const Div = styled.div`
   .sidebarWrapper {
     position: fixed;
   }
+  .listWrapper {
+    margin-left: 130px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+  }
 `;
 
 const Row = styled.div`
@@ -94,6 +101,7 @@ const Row = styled.div`
   margin: -1rem;
   flex-wrap: wrap;
   flex-direction: row;
+  padding: 8px 0 8px 0;
 `;
 
 const ButtonGroup = styled.div`

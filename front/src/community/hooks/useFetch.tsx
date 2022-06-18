@@ -14,8 +14,9 @@ class PostPreviewModel {
     this.id = `${Math.floor(Math.random() * 10000)}`;
     this.author = "hayeong";
     this.created_at = new Date();
-    this.title = "제목";
-    this.content = "요약";
+    this.title = "Lorem Ipsum";
+    this.content =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lobortis, lorem at vehicula faucibus, ligula enim aliquam nibh, non imperdiet eros risus eu dui. Nulla sodales suscipit finibus. Maecenas ornare tempus auctor. Aenean blandit dui risus, pharetra lacinia nunc luctus et. Integer molestie scelerisque est, in vestibulum elit pellentesque at. Praesent suscipit vehicula auctor. In vitae justo eu ex vestibulum maximus. Ut accumsan lacus eget tellus iaculis dapibus.";
     this.views = Math.floor(Math.random() * 10);
   }
 }
