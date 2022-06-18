@@ -100,6 +100,7 @@ const CommunityPostDetail = () => {
   //   try {
   //     const res = await Api.get('community', params)
   //     const {title, author, content, view, created_at, updated_at} = res.data
+  //
 
   //   } catch (err) {
   //     console.log(err)
@@ -187,9 +188,11 @@ const Div = styled.div`
     display: flex;
     flex-direction: row;
     border: 2px solid black;
+    height: 100vh;
   }
   .detailWrapper {
     min-width: 0px;
+    height: 100%;
     width: 50%;
     position: relative;
     padding: 1%;
@@ -199,6 +202,7 @@ const Div = styled.div`
   }
   .contentWrapper {
     min-width: 0px;
+    height: 100%;
     width: 50%;
     padding: 1%;
     display: block;

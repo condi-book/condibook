@@ -20,8 +20,8 @@ const CommunityPostWrite = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search); // 쿼리 스트링 변환
   const postId = params.get("id"); // 변환된 게시글 아이디 값
-
   const editorRef = React.useRef<ToastEditor>(null);
+
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<string | undefined>();
   const [isModifying, setIsModifying] = React.useState(false); // 새글 작성, 수정인지 구분
@@ -70,17 +70,27 @@ const CommunityPostWrite = () => {
   //   }
   // }
 
-  React.useEffect(() => {
-    console.log(params.get("id"));
-    postId ?? setIsModifying(true); // postId가 null 혹은 undefined인지 체크하고 아니라면 수정중으로 변경
+  // 에디터에 북마크 추가 버튼을 생성하는 함수 이후에 모달 창으로 추가 할 수 있도록 한다.
+  // 모달창은 isModalShow state Hooks에 의해 열고 닫혀지고 체크박스안에 체크된 북마크를 추가할 수 있는 리스트를 보여주며 useRef로 렌더링 최적화한다.
 
+  const createCustomButton = () => {
+    const button = document.createElement("span");
+    button.textContent = "북마크 추가";
+    // setIsModalShow(true);
+
+    return button;
+  };
+
+  React.useEffect(() => {
     if (postId !== null) {
       // fetchPostContent()
+      setIsModifying(true);
       setTitle(dummyData.title);
       setContent(dummyData.content);
       editorRef.current?.getInstance().setMarkdown(dummyData.content);
     }
   }, []);
+
   return (
     <Container>
       <ItemContainer>
@@ -103,6 +113,19 @@ const CommunityPostWrite = () => {
             ["ul", "ol", "task", "indent", "outdent"],
             ["table", "image", "link"],
             ["code", "codeblock"],
+            [
+              {
+                name: "customButton",
+                el: createCustomButton(),
+                tooltip: "bookmark add",
+                style: {
+                  cursor: "pointer",
+                  color:
+                    "linear-gradient(135deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)",
+                },
+                className: "last",
+              },
+            ],
           ]}
           language="ko-KR"
           onChange={handleContentChange}

@@ -37,7 +37,9 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
         <div className="userInfo">
           <b>{PostPreview.author}</b>
         </div>
-        <div className="liks">100</div>
+        <div className="liks">
+          <span className="pe-7s-like like"></span>100
+        </div>
       </CardFooter>
     </Card>
   );
@@ -119,6 +121,9 @@ const CardFooter = styled.div`
     display: flex;
     align-items: center;
   }
-  .likes {
+  .like {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-right: 0.5rem;
   }
 `;
