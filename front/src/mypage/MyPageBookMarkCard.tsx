@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+import { LinkPreview } from "@dhaiwat10/react-link-preview";
 // import * as Api from "../api";
 
 interface MypageBookmarkCardProps {
@@ -35,6 +36,21 @@ const MypageBookmarkCard = ({
   // 폴더 디테일 페이지로 이동 함수
   const handleClick = () => navigate(`/bookmark/${item.title}`);
 
+  const customFetcher = async (url: string) => {
+    const response = await fetch(
+      `https://rlp-proxy.herokuapp.com/v2?url=${url}`,
+    );
+    const json = await response.json();
+    const data = {
+      ...json.metadata,
+      title: "",
+      description: "",
+      siteName: "",
+      hostname: "",
+    };
+    return data;
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", clickOutside);
 
@@ -68,8 +84,16 @@ const MypageBookmarkCard = ({
   return (
     <Div view={view} item={item} onClick={handleClick}>
       <div className="top part">
-        <div>
-          <img src={item.image} alt="북마크 이미지"></img>
+        <div className="top-container">
+          <LinkPreview
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            width="40%"
+            height="70%"
+            fetcher={customFetcher}
+            descriptionLength={0}
+            fallback={<span className="pe-7s-folder"></span>}
+            showLoader={false}
+          />
         </div>
         <div>
           <span onClick={handleViewMore} className="pe-7s-more"></span>
@@ -118,14 +142,37 @@ const Div = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  &:hover {
+    cursor: pointer;
+  }
 
+  .top-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .top {
+    height: 50%;
+  }
+  .middle {
+    height: 20%;
+  }
   .part {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-  }
 
+    .Container {
+      border: none;
+    }
+    .LowerContainer {
+      display: none;
+    }
+  }
+  .Image {
+    border-radius: 7px;
+  }
   .pe-7s-more {
     transform: rotate(90deg);
   }
@@ -143,7 +190,7 @@ const Div = styled.div<StyleProps>`
   .dropdown {
     display: ${({ view }) => (view ? "block" : "none")};
     position: absolute;
-    margin-left: 13%;
+    margin-left: 12.5%;
     background-color: #f9f9f9;
     min-width: 60px;
     padding: 8px;

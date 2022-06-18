@@ -59,7 +59,8 @@ const MypageBookmark = () => {
   };
 
   useEffect(() => {
-    Api.get(`folders`).then((res) => {
+    Api.get(`user/folders`).then((res) => {
+      console.log(res.data);
       const data = res.data.map((item: BookmarkItem) => ({
         id: String(item.id),
         image: item.image,
