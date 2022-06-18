@@ -29,7 +29,7 @@ const SideBar = () => {
       setShow((prev: boolean) => !prev);
     }
     if (e.currentTarget.id === "pe-7s-home") {
-      navigate("/");
+      console.log("홈");
     }
     if (e.currentTarget.id === "pe-7s-folder") {
       navigate("/bookmark");
@@ -38,7 +38,7 @@ const SideBar = () => {
       navigate("/community");
     }
     if (e.currentTarget.id === "pe-7s-search") {
-      navigate("/search");
+      console.log("검색");
     }
     if (e.currentTarget.id === "pe-7s-config") {
       navigate("/config");
