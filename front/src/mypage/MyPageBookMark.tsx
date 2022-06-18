@@ -8,9 +8,9 @@ export interface MypageBookmarkProps {
     id: string;
     image: string;
     title: string;
-    link_num: number;
     favorites: boolean;
     createdAt: string;
+    bookmarkCount: number;
   }[];
   title: string;
   handleRemove: (e: React.MouseEvent, value: any) => void;
@@ -21,9 +21,9 @@ interface BookmarkItem {
   id: string;
   image: string;
   title: string;
-  link_num: number;
   favorites: boolean;
   createdAt: string;
+  bookmarkCount: number;
 }
 
 const MypageBookmark = () => {
@@ -65,9 +65,9 @@ const MypageBookmark = () => {
         id: String(item.id),
         image: item.image,
         title: item.title,
-        link_num: item.link_num,
         favorites: item.favorites,
         createdAt: item.createdAt,
+        bookmarkCount: item.bookmarkCount,
       }));
       const orderedData = data.sort(
         (a: any, b: any) => +new Date(b.createdAt) - +new Date(a.createdAt),

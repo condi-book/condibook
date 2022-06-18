@@ -9,7 +9,7 @@ interface MypageBookmarkCardProps {
     id: string;
     image: string;
     title: string;
-    link_num: number;
+    bookmarkCount: number;
     favorites: boolean;
     createdAt: string;
   };
@@ -122,7 +122,7 @@ const MypageBookmarkCard = ({
       <div className="bottom part">
         <div>
           <span className="pe-7s-link"></span>
-          <span>{item.link_num}</span>
+          <span>{item.bookmarkCount}</span>
         </div>
         <div>
           <span onClick={handleFavorites} className="pe-7s-ribbon"></span>

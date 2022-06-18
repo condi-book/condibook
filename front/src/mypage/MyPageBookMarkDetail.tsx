@@ -38,7 +38,7 @@ const listContent = {
       title: "티스토리",
       image: "",
       content: "내용을 입력해주세요",
-      link: "link4",
+      link: "https://hsp0418.tistory.com/123",
     },
   ],
 };
@@ -82,6 +82,14 @@ const MypageBookmarkDetail = () => {
     setNewLink(e.target.value);
   };
 
+  // 링크 추가 함수
+  const handlePushData = (v: any) => {
+    const copied = Array.from(list);
+    copied.push(v);
+    setList(copied);
+    setNewLink("");
+  };
+
   return (
     <Div>
       <SideBar />
@@ -97,7 +105,7 @@ const MypageBookmarkDetail = () => {
             close={handleClick}
             handleChange={handleChange}
             newLink={newLink}
-            handlePushData={() => console.log("sss")}
+            handlePushData={handlePushData}
           />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">
