@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { boardSerivce } from "./boardService";
+import { postService } from "./postService";
 import { loginRequired } from "../../middlewares/loginRequired";
 import { getUserIP } from "../../middlewares/getUserIP";
 
-const boardRouter = Router();
+const postRouter = Router();
 
-boardRouter.post("/", loginRequired, async (req, res, next) => {
+postRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const { title, content } = req.body;
         const user_id = req.current.user_id;
@@ -15,7 +15,7 @@ boardRouter.post("/", loginRequired, async (req, res, next) => {
             content,
             views,
         };
-        const result = await boardSerivce.createBoard({ toCreate, user_id });
+        const result = await postService.createPost({ toCreate, user_id });
         console.log(req.current);
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
@@ -27,9 +27,9 @@ boardRouter.post("/", loginRequired, async (req, res, next) => {
     }
 });
 
-boardRouter.get("/list", async (req, res, next) => {
+postRouter.get("/list", async (req, res, next) => {
     try {
-        const result = await boardSerivce.getBoardList();
+        const result = await postService.getPostList();
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
@@ -39,7 +39,7 @@ boardRouter.get("/list", async (req, res, next) => {
     }
 });
 
-boardRouter.get("/:id", async (req, res, next) => {
+postRouter.get("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
         if (req.cookies[id] == undefined) {
@@ -49,9 +49,9 @@ boardRouter.get("/:id", async (req, res, next) => {
                 maxAge: 720000,
             });
             // 조회수 증가 쿼리
-            await boardSerivce.updateViews({ id });
+            await postService.updateViews({ id });
         }
-        const result = await boardSerivce.getBoard({ id, req });
+        const result = await postService.getPost({ id, req });
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
@@ -62,7 +62,7 @@ boardRouter.get("/:id", async (req, res, next) => {
     }
 });
 
-boardRouter.put("/:id", loginRequired, async (req, res, next) => {
+postRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
         const user_id = req.current.user_id;
@@ -72,7 +72,7 @@ boardRouter.put("/:id", loginRequired, async (req, res, next) => {
             title,
             content,
         };
-        const update = await boardSerivce.updateBoard({
+        const update = await postService.updatePost({
             id,
             toUpdate,
             user_id,
@@ -87,19 +87,19 @@ boardRouter.put("/:id", loginRequired, async (req, res, next) => {
     }
 });
 
-boardRouter.delete("/:id", loginRequired, async (req, res, next) => {
+postRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
         const user_id = req.current.user_id;
-        const result = await boardSerivce.deleteBoard({ id, user_id });
+        const result = await postService.deletePost({ id, user_id });
 
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
-        res.status(204).send("삭제가 완료되었습니다.");
+        res.status(204).send(result);
     } catch (error) {
         next(error);
     }
 });
-export { boardRouter };
+export { postRouter };

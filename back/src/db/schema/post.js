@@ -1,6 +1,6 @@
-export default function BoardModel(sequelize, DataTypes) {
+export default function PostModel(sequelize, DataTypes) {
     return sequelize.define(
-        "board",
+        "post",
         {
             id: {
                 type: DataTypes.INTEGER,

@@ -3,6 +3,7 @@ import { userService } from "./userService";
 import { teamService } from "../team/teamService";
 import { loginRequired } from "../../middlewares/loginRequired";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
+import { folderService } from "../folder/folderService";
 
 const userRouter = Router();
 
@@ -62,6 +63,17 @@ userRouter.get("/teams", loginRequired, async (req, res, next) => {
         const { user_id } = req.current;
 
         const result = await teamService.getTeam({ user_id });
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.get("/folders", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+
+        const result = await folderService.getUserFolders({ user_id });
         checkErrorMessage(result);
 
         res.status(200).send(result);

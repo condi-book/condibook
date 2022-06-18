@@ -7,14 +7,23 @@ const folderRouter = Router();
 
 folderRouter.post("", loginRequired, async (req, res, next) => {
     try {
-        const { title, explanation } = req.body;
+        const { owner } = req.query;
+        const { team_id, title } = req.body;
         const { user_id } = req.current;
 
-        const result = await folderService.createFolder({
-            title,
-            explanation,
-            user_id,
-        });
+        let result;
+        if (owner === "user") {
+            result = await folderService.createFolderForUser({
+                user_id,
+                title,
+            });
+        } else if (owner === "team") {
+            result = await folderService.createFolderForTeam({
+                team_id,
+                title,
+                user_id,
+            });
+        }
         checkErrorMessage(result);
 
         res.status(201).send(result);
@@ -23,11 +32,11 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
     }
 });
 
-folderRouter.get("", loginRequired, async (req, res, next) => {
+folderRouter.get("/:id", async (req, res, next) => {
     try {
-        const { user_id } = req.current;
+        const { id } = req.params; // 폴더 아이디
 
-        const result = await folderService.getMyFolders({ user_id });
+        const result = await folderService.getFolderInfo({ id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -39,25 +48,23 @@ folderRouter.get("", loginRequired, async (req, res, next) => {
 folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { mode } = req.query;
+        const { title } = req.body;
+        const { user_id } = req.current;
 
         let result;
-        if (mode === "info") {
-            const { title, explanation } = req.body;
+        result = await folderService.updateTitle({
+            id,
+            title,
+            user_id,
+        });
+        // } else if (mode === "favorites") {
+        //     const { user_id } = req.current;
 
-            result = await folderService.updateFolderInfo({
-                id,
-                title,
-                explanation,
-            });
-        } else if (mode === "favorites") {
-            const { user_id } = req.current;
-
-            result = await folderService.updateFolderFavorites({
-                id,
-                user_id,
-            });
-        }
+        //     result = await folderService.updateFolderFavorites({
+        //         id,
+        //         user_id,
+        //     });
+        // }
 
         checkErrorMessage(result);
 

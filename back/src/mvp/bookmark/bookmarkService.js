@@ -64,6 +64,20 @@ class bookmarkService {
         }
     }
 
+    static async getFirstBookmarkInTheFolder({ folderId }) {
+        try {
+            let bookmark = await Bookmark.findOne({
+                where: { folder_id: folderId },
+                include: [Website],
+                raw: true,
+                nest: true,
+            });
+            return bookmark;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async getBookmarksInTheFolder({ folder_id }) {
         try {
             let bookmarks = await Bookmark.findAll({
@@ -126,6 +140,17 @@ class bookmarkService {
     static async getBookmarksInFolders({ folderIds }) {
         try {
             const result = await Bookmark.findAll({
+                where: { folder_id: folderIds },
+            }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getBookmarkCountInFolders({ folderIds }) {
+        try {
+            const result = await Bookmark.count({
                 where: { folder_id: folderIds },
             }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
             return result;

@@ -17,9 +17,8 @@ bookmarkRouter.post("/", loginRequired, async (req, res, next) => {
         checkErrorMessage(website);
 
         // 폴더 생성(키워드 중에 단어 골라서 폴더이름으로 설정 -> 미완)
-        const folder = await folderService.createFolder({
+        const folder = await folderService.createFolderForUser({
             title: "temporary folder title",
-            explanation: "temporary folder explanation",
             user_id,
         });
         checkErrorMessage(folder);

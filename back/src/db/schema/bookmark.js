@@ -8,12 +8,6 @@ export default function BookmarkModel(sequelize, DataTypes) {
                 autoIncrement: true,
                 comment: "북마크 ID",
             },
-            favorites: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                defaultValue: false,
-                comment: "즐겨찾기 여부",
-            },
         },
         {
             charset: "utf8",
