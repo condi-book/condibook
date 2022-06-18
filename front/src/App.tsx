@@ -5,9 +5,10 @@ import theme from "./style/theme";
 import { loginReducer } from "./reducer";
 import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
+import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
-import CommunityUser from "./community/CommunityUser";
 import CommunityPostDetail from "./community/CommunityPostDetail";
+import CommunityPostWrite from "./community/CommunityPostWrite";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
@@ -57,10 +58,10 @@ const App: React.FC = () => {
                   element={<CallBackKakaoLogin />}
                 />
                 <Route path="/" element={<Main />} />
-                <Route path="/community" element={<CommunityPage />}>
-                  <Route path="userId" element={<CommunityUser />}>
-                    <Route path=":postId" element={<CommunityPostDetail />} />
-                  </Route>
+                <Route path="/community" element={<Community />}>
+                  <Route path="" element={<CommunityPage />} />
+                  <Route path=":postId" element={<CommunityPostDetail />} />
+                  <Route path="write" element={<CommunityPostWrite />} />
                 </Route>
                 <Route path="/bookmark" element={<Mypage />} />
                 <Route path="/login" element={<Login />} />

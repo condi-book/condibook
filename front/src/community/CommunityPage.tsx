@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { Container, Row, ButtonGroup, ToggleButton } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import styled from "styled-components";
 import CommunityPostList from "./CommunityPostList";
+import SideBar from "../layout/SideBar";
 
 export interface PostPreview {
   id: string;
-  user_id: string;
+  author: string;
   created_at: Date;
   title: string;
-  description: string;
-  like: number;
+  content: string;
+  views: number;
 }
 
 const CommunityPage = () => {
+  const navigate = useNavigate();
   const [sortState, setSortState] = useState<string>("newest");
 
   const radios = React.useMemo(
@@ -22,31 +26,44 @@ const CommunityPage = () => {
     [],
   );
 
-  const handleToggleChange = React.useCallback((event: React.ChangeEvent) => {
-    const { value } = event.currentTarget as HTMLInputElement;
-    setSortState(value);
-  }, []);
+  const handleToggleChange = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      const { value } = event.currentTarget;
+      console.log(value);
+      setSortState(value);
+    },
+    [],
+  );
 
+  const handlePostClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    navigate("/community/write");
+  };
   return (
-    <>
-      <Container>
+    <Div>
+      <div className="sidebarWrapper">
+        <SideBar />
+      </div>
+      <div className="listWrapper">
         <Row>
           <Container>
             <ButtonGroup>
-              {radios.map((radio, idx) => (
-                <ToggleButton
-                  key={`toggle-${idx}`}
-                  id={`radio-${idx}`}
-                  type="radio"
-                  variant={"outline-success"}
-                  name="radio"
-                  value={radio.value}
-                  checked={sortState === radio.value}
-                  onChange={handleToggleChange}
-                >
-                  {radio.name}
-                </ToggleButton>
-              ))}
+              <ButtonWrapper>
+                {radios.map((radio) => (
+                  <button
+                    key={`toggle-${radio.value}`}
+                    value={radio.value}
+                    onClick={handleToggleChange}
+                  >
+                    {radio.name}
+                  </button>
+                ))}
+              </ButtonWrapper>
+              <ButtonWrapper>
+                <button onClick={handlePostClick}>새 글 작성</button>
+              </ButtonWrapper>
             </ButtonGroup>
           </Container>
         </Row>
@@ -55,9 +72,48 @@ const CommunityPage = () => {
             <CommunityPostList sortState={sortState} />
           </Container>
         </Row>
-      </Container>
-    </>
+      </div>
+    </Div>
   );
 };
 
 export default CommunityPage;
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: row;
+  background: #f8f9fc;
+
+  .sidebarWrapper {
+    position: fixed;
+  }
+  .listWrapper {
+    margin-left: 130px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+  }
+`;
+
+const Row = styled.div`
+  display: flex;
+  margin: -1rem;
+  flex-wrap: wrap;
+  flex-direction: row;
+  padding: 8px 0 8px 0;
+`;
+
+const ButtonGroup = styled.div`
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: space-between;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
