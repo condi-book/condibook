@@ -48,18 +48,33 @@ class folderService {
         }
     }
 
-    static async getMyFolders({ user_id }) {
+    static async getUserFolders({ user_id }) {
         try {
             let folders = await Folder.findAll({
                 where: { user_id },
             });
 
-            const result = folders.map((folder) => {
-                return {
-                    ...folder,
-                    favorites: folder.favorites == 1 ? true : false,
-                };
-            });
+            const result = await Promise.all(
+                folders.map(async (folder) => {
+                    // 북마크 갯수 정보 추가
+                    const bookmarkCount =
+                        await bookmarkService.getBookmarkCountInFolders({
+                            folderIds: [folder.id],
+                        });
+                    // 폴더 이미지를 위해서 북마크 정보 한개만 추가
+                    const firstBookmark =
+                        await bookmarkService.getFirstBookmarkInTheFolder({
+                            folderId: folder.id,
+                        });
+                    return {
+                        ...folder,
+                        favorites: false,
+                        bookmarkCount,
+                        firstBookmark,
+                    };
+                }),
+            );
+
             return result;
         } catch (e) {
             return { errorMessage: e };

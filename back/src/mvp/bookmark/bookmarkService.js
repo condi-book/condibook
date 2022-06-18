@@ -64,6 +64,20 @@ class bookmarkService {
         }
     }
 
+    static async getFirstBookmarkInTheFolder({ folderId }) {
+        try {
+            let bookmark = await Bookmark.findOne({
+                where: { folder_id: folderId },
+                include: [Website],
+                raw: true,
+                nest: true,
+            });
+            return bookmark;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async getBookmarksInTheFolder({ folder_id }) {
         try {
             let bookmarks = await Bookmark.findAll({

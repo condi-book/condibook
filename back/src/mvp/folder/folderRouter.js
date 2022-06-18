@@ -32,19 +32,6 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
     }
 });
 
-folderRouter.get("", loginRequired, async (req, res, next) => {
-    try {
-        const { user_id } = req.current;
-
-        const result = await folderService.getMyFolders({ user_id });
-        checkErrorMessage(result);
-
-        res.status(200).send(result);
-    } catch (e) {
-        next(e);
-    }
-});
-
 folderRouter.get("/:id", async (req, res, next) => {
     try {
         const { id } = req.params; // 폴더 아이디
