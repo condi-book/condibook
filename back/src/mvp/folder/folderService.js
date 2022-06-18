@@ -120,7 +120,7 @@ class folderService {
         }
     }
 
-    static async updateFolderInfo({ id, title, user_id }) {
+    static async updateTitle({ id, title, user_id }) {
         try {
             // 사용자의 폴더 소유 여부 확인
             const folder = await Folder.findOne({ where: { id, user_id } });

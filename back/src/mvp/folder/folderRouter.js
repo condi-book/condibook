@@ -48,26 +48,23 @@ folderRouter.get("/:id", async (req, res, next) => {
 folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { mode } = req.query;
+        const { title } = req.body;
         const { user_id } = req.current;
 
         let result;
-        if (mode === "info") {
-            const { title } = req.body;
+        result = await folderService.updateTitle({
+            id,
+            title,
+            user_id,
+        });
+        // } else if (mode === "favorites") {
+        //     const { user_id } = req.current;
 
-            result = await folderService.updateFolderInfo({
-                id,
-                title,
-                user_id,
-            });
-        } else if (mode === "favorites") {
-            const { user_id } = req.current;
-
-            result = await folderService.updateFolderFavorites({
-                id,
-                user_id,
-            });
-        }
+        //     result = await folderService.updateFolderFavorites({
+        //         id,
+        //         user_id,
+        //     });
+        // }
 
         checkErrorMessage(result);
 
