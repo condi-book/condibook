@@ -9,6 +9,7 @@ const MypageBookmarkList = ({
   folderData,
   title,
   handleRemove,
+  handlePushData,
 }: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
@@ -31,6 +32,7 @@ const MypageBookmarkList = ({
 
   const handleClick = () => {
     setModalShow((prev) => !prev);
+    setFolderName("");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +57,7 @@ const MypageBookmarkList = ({
               open={modalShow}
               close={handleClick}
               title={title}
+              handlePushData={handlePushData}
             />
           )}
           {firstCopied.map((item, index) => (

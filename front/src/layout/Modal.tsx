@@ -8,12 +8,34 @@ interface props {
   newLink: string;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
   title?: string;
+  handlePushData: (data: any) => void;
 }
-const Modal = ({ open, close, newLink, handleChange, title }: props) => {
+const Modal = ({
+  open,
+  close,
+  newLink,
+  handleChange,
+  title,
+  handlePushData,
+}: props) => {
   const handleClick = () => {
-    Api.post(`folders`, { title: newLink }).then(() => {
+    Api.post(`folders?owner=user`, { title: newLink }).then((res) => {
       close();
+      console.log(res.data);
+      handlePushData(res.data);
     });
+  };
+
+  const handleCreate = (v: any) => {
+    console.log("링크 추가");
+    handlePushData({
+      id: "5",
+      title: "okayoon",
+      image: "",
+      content: "내용을 입력해주세요",
+      link: v,
+    });
+    close();
   };
   return (
     <Div newLink={newLink}>
@@ -36,7 +58,7 @@ const Modal = ({ open, close, newLink, handleChange, title }: props) => {
               />
             </div>
             <button
-              onClick={handleClick}
+              onClick={title === "전체보기" ? handleClick : handleCreate}
               disabled={newLink === "" ? true : false}
             >
               저장하기
