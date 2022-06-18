@@ -67,16 +67,13 @@ class teamService {
             if (result.length === 0) {
                 return getFailMsg({ entity: "팀 상세정보", action: "조회" });
             } else {
-                result.map((team) => {
+                result.map(async (team) => {
                     team["manager"] = team["user"];
                     delete team["user"];
-                    await folderService.getFolderCntBookmarkCnt({ team_id })
+                    await folderService.getFolderCntBookmarkCnt({ team_id });
                     return team;
                 });
             }
-
-
-            
 
             return result;
         } catch (e) {
