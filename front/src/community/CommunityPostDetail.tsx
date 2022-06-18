@@ -9,17 +9,78 @@ import CalcDate from "./tools/CalcDate";
 
 // import * from "../Api";
 const dummyData = {
-  title: "무야호",
+  title: "Lorem Ipsum",
   author: "hayeong",
   content:
-    "무야호는 2021년 3~5월부터 대한민국에서 유행하기 시작한 인터넷 밈이다. MBC 무한도전의 2011년 방영분에서 연출된 미국 알래스카 교민 할아버지의 함성에서 유래하였다.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lobortis, lorem at vehicula faucibus, ligula enim aliquam nibh, non imperdiet eros risus eu dui. Nulla sodales suscipit finibus. Maecenas ornare tempus auctor. Aenean blandit dui risus, pharetra lacinia nunc luctus et. Integer molestie scelerisque est, in vestibulum elit pellentesque at. Praesent suscipit vehicula auctor. In vitae justo eu ex vestibulum maximus. Ut accumsan lacus eget tellus iaculis dapibus.",
   views: "123",
   created_at: new Date(),
   updated_at: new Date(),
 };
 
+interface Bookmark {
+  id: string;
+  title: string;
+  image: string;
+  content: string;
+  link: string;
+}
+const bookmarkList: Bookmark[] = [
+  {
+    id: "1",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://tychejin.tistory.com/231",
+  },
+  {
+    id: "2",
+    title: "okayoon",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
+  },
+  {
+    id: "3",
+    title: "nykim",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://nykim.work/107",
+  },
+  {
+    id: "5",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "link4",
+  },
+  {
+    id: "6",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "link4",
+  },
+  {
+    id: "7",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "link4",
+  },
+  {
+    id: "8",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "link4",
+  },
+];
+
 const CommunityPostDetail = () => {
   const params = useParams();
+  const [list, setList] = React.useState<Bookmark[]>([]);
+  const [link, setLink] = React.useState("");
 
   // 시간 계산 함수
   const createdTime = CalcDate(dummyData.created_at);
@@ -48,6 +109,7 @@ const CommunityPostDetail = () => {
   React.useEffect(() => {
     console.log("params", params);
     // fetchPostDetail()
+    setList(bookmarkList);
   }, []);
 
   return (
@@ -75,9 +137,25 @@ const CommunityPostDetail = () => {
               </div>
             </InfoContainer>
           </HeaderContainer>
-          <div>
-            <span>북마크</span>
-          </div>
+          <BookmarkContainer>
+            <h4 className="title">북마크</h4>
+            <Ol>
+              {list?.length === 0 ? (
+                <p>북마크 없음</p>
+              ) : (
+                list.map((item) => {
+                  return (
+                    <li
+                      key={`bookmark-${item.id}`}
+                      onClick={() => setLink(item.link)}
+                    >
+                      <span className="pointer">{item.title}</span>
+                    </li>
+                  );
+                })
+              )}
+            </Ol>
+          </BookmarkContainer>
           <div>
             <Viewer initialValue={dummyData.content} />
           </div>
@@ -86,7 +164,7 @@ const CommunityPostDetail = () => {
           </div>
         </div>
         <div className="contentWrapper">
-          <iframe width="100%" height="100%"></iframe>
+          <iframe src={link} width="100%" height="100%"></iframe>
         </div>
       </div>
     </Div>
@@ -139,7 +217,6 @@ const H1 = styled.h1`
   letter-spacing: -0.004em;
   margin-top: 0px;
   font-weight: 800;
-  margin-bottom: 2rem;
   word-break: keep-all; // 콘텐츠 오버플로 줄바꿈 옵션 keep-all: 줄을 바꿀 때 단어끊김 없음
 `;
 
@@ -178,5 +255,29 @@ const InfoContainer = styled.div`
   .separator {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+  }
+`;
+
+const BookmarkContainer = styled.div`
+  margin: 2rem;
+  padding: 2rem 1.5rem;
+  border: 2px solid black;
+  border-radius: 8px;
+  position: relative;
+  .title {
+    margin-top: 0px;
+    font-weight: bold;
+    padding-right: 2rem;
+    font-size: 1.5rem;
+  }
+`;
+
+const Ol = styled.ol`
+  padding-left: 1rem;
+  line-height: 1.8;
+  font-size: 1rem;
+  counter-reset: item 0;
+  .pointer {
+    cursor: pointer;
   }
 `;

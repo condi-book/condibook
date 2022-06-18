@@ -90,6 +90,7 @@ const CardTitle = styled.h4`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  font-weight: bold;
 `;
 const CardText = styled.p`
   margin: 0px 0px 1.5rem;
