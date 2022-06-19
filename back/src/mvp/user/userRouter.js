@@ -92,7 +92,7 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
         const result = await userService.setNickname({ nickname, id });
         checkErrorMessage(result);
 
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch (e) {
         next(e);
     }
@@ -106,7 +106,7 @@ userRouter.put("/intro", loginRequired, async (req, res, next) => {
         const result = await userService.setIntro({ intro, id });
         checkErrorMessage(result);
 
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch (e) {
         next(e);
     }
@@ -119,7 +119,7 @@ userRouter.delete("", loginRequired, async (req, res, next) => {
         const result = await userService.deleteUser({ id });
         checkErrorMessage(result);
 
-        res.status(200).send(result);
+        res.status(204).send(result);
     } catch (e) {
         next(e);
     }

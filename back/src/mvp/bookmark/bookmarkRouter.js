@@ -76,7 +76,7 @@ bookmarkRouter.put("/:id", loginRequired, async (req, res, next) => {
 
         checkErrorMessage(result);
 
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch (e) {
         next(e);
     }
@@ -89,7 +89,7 @@ bookmarkRouter.delete("/:id", loginRequired, async (req, res, next) => {
         const result = await bookmarkService.deleteBookmark({ id });
         checkErrorMessage(result);
 
-        res.status(200).json(result);
+        res.status(204).json(result);
     } catch (e) {
         next(e);
     }
