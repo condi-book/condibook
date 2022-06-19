@@ -160,11 +160,11 @@ class teamService {
             // 사용자가 속한 팀 조회
             let teams = await sequelize.query(
                 `SELECT membership.team_id, team.name, team.explanation, count(folder.id) as folder_count 
-                FROM ${Membership.tableName} as membership INNER JOIN ${Team.tableName} AS team 
+                FROM (SELECT * FROM ${Membership.tableName} WHERE ${Membership.tableName}.member_id = ${user_id}) as membership
+                INNER JOIN ${Team.tableName} AS team 
                 ON membership.team_id = team.id 
-                INNER JOIN ${Folder.tableName} as folder 
-                ON team.id = folder.team_id 
-                WHERE membership.member_id = ${user_id} 
+                LEFT JOIN ${Folder.tableName} as folder 
+                ON team.id = folder.team_id
                 GROUP BY team.id;`,
                 { type: sequelize.QueryTypes.SELECT },
             );
