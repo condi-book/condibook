@@ -167,6 +167,37 @@ class teamService {
         }
     }
 
+    static async updateTeamInfo({ teamId, requesterId, name, explanation }) {
+        try {
+            // 팀 아이디가 실제로 존재하는지
+            const team = await Team.findOne({ where: { id: teamId } });
+            if (!team) {
+                return getFailMsg({ entity: "팀", action: "조회" });
+            }
+            // 수정 요청자 requester가 실제로 존재하는지, 그리고 수정할 권한이 있는지
+            const requester = await User.findOne({
+                where: { id: requesterId },
+            });
+            if (!requester) {
+                return getFailMsg({ entity: "요청자", action: "조회" });
+            }
+            if (team.manager !== requester.id) {
+                return { errorMessage: "사용자는 권한이 없습니다." };
+            }
+            //팀 상세정보 수정
+            const [affectedRows] = await Team.update(
+                { name, explanation },
+                { where: { id: teamId, manager: requester.id } },
+            );
+            if (affectedRows === 0) {
+                return getFailMsg({ entity: "팀 상세정보", action: "수정" });
+            }
+            return getSuccessMsg({ entity: "팀 상세정보", action: "수정" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async deleteMemeber({ teamId, memberId, requesterId }) {
         try {
             // 팀 존재 확인

@@ -73,6 +73,26 @@ teamRouter.get("/:id/info", async (req, res, next) => {
     }
 });
 
+teamRouter.put("/:id/info", loginRequired, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { name, explanation } = req.body;
+        const { user_id } = req.current;
+
+        const result = await teamService.updateTeamInfo({
+            teamId: id,
+            requesterId: user_id,
+            name,
+            explanation,
+        });
+        checkErrorMessage(result);
+
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 teamRouter.delete(
     "/:teamId/members/:memberId",
     loginRequired,
