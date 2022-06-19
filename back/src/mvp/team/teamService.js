@@ -83,7 +83,15 @@ class teamService {
 
     static async getTeamAll() {
         try {
-            const teams = await Team.findAll({});
+            const teams = await sequelize.query(
+                `SELECT team.id as team_id, team.name, team.explanation, count(folder.id) as folder_count 
+            FROM ${Team.tableName} AS team 
+            LEFT JOIN ${Folder.tableName} as folder 
+            ON team.id = folder.team_id 
+            GROUP BY team.id;`,
+                { type: sequelize.QueryTypes.SELECT },
+            );
+
             return teams;
         } catch (e) {
             return { errorMessage: e };
