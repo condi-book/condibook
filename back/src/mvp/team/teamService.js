@@ -1,4 +1,4 @@
-import { Membership, Team, User, Op } from "../../db";
+import { Membership, Team, User, Folder, Op, sequelize } from "../../db";
 import { getFailMsg, getSuccessMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 
@@ -150,16 +150,16 @@ class teamService {
             }
 
             // 사용자가 속한 팀 조회
-            let teams = await Membership.findAll({
-                where: { member_id: user.id },
-                attributes: ["team_id"],
-                include: [Team],
-                raw: true,
-                nest: true,
-            });
-            teams = teams.map((team) => {
-                return team["team"];
-            }); // [{"team_id": 1, "team": { 팀 정보 }}]로 반환되서 정리가 필요함
+            let teams = await sequelize.query(
+                `SELECT membership.team_id, team.name, team.explanation, count(folder.id) as folder_count 
+                FROM ${Membership.tableName} as membership INNER JOIN ${Team.tableName} AS team 
+                ON membership.team_id = team.id 
+                INNER JOIN ${Folder.tableName} as folder 
+                ON team.id = folder.team_id 
+                WHERE membership.member_id = ${user_id} 
+                GROUP BY team.id;`,
+                { type: sequelize.QueryTypes.SELECT },
+            );
 
             return teams;
         } catch (e) {
