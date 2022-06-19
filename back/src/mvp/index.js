@@ -5,6 +5,7 @@ import { folderRouter } from "./folder/folderRouter";
 import { postRouter } from "./post/postRouter";
 import { commentRouter } from "./comment/commentRouter";
 import { likeRouter } from "./like/likeRouter";
+import { attachedRouter } from "./attached/attachedRouter";
 const indexRouter = (app) => {
     app.use("/user", userRouter);
     app.use("/website", websiteRouter);
@@ -13,6 +14,7 @@ const indexRouter = (app) => {
     app.use("/post", postRouter);
     app.use("/comment", commentRouter);
     app.use("/like", likeRouter);
+    app.use("/attached", attachedRouter);
 };
 
 export { indexRouter };

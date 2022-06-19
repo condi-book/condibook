@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { postService } from "./postService";
 import { loginRequired } from "../../middlewares/loginRequired";
-import { getUserIP } from "../../middlewares/getUserIP";
+import { getUserIP } from "../../util/getUserIP/getUserIP.js";
 
 const postRouter = Router();
 

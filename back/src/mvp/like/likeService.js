@@ -7,10 +7,10 @@ class likeService {
             const errorMessage = "해당 게시글이 존재하지 않습니다.";
             return { errorMessage };
         }
-        const chack = await Like.findOne({
+        const check = await Like.findOne({
             where: { user_id, post_id },
         });
-        if (chack) {
+        if (check) {
             const errorMessage = "이미 좋아요 한 게시글 입니다.";
             return { errorMessage };
         }
@@ -50,10 +50,10 @@ class likeService {
         return result;
     }
     static async deleteLike({ user_id, post_id }) {
-        const chack = await Like.findOne({
+        const check = await Like.findOne({
             where: { user_id, post_id },
         });
-        if (!chack) {
+        if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }

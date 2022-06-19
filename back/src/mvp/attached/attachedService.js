@@ -1,26 +1,40 @@
-import { User, Comment, Post } from "../../db";
+import { Post, Folder, Bookmark, Attached } from "../../db";
 
 class attachedService {
-    static async createComment({ content, user_id, post_id }) {
-        if (!content) {
-            const errorMessage = "댓글내용이 없습니다.";
-            return { errorMessage };
-        }
-
-        const userinfo = await User.findOne({ where: { id: user_id } });
+    static async createAttached({ user_id, post_id }) {
+        const folderInfo = await Folder.findAll({ where: { id: user_id } });
+        const bookmarkInfo = await Bookmark.findAll({
+            where: { folder_id: folderInfo.id },
+        });
         const post_fk_id = await Post.findOne({ where: { id: post_id } });
 
-        const result = await Comment.create({
-            content,
-            author: user_id,
-            author_name: userinfo.nickname,
-            post_id: post_fk_id.id,
-        });
-        if (!result) {
-            const errorMessage = "해당 데이터가 없습니다.";
-            return { errorMessage };
-        }
-        return result;
+        // const result = await Attached.create({
+        //     bookmark_id: bookmarkInfo.id,
+        //     post_id: post_fk_id.id,
+        // });
+        // if (!result) {
+        //     const errorMessage = "해당 데이터가 없습니다.";
+        //     return { errorMessage };
+        // }
+        return bookmarkInfo;
+    }
+    static async getCheck({ user_id, post_id }) {
+        const folderInfo = await Folder.findAll({ where: { user_id } });
+        // const bookmarkInfo = await Bookmark.findAll({
+        //     where: { folder_id: folderInfo.id },
+        // });
+        console.log(folderInfo.id)
+        // const post_fk_id = await Post.findOne({ where: { id: post_id } });
+
+        // const result = await Attached.create({
+        //     bookmark_id: bookmarkInfo.id,
+        //     post_id: post_fk_id.id,
+        // });
+        // if (!result) {
+        //     const errorMessage = "해당 데이터가 없습니다.";
+        //     return { errorMessage };
+        // }
+        return folderInfo;
     }
 }
 
