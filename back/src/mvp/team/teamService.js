@@ -167,7 +167,7 @@ class teamService {
         }
     }
 
-    static async deleteMemeber({ teamId, memberId, requester }) {
+    static async deleteMemeber({ teamId, memberId, requesterId }) {
         try {
             // 팀 존재 확인
             const team = await Team.findOne({ where: { id: teamId } });
@@ -175,7 +175,13 @@ class teamService {
                 return getFailMsg({ entity: "팀", action: "조회" });
             }
             // 삭제 요청자 존재 확인 및 권한 확인
-            if (team.manager !== requester) {
+            const requester = await User.findOne({
+                where: { id: requesterId },
+            });
+            if (!requester) {
+                return getFailMsg({ entity: "요청자", action: "조회" });
+            }
+            if (team.manager !== requester.id) {
                 return { errorMessage: "사용자는 권한이 없습니다." };
             }
             // 사용자 존재 확인
@@ -186,6 +192,36 @@ class teamService {
             // 회원 삭제
             const result = await Membership.destroy({
                 where: { team_id: teamId, member_id: memberId },
+            });
+            if (result === 0) {
+                return getFailMsg({ entity: "회원", action: "삭제" });
+            }
+            return getSuccessMsg({ entity: "회원", action: "삭제" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async deleteTeam({ teamId, requesterId }) {
+        try {
+            // 팀 존재 확인
+            const team = await Team.findOne({ where: { id: teamId } });
+            if (!team) {
+                return getFailMsg({ entity: "팀", action: "조회" });
+            }
+            // 삭제 요청자 존재 확인 및 권한 확인
+            const requester = await User.findOne({
+                where: { id: requesterId },
+            });
+            if (!requester) {
+                return getFailMsg({ entity: "요청자", action: "조회" });
+            }
+            if (team.manager !== requester.id) {
+                return { errorMessage: "사용자는 권한이 없습니다." };
+            }
+            // 팀 삭제
+            const result = await Team.destroy({
+                where: { id: teamId },
             });
             if (result === 0) {
                 return getFailMsg({ entity: "회원", action: "삭제" });

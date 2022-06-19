@@ -84,15 +84,32 @@ teamRouter.delete(
             const result = await teamService.deleteMemeber({
                 teamId,
                 memberId,
-                requester: user_id,
+                requesterId: user_id,
             });
             checkErrorMessage(result);
 
-            res.status(200).send(result);
+            res.status(204).send(result);
         } catch (e) {
             next(e);
         }
     },
 );
+
+teamRouter.delete("/:teamId", loginRequired, async (req, res, next) => {
+    try {
+        const { teamId } = req.params;
+        const { user_id } = req.current;
+
+        const result = await teamService.deleteTeam({
+            teamId,
+            requesterId: user_id,
+        });
+        checkErrorMessage(result);
+
+        res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+});
 
 export { teamRouter };
