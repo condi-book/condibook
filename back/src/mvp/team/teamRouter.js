@@ -25,11 +25,11 @@ teamRouter.post("", loginRequired, async (req, res, next) => {
 
 teamRouter.get("", async (req, res, next) => {
     try {
-        const { name } = req.query;
+        const { search } = req.query;
 
         let result;
-        if (name) {
-            result = await teamService.getTeamByName({ name });
+        if (search) {
+            result = await teamService.searchTeam({ keyword: search });
         } else {
             result = await teamService.getTeamAll();
         }

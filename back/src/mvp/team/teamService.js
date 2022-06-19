@@ -1,7 +1,6 @@
-import { Membership, sequelize, Team, User } from "../../db";
+import { Membership, Team, User, Op } from "../../db";
 import { getFailMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
-import { bookmarkService } from "../bookmark/bookmarkService";
 
 class teamService {
     static async createTeam({ manager, name, explanation }) {
@@ -43,11 +42,24 @@ class teamService {
         }
     }
 
-    static async getTeamByName({ name }) {
+    static async searchTeam({ keyword }) {
         try {
-            const [results] = await sequelize.query(
-                `SELECT * FROM ${Team.tableName} WHERE name LIKE '%${name}%'`,
-            );
+            const results = await Team.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            name: {
+                                [Op.like]: `%${keyword}%`,
+                            },
+                        },
+                        {
+                            explanation: {
+                                [Op.like]: `%${keyword}%`,
+                            },
+                        },
+                    ],
+                },
+            });
 
             return results;
         } catch (e) {
