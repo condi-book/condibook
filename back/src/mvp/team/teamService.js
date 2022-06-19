@@ -175,6 +175,21 @@ class teamService {
         }
     }
 
+    static async getTeamMembers({ team_id }) {
+        try {
+            const members = await sequelize.query(
+                `SELECT user.id, user.nickname, user.email, user.image_url, user.intro 
+                FROM (SELECT * FROM ${Membership.tableName} WHERE ${Membership.tableName}.team_id = ${team_id}) as membership 
+                INNER JOIN ${User.tableName} as user
+                ON membership.member_id = user.id`,
+                { type: sequelize.QueryTypes.SELECT },
+            );
+            return members;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async updateTeamInfo({ teamId, requesterId, name, explanation }) {
         try {
             // 팀 아이디가 실제로 존재하는지
