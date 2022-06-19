@@ -1,5 +1,5 @@
 import { Membership, Team, User, Op } from "../../db";
-import { getFailMsg } from "../../util/message";
+import { getFailMsg, getSuccessMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 
 class teamService {
@@ -162,6 +162,35 @@ class teamService {
             }); // [{"team_id": 1, "team": { 팀 정보 }}]로 반환되서 정리가 필요함
 
             return teams;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async deleteMemeber({ teamId, memberId, requester }) {
+        try {
+            // 팀 존재 확인
+            const team = await Team.findOne({ where: { id: teamId } });
+            if (!team) {
+                return getFailMsg({ entity: "팀", action: "조회" });
+            }
+            // 삭제 요청자 존재 확인 및 권한 확인
+            if (team.manager !== requester) {
+                return { errorMessage: "사용자는 권한이 없습니다." };
+            }
+            // 사용자 존재 확인
+            const member = await User.findOne({ where: { id: memberId } });
+            if (!member) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 회원 삭제
+            const result = await Membership.destroy({
+                where: { team_id: teamId, member_id: memberId },
+            });
+            if (result === 0) {
+                return getFailMsg({ entity: "회원", action: "삭제" });
+            }
+            return getSuccessMsg({ entity: "회원", action: "삭제" });
         } catch (e) {
             return { errorMessage: e };
         }

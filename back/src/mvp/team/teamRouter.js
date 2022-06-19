@@ -73,4 +73,26 @@ teamRouter.get("/:id/info", async (req, res, next) => {
     }
 });
 
+teamRouter.delete(
+    "/:teamId/members/:memberId",
+    loginRequired,
+    async (req, res, next) => {
+        try {
+            const { teamId, memberId } = req.params;
+            const { user_id } = req.current;
+
+            const result = await teamService.deleteMemeber({
+                teamId,
+                memberId,
+                requester: user_id,
+            });
+            checkErrorMessage(result);
+
+            res.status(200).send(result);
+        } catch (e) {
+            next(e);
+        }
+    },
+);
+
 export { teamRouter };
