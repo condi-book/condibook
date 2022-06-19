@@ -62,7 +62,7 @@ userRouter.get("/teams", loginRequired, async (req, res, next) => {
     try {
         const { user_id } = req.current;
 
-        const result = await teamService.getTeam({ user_id });
+        const result = await teamService.getTeamListUserJoined({ user_id });
         res.status(200).send(result);
     } catch (e) {
         next(e);

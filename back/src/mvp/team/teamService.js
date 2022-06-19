@@ -33,6 +33,54 @@ class teamService {
         }
     }
 
+    static async createMembership({ hostId, inviteeId, teamId }) {
+        try {
+            // 초대한 사람, 초대받은 사람 존재 확인
+            const host = await User.findOne({ where: { id: hostId } });
+            if (!host) {
+                return getFailMsg({ entity: "초대한 사용자", action: "조회" });
+            }
+            const invitee = await User.findOne({
+                where: { id: inviteeId },
+            });
+            if (!invitee) {
+                return getFailMsg({
+                    entity: "초대받은 사용자",
+                    action: "조회",
+                });
+            }
+
+            // 멤버 추가 권한 확인
+            const team = await Team.findOne({ where: { id: teamId } });
+            if (!team) {
+                return getFailMsg({ entity: "팀", action: "조회" });
+            }
+            if (team.manager !== host.id) {
+                return {
+                    errorMessage: "현재 사용자는 팀에 초대할 권한이 없습니다.",
+                };
+            }
+
+            // 이미 회원인지 존재 확인
+            const previousMembership = await Membership.count({
+                where: { member_id: invitee.id, team_id: team.id },
+            });
+            if (previousMembership > 0) {
+                return { errorMessage: "이미 소속된 회원입니다." };
+            }
+
+            // 멤버 추가
+            const membership = await Membership.create({
+                member_id: invitee.id,
+                team_id: team.id,
+            });
+
+            return membership;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async getTeamAll() {
         try {
             const teams = await Team.findAll({});
@@ -67,7 +115,7 @@ class teamService {
         }
     }
 
-    static async getTeamInfo({ ids }) {
+    static async getTeamsInfo({ ids }) {
         try {
             let result = await Team.findOne({
                 where: { id: ids },
@@ -93,7 +141,7 @@ class teamService {
         }
     }
 
-    static async getTeamList({ user_id }) {
+    static async getTeamListUserJoined({ user_id }) {
         try {
             // 사용자 존재 확인
             const user = await User.findOne({ where: { id: user_id } });
@@ -101,16 +149,19 @@ class teamService {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
 
-            // 팀 조회
-            const teamIds = await Membership.findAll({
+            // 사용자가 속한 팀 조회
+            let teams = await Membership.findAll({
                 where: { member_id: user.id },
                 attributes: ["team_id"],
+                include: [Team],
                 raw: true,
                 nest: true,
             });
-            const result = await teamService.getTeamInfo;
+            teams = teams.map((team) => {
+                return team["team"];
+            }); // [{"team_id": 1, "team": { 팀 정보 }}]로 반환되서 정리가 필요함
 
-            return result;
+            return teams;
         } catch (e) {
             return { errorMessage: e };
         }

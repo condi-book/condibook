@@ -23,6 +23,25 @@ teamRouter.post("", loginRequired, async (req, res, next) => {
     }
 });
 
+teamRouter.post("/:id/members", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+        const { invitee_id } = req.body;
+        const { id } = req.params;
+
+        const result = await teamService.createMembership({
+            hostId: user_id,
+            inviteeId: invitee_id,
+            teamId: id,
+        });
+        checkErrorMessage(result);
+
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 teamRouter.get("", async (req, res, next) => {
     try {
         const { search } = req.query;
@@ -45,7 +64,7 @@ teamRouter.get("/:id/info", async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const result = await teamService.getTeamInfo({ ids: [id] });
+        const result = await teamService.getTeamsInfo({ ids: [id] });
         checkErrorMessage(result);
 
         res.status(200).send(result);
