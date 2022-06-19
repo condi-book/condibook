@@ -98,6 +98,48 @@ class folderService {
         }
     }
 
+    static async getTeamFolderIds({ team_id }) {
+        try {
+            let ids = await Folder.findAll({
+                where: { team_id },
+                attributes: ["id"],
+                raw: true,
+            });
+
+            // 배열 안에 {id: 2}형태로 반환하기 때문에 추가 처리 부분 필요
+            ids = ids.map((item) => item.id);
+
+            return ids;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getFolderCntBookmarkCnt({ team_id }) {
+        try {
+            let result = {};
+
+            // 폴더 갯수
+            const folderIds = await folderService.getTeamFolderIds({
+                team_id,
+            });
+            result["folderCount"] = folderIds.length;
+
+            // 북마크 갯수
+            let bookmarkCount = 0;
+            if (folderIds.length > 0) {
+                bookmarkCount = await bookmarkService.getMyBookmarkCount({
+                    folderIds: folderIds,
+                });
+            }
+            result["bookmarkCount"] = bookmarkCount;
+
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async getFolderInfo({ id }) {
         try {
             let info = await Folder.findOne({
