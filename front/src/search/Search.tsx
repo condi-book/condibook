@@ -67,6 +67,10 @@ const Search = () => {
             </div>
           </div>
         </div>
+        <div className="search-image">
+          <img src="static/img/search.svg" width="30%" height="30%" />
+          <p>원하는 콘텐츠를 검색해보세요</p>
+        </div>
       </div>
     </Div>
   );
@@ -89,7 +93,7 @@ const Div = styled.div<StyleProps>`
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 110px;
+    height: 15%;
     padding-top: 5%;
   }
   .search-box {
@@ -230,6 +234,19 @@ const Div = styled.div<StyleProps>`
         cursor: pointer;
         font-size: 25px;
       }
+    }
+  }
+  .search-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 85%;
+
+    p {
+      margin-top: 5%;
+      font-size: 30px;
+      font-weight: bold;
     }
   }
 `;
