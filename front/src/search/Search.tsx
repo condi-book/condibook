@@ -10,11 +10,18 @@ type StyleProps = {
 const Search = () => {
   const keyboardContext: any = useContext(KeyboardContext);
   const [show, setShow] = useState(false);
+  const [tab, setTab] = useState("전체 검색");
   const [word, setWord] = useState("");
 
   // 검색어 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(e.target.value);
+  };
+
+  // 검색 조건 핸들러
+  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
+    setTab((e.target as HTMLElement).textContent);
+    setShow((prev) => !prev);
   };
 
   // 검색창 초기화 함수
@@ -32,12 +39,12 @@ const Search = () => {
                 className="search-dropdown-header"
                 onClick={() => setShow((prev) => !prev)}
               >
-                <p>전체검색</p>
+                <p>{tab}</p>
                 <span className="pe-7s-angle-down" />
               </div>
               <div className="search-select hi">
-                <div>전체 검색</div>
-                <div>나의 콘텐츠 검색</div>
+                <div onClick={handleTab}>전체 검색</div>
+                <div onClick={handleTab}>나의 콘텐츠 검색</div>
               </div>
             </div>
             <div className="search-input">
@@ -112,7 +119,7 @@ const Div = styled.div<StyleProps>`
       flex-direction: column;
       -webkit-box-pack: center;
       justify-content: center;
-      width: 174px;
+      width: 200px;
       height: 100%;
       margin-right: 10px;
 
@@ -124,7 +131,7 @@ const Div = styled.div<StyleProps>`
         -webkit-box-pack: center;
         justify-content: center;
         align-items: flex-start;
-        width: 174px;
+        width: 200px;
         padding: 50px 20px 0px;
         border-radius: 8px;
         background-color: rgb(235, 235, 235);
@@ -157,7 +164,7 @@ const Div = styled.div<StyleProps>`
         justify-content: space-between;
         -webkit-box-align: center;
         align-items: center;
-        width: 174px;
+        width: 200px;
         height: 50px;
         padding: 0px 20px;
         border-radius: 8px;
@@ -171,6 +178,10 @@ const Div = styled.div<StyleProps>`
 
         p {
           margin: auto 0;
+        }
+        span {
+          font-size: 20px;
+          font-weight: bolder;
         }
       }
     }
