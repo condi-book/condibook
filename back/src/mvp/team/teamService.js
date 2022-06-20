@@ -1,6 +1,16 @@
-import { Membership, Team, User, Folder, Op, sequelize } from "../../db";
+import {
+    Membership,
+    Team,
+    User,
+    Folder,
+    Bookmark,
+    FDFavorite,
+    Op,
+    sequelize,
+} from "../../db";
 import { getFailMsg, getSuccessMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
+import { bookmarkService } from "../bookmark/bookmarkService";
 
 class teamService {
     static async createTeam({ manager, name, explanation }) {
@@ -185,6 +195,54 @@ class teamService {
                 { type: sequelize.QueryTypes.SELECT },
             );
             return members;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getTeamFolders({ team_id, requester_id }) {
+        try {
+            // 팀 존재 확인
+            const team = await Team.findOne({ where: { id: team_id } });
+            if (!team) {
+                return getFailMsg({ entity: "팀", action: "조회" });
+            }
+            // 요청자 존재 확인
+            const requester = await User.findOne({
+                where: { id: requester_id },
+            });
+            if (!requester) {
+                return getFailMsg({ entity: "요청자", action: "조회" });
+            }
+            // 팀 폴더 확인
+            let folders = await sequelize.query(
+                `SELECT folder.id, folder.title, folder.createdAt, folder.updatedAt, count(bookmark.id) as bookmark_count, CASE WHEN fdfavorite.id IS NULL THEN false ELSE true END favorites
+                FROM (SELECT * FROM ${Folder.tableName} WHERE ${Folder.tableName}.team_id = ${team.id}) AS folder
+                LEFT JOIN ${Bookmark.tableName} AS bookmark
+                ON folder.id = bookmark.folder_id
+                LEFT JOIN ${FDFavorite.tableName} AS fdfavorite
+                ON folder.id = fdfavorite.folder_id and fdfavorite.user_id = ${requester.id}
+                GROUP BY folder.id
+                ORDER BY fdfavorite.createdAt DESC, folder.createdAt ASC;`,
+                { type: sequelize.QueryTypes.SELECT },
+            );
+
+            folders = await Promise.all(
+                folders.map(async (folder) => {
+                    // 폴더 이미지를 위해서 북마크 정보 한개만 추가
+                    const url =
+                        await bookmarkService.getFirstBookmarkUrlInFolder({
+                            folder_id: folder.id,
+                        });
+                    return {
+                        ...folder,
+                        favorites: folder.favorites === 1 ? true : false,
+                        first_bookmark_url: url,
+                    };
+                }),
+            );
+
+            return folders;
         } catch (e) {
             return { errorMessage: e };
         }

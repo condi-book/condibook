@@ -86,6 +86,23 @@ teamRouter.get("/:id/members", async (req, res, next) => {
     }
 });
 
+teamRouter.get("/:id/folders", loginRequired, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { user_id } = req.current;
+
+        const result = await teamService.getTeamFolders({
+            team_id: id,
+            requester_id: user_id,
+        });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 teamRouter.put("/:id/info", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
