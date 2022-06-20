@@ -72,10 +72,15 @@ const CommunityPostWrite = () => {
 
   // 에디터에 북마크 추가 버튼을 생성하는 함수 이후에 모달 창으로 추가 할 수 있도록 한다.
   // 모달창은 isModalShow state Hooks에 의해 열고 닫혀지고 체크박스안에 체크된 북마크를 추가할 수 있는 리스트를 보여주며 useRef로 렌더링 최적화한다.
-
   const createCustomButton = () => {
     const button = document.createElement("span");
     button.textContent = "북마크 추가";
+    button.style.cursor = "pointer";
+    button.style.background =
+      "linear-gradient(135deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)";
+    button.style.color = "transparent";
+    button.style.webkitBackgroundClip = "text";
+
     // setIsModalShow(true);
 
     return button;
@@ -118,12 +123,12 @@ const CommunityPostWrite = () => {
                 name: "customButton",
                 el: createCustomButton(),
                 tooltip: "bookmark add",
-                style: {
-                  cursor: "pointer",
-                  color:
-                    "linear-gradient(135deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)",
-                },
                 className: "last",
+                // popup: {
+                //   className: "last",
+                //   body: container,
+                //   style: {},
+                // },
               },
             ],
           ]}

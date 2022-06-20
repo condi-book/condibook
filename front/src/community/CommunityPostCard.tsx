@@ -95,6 +95,7 @@ const CardTitle = styled.h4`
   font-weight: bold;
 `;
 const CardText = styled.p`
+  display: block;
   margin: 0px 0px 1.5rem;
   word-break: break-word;
   overflow-wrap: break-word;
