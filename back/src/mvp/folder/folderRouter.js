@@ -34,9 +34,9 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
 
 folderRouter.get("/:id", async (req, res, next) => {
     try {
-        const { id } = req.params; // 폴더 아이디
+        const { id } = req.params;
 
-        const result = await folderService.getFolderInfo({ id });
+        const result = await folderService.getFolderInfo({ folder_id: id });
         checkErrorMessage(result);
 
         res.status(200).send(result);

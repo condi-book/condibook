@@ -149,23 +149,23 @@ class folderService {
         }
     }
 
-    static async getFolderInfo({ id }) {
+    static async getFolderInfo({ folder_id }) {
         try {
-            let info = await Folder.findOne({
-                where: { id },
+            let folder = await Folder.findOne({
+                where: { id: folder_id },
                 attributes: ["id", "title"],
             });
-            if (!info) {
+            if (!folder) {
                 return getFailMsg({ entity: "폴더 상세정보", action: "조회" });
             }
 
             // 폴더에 속한 북마크 개수
-            info["bookmarkCount"] =
+            folder["bookmarkCount"] =
                 await bookmarkService.getBookmarkCountInFolders({
-                    folderIds: [id],
+                    folderIds: [folder.id],
                 });
 
-            return info;
+            return folder;
         } catch (e) {
             return { errorMessage: e };
         }
