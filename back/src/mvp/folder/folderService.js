@@ -72,14 +72,14 @@ class folderService {
             folders = await Promise.all(
                 folders.map(async (folder) => {
                     // 폴더 이미지를 위해서 북마크 정보 한개만 추가
-                    const firstBookmark =
-                        await bookmarkService.getFirstBookmarkInTheFolder({
-                            folderId: folder.id,
+                    const url =
+                        await bookmarkService.getFirstBookmarkUrlInFolder({
+                            folder_id: folder.id,
                         });
                     return {
                         ...folder,
                         favorites: folder.favorites === 1 ? true : false,
-                        firstBookmark,
+                        first_bookmark_url: url,
                     };
                 }),
             );
