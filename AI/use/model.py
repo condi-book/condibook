@@ -1,13 +1,19 @@
-# 사용 패키지 re(정규표현식), googletrans==4.0.0-rc1(언어감지 및 번역), konlpy(명사추출), gensim(word2vec) 사용!
 import re
 from googletrans import Translator
 from konlpy.tag import Okt
-from gensim.model import word2vec
+from gensim.models import Word2Vec
+import os
+os.environ['JAVA_HOME'] = r'/usr/bin/jar'
 
 regex = re.compile('[ㄱ-ㅎ|\d\ㅏ-ㅣ|가-힣|a-z|0-9]+')
 translator = Translator()
 okt = Okt()
-model = word2vec.load('path/model.bin')
+# print(os.listdir('.'))
+# model = Word2Vec.load('./AI/Model/pretrained/ko.bin')
+model = Word2Vec.load('./Model/pretrained/ko.bin') # test.py에서 실행될 때는 이 경로, 이 파일만 실행될 때는 원천경로부터..
+model_input_words = tuple(model.wv.index2word)
+
+
 del_arr = '''
 아 휴 아이구 아이쿠 아이고 어 나 우리 저희 따라 의해 을 를 에 의 가 으로 로 에게 뿐이다 의거하여 근거하여 입각하여 
 기준으로 예하면 예를 들면 예를 들자면 저 소인 소생 저희 지말고 하지마 하지마라 다른 물론 또한 그리고 
@@ -71,59 +77,77 @@ def nouns_extractor(arr):
     # 영어가 있는 경우 실행되는 코드로 위와 똑같이 명사 분류.
     text1 = ''
     if len(text) != 0:
-        text1 = translator.translate(text1, src = 'en', dest = 'ko').text
+        text1 = translator.translate(text, dest = 'ko').text
 
         for i in okt.pos(text1):
             if i[1] == 'Noun':
                 reserverd_nouns.append(i[0])
     
     #불용어 제거 후 return.(중복 가능)
-    nouns = [i for i in reserverd_nouns if i not in stopwords]
-    return nouns
+    # nouns = [i for i in reserverd_nouns if i not in stopwords] 요게 함수쪽으로 들어갈 경우 len(title_nouns) == 0 이 될 수 있음.
+    return reserverd_nouns
 
-# model2 : bookmark_extract func.
-# reserved_bookmark_list = [(title[i],1) for i in range(len(title_nouns))] + model.wv.most_similar(positive = title_nouns)
+# model2 : 예비북마크 list.
+def make_reserved_bookmark_list(lst):
+    reserved_bookmark_list = [(i,1) for i in lst]
+    exist_words = []
+
+    for i in lst:
+        if i in model_input_words:
+            exist_words.append(i)
+
+    if len(exist_words) > 0:
+        reserved_bookmark_list += model.wv.most_similar(positive = exist_words)
+    
+    return reserved_bookmark_list
+
+# model3 : bookmark_extract func.
+
 def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
     # description이 없는 경우.. title의 keyword는 있겠지..
     if len(description_nouns) == 0:
         return reserved_bookmark_list
     
     # keyword_similarity_sum 구하고 return.
-    keywords_ordered = ['']*len(reserved_bookmark_list)
+    keywords_ordered = dict()
     for i in range(len(reserved_bookmark_list)):
         keyword,per = reserved_bookmark_list[i]
-        temp_num = 0
         
-        for j in description_nouns:
-            temp_num += model.wv.similarity(keyword,j)
-        temp_num *= per
-        
-        keywords_ordered[i] = [keyword,temp_num]
+        if keyword in model_input_words:
+            # print(reserved_bookmark_list)
+            temp_num = 0
+            
+            for j in description_nouns:
+                try:
+                    temp_num += model.wv.similarity(keyword,j)
+                except:
+                    pass  # description의 noun이 model에 없는 경우 고려대상에서 제외.
+                
+            # print(temp_num,per)
+            temp_num *= per
+            
+            keywords_ordered[keyword] = temp_num
+        else:
+            keywords_ordered['!'+keyword] = -1 # title에서 뽑은 noun이 없는 경우. 경고(!)와 함께 value = -1로 표기.
     
-    keywords_ordered = sorted(keywords_ordered,key = lambda x: -x[1])
-
     return keywords_ordered
 
 # ================================================
 
-# model3 : 공유 북마크 부분에서 쓰이는 모델. 관심사와 유사한 키워드를 찾아서 뽑은 후 백엔드에 전달, 이 키워드를 이용해 타인의 북마크등을 추천.
+# model4 : 공유 북마크 부분에서 쓰이는 모델. 관심사와 유사한 키워드를 찾아서 뽑은 후 백엔드에 전달, 이 키워드를 이용해 타인의 북마크등을 추천.
 # input : 관심사 키워드 + 워드임베딩된 키워드.
 # output : 추천??(서버 내 북마크된 글이 충분히 많아졌을 때!)
 
 def recommend_by_keyword(keywords,bookmark_list):
     #관심사 키워드 + bookmark된 키워드 리스트의 목록중 받아온 북마크에 있는 것만 뽑아주기. -- be가 어떻게 짜여졌냐에 따라 수정해야 할 수도?
-    x = model.wv.most_similar(positive = keywords) # len = 10
+    x = model.wv.most_similar(positive = keywords,topn=30) # len = 30
     
     # 모든 것을 뽑는거는 애매하고 유사한 것중에서 3개 이하로 뽑기.(없으면 없는대로 보내기.)
     temp = []
     for i in x:
-        if i in bookmark_list:
-            temp.append(i)
+        if i[0] in bookmark_list:
+            temp.append(i[0])
         if len(temp) == 3:
             break
 
-    return keywords + temp
-
-x = 'BankEnd이 진입!'
-y = '미국은 english, 한국은 한글, 일본은 히라가나가타카나, 중국은 한자,번체,짬뽕..'
-print(keywords_sum_similarity(nouns_extractor(x),nouns_extractor(y)))
+    return tuple(keywords + temp)
