@@ -52,6 +52,51 @@ class favoriteService {
             return { errorMessage: e };
         }
     }
+
+    static async deleteFolderFavorites({ folder_id, requester_id }) {
+        try {
+            // 사용자 존재 확인
+            const user = await User.findOne({ where: { id: requester_id } });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 폴더 즐겨 찾기 삭제
+            const deletedRow = await FDFavorite.destroy({
+                where: { user_id: user.id, folder_id: folder_id },
+            });
+            if (deletedRow === 0) {
+                return getFailMsg({
+                    entity: "폴더 즐겨찾기",
+                    action: "삭제",
+                });
+            }
+            return deletedRow;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+    static async deleteBookmarkFavorites({ bookmark_id, requester_id }) {
+        try {
+            // 사용자 존재 확인
+            const user = await User.findOne({ where: { id: requester_id } });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 북마크 즐겨 찾기 삭제
+            const deletedRow = await BMFavorite.destroy({
+                where: { user_id: user.id, bookmark_id: bookmark_id },
+            });
+            if (deletedRow === 0) {
+                return getFailMsg({
+                    entity: "북마크 즐겨찾기",
+                    action: "삭제",
+                });
+            }
+            return deletedRow;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
 }
 
 export { favoriteService };
