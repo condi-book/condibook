@@ -12,7 +12,7 @@ const dummyData = {
   title: "Lorem Ipsum",
   author: "hayeong",
   content:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam lobortis, lorem at vehicula faucibus, ligula enim aliquam nibh, non imperdiet eros risus eu dui. Nulla sodales suscipit finibus. Maecenas ornare tempus auctor. Aenean blandit dui risus, pharetra lacinia nunc luctus et. Integer molestie scelerisque est, in vestibulum elit pellentesque at. Praesent suscipit vehicula auctor. In vitae justo eu ex vestibulum maximus. Ut accumsan lacus eget tellus iaculis dapibus.",
+    "**Lorem ipsum dolor sit amet**, consectetur adipiscing elit. Aliquam lobortis, lorem at vehicula faucibus, ligula enim aliquam nibh, non imperdiet eros risus eu dui. Nulla sodales suscipit finibus. Maecenas ornare tempus auctor. Aenean blandit dui risus, pharetra lacinia nunc luctus et. Integer molestie scelerisque est, in vestibulum elit pellentesque at. Praesent suscipit vehicula auctor. In vitae justo eu ex vestibulum maximus. Ut accumsan lacus eget tellus iaculis dapibus.",
   views: "123",
   created_at: new Date(),
   updated_at: new Date(),
@@ -81,6 +81,8 @@ const CommunityPostDetail = () => {
   const params = useParams();
   const [list, setList] = React.useState<Bookmark[]>([]);
   const [link, setLink] = React.useState("");
+  const [like, setLike] = React.useState(false);
+  const [likeCount, setLikeCount] = React.useState(0);
 
   // 시간 계산 함수
   const createdTime = CalcDate(dummyData.created_at);
@@ -93,6 +95,11 @@ const CommunityPostDetail = () => {
       resultText = "(" + CalcDate(updatedDate) + "수정 됨)";
       return resultText;
     }
+  };
+
+  const handleLikeClick = () => {
+    setLike(!like);
+    like ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
   };
 
   // // 파라미터로 게시글 내용 받아오는 함수
@@ -121,7 +128,14 @@ const CommunityPostDetail = () => {
       <div className="postWrapper">
         <div className="detailWrapper">
           <HeaderContainer>
-            <H1>{dummyData.title}</H1>
+            <TitleContainer>
+              <H1>{dummyData.title}</H1>
+              <div className="likeWrapper" onClick={handleLikeClick}>
+                <LikeButton className="pe-7s-like" like={like} />
+                <p className="likeCount">{likeCount}</p>
+              </div>
+            </TitleContainer>
+
             <ButtonContainer>
               <button className="hoverButton">수정</button>
               <button className="hoverButton">삭제</button>
@@ -213,6 +227,32 @@ const Div = styled.div`
 
 const HeaderContainer = styled.div`
   box-sizing: inherit;
+  display: flex;
+  flex-direction: column;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  .likeWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .likeCount {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+`;
+
+const LikeButton = styled.span<{ like: boolean }>`
+  font-size: 3rem;
+  font-weight: bold;
+  color: ${(props) => (props.like ? "pink" : "black")};
 `;
 
 const H1 = styled.h1`
@@ -227,10 +267,12 @@ const H1 = styled.h1`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: -1.25rem;
+  margin-bottom: -2rem;
+  z-index: 5;
 
   .hoverButton {
-    height: 2.5rem;
+    height: 100%;
+    weight: 100%;
     padding: 0.5rem 1rem;
     align-items: center;
     background: none;
@@ -243,6 +285,9 @@ const ButtonContainer = styled.div`
       background-color: black;
       color: white;
     }
+  }
+  .pe-7s-like {
+    font-size: 2.5rem;
   }
 `;
 
