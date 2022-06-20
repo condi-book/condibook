@@ -7,7 +7,7 @@ import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 
 const bookmarkRouter = Router();
 
-bookmarkRouter.post("/", loginRequired, async (req, res, next) => {
+bookmarkRouter.post("", loginRequired, async (req, res, next) => {
     try {
         const { url } = req.body;
         const { user_id } = req.current;
@@ -18,8 +18,8 @@ bookmarkRouter.post("/", loginRequired, async (req, res, next) => {
 
         // 폴더 생성(키워드 중에 단어 골라서 폴더이름으로 설정 -> 미완)
         const folder = await folderService.createFolderForUser({
-            title: "temporary folder title",
-            user_id,
+            requester_id: user_id,
+            title: website.keyword ?? "temporary folder title",
         });
         checkErrorMessage(folder);
 

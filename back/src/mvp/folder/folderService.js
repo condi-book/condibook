@@ -13,14 +13,16 @@ class folderService {
     static async createFolderForUser({ requester_id, title }) {
         try {
             // 존재하는 사용자인지 확인
-            const user = await User.findOne({ where: { id: requester_id } });
-            if (!user) {
+            const requester = await User.findOne({
+                where: { id: requester_id },
+            });
+            if (!requester) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
 
             // 새 폴더 생성
             const newFolder = await Folder.create({
-                user_id: user.id,
+                user_id: requester.id,
                 title,
             });
 
