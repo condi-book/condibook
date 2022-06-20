@@ -45,9 +45,7 @@ const CommunityPage = () => {
   };
   return (
     <Div>
-      <div className="sidebarWrapper">
-        {keyboardContext.sidebar === true && <SideBar />}
-      </div>
+      {keyboardContext.sidebar === true && <SideBar />}
       <div className="listWrapper">
         <Row>
           <Container>
@@ -85,13 +83,12 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
+  position: relative;
 
-  .sidebarWrapper {
-    position: fixed;
-  }
   .listWrapper {
-    margin-left: 130px;
+    margin: auto;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border: 2px solid black;
