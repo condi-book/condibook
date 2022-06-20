@@ -1,10 +1,12 @@
 import SideBar from "layout/SideBar";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { KeyboardContext } from "../App";
+import * as Api from "../api";
 
 type StyleProps = {
   show: boolean;
+  category: string;
 };
 
 const Search = () => {
@@ -12,6 +14,55 @@ const Search = () => {
   const [show, setShow] = useState(false);
   const [tab, setTab] = useState("전체 검색");
   const [word, setWord] = useState("");
+  const [category, setCategory] = useState("global-link");
+  // 데이터
+  const [data, setData] = useState([]);
+
+  // 카테고리 핸들러
+  const handleCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setCategory((e.currentTarget as HTMLElement).id);
+    console.log(category);
+  };
+
+  // 검색 리스트(링크별)
+  const SearchList = () => {
+    const filtered = data?.filter((item) =>
+      item.title.toUpperCase().includes(word.toUpperCase()),
+    );
+    return (
+      <div className="search-main">
+        <div className="search-category">
+          <div className="category-wrap">
+            <div className="category-container">
+              <button onClick={handleCategory} id="global-link">
+                <div>북마크(링크별)</div>
+                <p>{filtered.length}</p>
+              </button>
+              <button onClick={handleCategory} id="global-folder">
+                <div>폴더별</div>
+                <p>{filtered.length}</p>
+              </button>
+              <button onClick={handleCategory} id="global-tag">
+                <div>태그별</div>
+                <p>{filtered.length}</p>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="search-list">
+          {filtered?.map((item) => (
+            <div className="card-wrap" key={`search-${item.id}`}>
+              <div className="card"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    Api.get(`user/folders`).then((res) => setData(res.data));
+  }, []);
 
   // 검색어 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +80,7 @@ const Search = () => {
     setWord("");
   };
   return (
-    <Div show={show}>
+    <Div show={show} category={category}>
       {keyboardContext.sidebar === true && <SideBar />}
       <div className="search-section">
         <div className="search-container">
@@ -42,7 +93,7 @@ const Search = () => {
                 <p>{tab}</p>
                 <span className="pe-7s-angle-down" />
               </div>
-              <div className="search-select hi">
+              <div className="search-select">
                 <div onClick={handleTab}>전체 검색</div>
                 <div onClick={handleTab}>나의 콘텐츠 검색</div>
               </div>
@@ -74,10 +125,14 @@ const Search = () => {
             </div>
           </div>
         </div>
-        <div className="search-image">
-          <img src="static/img/search.svg" width="30%" height="30%" />
-          <p>원하는 콘텐츠를 검색해보세요</p>
-        </div>
+        {word ? (
+          <SearchList />
+        ) : (
+          <div className="search-image">
+            <img src="static/img/search.svg" width="30%" height="30%" />
+            <p>원하는 콘텐츠를 검색해보세요</p>
+          </div>
+        )}
       </div>
     </Div>
   );
@@ -259,6 +314,113 @@ const Div = styled.div<StyleProps>`
       font-size: 30px;
       font-weight: bold;
     }
+  }
+  .search-main {
+    width: 64%;
+    margin: 0 auto;
+
+    .search-list {
+      display: flex;
+      -webkit-box-pack: start;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .card-wrap {
+      width: 50%;
+    }
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      -webkit-box-pack: justify;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 95%;
+      height: 140px;
+      padding: 20px;
+      margin: 0px 10px 20px 10px;
+      background: white;
+      border: 1px solid rgb(235, 235, 235);
+      box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  }
+
+  .search-category {
+    position: sticky;
+    top: 110px;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 40px;
+    background-color: none;
+    z-index: 1;
+
+    .category-wrap {
+      display: flex;
+      -webkit-box-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: center;
+      align-items: center;
+      padding-top: 5%;
+      width: 100%;
+    }
+
+    .category-container {
+      display: flex;
+      -webkit-box-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: center;
+      align-items: center;
+
+      button {
+        display: flex;
+        -webkit-box-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        align-items: center;
+        margin-right: 10px;
+        padding: 6px 6px 6px 20px;
+        border-radius: 20px;
+        background-color: rgb(50, 46, 255);
+        cursor: inherit;
+
+        div {
+          color: white;
+          font-weight: bold;
+          font-size: 14px;
+          margin-right: 20px;
+        }
+
+        p {
+          border-radius: 50%;
+          font-size: 12px;
+          font-weight: 700;
+          color: rgb(50, 46, 255);
+          background-color: white;
+          padding: 4px 8px;
+          margin: auto;
+        }
+      }
+    }
+  }
+  #global-link {
+    background-color: ${({ category }) => category === "global-link" && "red"};
+  }
+
+  #global-folder {
+    background-color: ${({ category }) =>
+      category === "global-folder" && "red"};
+  }
+
+  #global-tag {
+    background-color: ${({ category }) => category === "global-tag" && "red"};
   }
 `;
 export default Search;
