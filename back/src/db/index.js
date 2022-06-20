@@ -245,8 +245,8 @@ const bmfavorite_fk_bookmark = {
     onDelete: "setNull",
     comment: "북마크 ID",
 };
-User.hasMany(BMFavorite, { foreignKey: bmfavorite_fk_bookmark });
-BMFavorite.belongsTo(User, { foreignKey: bmfavorite_fk_bookmark });
+Bookmark.hasMany(BMFavorite, { foreignKey: bmfavorite_fk_bookmark });
+BMFavorite.belongsTo(Bookmark, { foreignKey: bmfavorite_fk_bookmark });
 
 // User: BMFavorite = 1 : N
 const bmfavorite_fk_user = {
@@ -278,5 +278,7 @@ export {
     Membership,
     Like,
     Folder,
+    FDFavorite,
+    BMFavorite,
     Op,
 };
