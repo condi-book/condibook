@@ -14,6 +14,7 @@ import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
 import Config from "config/Config";
+import Search from "search/Search";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -70,6 +71,7 @@ const App: React.FC = () => {
                   element={<MypageBookmarkDetail />}
                 />
                 <Route path="/config" element={<Config />} />
+                <Route path="/search" element={<Search />} />
               </Routes>
             </Router>
           </ThemeProvider>
