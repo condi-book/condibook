@@ -10,6 +10,17 @@ type StyleProps = {
 const Search = () => {
   const keyboardContext: any = useContext(KeyboardContext);
   const [show, setShow] = useState(false);
+  const [word, setWord] = useState("");
+
+  // 검색어 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWord(e.target.value);
+  };
+
+  // 검색창 초기화 함수
+  const handleDelete = () => {
+    setWord("");
+  };
   return (
     <Div show={show}>
       {keyboardContext.sidebar === true && <SideBar />}
@@ -31,13 +42,27 @@ const Search = () => {
             </div>
             <div className="search-input">
               <div className="search-input-box">
-                <button className="search-delete-button">
-                  <img src="static/img/close_button.svg" />
-                </button>
+                {word && (
+                  <button
+                    onClick={handleDelete}
+                    className="search-delete-button"
+                  >
+                    <img
+                      src="static/img/close_button.svg"
+                      width="22"
+                      height="22"
+                    />
+                  </button>
+                )}
                 <button>
                   <span className="pe-7s-search"></span>
                 </button>
-                <input type="text" placeholder="검색어를 입력하세요" />
+                <input
+                  value={word}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="검색어를 입력하세요"
+                />
               </div>
             </div>
           </div>
@@ -143,6 +168,67 @@ const Div = styled.div<StyleProps>`
         p {
           margin: auto 0;
         }
+      }
+    }
+  }
+
+  .search-input {
+    position: relative;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    align-items: flex-start;
+    width: calc(100% - 174px);
+    height: 50px;
+
+    .search-input-box {
+      position: absolute;
+      top: 0px;
+      display: flex;
+      -webkit-box-pack: justify;
+      justify-content: space-between;
+      -webkit-box-align: center;
+      align-items: center;
+      width: 100%;
+
+      input {
+        width: 100%;
+        height: 50px;
+        padding-left: 20px;
+        color: rgb(96, 96, 96);
+        background-color: rgb(235, 235, 235);
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 400;
+        letter-spacing: -0.05em;
+        z-index: 11;
+      }
+
+      .search-delete-button {
+        position: absolute;
+        right: 61px;
+        display: flex;
+        -webkit-box-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        align-items: center;
+        color: rgb(96, 96, 96);
+        font-size: 18px;
+        font-weight: 300;
+        cursor: pointer;
+        z-index: 12;
+        background: none;
+      }
+
+      .pe-7s-search {
+        position: absolute;
+        top: 13px;
+        right: 22px;
+        width: 18.59px;
+        height: 18px;
+        z-index: 12;
+        cursor: pointer;
+        font-size: 25px;
       }
     }
   }
