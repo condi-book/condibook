@@ -120,8 +120,14 @@ const Container = styled.div`
   }
 
   .main-image {
+    width: 50%;
+    height: 50%;
     background: ${({ theme }) => theme.mainColor};
     border-radius: 50%;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   .part {
     height: 85vh;
