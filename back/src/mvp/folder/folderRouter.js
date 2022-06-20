@@ -14,14 +14,14 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
         let result;
         if (owner === "user") {
             result = await folderService.createFolderForUser({
-                user_id,
+                requester_id: user_id,
                 title,
             });
         } else if (owner === "team") {
             result = await folderService.createFolderForTeam({
                 team_id,
                 title,
-                user_id,
+                requester_id: user_id,
             });
         }
         checkErrorMessage(result);

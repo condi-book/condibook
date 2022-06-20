@@ -49,7 +49,7 @@ userRouter.get("/info", loginRequired, async (req, res, next) => {
     try {
         const { user_id } = req.current;
 
-        const result = await userService.getUserInfo({ id: user_id });
+        const result = await userService.getUserInfo({ user_id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
