@@ -24,11 +24,9 @@ attachedRouter.post("/:post_id", loginRequired, async (req, res, next) => {
 });
 attachedRouter.get("/:post_id", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.current.user_id;
-        const post_id = req.params.post_id; // 게시판 아이디
+        const post_id = req.params.post_id; // 첨부북마크 아이디
 
-        const result = await attachedService.getCheck({
-            user_id,
+        const result = await attachedService.getAttached({
             post_id,
         });
 
@@ -36,7 +34,7 @@ attachedRouter.get("/:post_id", loginRequired, async (req, res, next) => {
             throw new Error(result.errorMessage);
         }
 
-        res.status(201).send(result);
+        res.status(200).send(result);
     } catch (error) {
         next(error);
     }

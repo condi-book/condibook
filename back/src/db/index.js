@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes, Op } from "sequelize";
 // sequelize 인스턴스 생성
 const database = process.env.DB_DATABASE || "env 확인해주십시오.";
 const username = process.env.DB_USER || "env 확인해주십시오.";
@@ -232,4 +232,5 @@ export {
     Membership,
     Like,
     Folder,
+    Op,
 };
