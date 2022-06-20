@@ -133,7 +133,7 @@ const MypageBookmarkCard = ({
 };
 
 const Div = styled.div<StyleProps>`
-  border: 2px solid black;
+  background-color: white;
   margin: 0.833%;
   padding: 10px;
   width: 15%;
