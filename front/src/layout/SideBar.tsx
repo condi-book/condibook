@@ -38,7 +38,7 @@ const SideBar = () => {
       navigate("/community");
     }
     if (e.currentTarget.id === "pe-7s-search") {
-      console.log("검색");
+      navigate("/search");
     }
     if (e.currentTarget.id === "pe-7s-config") {
       navigate("/config");
