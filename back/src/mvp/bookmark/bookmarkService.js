@@ -80,20 +80,20 @@ class bookmarkService {
         }
     }
 
-    // static async getFirstBookmarkUrlInFolder({ folder_id }) {
-    //     try {
-    //         let bookmark = await Bookmark.findOne({
-    //             where: { folder_id },
-    //             include: [Website],
-    //             raw: true,
-    //             nest: true,
-    //         });
+    static async getFirstBookmarkUrlInFolder({ folder_id }) {
+        try {
+            let bookmark = await Bookmark.findOne({
+                where: { folder_id },
+                include: [Website],
+                raw: true,
+                nest: true,
+            });
 
-    //         return bookmark ? bookmark.website.url : null;
-    //     } catch (e) {
-    //         return { errorMessage: e };
-    //     }
-    // }
+            return bookmark ? bookmark.website.url : null;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
 
     static async getBookmarksInFolder({ folder_id, requester_id }) {
         try {
