@@ -1,4 +1,4 @@
-import { Folder, Bookmark, Attached, Op, Post } from "../../db";
+import { Folder, Bookmark, Attached, Op, Post, Website } from "../../db";
 class attachedService {
     static async createAttached({ user_id, post_id }) {
         const postInfo = await Post.findOne({ where: { id: post_id } });
@@ -43,7 +43,7 @@ class attachedService {
     static async getAttached({ post_id }) {
         const result = await Attached.findAll({
             where: { post_id },
-            include: [{ model: Bookmark }],
+            include: [{ model: Bookmark, include: [{ model: Website }] }],
             raw: true,
             nest: true,
         });
@@ -51,8 +51,10 @@ class attachedService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-
-        return result;
+        const send = result.map((v) => {
+            return v.bookmark.website;
+        });
+        return send;
     }
     static async addAttached({ post_id, bookmark_id }) {
         const check = await Bookmark.findOne({
