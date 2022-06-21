@@ -50,9 +50,11 @@ class websiteSerivce {
             raw: true,
             nest: true,
         });
-        const keyword_list = keywords.map((v) => {
-            return v.keyword;
-        });
+        const keyword_list = keywords
+            .map((v) => {
+                return v.keyword.split(",");
+            })
+            .flat();
         const emoji_list = emojis.map((v) => {
             return v.keyword;
         });
