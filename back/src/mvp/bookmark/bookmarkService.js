@@ -165,24 +165,6 @@ class bookmarkService {
         }
     }
 
-    static async updateBookmarkFavorites({ id }) {
-        try {
-            const [results, metadata] = await sequelize.query(
-                `UPDATE ${Bookmark.tableName} SET favorites = NOT favorites WHERE id = ${id}`,
-            );
-
-            if (metadata.affectedRows === 0) {
-                return getFailMsg({
-                    entity: "북마크 즐겨찾기",
-                    action: "수정",
-                });
-            }
-            return getSuccessMsg({ entity: "북마크 즐겨찾기", action: "수정" });
-        } catch (e) {
-            return { errorMessage: e };
-        }
-    }
-
     static async deleteBookmark({ id }) {
         try {
             const result = await Bookmark.destroy({ where: { id } });

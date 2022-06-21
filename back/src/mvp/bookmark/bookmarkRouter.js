@@ -49,24 +49,6 @@ bookmarkRouter.get("/:id", async (req, res, next) => {
     }
 });
 
-bookmarkRouter.put("/:id", loginRequired, async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const { mode } = req.query;
-
-        let result;
-        if (mode === "favorites") {
-            result = await bookmarkService.updateBookmarkFavorites({ id });
-        }
-
-        checkErrorMessage(result);
-
-        res.status(201).send(result);
-    } catch (e) {
-        next(e);
-    }
-});
-
 bookmarkRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
