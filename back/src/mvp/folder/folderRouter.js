@@ -14,14 +14,14 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
         let result;
         if (owner === "user") {
             result = await folderService.createFolderForUser({
-                user_id,
+                requester_id: user_id,
                 title,
             });
         } else if (owner === "team") {
             result = await folderService.createFolderForTeam({
                 team_id,
                 title,
-                user_id,
+                requester_id: user_id,
             });
         }
         checkErrorMessage(result);
@@ -34,9 +34,9 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
 
 folderRouter.get("/:id", async (req, res, next) => {
     try {
-        const { id } = req.params; // 폴더 아이디
+        const { id } = req.params;
 
-        const result = await folderService.getFolderInfo({ id });
+        const result = await folderService.getFolderInfo({ folder_id: id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -68,7 +68,7 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
 
         checkErrorMessage(result);
 
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch (e) {
         next(e);
     }
@@ -82,7 +82,7 @@ folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
         const result = await folderService.deleteFolder({ id, user_id });
         checkErrorMessage(result);
 
-        res.status(200).json(result);
+        res.status(204).json(result);
     } catch (e) {
         next(e);
     }

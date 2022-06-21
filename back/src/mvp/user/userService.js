@@ -5,9 +5,9 @@ import { getSuccessMsg, getFailMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
 class userService {
-    static async getUserInfo({ id }) {
+    static async getUserInfo({ user_id }) {
         try {
-            const user = await User.findOne({ where: { id: id } });
+            const user = await User.findOne({ where: { id: user_id } });
 
             if (!user) {
                 return getFailMsg({ entity: "사용자 계정", action: "조회" });
