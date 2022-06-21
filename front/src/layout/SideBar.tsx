@@ -1,23 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import * as Api from "../api";
+import Profile from "../user/Profile";
+
+const iconList = [
+  "pe-7s-user",
+  "pe-7s-home",
+  "pe-7s-folder",
+  "pe-7s-global",
+  "pe-7s-search",
+  "pe-7s-config",
+];
 
 const SideBar = () => {
-  const iconList = [
-    "pe-7s-user",
-    "pe-7s-home",
-    "pe-7s-folder",
-    "pe-7s-global",
-    "pe-7s-search",
-    "pe-7s-config",
-  ];
+  useEffect(() => {
+    Api.get(`user/info`).then((res) => setData(res.data));
+  }, []);
+
+  const [show, setShow] = useState(false);
+  const [data, setData] = useState<any>({});
+  const navigate = useNavigate();
+
+  const handleApply = (value: any) => setData(value);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (e.currentTarget.id === "pe-7s-user") {
+      setShow((prev: boolean) => !prev);
+    }
+    if (e.currentTarget.id === "pe-7s-home") {
+      console.log("홈");
+    }
+    if (e.currentTarget.id === "pe-7s-folder") {
+      navigate("/bookmark");
+    }
+    if (e.currentTarget.id === "pe-7s-global") {
+      navigate("/community");
+    }
+    if (e.currentTarget.id === "pe-7s-search") {
+      console.log("검색");
+    }
+    if (e.currentTarget.id === "pe-7s-config") {
+      navigate("/config");
+    }
+  };
+
   return (
-    <Section>
-      {iconList.map((item: string, index: number) => (
-        <div key={index}>
-          <span className={item}></span>
-        </div>
-      ))}
-    </Section>
+    <>
+      <Section>
+        {iconList.map((item: string, index: number) => (
+          <div key={`icon-${index}`} id={item} onClick={handleClick}>
+            <span className={item}></span>
+          </div>
+        ))}
+      </Section>
+      {show && <Profile data={data} handleApply={handleApply} />}
+    </>
   );
 };
 
@@ -31,7 +69,8 @@ const Section = styled.section`
   justify-content: space-around;
   border: 2px solid black;
   border-radius: 20px;
-
+  position: sticky;
+  top: 0;
   div {
     text-align: center;
   }

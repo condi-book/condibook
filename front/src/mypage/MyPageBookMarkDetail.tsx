@@ -6,6 +6,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import styled from "styled-components";
+import Modal from "../layout/Modal";
 import SideBar from "../layout/SideBar";
 
 const listContent = {
@@ -37,7 +38,7 @@ const listContent = {
       title: "티스토리",
       image: "",
       content: "내용을 입력해주세요",
-      link: "link4",
+      link: "https://hsp0418.tistory.com/123",
     },
   ],
 };
@@ -50,13 +51,15 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   background:
     "linear-gradient(90deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)",
   borderRadius: 10,
-  cursor: "default",
+  cursor: "pointer",
   ...draggableStyle,
 });
 
 const MypageBookmarkDetail = () => {
   const [list, setList] = useState(listContent.listItems);
   const [link, setLink] = useState("");
+  const [show, setShow] = useState(false);
+  const [newLink, setNewLink] = useState("");
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -71,18 +74,39 @@ const MypageBookmarkDetail = () => {
   };
 
   const handleClick = () => {
-    alert("링크 추가하는 모달 나오기");
+    setShow((prev) => !prev);
+    console.log(show);
+  };
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setNewLink(e.target.value);
+  };
+
+  // 링크 추가 함수
+  const handlePushData = (v: any) => {
+    const copied = Array.from(list);
+    copied.push(v);
+    setList(copied);
+    setNewLink("");
   };
 
   return (
     <Div>
       <SideBar />
+
       <div className="detail-container">
         <div className="list box">
           <div>{listContent.title}</div>
           <div className="add dnd-item" onClick={handleClick}>
             <span className="pe-7s-plus"></span>
           </div>
+          <Modal
+            open={show}
+            close={handleClick}
+            handleChange={handleChange}
+            newLink={newLink}
+            handlePushData={handlePushData}
+          />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">
               {(provided) => (

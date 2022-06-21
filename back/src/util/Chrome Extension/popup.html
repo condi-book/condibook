@@ -1,19 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GiveMeLink</title>
-    <style>
-        body{width:300px; height:300px;}
-    </style>
-    <script src="jquery.min.js"></script>
-    <script src="popup.js"></script>
-</head>
-<body>
-    <div id ="status">link</div>
-    <button id = "getUrl">button</button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GiveMeLink</title>
+        <style>
+            body {
+                width: 300px;
+                height: 300px;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 100%;
+                height: 100%;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .top {
+                height: 20%;
+            }
+            .bottom {
+                width: 100%;
+                height: 20%;
+            }
+            .middle {
+                width: 100%;
+                height: 60%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                background-color: #f8f9fc;
+            }
+            #getUrl {
+                width: 100%;
+                height: 100%;
+                border: none;
+                border-radius: 10px;
+            }
+            textarea {
+                width: -webkit-fill-available;
+                height: 80px;
+                border: none;
+                background-color: white;
+                margin: 5px;
+                border-radius: 10px;
+            }
+            .linkBox div {
+                margin: 5px;
+                background-color: white;
+                border-radius: 10px;
+            }
+        </style>
+        <script src="jquery.min.js"></script>
+        <script src="popup.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="top"><img alt="logo" /></div>
+            <div class="middle">
+                <div class="linkBox">
+                    <div>
+                        <div>link-title</div>
+                        <div id="status">link</div>
+                    </div>
+                </div>
+                <div>
+                    <textarea
+                        id="explanation"
+                        placeholder="메모를 입력하세요"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="bottom">
+                <button id="getUrl">저장하기</button>
+            </div>
+        </div>
+    </body>
+    <script>
+        let hover = document.getElementById("getUrl");
 
-</body>
+        hover.addEventListener("mouseover", function (event) {
+            event.target.style.backgroundColor = "black";
+            event.target.style.color = "white";
+            event.target.style.cursor = "pointer";
+        });
+
+        hover.addEventListener("mouseout", function (event) {
+            event.target.style.backgroundColor = "white";
+            event.target.style.color = "black";
+        });
+    </script>
 </html>

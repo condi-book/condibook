@@ -1,22 +1,20 @@
-import { Folder, sequelize } from "../../db";
+import { Folder, Membership, sequelize, User } from "../../db";
+import { bookmarkService } from "../bookmark/bookmarkService";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class folderService {
-    static async createFolder({ title, explanation, user_id }) {
+    static async createFolderForUser({ user_id, title }) {
         try {
-            // 이미 존재하는 폴더인지 확인
-            const previous = await Folder.findOne({
-                where: { user_id, title },
-            });
-            if (previous) {
-                return previous;
+            // 존재하는 사용자인지 확인
+            const user = await User.findOne({ where: { id: user_id } });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
             }
 
             // 새 폴더 생성
             const newFolder = await Folder.create({
-                title,
-                explanation,
                 user_id,
+                title,
             });
 
             return newFolder;
@@ -25,18 +23,58 @@ class folderService {
         }
     }
 
-    static async getMyFolders({ user_id }) {
+    static async createFolderForTeam({ team_id, title, user_id }) {
+        try {
+            // 사용자의 팀 소속 여부 확인
+            const member = await Membership.findOne({
+                where: { team_id, member_id: user_id },
+            });
+            if (!member) {
+                return getFailMsg({
+                    entity: "사용자가 팀에 속해 있는지",
+                    action: "확인",
+                });
+            }
+
+            // 새 폴더 생성
+            const newFolder = await Folder.create({
+                team_id,
+                title,
+            });
+
+            return newFolder;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getUserFolders({ user_id }) {
         try {
             let folders = await Folder.findAll({
                 where: { user_id },
             });
 
-            const result = folders.map((folder) => {
-                return {
-                    ...folder,
-                    favorites: folder.favorites == 1 ? true : false,
-                };
-            });
+            const result = await Promise.all(
+                folders.map(async (folder) => {
+                    // 북마크 갯수 정보 추가
+                    const bookmarkCount =
+                        await bookmarkService.getBookmarkCountInFolders({
+                            folderIds: [folder.id],
+                        });
+                    // 폴더 이미지를 위해서 북마크 정보 한개만 추가
+                    const firstBookmark =
+                        await bookmarkService.getFirstBookmarkInTheFolder({
+                            folderId: folder.id,
+                        });
+                    return {
+                        ...folder,
+                        favorites: false,
+                        bookmarkCount,
+                        firstBookmark,
+                    };
+                }),
+            );
+
             return result;
         } catch (e) {
             return { errorMessage: e };
@@ -60,10 +98,41 @@ class folderService {
         }
     }
 
-    static async updateFolderInfo({ id, title, explanation }) {
+    static async getFolderInfo({ id }) {
         try {
+            let info = await Folder.findOne({
+                where: { id },
+                attributes: ["id", "title"],
+            });
+            if (!info) {
+                return getFailMsg({ entity: "폴더 상세정보", action: "조회" });
+            }
+
+            // 폴더에 속한 북마크 개수
+            info["bookmarkCount"] =
+                await bookmarkService.getBookmarkCountInFolders({
+                    folderIds: [id],
+                });
+
+            return info;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async updateTitle({ id, title, user_id }) {
+        try {
+            // 사용자의 폴더 소유 여부 확인
+            const folder = await Folder.findOne({ where: { id, user_id } });
+            if (!folder) {
+                return getFailMsg({
+                    entity: "해당 사용자의 폴더",
+                    action: "조회",
+                });
+            }
+
             const affectedRows = await Folder.update(
-                { title, explanation },
+                { title },
                 { where: { id: id } },
             );
 
@@ -78,7 +147,7 @@ class folderService {
 
     static async updateFolderFavorites({ id }) {
         try {
-            const [results, metadata] = await sequelize.query(
+            const [metadata] = await sequelize.query(
                 `UPDATE folders SET favorites = NOT favorites WHERE id = ${id}`,
             );
 
@@ -93,6 +162,15 @@ class folderService {
 
     static async deleteFolder({ id, user_id }) {
         try {
+            // 사용자의 폴더 소유 여부 확인
+            const folder = await Folder.findOne({ where: { id, user_id } });
+            if (!folder) {
+                return getFailMsg({
+                    entity: "해당 사용자의 폴더",
+                    action: "조회",
+                });
+            }
+
             const result = await Folder.destroy({ where: { id, user_id } });
 
             if (result === 0) {

@@ -13,17 +13,6 @@ export default function FolderModel(sequelize, DataTypes) {
                 allowNull: false,
                 comment: "폴더 이름",
             },
-            explanation: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                comment: "폴더 설명",
-            },
-            favorites: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                defaultValue: false,
-                comment: "즐겨찾기 여부",
-            },
         },
         {
             charset: "utf8",

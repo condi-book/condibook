@@ -1,33 +1,22 @@
-export default function BoardModel(sequelize, DataTypes) {
+export default function TeamModel(sequelize, DataTypes) {
     return sequelize.define(
-        "board",
+        "team",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "게시글 ID",
+                comment: "팀 ID",
             },
-            title: {
+            name: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: "제목",
+                comment: "팀 이름",
             },
-            content: {
+            explanation: {
                 type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "내용",
-            },
-            views: {
-                type: DataTypes.INTEGER,
-                defaultValue: 0,
-                allowNull: false,
-                comment: "조회수",
-            },
-            author_name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                comment: "게시글 작성자 닉네임",
+                comment: "팀 설명",
             },
         },
         {
