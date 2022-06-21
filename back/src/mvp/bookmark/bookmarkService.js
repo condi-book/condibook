@@ -1,4 +1,13 @@
-import { Bookmark, Emoji, Keyword, Website, sequelize } from "../../db";
+import {
+    Bookmark,
+    Emoji,
+    Keyword,
+    Website,
+    sequelize,
+    Folder,
+    User,
+    BMFavorite,
+} from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
@@ -79,48 +88,44 @@ class bookmarkService {
         }
     }
 
-    static async getBookmarksInTheFolder({ folder_id }) {
+    static async getBookmarksInFolder({ folder_id, requester_id }) {
         try {
-            let bookmarks = await Bookmark.findAll({
-                where: { folder_id },
-                include: [
-                    {
-                        model: Website,
-                        // include: [
-                        //     {
-                        //         model: Keyword,
-                        //         attributes: ["keyword", "website_id"],
-                        //         group: ["website_id"],
-                        //     },
-                        //     {
-                        //         model: Emoji,
-                        //         required: true,
-                        //         attributes: ["emoji"],
-                        //     },
-                        // ],
-                    },
-                ],
-                raw: true,
-                nest: true,
+            // 폴더 존재 확인
+            const folder = await Folder.findOne({ where: { id: folder_id } });
+            if (!folder) {
+                return getFailMsg({ entity: "폴더", action: "조회" });
+            }
+            // 요청자 존재 확인
+            const requester = await User.findOne({
+                where: { id: requester_id },
             });
-            bookmarks = await Promise.all(
-                bookmarks.map(async (bookmark) => {
-                    // 키워드 데이터 추가
-                    const keywords = await Keyword.findAll({
-                        where: { website_id: bookmark.website_id },
-                        attributes: ["keyword"],
-                    });
-                    bookmark["keyword"] = keywords.map((item) => item.keyword);
-
-                    // 이모지 데이터 추가
-                    bookmark["emoji"] = await Emoji.findOne({
-                        where: { website_id: bookmark.website_id },
-                        attributes: ["emoji"],
-                    });
-
-                    return bookmark;
-                }),
+            if (!requester) {
+                return getFailMsg({ entity: "요청자", action: "조회" });
+            }
+            // 북마크 조회
+            let bookmarks = await sequelize.query(
+                `SELECT bookmark.id AS bookmark_id, website.id AS website_id, website.url AS website_url, 
+                    website.meta_title, website.meta_description, emoji, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
+                    , CASE WHEN bmfavorite.id IS NULL THEN false ELSE true END favorites
+                FROM (SELECT * FROM ${Bookmark.tableName} WHERE ${Bookmark.tableName}.folder_id = ${folder.id}) AS bookmark
+                    INNER JOIN ${Website.tableName} AS website 
+                    ON bookmark.website_id = website.id
+                    LEFT JOIN ${Emoji.tableName} AS emoji 
+                    ON emoji.website_id = website.id
+                    INNER JOIN ${Keyword.tableName} AS keyword 
+                    ON keyword.website_id = website.id
+                    LEFT JOIN ${BMFavorite.tableName} AS bmfavorite
+                    ON bookmark.id = bmfavorite.bookmark_id and bmfavorite.user_id = ${requester.id}
+                GROUP BY bookmark.id
+                ;`,
+                { type: sequelize.QueryTypes.SELECT },
             );
+            bookmarks = bookmarks.map((bookmark) => {
+                return {
+                    ...bookmark,
+                    favorites: bookmark.favorites === 1 ? true : false,
+                };
+            });
             return bookmarks;
         } catch (e) {
             return { errorMessage: e };

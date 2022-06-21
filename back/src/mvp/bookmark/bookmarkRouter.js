@@ -49,21 +49,6 @@ bookmarkRouter.get("/:id", async (req, res, next) => {
     }
 });
 
-bookmarkRouter.get("", loginRequired, async (req, res, next) => {
-    try {
-        const { folder } = req.query;
-
-        const result = await bookmarkService.getBookmarksInTheFolder({
-            folder_id: folder,
-        });
-        checkErrorMessage(result);
-
-        res.status(200).send(result);
-    } catch (e) {
-        next(e);
-    }
-});
-
 bookmarkRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;

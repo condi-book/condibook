@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { folderService } from "./folderService";
+import { bookmarkService } from "../bookmark/bookmarkService";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { loginRequired } from "../../middlewares/loginRequired";
 
@@ -37,6 +38,23 @@ folderRouter.get("/:id", async (req, res, next) => {
         const { id } = req.params;
 
         const result = await folderService.getFolderInfo({ folder_id: id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+folderRouter.get("/:id/bookmarks", loginRequired, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { user_id } = req.current;
+
+        const result = await bookmarkService.getBookmarksInFolder({
+            folder_id: id,
+            requester_id: user_id,
+        });
         checkErrorMessage(result);
 
         res.status(200).send(result);
