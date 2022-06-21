@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import S3 from "react-aws-s3-typescript";
+import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
@@ -14,6 +16,9 @@ const dummyData = {
   created_at: new Date(),
   updated_at: new Date(),
 };
+
+// eslint-disable-next-line no-undef
+window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const CommunityPostWrite = () => {
   const navigate = useNavigate();
@@ -34,7 +39,6 @@ const CommunityPostWrite = () => {
   const handleContentChange = () => {
     const markDownContent = editorRef.current?.getInstance().getMarkdown();
     setContent(markDownContent);
-    console.log(markDownContent);
   };
 
   const handleExitButtonClick = (
@@ -93,6 +97,28 @@ const CommunityPostWrite = () => {
       setTitle(dummyData.title);
       setContent(dummyData.content);
       editorRef.current?.getInstance().setMarkdown(dummyData.content);
+    }
+  }, []);
+
+  // 원래 이미지 업로드를 지우고 s3 이미지 업로드 버튼으로 대체하는 함수
+  React.useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.getInstance().removeHook("addImageBlobHook");
+
+      editorRef.current
+        .getInstance()
+        .addHook("addImageBlobHook", (blob, callback) => {
+          const s3config = {
+            bucketName: process.env.REACT_APP_BUCKET_NAME as string,
+            region: process.env.REACT_APP_REGION as string,
+            accessKeyId: process.env.REACT_APP_ACCESS_ID as string,
+            secretAccessKey: process.env.REACT_APP_ACCESS_KEY as string,
+          };
+          const ReactS3Client = new S3(s3config);
+          ReactS3Client.uploadFile(blob, uuidv4())
+            .then((data) => callback(data.location, "imageURL"))
+            .catch((err) => console.log(err));
+        });
     }
   }, []);
 
