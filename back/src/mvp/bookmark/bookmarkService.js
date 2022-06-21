@@ -64,15 +64,16 @@ class bookmarkService {
         }
     }
 
-    static async getFirstBookmarkInTheFolder({ folderId }) {
+    static async getFirstBookmarkUrlInFolder({ folder_id }) {
         try {
             let bookmark = await Bookmark.findOne({
-                where: { folder_id: folderId },
+                where: { folder_id },
                 include: [Website],
                 raw: true,
                 nest: true,
             });
-            return bookmark;
+
+            return bookmark ? bookmark.website.url : null;
         } catch (e) {
             return { errorMessage: e };
         }

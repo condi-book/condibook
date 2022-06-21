@@ -44,16 +44,16 @@ class commentSerivce {
         return result;
     }
     static async updateComment({ id, user_id, content }) {
-        const chack = await Comment.findOne({
+        const check = await Comment.findOne({
             where: { id },
             raw: true,
             nest: true,
         });
-        if (!chack) {
+        if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        if (!chack.author == user_id) {
+        if (!check.author == user_id) {
             const errorMessage = "댓글 작성자가 아닙니다.";
             return { errorMessage };
         }
@@ -73,23 +73,23 @@ class commentSerivce {
         return result;
     }
     static async deleteComment({ id, user_id }) {
-        const chack = await Comment.findOne({
+        const check = await Comment.findOne({
             where: { id },
             raw: true,
             nest: true,
         });
-        if (!chack) {
+        if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        if (!chack.author == user_id) {
+        if (!check.author == user_id) {
             const errorMessage = "댓글 작성자가 아닙니다.";
             return { errorMessage };
         }
         await Comment.destroy({
             where: { id },
         });
-        return chack;
+        return check;
     }
 }
 

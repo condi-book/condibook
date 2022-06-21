@@ -42,16 +42,16 @@ class postService {
         return result;
     }
     static async updatePost({ id, toUpdate, user_id }) {
-        const chack = await Post.findOne({
+        const check = await Post.findOne({
             where: { id },
             raw: true,
             nest: true,
         });
-        if (!chack) {
+        if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        if (chack.author != user_id) {
+        if (check.author != user_id) {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
@@ -68,20 +68,20 @@ class postService {
         return result;
     }
     static async deletePost({ id, user_id }) {
-        const chack = await Post.findOne({
+        const check = await Post.findOne({
             where: { id },
         });
-        if (chack.author != user_id) {
+        if (check.author != user_id) {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        if (!chack) {
+        if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
         Post.destroy({ where: { id } });
 
-        return chack;
+        return check;
     }
     static async updateViews({ id }) {
         const result = Post.increment({ views: 1 }, { where: { id } });

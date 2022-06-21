@@ -10,11 +10,16 @@ class websiteSerivce {
         }
         // 웹사이트 파싱
         const meta = await parser(url);
-        const meta_title = meta.og.title ? meta.og.title : meta.meta.title;
-        const meta_description = meta.og.description
+        let meta_title = meta.og.title ? meta.og.title : meta.meta.title;
+        let meta_description = meta.og.description
             ? meta.og.description
             : meta.meta.description;
-
+        if (!meta_title) {
+            meta_title = "정보 없음";
+        }
+        if (!meta_description) {
+            meta_description = "정보 없음";
+        }
         const result = await Website.create({
             url,
             meta_title,
@@ -72,12 +77,12 @@ class websiteSerivce {
         return result;
     }
     static async updateWebsite({ id, toUpdate }) {
-        const chack = await Website.findOne({
+        const check = await Website.findOne({
             where: { id },
             raw: true,
             nest: true,
         });
-        if (!chack) {
+        if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }

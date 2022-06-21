@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 function getCurrentTabUrl(callback) {
     var queryInfo = {
         active: true,
