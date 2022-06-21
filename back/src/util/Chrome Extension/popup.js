@@ -1,4 +1,11 @@
 /* eslint-disable no-undef */
+
+function pageMove() {
+    if (sessionStorage) {
+        document.getElementsByClassName("container")[0].style.display = "none";
+    }
+}
+
 function getCurrentTabUrl(callback) {
     var queryInfo = {
         active: true,
@@ -13,15 +20,29 @@ function getCurrentTabUrl(callback) {
 }
 
 function renderURL(statusText) {
-    document.getElementById("status").textContent = statusText;
+    if (statusText.length >= 30) {
+        statusText = statusText.substring(0, 30) + "...";
+    }
+    document.getElementById("link-url").textContent = statusText;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    // when click, get current page link
-
-    // var link = document.getElementById('getUrl');
-
-    // link.addEventListener('click', function() {
+    // pageMove();
+    document.getElementById("getUrl").addEventListener("click", handleSubmit);
+    function handleSubmit() {
+        const linkTitle = document.getElementById("link-title").value;
+        const linkUrl = document.getElementById("link-url").value;
+        const linkDescription = document.getElementById("explanation").value;
+        const data = {
+            title: linkTitle,
+            url: linkUrl,
+            description: linkDescription,
+            tag: ["api", "chrome", "extension"],
+        };
+        console.log(data);
+        alert("링크가 저장되었습니다.");
+        location.href = "./success.html";
+    }
 
     getCurrentTabUrl(function (url) {
         renderURL(url);
@@ -44,8 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((data) => {
                 console.log(data);
-                document.getElementById("link-title").textContent =
-                    data.meta_title;
+                document.getElementById("link-title").value = data.meta_title;
+                document.getElementById("link-url").value = data.url;
             })
 
             .catch((err) => {
@@ -53,5 +74,3 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
-
-// });
