@@ -38,8 +38,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }),
         })
             .then((res) => {
-                console.log(res, "성공");
+                const data = res.json();
+                console.log(data);
+                return data;
             })
+            .then((data) => {
+                console.log(data);
+                document.getElementById("link-title").textContent =
+                    data.meta_title;
+            })
+
             .catch((err) => {
                 console.log(err);
             });
