@@ -36,11 +36,15 @@ bookmarkRouter.post("", loginRequired, async (req, res, next) => {
     }
 });
 
-bookmarkRouter.get("/:id", async (req, res, next) => {
+bookmarkRouter.get("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
+        const { user_id } = req.current;
 
-        const result = await bookmarkService.getTheBookmark({ id });
+        const result = await bookmarkService.getBookmark({
+            bookmark_id: id,
+            requester_id: user_id,
+        });
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -52,8 +56,12 @@ bookmarkRouter.get("/:id", async (req, res, next) => {
 bookmarkRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
+        const { user_id } = req.current;
 
-        const result = await bookmarkService.deleteBookmark({ id });
+        const result = await bookmarkService.deleteBookmark({
+            bookmark_id: id,
+            requester_id: user_id,
+        });
         checkErrorMessage(result);
 
         res.status(204).json(result);
