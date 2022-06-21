@@ -1,11 +1,12 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Viewer } from "@toast-ui/react-editor";
 
 import SideBar from "../layout/SideBar";
 import CalcDate from "./tools/CalcDate";
+import CommunityPostComments from "./CommunityPostComments";
 
 // import * from "../Api";
 const dummyData = {
@@ -24,6 +25,16 @@ interface Bookmark {
   image: string;
   content: string;
   link: string;
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  author: string;
+  author_name: string;
+  board_id: string;
+  updatedAt: Date;
+  createdAt: Date;
 }
 const bookmarkList: Bookmark[] = [
   {
@@ -77,12 +88,20 @@ const bookmarkList: Bookmark[] = [
   },
 ];
 
+type postDetailRouteParams = {
+  postId: string;
+};
 const CommunityPostDetail = () => {
-  const params = useParams();
+  const navigate = useNavigate();
+  const { postId } = useParams<
+    keyof postDetailRouteParams
+  >() as postDetailRouteParams;
   const [list, setList] = React.useState<Bookmark[]>([]);
   const [link, setLink] = React.useState("");
   const [like, setLike] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
+  const [comment, setComment] = React.useState("");
+  const [comments, setComments] = React.useState<Comment[]>([]);
 
   // 시간 계산 함수
   const createdTime = CalcDate(dummyData.created_at);
@@ -102,6 +121,33 @@ const CommunityPostDetail = () => {
     like ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
   };
 
+  const handleEditClick = () => {
+    navigate(`/community/write?id=${postId}`);
+  };
+
+  const handleCommentChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setComment(event.target.value);
+  };
+
+  const handleCommentPostClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    setComments([
+      ...comments,
+      {
+        id: "1",
+        content: comment,
+        author: "hayeong",
+        author_name: "하영",
+        board_id: postId,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      },
+    ]);
+  };
   // // 파라미터로 게시글 내용 받아오는 함수
   // const fetchPostDetail = async () => {
   //   try {
@@ -115,7 +161,6 @@ const CommunityPostDetail = () => {
   // }
 
   React.useEffect(() => {
-    console.log("params", params);
     // fetchPostDetail()
     setList(bookmarkList);
   }, []);
@@ -137,7 +182,9 @@ const CommunityPostDetail = () => {
             </TitleContainer>
 
             <ButtonContainer>
-              <button className="hoverButton">수정</button>
+              <button className="hoverButton" onClick={handleEditClick}>
+                수정
+              </button>
               <button className="hoverButton">삭제</button>
             </ButtonContainer>
             <InfoContainer>
@@ -174,8 +221,19 @@ const CommunityPostDetail = () => {
           <div>
             <Viewer initialValue={dummyData.content} />
           </div>
+          <CommentCount>{`${comments.length}개의 댓글`}</CommentCount>
           <div>
-            <span>댓글</span>
+            <CommentInput
+              placeholder="댓글을 입력하세요"
+              value={comment}
+              onChange={handleCommentChange}
+            ></CommentInput>
+            <ButtonContainer>
+              <button className="hoverButton" onClick={handleCommentPostClick}>
+                댓글 등록
+              </button>
+            </ButtonContainer>
+            <CommunityPostComments comments={comments} />
           </div>
         </div>
         <div className="contentWrapper">
@@ -192,6 +250,8 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
+  width: 100%;
+  height: 100%;
 
   .sidebarWrapper {
     position: fixed;
@@ -329,4 +389,24 @@ const Ol = styled.ol`
   .pointer {
     cursor: pointer;
   }
+`;
+
+const CommentCount = styled.h4`
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const CommentInput = styled.textarea`
+  resize: none;
+  padding: 1rem 1rem 1.5rem;
+  outline: none;
+  border: 1px solid black;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  border-radius: 4px;
+  min-height: 6.125rem;
+  font-size: 1rem;
+  line-height: 1.75;
 `;

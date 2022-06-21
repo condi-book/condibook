@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
+import AddBookMarkModal from "./AddBookMarkModal";
+
 const dummyData = {
   title: "무야호",
   author: "hayeong",
@@ -20,6 +22,8 @@ const dummyData = {
 // eslint-disable-next-line no-undef
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
+const button = document.createElement("span");
+
 const CommunityPostWrite = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,6 +34,8 @@ const CommunityPostWrite = () => {
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<string | undefined>();
   const [isModifying, setIsModifying] = React.useState(false); // 새글 작성, 수정인지 구분
+  const [isModalShow, setIsModalShow] = React.useState(false); // 북마크 추가 모달
+  const [bookmarks, setBookmarks] = React.useState<string[]>([]); // 북마크 목록
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -77,7 +83,6 @@ const CommunityPostWrite = () => {
   // 에디터에 북마크 추가 버튼을 생성하는 함수 이후에 모달 창으로 추가 할 수 있도록 한다.
   // 모달창은 isModalShow state Hooks에 의해 열고 닫혀지고 체크박스안에 체크된 북마크를 추가할 수 있는 리스트를 보여주며 useRef로 렌더링 최적화한다.
   const createCustomButton = () => {
-    const button = document.createElement("span");
     button.textContent = "북마크 추가";
     button.style.cursor = "pointer";
     button.style.background =
@@ -85,9 +90,12 @@ const CommunityPostWrite = () => {
     button.style.color = "transparent";
     button.style.webkitBackgroundClip = "text";
 
-    // setIsModalShow(true);
-
     return button;
+  };
+
+  const ModalShow = () => {
+    setIsModalShow(true);
+    console.log("ModalShow");
   };
 
   React.useEffect(() => {
@@ -122,6 +130,16 @@ const CommunityPostWrite = () => {
     }
   }, []);
 
+  React.useEffect(() => {
+    button.addEventListener("click", ModalShow);
+  }, []);
+
+  React.useEffect(() => {
+    button.removeEventListener("click", ModalShow);
+
+    return button.addEventListener("click", ModalShow);
+  }, [AddBookMarkModal]);
+
   return (
     <Container>
       <ItemContainer>
@@ -150,11 +168,6 @@ const CommunityPostWrite = () => {
                 el: createCustomButton(),
                 tooltip: "bookmark add",
                 className: "last",
-                // popup: {
-                //   className: "last",
-                //   body: container,
-                //   style: {},
-                // },
               },
             ],
           ]}
@@ -162,6 +175,12 @@ const CommunityPostWrite = () => {
           onChange={handleContentChange}
           initialValue={content}
         ></ToastEditor>
+        <AddBookMarkModal
+          isModalShow={isModalShow}
+          setIsModalShow={setIsModalShow}
+          bookmarks={bookmarks}
+          setBookmarks={setBookmarks}
+        />
       </ItemContainer>
       <ItemContainer>
         <ButtonContainer>
