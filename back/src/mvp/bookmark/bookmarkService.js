@@ -139,38 +139,16 @@ class bookmarkService {
         }
     }
 
-    // static async getMyBookmarkCount({ folderIds }) {
-    //     try {
-    //         const result = await Bookmark.count({
-    //             where: { folder_id: folderIds },
-    //         }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
-    //         return result;
-    //     } catch (e) {
-    //         return { errorMessage: e };
-    //     }
-    // }
-
-    // static async getBookmarksInFolders({ folderIds }) {
-    //     try {
-    //         const result = await Bookmark.findAll({
-    //             where: { folder_id: folderIds },
-    //         }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
-    //         return result;
-    //     } catch (e) {
-    //         return { errorMessage: e };
-    //     }
-    // }
-
-    // static async getBookmarkCountInFolders({ folderIds }) {
-    //     try {
-    //         const result = await Bookmark.count({
-    //             where: { folder_id: folderIds },
-    //         }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
-    //         return result;
-    //     } catch (e) {
-    //         return { errorMessage: e };
-    //     }
-    // }
+    static async getBookmarkCountInFolders({ folder_ids }) {
+        try {
+            const result = await Bookmark.count({
+                where: { folder_id: folder_ids },
+            }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
 
     static async deleteBookmark({ bookmark_id, requester_id }) {
         try {

@@ -9,7 +9,6 @@ import {
     sequelize,
 } from "../../db";
 import { getFailMsg, getSuccessMsg } from "../../util/message";
-import { folderService } from "../folder/folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
 
 class teamService {
@@ -125,32 +124,6 @@ class teamService {
         }
     }
 
-    // static async getTeamListUserJoined({ user_id }) {
-    //     try {
-    //         // 사용자 존재 확인
-    //         const user = await User.findOne({ where: { id: user_id } });
-    //         if (!user) {
-    //             return getFailMsg({ entity: "사용자", action: "조회" });
-    //         }
-
-    //         // 사용자가 속한 팀 조회
-    //         let teams = await sequelize.query(
-    //             `SELECT membership.team_id, team.name, team.explanation, count(folder.id) as folder_count
-    //             FROM (SELECT * FROM ${Membership.tableName} WHERE ${Membership.tableName}.member_id = ${user_id}) as membership
-    //             INNER JOIN ${Team.tableName} AS team
-    //             ON membership.team_id = team.id
-    //             LEFT JOIN ${Folder.tableName} as folder
-    //             ON team.id = folder.team_id
-    //             GROUP BY team.id;`,
-    //             { type: sequelize.QueryTypes.SELECT },
-    //         );
-
-    //         return teams;
-    //     } catch (e) {
-    //         return { errorMessage: e };
-    //     }
-    // }
-
     static async getTeamMembers({ team_id }) {
         try {
             // 팀 존재 확인
@@ -167,6 +140,33 @@ class teamService {
                 { type: sequelize.QueryTypes.SELECT },
             );
             return members;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getTeamInfoUserJoined({ user_id }) {
+        try {
+            // 사용자 존재 확인
+            const user = await User.findOne({ where: { id: user_id } });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+
+            // 사용자가 속한 팀 조회
+            let teams = await sequelize.query(
+                `SELECT membership.team_id, team.name, team.explanation, count(folder.id) as folder_count
+                FROM (SELECT * FROM ${Membership.tableName} WHERE ${Membership.tableName}.member_id = ${user_id}) as membership
+                INNER JOIN ${Team.tableName} AS team
+                ON membership.team_id = team.id
+                LEFT JOIN ${Folder.tableName} as folder
+                ON team.id = folder.team_id
+                GROUP BY team.id
+                ORDER BY membership.createdAt DESC;`,
+                { type: sequelize.QueryTypes.SELECT },
+            );
+
+            return teams;
         } catch (e) {
             return { errorMessage: e };
         }
