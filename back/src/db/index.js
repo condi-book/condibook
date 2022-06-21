@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes, Op } from "sequelize";
 // sequelize 인스턴스 생성
 const database = process.env.DB_DATABASE || "env 확인해주십시오.";
 const username = process.env.DB_USER || "env 확인해주십시오.";
@@ -96,7 +96,7 @@ Attached.belongsTo(Bookmark, { foreignKey: attached_fk_bookmark });
 const attached_fk_post = {
     name: "post_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "게시물 ID",
 };
 Post.hasMany(Attached, { foreignKey: attached_fk_post });
@@ -116,7 +116,7 @@ Post.belongsTo(User, { foreignKey: post_fk_user });
 const comment_fk_post = {
     name: "post_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "게시물 ID",
 };
 Post.hasMany(Comment, { foreignKey: comment_fk_post });
@@ -232,4 +232,5 @@ export {
     Membership,
     Like,
     Folder,
+    Op,
 };
