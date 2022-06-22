@@ -1,12 +1,35 @@
 import React from "react";
+import SideBar from "../layout/SideBar";
+import styled from "styled-components";
+
 import { Outlet } from "react-router-dom";
+import { KeyboardContext } from "../App";
 
 const Community = () => {
+  const keyboardContext: any = React.useContext(KeyboardContext);
   return (
-    <div>
-      <Outlet />
-    </div>
+    <Div>
+      {keyboardContext.sidebar === true && <SideBar />}
+      <div className="mypage-container">
+        <Outlet />
+      </div>
+    </Div>
   );
 };
 
 export default Community;
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: row;
+  background: #f8f9fc;
+  height: 100vh;
+  height: auto;
+
+  .mypage-container {
+    margin: auto;
+    width: 90vw;
+    border: 2px solid red;
+    height: 100%;
+  }
+`;
