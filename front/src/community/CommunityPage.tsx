@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import CommunityPostList from "./CommunityPostList";
 import SideBar from "../layout/SideBar";
+import { KeyboardContext } from "../App";
 
 export interface PostPreview {
   id: string;
@@ -16,7 +17,8 @@ export interface PostPreview {
 
 const CommunityPage = () => {
   const navigate = useNavigate();
-  const [sortState, setSortState] = useState<string>("newest");
+  const [sortState, setSortState] = React.useState<string>("newest");
+  const keyboardContext: any = React.useContext(KeyboardContext);
 
   const radios = React.useMemo(
     () => [
@@ -43,9 +45,7 @@ const CommunityPage = () => {
   };
   return (
     <Div>
-      <div className="sidebarWrapper">
-        <SideBar />
-      </div>
+      {keyboardContext.sidebar === true && <SideBar />}
       <div className="listWrapper">
         <Row>
           <Container>
@@ -83,13 +83,12 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
+  position: relative;
 
-  .sidebarWrapper {
-    position: fixed;
-  }
   .listWrapper {
-    margin-left: 130px;
+    margin: auto;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border: 2px solid black;

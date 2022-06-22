@@ -69,7 +69,8 @@ const Section = styled.section`
   justify-content: space-around;
   border: 2px solid black;
   border-radius: 20px;
-
+  position: sticky;
+  top: 0;
   div {
     text-align: center;
   }
