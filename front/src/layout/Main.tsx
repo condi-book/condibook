@@ -46,9 +46,11 @@ const Main = () => {
             </div> */}
           </div>
         </header>
-        <div className="part even ">
+        <div className="part even review">
           <div className="title">사용자 후기</div>
-          <Carousel />
+          <div className="carousel-wrap">
+            <Carousel />
+          </div>
         </div>
         <section className="part" id="service-info">
           <div className="container">
@@ -124,6 +126,19 @@ const Container = styled.div`
     font-size: 1.2vw;
   }
 
+  .review {
+    display: flex;
+    flex-direction: column;
+    .title {
+      margin: 5% 0;
+    }
+  }
+
+  .carousel-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
   .header {
     display: flex;
     align-items: center;
@@ -180,9 +195,9 @@ const Container = styled.div`
 
     .title {
       font-weight: 700;
-      font-size: 30px;
+      font-size: 2vw;
       text-align: center;
-      padding: 40px 0;
+      padding: 2% 0;
     }
   }
 
