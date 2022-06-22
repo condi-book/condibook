@@ -9,6 +9,7 @@ import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
 import CommunityPostDetail from "./community/CommunityPostDetail";
 import CommunityPostWrite from "./community/CommunityPostWrite";
+import CommunitySearch from "./community/CommunitySearch";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
@@ -63,6 +64,7 @@ const App: React.FC = () => {
                   <Route path="" element={<CommunityPage />} />
                   <Route path=":postId" element={<CommunityPostDetail />} />
                   <Route path="write" element={<CommunityPostWrite />} />
+                  <Route path="search" element={<CommunitySearch />} />
                 </Route>
                 <Route path="/bookmark" element={<Mypage />} />
                 <Route path="/login" element={<Login />} />
