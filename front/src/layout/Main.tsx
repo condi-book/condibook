@@ -8,7 +8,7 @@ import Header from "./Header";
 const Main = () => {
   const navigate = useNavigate();
   return (
-    <>
+    <Wrap>
       <Header />
       <Container>
         <header className="part header">
@@ -28,9 +28,9 @@ const Main = () => {
                 </div>
               </div>
             </div>
-            <div className="main-image">
-              <img src="/static/img/main.svg" alt="대표이미지" />
-            </div>
+            {/* <div className="main-image">
+              <img src="/static/img/main.gif" alt="대표이미지" />
+            </div> */}
           </div>
         </header>
         <div className="part even ">
@@ -94,9 +94,16 @@ const Main = () => {
         </section>
       </Container>
       <Footer />
-    </>
+    </Wrap>
   );
 };
+
+const Wrap = styled.div`
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const Container = styled.div`
   width: 100vw;
@@ -104,14 +111,17 @@ const Container = styled.div`
   .header {
     display: flex;
     align-items: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+      url("/static/img/main.gif");
+    background-size: 100% 100%;
 
     .container {
       width: 100%;
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: space-around;
-
+      justify-content: end !important;
+      padding-right: 5%;
       button {
         background: ${({ theme }) => theme.mainColor};
         color: white;
@@ -130,7 +140,7 @@ const Container = styled.div`
     }
   }
   .part {
-    height: 85vh;
+    height: 100vh;
 
     .container {
       height: 100%;
