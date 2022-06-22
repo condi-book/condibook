@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Carousel from "./carousel/Carousel";
 import Footer from "./Footer";
 import Header from "./Header";
+import { UserStateContext } from "App";
+
+export interface ContextProps {
+  userContext: { user: any };
+  handleNavigate: () => void;
+}
 
 const Main = () => {
+  const userContext: ContextProps["userContext"] = useContext(UserStateContext);
   const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    if (userContext.user) navigate("/bookmark");
+    else navigate("/login");
+  };
+
   return (
     <Wrap>
-      <Header />
+      <Header userContext={userContext} handleNavigate={handleNavigate} />
       <Container>
         <header className="part header">
           <div className="container">
@@ -24,9 +37,7 @@ const Main = () => {
                     <br />
                     이제 스마트하게 저장하세요
                   </p>
-                  <button onClick={() => navigate("/login")}>
-                    무료로 시작하기
-                  </button>
+                  <button onClick={handleNavigate}>무료로 시작하기</button>
                 </div>
               </div>
             </div>
@@ -92,7 +103,7 @@ const Main = () => {
         </section>
         <section className="side">
           <h3>나만의 북마크, 정리부터 공유까지</h3>
-          <button onClick={() => navigate("/login")}>무료로 시작하기</button>
+          <button onClick={handleNavigate}>무료로 시작하기</button>
         </section>
       </Container>
       <Footer />

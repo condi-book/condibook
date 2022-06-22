@@ -1,9 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { ContextProps } from "./Main";
 
-const Header = () => {
-  const navigate = useNavigate();
+const Header = ({ userContext, handleNavigate }: ContextProps) => {
   return (
     <Div>
       <div className="sub-content">
@@ -12,8 +11,8 @@ const Header = () => {
           <button className="info-button">
             <a href="#service-info">서비스 소개</a>
           </button>
-          <button className="login-button" onClick={() => navigate("/login")}>
-            로그인 / 회원가입
+          <button className="login-button" onClick={handleNavigate}>
+            {userContext.user ? "마이페이지로 이동" : "로그인 / 회원가입"}
           </button>
         </div>
       </div>
