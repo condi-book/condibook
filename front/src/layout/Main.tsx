@@ -16,7 +16,9 @@ const Main = () => {
             <div>
               <div>
                 <div className="caption animate__animated animate__fadeInDown">
-                  <h1>북마크 관리가 쉬워진다</h1>
+                  <h1>
+                    <strong>북마크 관리가 쉬워진다</strong>
+                  </h1>
                   <p>
                     북마크,
                     <br />
@@ -37,7 +39,7 @@ const Main = () => {
           <div className="title">사용자 후기</div>
           <Carousel />
         </div>
-        <section className="part">
+        <section className="part" id="service-info">
           <div className="container">
             <div>
               <img alt="소개이미지" />
@@ -107,6 +109,9 @@ const Wrap = styled.div`
 
 const Container = styled.div`
   width: 100vw;
+  .caption p {
+    font-size: 1.2vw;
+  }
 
   .header {
     display: flex;
@@ -125,6 +130,11 @@ const Container = styled.div`
       button {
         background: ${({ theme }) => theme.mainColor};
         color: white;
+        padding: 10px;
+
+        &:hover {
+          background: #111215;
+        }
       }
     }
   }
