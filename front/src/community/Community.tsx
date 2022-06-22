@@ -10,7 +10,7 @@ const Community = () => {
   return (
     <Div>
       {keyboardContext.sidebar === true && <SideBar />}
-      <div className="mypage-container">
+      <div className="community-container">
         <Outlet />
       </div>
     </Div>
@@ -26,7 +26,7 @@ const Div = styled.div`
   height: 100vh;
   height: auto;
 
-  .mypage-container {
+  .community-container {
     margin: auto;
     width: 90vw;
     border: 2px solid red;
