@@ -14,16 +14,21 @@ class websiteSerivce {
         let description = meta.og.description
             ? meta.og.description
             : meta.meta.description;
+        let img = meta.og.image ? meta.og.image : meta.twitter.image;
         if (!title) {
             title = "정보 없음";
         }
         if (!description) {
             description = "정보 없음";
         }
+        if (!img) {
+            img = "정보 없음";
+        }
         const result = await Website.create({
             url,
             meta_title: title,
             meta_description: description,
+            img,
         });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -38,6 +43,10 @@ class websiteSerivce {
             raw: true,
             nest: true,
         });
+        if (!info) {
+            const errorMessage = "해당 웹사이트가 없습니다.";
+            return { errorMessage };
+        }
         const keywords = await Keyword.findAll({
             where: { website_id: id },
             attributes: ["keyword", "id"],
