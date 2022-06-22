@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { KeyboardContext } from "../App";
 import * as Api from "../api";
@@ -11,6 +12,7 @@ type StyleProps = {
 type Tab = "제목" | "제목 + 내용";
 
 const CommunitySearch = () => {
+  const navigate = useNavigate();
   const keyboardContext: any = React.useContext(KeyboardContext);
   const [show, setShow] = React.useState(false);
   const [tab, setTab] = React.useState<Tab>("제목");
@@ -44,12 +46,17 @@ const CommunitySearch = () => {
         filtered = data?.filter(searchTitle);
         break;
     }
+    const handlePostClick =
+      (id: string) => (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        navigate(`/community/${id}`);
+      };
     return (
       <div className="search-main">
         <div className="search-list">
           {filtered?.map((item) => (
             <div className="card-wrap" key={`search-${item.id}`}>
-              <div className="card"></div>
+              <div className="card" onClick={handlePostClick(item.id)}></div>
             </div>
           ))}
         </div>
@@ -104,7 +111,7 @@ const CommunitySearch = () => {
                     className="search-delete-button"
                   >
                     <img
-                      src="/static/img/close_button.svg"
+                      src="static/img/close_button.svg"
                       width="22"
                       height="22"
                     />
@@ -127,7 +134,7 @@ const CommunitySearch = () => {
           <SearchList />
         ) : (
           <div className="search-image">
-            <img src="/static/img/search" width="30%" height="30%" />
+            <img src="static/img/search.svg" width="30%" height="30%" />
             <p>커뮤니티 검색</p>
           </div>
         )}

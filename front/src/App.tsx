@@ -16,6 +16,7 @@ import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
 import Config from "config/Config";
 import Search from "search/Search";
+import TeamPage from "./team/TeamPage";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -74,6 +75,7 @@ const App: React.FC = () => {
                 />
                 <Route path="/config" element={<Config />} />
                 <Route path="/search" element={<Search />} />
+                <Route path="/team" element={<TeamPage />} />
               </Routes>
             </Router>
           </ThemeProvider>
