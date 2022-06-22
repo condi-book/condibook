@@ -15,7 +15,7 @@ const Main = () => {
           <div className="container">
             <div>
               <div>
-                <div className="caption">
+                <div className="caption animate__animated animate__fadeInDown">
                   <h1>북마크 관리가 쉬워진다</h1>
                   <p>
                     북마크,
@@ -120,8 +120,14 @@ const Container = styled.div`
   }
 
   .main-image {
+    width: 50%;
+    height: 50%;
     background: ${({ theme }) => theme.mainColor};
     border-radius: 50%;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   .part {
     height: 85vh;

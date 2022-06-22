@@ -94,6 +94,8 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+    background: #f5f5f5;
+    border-radius: 7px;
   }
   .favorites-list {
     // border: 2px solid red;
@@ -115,7 +117,8 @@ const Div = styled.div`
     }
   }
   .create-card {
-    border: 2px solid black;
+    border-radius: 7px;
+    background: white;
     margin: 0.833%;
     padding: 10px;
     width: 15%;
