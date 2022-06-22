@@ -37,7 +37,9 @@ const Main = () => {
                     <br />
                     이제 스마트하게 저장하세요
                   </p>
-                  <button onClick={handleNavigate}>무료로 시작하기</button>
+                  <button className="custom-btn btn-3" onClick={handleNavigate}>
+                    <span>무료로 시작하기</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -105,7 +107,9 @@ const Main = () => {
         </section>
         <section className="side">
           <h3>나만의 북마크, 정리부터 공유까지</h3>
-          <button onClick={handleNavigate}>무료로 시작하기</button>
+          <button onClick={handleNavigate}>
+            <span>무료로 시작하기</span>
+          </button>
         </section>
       </Container>
       <Footer />
@@ -153,14 +157,117 @@ const Container = styled.div`
       align-items: center;
       justify-content: end !important;
       padding-right: 5%;
-      button {
-        background: ${({ theme }) => theme.mainColor};
-        color: white;
-        padding: 10px;
 
-        &:hover {
-          background: #111215;
-        }
+      .custom-btn {
+        width: 130px;
+        height: 40px;
+        color: #fff;
+        border-radius: 5px;
+        padding: 10px 25px;
+        font-weight: 500;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+        box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+          7px 7px 20px 0px rgba(0, 0, 0, 0.1),
+          4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+        outline: none;
+      }
+      button {
+        // background: ${({ theme }) => theme.mainColor};
+        // color: white;
+        // padding: 3%;
+        // font-size: 1.2vw;
+      }
+      .custom-btn {
+        width: 130px;
+        height: 40px;
+        color: #fff;
+        border-radius: 5px;
+        padding: 10px 25px;
+        font-family: "Lato", sans-serif;
+        font-weight: 500;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+        box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+          7px 7px 20px 0px rgba(0, 0, 0, 0.1),
+          4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+        outline: none;
+      }
+      .btn-3 {
+        background: rgb(0, 172, 238);
+        background: ${({ theme }) => theme.mainColor};
+        width: 130px;
+        height: 40px;
+        line-height: 42px;
+        padding: 0;
+        border: none;
+      }
+      .btn-3 span {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .btn-3:before,
+      .btn-3:after {
+        position: absolute;
+        content: "";
+        right: 0;
+        top: 0;
+        background: ${({ theme }) => theme.mainColor};
+        transition: all 0.3s ease;
+      }
+      .btn-3:before {
+        height: 0%;
+        width: 2px;
+      }
+      .btn-3:after {
+        width: 0%;
+        height: 2px;
+      }
+      .btn-3:hover {
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow: none;
+      }
+      .btn-3:hover:before {
+        height: 100%;
+      }
+      .btn-3:hover:after {
+        width: 100%;
+      }
+      .btn-3 span:hover {
+        background: ${({ theme }) => theme.mainColor};
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .btn-3 span:before,
+      .btn-3 span:after {
+        position: absolute;
+        content: "";
+        left: 0;
+        bottom: 0;
+        background: ${({ theme }) => theme.mainColor};
+        transition: all 0.3s ease;
+      }
+      .btn-3 span:before {
+        width: 2px;
+        height: 0%;
+      }
+      .btn-3 span:after {
+        width: 0%;
+        height: 2px;
+      }
+      .btn-3 span:hover:before {
+        height: 100%;
+      }
+      .btn-3 span:hover:after {
+        width: 100%;
       }
     }
   }
@@ -216,10 +323,12 @@ const Container = styled.div`
 
     button {
       cursor: pointer;
+      background: ${({ theme }) => theme.subBlackColor};
+      color: white;
+      padding: 1%;
 
       &:hover {
-        background: black;
-        color: white;
+        border: 1px solid white;
       }
     }
   }
