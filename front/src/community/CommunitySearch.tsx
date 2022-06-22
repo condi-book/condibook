@@ -127,7 +127,7 @@ const CommunitySearch = () => {
           <SearchList />
         ) : (
           <div className="search-image">
-            <img src="/static/img/search" width="30%" height="30%" />
+            <img src="/static/img/search.svg" width="30%" height="30%" />
             <p>커뮤니티 검색</p>
           </div>
         )}
