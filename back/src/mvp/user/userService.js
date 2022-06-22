@@ -1,4 +1,4 @@
-import { User } from "../../db";
+import { User, Op } from "../../db";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
@@ -116,7 +116,25 @@ class userService {
             return { errorMessage: e };
         }
     }
-
+    static async getUsersInfo({ nickname }) {
+        try {
+            const user = await User.findAll({
+                attributes: ["id", "nickname", "email", "image_url"],
+                where: {
+                    nickname: {
+                        [Op.like]: `%${nickname}%`,
+                    },
+                },
+                order: ["nickname"],
+            });
+            if (!user) {
+                return getFailMsg({ entity: "사용자 계정", action: "조회" });
+            }
+            return user;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
     static async setNickname({ nickname, requester_id }) {
         try {
             // 사용자 존재 여부 확인

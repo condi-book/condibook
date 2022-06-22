@@ -58,6 +58,19 @@ userRouter.get("/info", loginRequired, async (req, res, next) => {
     }
 });
 
+userRouter.get("", loginRequired, async (req, res, next) => {
+    try {
+        const { nickname } = req.query;
+
+        const result = await userService.getUsersInfo({ nickname });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 userRouter.get("/teams", loginRequired, async (req, res, next) => {
     try {
         const { user_id } = req.current;
