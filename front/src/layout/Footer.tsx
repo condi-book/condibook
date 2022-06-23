@@ -19,6 +19,7 @@ const Container = styled.footer`
   justify-content: space-around;
   align-items: center;
   img {
+    margin-top: 5%;
     padding: 3%;
     width: 20%;
     height: 40%;
