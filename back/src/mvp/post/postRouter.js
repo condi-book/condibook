@@ -2,7 +2,7 @@ import { Router } from "express";
 import { postService } from "./postService";
 import { loginRequired } from "../../middlewares/loginRequired";
 import { getUserIP } from "../../util/getUserIP/getUserIP.js";
-
+import { attachedService } from "../attached/attachedService";
 const postRouter = Router();
 
 postRouter.post("/", loginRequired, async (req, res, next) => {
@@ -15,13 +15,17 @@ postRouter.post("/", loginRequired, async (req, res, next) => {
             content,
             views,
         };
-        const result = await postService.createPost({ toCreate, user_id });
-        console.log(req.current);
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
+        const postInfo = await postService.createPost({ toCreate, user_id });
+        const post_id = postInfo.id;
+        await attachedService.createAttached({
+            user_id,
+            post_id,
+        });
+        if (postInfo.errorMessage) {
+            throw new Error(postInfo.errorMessage);
         }
 
-        res.status(201).send(result);
+        res.status(201).json({ msg: "게시글 생성 성공!" });
     } catch (error) {
         next(error);
     }

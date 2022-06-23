@@ -1,20 +1,18 @@
+import axios from "axios";
 import { Website, Keyword, Emoji } from "../../db";
-import { parser } from "url-meta-scraper";
+import { sortKeyword } from "../../util/AiFunction/sortKeyword";
 
 class websiteSerivce {
-    static async createWebsite(url) {
+    static async createWebsite(url, meta) {
         // DB에 이미 존재하는 웹사이트인지 확인
         const previous = await Website.findOne({ where: { url } });
         if (previous) {
             return previous;
         }
         // 웹사이트 파싱
-        const meta = await parser(url);
-        let title = meta.og.title ? meta.og.title : meta.meta.title;
-        let description = meta.og.description
-            ? meta.og.description
-            : meta.meta.description;
-        let img = meta.og.image ? meta.og.image : meta.twitter.image;
+        let title = meta.title;
+        let description = meta.description;
+        let img = meta.img;
         if (!title) {
             title = "정보 없음";
         }
@@ -24,18 +22,28 @@ class websiteSerivce {
         if (!img) {
             img = "정보 없음";
         }
-        const result = await Website.create({
+        const websiteInfo = await Website.create({
             url,
             meta_title: title,
             meta_description: description,
             img,
         });
-        if (!result) {
+        if (!websiteInfo) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
+        const ai_keyword = await axios.post("http://localhost:5003/translate", {
+            title,
+            description,
+        });
+        const keyword = sortKeyword(ai_keyword.data);
+        const website_id = websiteInfo.id;
+        await this.createKeyword({
+            website_id,
+            keyword,
+        });
 
-        return result;
+        return websiteInfo;
     }
     static async getWebsite({ id }) {
         const info = await Website.findOne({

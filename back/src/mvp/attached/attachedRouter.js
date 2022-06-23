@@ -12,12 +12,11 @@ attachedRouter.post("/:post_id", loginRequired, async (req, res, next) => {
             user_id,
             post_id,
         });
-
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
 
-        res.status(201).send(result);
+        res.status(201).json(result);
     } catch (error) {
         next(error);
     }

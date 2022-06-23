@@ -4,6 +4,7 @@ import { websiteSerivce } from "../website/websiteSerivce";
 import { folderService } from "../folder/folderService";
 import { loginRequired } from "../../middlewares/loginRequired";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
+import { parsers } from "../../util/parser/parser";
 
 const bookmarkRouter = Router();
 
@@ -11,15 +12,16 @@ bookmarkRouter.post("", loginRequired, async (req, res, next) => {
     try {
         const { url } = req.body;
         const { user_id } = req.current;
-
+        const meta = await parsers(url);
         // 웹사이트 생성(키워드, 이모지 생성 -> 미완)
-        const website = await websiteSerivce.createWebsite(url);
+        const website = await websiteSerivce.createWebsite(url, meta);
         checkErrorMessage(website);
-
+        const website_id = website.id;
+        const websiteInfo = await websiteSerivce.getWebsite({ website_id });
         // 폴더 생성(키워드 중에 단어 골라서 폴더이름으로 설정 -> 미완)
         const folder = await folderService.createFolderForUser({
             requester_id: user_id,
-            title: website.keyword ?? "temporary folder title",
+            title: websiteInfo.keyword_list[0] ?? "temporary folder title",
         });
         checkErrorMessage(folder);
 
