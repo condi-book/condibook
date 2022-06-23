@@ -71,12 +71,12 @@ class postService {
         const check = await Post.findOne({
             where: { id },
         });
-        if (check.author != user_id) {
-            const errorMessage = "글 작성자가 아닙니다.";
+        if (!check) {
+            const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
         }
-        if (!check) {
-            const errorMessage = "해당 데이터가 없습니다.";
+        if (check.author != user_id) {
+            const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
         Post.destroy({ where: { id } });
