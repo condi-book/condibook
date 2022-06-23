@@ -10,25 +10,26 @@ class websiteSerivce {
         }
         // 웹사이트 파싱
         const meta = await parser(url);
-        let meta_title = meta.og.title ? meta.og.title : meta.meta.title;
-        let meta_description = meta.og.description
+        let title = meta.og.title ? meta.og.title : meta.meta.title;
+        let description = meta.og.description
             ? meta.og.description
             : meta.meta.description;
-        if (!meta_title) {
-            meta_title = "정보 없음";
+        if (!title) {
+            title = "정보 없음";
         }
-        if (!meta_description) {
-            meta_description = "정보 없음";
+        if (!description) {
+            description = "정보 없음";
         }
         const result = await Website.create({
             url,
-            meta_title,
-            meta_description,
+            meta_title: title,
+            meta_description: description,
         });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
+
         return result;
     }
     static async getWebsite({ id }) {
@@ -49,9 +50,11 @@ class websiteSerivce {
             raw: true,
             nest: true,
         });
-        const keyword_list = keywords.map((v) => {
-            return v.keyword;
-        });
+        const keyword_list = keywords
+            .map((v) => {
+                return v.keyword.split(",");
+            })
+            .flat();
         const emoji_list = emojis.map((v) => {
             return v.keyword;
         });
@@ -116,9 +119,9 @@ class websiteSerivce {
 
         return result;
     }
-    static async createKeyword({ website_id, ai_keyword }) {
+    static async createKeyword({ website_id, keyword }) {
         const result = await Keyword.create({
-            keyword: ai_keyword,
+            keyword,
             website_id,
         });
         if (!result) {

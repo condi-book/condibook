@@ -11,7 +11,7 @@ teamRouter.post("", loginRequired, async (req, res, next) => {
         const { user_id } = req.current;
 
         const result = await teamService.createTeam({
-            manager: user_id,
+            manager_id: user_id,
             name,
             explanation,
         });
@@ -30,9 +30,9 @@ teamRouter.post("/:id/members", loginRequired, async (req, res, next) => {
         const { id } = req.params;
 
         const result = await teamService.createMembership({
-            hostId: user_id,
-            inviteeId: invitee_id,
-            teamId: id,
+            host_id: user_id,
+            invitee_id: invitee_id,
+            team_id: id,
         });
         checkErrorMessage(result);
 
@@ -52,19 +52,6 @@ teamRouter.get("", async (req, res, next) => {
         } else {
             result = await teamService.getTeamAll();
         }
-        checkErrorMessage(result);
-
-        res.status(200).send(result);
-    } catch (e) {
-        next(e);
-    }
-});
-
-teamRouter.get("/:id/info", async (req, res, next) => {
-    try {
-        const { id } = req.params;
-
-        const result = await teamService.getTeamsInfo({ ids: [id] });
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -110,8 +97,8 @@ teamRouter.put("/:id/info", loginRequired, async (req, res, next) => {
         const { user_id } = req.current;
 
         const result = await teamService.updateTeamInfo({
-            teamId: id,
-            requesterId: user_id,
+            team_id: id,
+            requester_id: user_id,
             name,
             explanation,
         });
@@ -132,9 +119,9 @@ teamRouter.delete(
             const { user_id } = req.current;
 
             const result = await teamService.deleteMemeber({
-                teamId,
-                memberId,
-                requesterId: user_id,
+                team_id: teamId,
+                member_id: memberId,
+                requester_id: user_id,
             });
             checkErrorMessage(result);
 
@@ -145,14 +132,14 @@ teamRouter.delete(
     },
 );
 
-teamRouter.delete("/:teamId", loginRequired, async (req, res, next) => {
+teamRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
-        const { teamId } = req.params;
+        const { id } = req.params;
         const { user_id } = req.current;
 
         const result = await teamService.deleteTeam({
-            teamId,
-            requesterId: user_id,
+            team_id: id,
+            requester_id: user_id,
         });
         checkErrorMessage(result);
 
