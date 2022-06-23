@@ -19,6 +19,14 @@ const dummyData = {
   updated_at: new Date(),
 };
 
+export interface Bookmark {
+  id: string;
+  title: string;
+  content: string;
+  link: string;
+  image: string;
+}
+
 // eslint-disable-next-line no-undef
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
@@ -35,7 +43,7 @@ const CommunityPostWrite = () => {
   const [content, setContent] = React.useState<string | undefined>();
   const [isModifying, setIsModifying] = React.useState(false); // 새글 작성, 수정인지 구분
   const [isModalShow, setIsModalShow] = React.useState(false); // 북마크 추가 모달
-  const [bookmarks, setBookmarks] = React.useState<string[]>([]); // 북마크 목록
+  const [bookmarks, setBookmarks] = React.useState<Bookmark[]>([]); // 북마크 목록
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -174,6 +182,7 @@ const CommunityPostWrite = () => {
           language="ko-KR"
           onChange={handleContentChange}
           initialValue={content}
+          placeholder="내용을 입력하세요"
         ></ToastEditor>
         <AddBookMarkModal
           isModalShow={isModalShow}
@@ -229,6 +238,10 @@ const ItemContainer = styled.div`
   padding-top: 2rem;
   padding-left: 3rem;
   padding-right: 3rem;
+  .placeholder {
+    cursor: auto;
+    background-color: inherit;
+  }
 `;
 
 const ButtonContainer = styled.div`

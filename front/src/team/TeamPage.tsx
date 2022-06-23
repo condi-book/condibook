@@ -11,8 +11,8 @@ const TeamPage = () => {
   return (
     <Div>
       {keyboardContext.sidebar === true && <SideBar />}
+      <TeamSidebar />
       <div className="team-container">
-        <TeamSidebar />
         <Outlet />
       </div>
     </Div>
@@ -28,7 +28,7 @@ const Div = styled.div`
   height: 100vh;
   height: auto;
 
-  .mypage-container {
+  .team-container {
     display: flex;
     margin: auto;
     width: 90vw;
