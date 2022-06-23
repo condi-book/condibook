@@ -4,7 +4,7 @@ import styled from "styled-components";
 const Footer = () => {
   return (
     <Container>
-      <img src="static/img/footer.png" alt="logo" />
+      <img src="static/img/symbol.png" alt="logo" />
       <div className="description">
         Copyright © 2022 CondiBook. All rights reserved.
       </div>
@@ -20,8 +20,8 @@ const Container = styled.footer`
   align-items: center;
   img {
     padding: 3%;
-    width: 43%;
-    height: 80%;
+    width: 20%;
+    height: 40%;
   }
   .description {
     font-size: 1.2vw;
