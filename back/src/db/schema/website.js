@@ -24,6 +24,11 @@ export default function WebsiteModel(sequelize, DataTypes) {
                 allowNull: true,
                 comment: "메타 내용",
             },
+            img: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: "사이트 이미지",
+            },
         },
         {
             charset: "utf8",

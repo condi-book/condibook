@@ -1,27 +1,14 @@
-import axios from "axios";
 import { Router } from "express";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
-import { sortKeyword } from "../../util/AiFunction/sortKeyword";
+import { parsers } from "../../util/parser/parser";
 import { websiteSerivce } from "./websiteSerivce";
 const websiteRouter = Router();
 
 websiteRouter.post("/", async (req, res, next) => {
     try {
         const url = req.body.url;
-        const result = await websiteSerivce.createWebsite(url);
-
-        const title = result.meta_title;
-        const description = result.meta_description;
-        const ai_keyword = await axios.post("http://localhost:5003/translate", {
-            title,
-            description,
-        });
-        const keyword = sortKeyword(ai_keyword.data);
-        const website_id = result.id;
-        await websiteSerivce.createKeyword({
-            website_id,
-            keyword,
-        });
+        const meta = await parsers(url);
+        const result = await websiteSerivce.createWebsite(url, meta);
         //이모지 생성 부분
         // const ai_emoji = ai 에서 받아올 것
         // await websiteSerivce.createEmoji({
