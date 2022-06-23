@@ -11,22 +11,33 @@ import {
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
-    static async createBookmark({ website_id, folder_id }) {
+    static async createBookmark({ folder_id, website_id, requester_id }) {
         try {
-            // DB에 이미 존재하는 북마크인지 확인
-            const previous = await Bookmark.findOne({
-                where: {
-                    website_id,
-                    folder_id,
-                },
+            // 존재하는 사용자인지 확인
+            const requester = await User.findOne({
+                where: { id: requester_id },
             });
-            if (previous) {
-                return previous;
+            if (!requester) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
             }
-
+            // 존재하는 웹사이트인지 확인
+            const website = await Website.findOne({
+                where: { id: website_id },
+            });
+            if (!website) {
+                return getFailMsg({ entity: "웹사이트", action: "조회" });
+            }
+            // 존재하는 폴더인지 확인
+            const folder = await Folder.findOne({
+                where: { id: folder_id },
+            });
+            if (!folder) {
+                return getFailMsg({ entity: "폴더", action: "조회" });
+            }
+            // 북마크 생성
             let bookmark = await Bookmark.create({
-                website_id,
-                folder_id,
+                website_id: website.id,
+                folder_id: folder.id,
             });
 
             return bookmark;
@@ -54,7 +65,7 @@ class bookmarkService {
             // 북마크 상세 정보 조회
             let bookmarks = await sequelize.query(
                 `SELECT bookmark.id AS bookmark_id, website.id AS website_id, website.url AS website_url, 
-                    website.meta_title, website.meta_description, emoji, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
+                    website.meta_title, website.meta_description, emoji.emoji as emoji, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
                     , CASE WHEN bmfavorite.id IS NULL THEN false ELSE true END favorites
                 FROM (SELECT * FROM ${Bookmark.tableName} WHERE ${Bookmark.tableName}.id = ${bookmark.id}) AS bookmark
                     INNER JOIN ${Website.tableName} AS website 

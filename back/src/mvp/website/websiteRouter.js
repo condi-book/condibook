@@ -1,21 +1,23 @@
 import { Router } from "express";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
-import { parsers } from "../../util/parser/parser";
+import { loginRequired } from "../../middlewares/loginRequired";
+import { folderService } from "../folder/folderService";
 import { websiteSerivce } from "./websiteSerivce";
+
 const websiteRouter = Router();
 
-websiteRouter.post("/", async (req, res, next) => {
+websiteRouter.post("", loginRequired, async (req, res, next) => {
     try {
-        const url = req.body.url;
-        const meta = await parsers(url);
-        const result = await websiteSerivce.createWebsite(url, meta);
-        //이모지 생성 부분
-        // const ai_emoji = ai 에서 받아올 것
-        // await websiteSerivce.createEmoji({
-        //     website_id,
-        //     ai_emoji,
-        // });
+        const { url } = req.body;
+        const { user_id } = req.current;
+
+        // 폴더 이름 후보 1. 웹사이트 AI 키워드 1개
+        let result = await websiteSerivce.createWebsite({ url });
         checkErrorMessage(result);
+        // 폴더 이름 후보 2. 기존 폴더리스트
+        const folders = await folderService.getUserFoldersInfo({ user_id });
+        checkErrorMessage(folders);
+        result["folders"] = folders;
 
         res.status(201).send(result);
     } catch (error) {
