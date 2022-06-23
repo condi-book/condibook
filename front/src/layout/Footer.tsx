@@ -21,7 +21,7 @@ const Container = styled.footer`
   img {
     margin-top: 5%;
     padding: 3%;
-    width: 20%;
+    width: 18%;
     height: 40%;
   }
   .description {

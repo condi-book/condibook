@@ -158,23 +158,6 @@ const Container = styled.div`
       justify-content: end !important;
       padding-right: 5%;
 
-      .custom-btn {
-        width: 130px;
-        height: 40px;
-        color: #fff;
-        border-radius: 5px;
-        padding: 10px 25px;
-        font-weight: 500;
-        background: transparent;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        display: inline-block;
-        box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
-          7px 7px 20px 0px rgba(0, 0, 0, 0.1),
-          4px 4px 5px 0px rgba(0, 0, 0, 0.1);
-        outline: none;
-      }
       button {
         // background: ${({ theme }) => theme.mainColor};
         // color: white;
@@ -182,12 +165,11 @@ const Container = styled.div`
         // font-size: 1.2vw;
       }
       .custom-btn {
-        width: 130px;
-        height: 40px;
+        width: 40%;
+        height: 15%;
         color: #fff;
         border-radius: 5px;
-        padding: 10px 25px;
-        font-family: "Lato", sans-serif;
+        // padding: 1% 2.5%;
         font-weight: 500;
         background: transparent;
         cursor: pointer;
@@ -202,9 +184,8 @@ const Container = styled.div`
       .btn-3 {
         background: rgb(0, 172, 238);
         background: ${({ theme }) => theme.mainColor};
-        width: 130px;
-        height: 40px;
-        line-height: 42px;
+        width: 40%;
+        height: 15%;
         padding: 0;
         border: none;
       }
@@ -213,6 +194,8 @@ const Container = styled.div`
         display: block;
         width: 100%;
         height: 100%;
+        font-size: 1vw;
+        padding: 5%;
       }
       .btn-3:before,
       .btn-3:after {
@@ -245,6 +228,7 @@ const Container = styled.div`
         background: ${({ theme }) => theme.mainColor};
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        font-weight: bold;
       }
       .btn-3 span:before,
       .btn-3 span:after {
