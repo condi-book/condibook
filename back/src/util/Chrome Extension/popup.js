@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 
-function pageMove() {
-    if (sessionStorage) {
-        document.getElementsByClassName("container")[0].style.display = "none";
-    }
-}
+// function pageMove() {
+//     if (sessionStorage) {
+//         document.getElementsByClassName("container")[0].style.display = "none";
+//     }
+// }
 
 function getCurrentTabUrl(callback) {
     var queryInfo = {
