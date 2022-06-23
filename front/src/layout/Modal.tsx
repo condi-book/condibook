@@ -26,16 +26,18 @@ const Modal = ({
     });
   };
 
-  const handleCreate = (v: any) => {
-    console.log("링크 추가");
-    handlePushData({
-      id: "5",
-      title: "okayoon",
-      image: "",
-      content: "내용을 입력해주세요",
-      link: v,
+  const handleCreate = () => {
+    Api.post(`bookmarks`, { url: newLink }).then((res) => {
+      console.log("링크 추가", res.data);
+      // handlePushData({
+      //   id: "5",
+      //   title: "okayoon",
+      //   image: "",
+      //   content: "내용을 입력해주세요",
+      //   link: v,
+      // });
+      close();
     });
-    close();
   };
   return (
     <Div newLink={newLink}>

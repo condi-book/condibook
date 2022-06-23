@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -8,40 +8,8 @@ import {
 import styled from "styled-components";
 import Modal from "../layout/Modal";
 import SideBar from "../layout/SideBar";
-
-const listContent = {
-  title: "프론트엔드",
-  listItems: [
-    {
-      id: "1",
-      title: "티스토리",
-      image: "",
-      content: "내용을 입력해주세요",
-      link: "https://tychejin.tistory.com/231",
-    },
-    {
-      id: "2",
-      title: "okayoon",
-      image: "",
-      content: "내용을 입력해주세요",
-      link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
-    },
-    {
-      id: "3",
-      title: "nykim",
-      image: "",
-      content: "내용을 입력해주세요",
-      link: "https://nykim.work/107",
-    },
-    {
-      id: "4",
-      title: "티스토리",
-      image: "",
-      content: "내용을 입력해주세요",
-      link: "https://hsp0418.tistory.com/123",
-    },
-  ],
-};
+import * as Api from "../api";
+import { useParams } from "react-router-dom";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -56,7 +24,8 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 });
 
 const MypageBookmarkDetail = () => {
-  const [list, setList] = useState(listContent.listItems);
+  const params = useParams();
+  const [list, setList] = useState([]);
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
   const [newLink, setNewLink] = useState("");
@@ -75,7 +44,6 @@ const MypageBookmarkDetail = () => {
 
   const handleClick = () => {
     setShow((prev) => !prev);
-    console.log(show);
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -90,13 +58,20 @@ const MypageBookmarkDetail = () => {
     setNewLink("");
   };
 
+  useEffect(() => {
+    Api.get(`folders/${params.folderId}/bookmarks`).then((res) => {
+      setList(res.data);
+      console.log("폴더 상세 데이터", res.data);
+    });
+  }, []);
+
   return (
     <Div>
       <SideBar />
 
       <div className="detail-container">
         <div className="list box">
-          <div>{listContent.title}</div>
+          <div>{params.title}</div>
           <div className="add dnd-item" onClick={handleClick}>
             <span className="pe-7s-plus"></span>
           </div>
