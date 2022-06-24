@@ -1,34 +1,23 @@
-import axios from "axios";
 import { Router } from "express";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
-import { sortKeyword } from "../../util/AiFunction/sortKeyword";
+import { loginRequired } from "../../middlewares/loginRequired";
+import { folderService } from "../folder/folderService";
 import { websiteSerivce } from "./websiteSerivce";
+
 const websiteRouter = Router();
 
-websiteRouter.post("/", async (req, res, next) => {
+websiteRouter.post("", loginRequired, async (req, res, next) => {
     try {
-        const url = req.body.url;
-        const result = await websiteSerivce.createWebsite(url);
+        const { url } = req.body;
+        const { user_id } = req.current;
 
-        const title = result.meta_title;
-        const description = result.meta_description;
-        const ai_keyword = await axios.post("http://localhost:5003/translate", {
-            title,
-            description,
-        });
-        const keyword = sortKeyword(ai_keyword.data);
-        const website_id = result.id;
-        await websiteSerivce.createKeyword({
-            website_id,
-            keyword,
-        });
-        //이모지 생성 부분
-        // const ai_emoji = ai 에서 받아올 것
-        // await websiteSerivce.createEmoji({
-        //     website_id,
-        //     ai_emoji,
-        // });
+        // 폴더 이름 후보 1. 웹사이트 AI 키워드 1개
+        let result = await websiteSerivce.createWebsite({ url });
         checkErrorMessage(result);
+        // 폴더 이름 후보 2. 기존 폴더리스트
+        const folders = await folderService.getUserFoldersInfo({ user_id });
+        checkErrorMessage(folders);
+        result["folders"] = folders;
 
         res.status(201).send(result);
     } catch (error) {

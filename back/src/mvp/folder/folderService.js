@@ -129,6 +129,27 @@ class folderService {
         }
     }
 
+    static async getUserFoldersInfo({ user_id }) {
+        try {
+            // 존재하는 사용자인지 확인
+            const user = await User.findOne({
+                where: { id: user_id },
+            });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 폴더 조회
+            let folders = await Folder.findAll({
+                attributes: ["id", "title"],
+                where: { user_id: user.id },
+                order: ["createdAt"],
+            });
+            return folders;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async getUserFolderIds({ user_id }) {
         try {
             let ids = await Folder.findAll({
