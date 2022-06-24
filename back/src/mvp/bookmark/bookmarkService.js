@@ -130,7 +130,7 @@ class bookmarkService {
             // 북마크 조회
             let bookmarks = await Bookmark.findAll({
                 where: { folder_id: folder.id },
-                attributes: [["id", "folder_id"], "createdAt", "updatedAt"],
+                attributes: [["id", "bookmark_id"], "createdAt", "updatedAt"],
                 include: [
                     {
                         model: Website,
