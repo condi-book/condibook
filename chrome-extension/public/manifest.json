@@ -1,5 +1,6 @@
 {
-  "name": "your project name",
+  "name": "CondiBook",
+  "description": "A bookmark management system",
   "icons": {
     "16": "logo.png",
     "48": "logo.png",
