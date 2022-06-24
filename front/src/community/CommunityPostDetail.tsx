@@ -162,6 +162,9 @@ const CommunityPostDetail = () => {
   React.useEffect(() => {
     // fetchPostDetail()
     setList(bookmarkList);
+    const user = sessionStorage.getItem("user");
+    const { id } = JSON.parse(user);
+    console.log(id);
   }, []);
 
   return (

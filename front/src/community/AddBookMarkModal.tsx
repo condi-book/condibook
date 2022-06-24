@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { Bookmark } from "./CommunityPostWrite";
-// import * as Api from "../api";
+import * as Api from "../api";
 
 type StyleProps = {
   show: boolean;
@@ -24,35 +24,6 @@ interface props {
   postBookmarks: Bookmark[];
   setPostBookmarks: React.Dispatch<React.SetStateAction<Bookmark[]>>;
 }
-const dummyData: Folder[] = [
-  {
-    id: "46",
-    title: "프론트엔드",
-    createdAt: "2022-06-18T15:33:57.000Z",
-    updatedAt: "2022-06-18T15:33:57.000Z",
-    bookmark_count: 0,
-    favorites: false,
-    first_bookmark_url: null,
-  },
-  {
-    id: "47",
-    title: "백엔드",
-    createdAt: "2022-06-18T17:17:57.000Z",
-    updatedAt: "2022-06-18T17:17:57.000Z",
-    bookmark_count: 0,
-    favorites: false,
-    first_bookmark_url: null,
-  },
-  {
-    id: "48",
-    title: "AI",
-    createdAt: "2022-06-18T17:18:04.000Z",
-    updatedAt: "2022-06-18T17:18:04.000Z",
-    bookmark_count: 0,
-    favorites: false,
-    first_bookmark_url: null,
-  },
-];
 
 const dummyBookmark = [
   {
@@ -61,6 +32,7 @@ const dummyBookmark = [
     image: "",
     content: "내용을 입력해주세요",
     link: "https://tychejin.tistory.com/231",
+    checked: false,
   },
   {
     id: "2",
@@ -68,6 +40,7 @@ const dummyBookmark = [
     image: "",
     content: "내용을 입력해주세요",
     link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
+    checked: false,
   },
   {
     id: "3",
@@ -75,6 +48,7 @@ const dummyBookmark = [
     image: "",
     content: "내용을 입력해주세요",
     link: "https://nykim.work/107",
+    checked: false,
   },
   {
     id: "4",
@@ -82,6 +56,7 @@ const dummyBookmark = [
     image: "",
     content: "내용을 입력해주세요",
     link: "https://hsp0418.tistory.com/123",
+    checked: false,
   },
 ];
 
@@ -123,17 +98,17 @@ const AddBookMarkModal = ({
     //   (folder) => folder.title === (e.target as HTMLElement).textContent,
     // ).id;
     // const { data } = await Api.get(`folder/${selectedFolderID}`);
-    const data = dummyBookmark;
-    const checkAddData = data.map((bookmark) => {
-      const checkedBookmark = postBookmarks.find(
-        (postBookmark) => postBookmark.id === bookmark.id,
-      );
-      return {
-        ...bookmark,
-        checked: checkedBookmark.checked,
-      };
-    });
-    setSelectedFolderBookmarks(checkAddData);
+    // const data = dummyBookmark;
+    // const checkAddData = dummyBookmark.map((bookmark) => {
+    //   const checkedBookmark = postBookmarks.find(
+    //     (postBookmark) => postBookmark.id === bookmark.id,
+    //   );
+    //   return {
+    //     ...bookmark,
+    //     checked: checkedBookmark.checked,
+    //   };
+    // });
+    setSelectedFolderBookmarks(dummyBookmark);
   };
 
   // 포스트 추가할 북마크 선택
@@ -142,55 +117,57 @@ const AddBookMarkModal = ({
     const checkedbookmarkID = e.target.value;
 
     if (checked) {
-      setPostBookmarks((prev) => [
-        ...prev,
-        selectedFolderBookmarks.find(
-          (bookmark) => bookmark.id === checkedbookmarkID,
-        ),
-      ]);
+      setSelectedFolderBookmarks((current) => {
+        return current.map((bookmark) => {
+          if (bookmark.id === checkedbookmarkID) {
+            bookmark.checked = true;
+            setPostBookmarks([...postBookmarks, bookmark]);
+          }
+          return bookmark;
+        });
+      });
     } else {
-      setPostBookmarks(
-        selectedFolderBookmarks.filter(
-          (bookmark) => bookmark.id !== checkedbookmarkID,
-        ),
-      );
+      setSelectedFolderBookmarks((current) => {
+        return current.map((bookmark) => {
+          if (bookmark.id === checkedbookmarkID) {
+            bookmark.checked = false;
+            setPostBookmarks(
+              postBookmarks.filter(
+                (bookmark) => bookmark.id !== checkedbookmarkID,
+              ),
+            );
+          }
+          return bookmark;
+        });
+      });
     }
   };
 
   // 북마크 입력
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const selectedFolderID = folders.find((folder) => folder.title === tab).id;
+
     if (e.key === "Enter") {
-      setPostBookmarks((prev) => [
-        ...prev,
-        {
-          id: (prev.length + 1).toString(),
-          title: "",
-          image: "",
-          content: "",
-          link: newLink,
-          checked: true,
-        },
-      ]);
+      const res = await Api.post(`folders/${selectedFolderID}/bookmarks`, {
+        url: newLink,
+      });
+      console.log(res);
+      setSelectedFolderBookmarks((prev) => [...prev]);
       setNewLink("");
     }
   };
 
   // 북마크 입력
-  const handleClickAdd = (
+  const handleClickAdd = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    setPostBookmarks((prev) => [
-      ...prev,
-      {
-        id: (prev.length + 1).toString(),
-        title: "",
-        image: "",
-        content: "",
-        link: newLink,
-        checked: true,
-      },
-    ]);
+    const selectedFolderID = folders.find((folder) => folder.title === tab).id;
+    const res = await Api.post(`folders/${selectedFolderID}/bookmarks`, {
+      url: newLink,
+    });
+    console.log(res);
+    setSelectedFolderBookmarks((prev) => [...prev]);
     setNewLink("");
   };
 
@@ -199,10 +176,16 @@ const AddBookMarkModal = ({
     setIsModalShow(false);
   };
 
+  const fetchFolderData = async () => {
+    const { data } = await Api.get("user/folders");
+    setFolders(data);
+  };
+
   React.useEffect(() => {
     // 유저 폴더들 불러오기
-    setFolders(dummyData);
+    fetchFolderData();
   }, []);
+
   return (
     <>
       <Modal
