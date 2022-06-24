@@ -12,10 +12,12 @@ import CommunityPostWrite from "./community/CommunityPostWrite";
 import CommunitySearch from "./community/CommunitySearch";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
+import CallBackGoogleLogin from "./auth/callBackGoogleLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
 import Config from "config/Config";
 import Search from "search/Search";
+import TeamPage from "./team/TeamPage";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -59,6 +61,10 @@ const App: React.FC = () => {
                   path="/callback/login/kakao"
                   element={<CallBackKakaoLogin />}
                 />
+                <Route
+                  path="/callback/login/google"
+                  element={<CallBackGoogleLogin />}
+                />
                 <Route path="/" element={<Main />} />
                 <Route path="/community" element={<Community />}>
                   <Route path="" element={<CommunityPage />} />
@@ -74,6 +80,7 @@ const App: React.FC = () => {
                 />
                 <Route path="/config" element={<Config />} />
                 <Route path="/search" element={<Search />} />
+                <Route path="/team" element={<TeamPage />} />
               </Routes>
             </Router>
           </ThemeProvider>

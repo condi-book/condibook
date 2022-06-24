@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import { Viewer } from "@toast-ui/react-editor";
 
-import SideBar from "../layout/SideBar";
 import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
 
@@ -163,13 +162,13 @@ const CommunityPostDetail = () => {
   React.useEffect(() => {
     // fetchPostDetail()
     setList(bookmarkList);
+    const user = sessionStorage.getItem("user");
+    const { id } = JSON.parse(user);
+    console.log(id);
   }, []);
 
   return (
     <Div>
-      <div className="sidebarWrapper">
-        <SideBar />
-      </div>
       <div className="postWrapper">
         <div className="detailWrapper">
           <HeaderContainer>
@@ -257,7 +256,6 @@ const Div = styled.div`
     position: fixed;
   }
   .postWrapper {
-    margin-left: 130px;
     width: 100%;
     display: flex;
     flex-direction: row;

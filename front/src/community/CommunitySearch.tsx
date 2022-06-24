@@ -1,8 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { KeyboardContext } from "../App";
 import * as Api from "../api";
-import SideBar from "layout/SideBar";
 
 type StyleProps = {
   show: boolean;
@@ -11,7 +10,7 @@ type StyleProps = {
 type Tab = "제목" | "제목 + 내용";
 
 const CommunitySearch = () => {
-  const keyboardContext: any = React.useContext(KeyboardContext);
+  const navigate = useNavigate();
   const [show, setShow] = React.useState(false);
   const [tab, setTab] = React.useState<Tab>("제목");
   const [word, setWord] = React.useState("");
@@ -44,12 +43,17 @@ const CommunitySearch = () => {
         filtered = data?.filter(searchTitle);
         break;
     }
+    const handlePostClick =
+      (id: string) => (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        navigate(`/community/${id}`);
+      };
     return (
       <div className="search-main">
         <div className="search-list">
           {filtered?.map((item) => (
             <div className="card-wrap" key={`search-${item.id}`}>
-              <div className="card"></div>
+              <div className="card" onClick={handlePostClick(item.id)}></div>
             </div>
           ))}
         </div>
@@ -79,7 +83,6 @@ const CommunitySearch = () => {
 
   return (
     <Div show={show}>
-      {keyboardContext.sidebar === true && <SideBar />}
       <div className="search-section">
         <div className="search-container">
           <div className="search-box">

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import GoogleLogin from "./googleLogin";
+import GoogleLoginBtn from "./googleLoginBtn";
 import KakaoLoginBtn from "./kakaoLoginBtn";
 
 const Login = () => {
@@ -11,7 +11,7 @@ const Login = () => {
           <img alt="로고" />
         </div>
         <div className="button-group">
-          <GoogleLogin></GoogleLogin>
+          <GoogleLoginBtn></GoogleLoginBtn>
           <KakaoLoginBtn></KakaoLoginBtn>
         </div>
       </div>

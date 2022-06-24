@@ -9,6 +9,7 @@ const iconList = [
   "pe-7s-home",
   "pe-7s-folder",
   "pe-7s-global",
+  "pe-7s-users",
   "pe-7s-search",
   "pe-7s-config",
 ];
@@ -42,6 +43,9 @@ const SideBar = () => {
     }
     if (e.currentTarget.id === "pe-7s-config") {
       navigate("/config");
+    }
+    if (e.currentTarget.id === "pe-7s-users") {
+      navigate("/team");
     }
   };
 

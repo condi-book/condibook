@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import CommunityPostList from "./CommunityPostList";
-import SideBar from "../layout/SideBar";
 
 export interface PostPreview {
   id: string;
@@ -48,41 +47,40 @@ const CommunityPage = () => {
     navigate("/community/search");
   };
   return (
-    <Div>
-      <div className="sidebarWrapper">
-        <SideBar />
-      </div>
-      <div className="listWrapper">
-        <Row>
-          <Container>
-            <ButtonGroup>
-              <ButtonWrapper>
-                {radios.map((radio) => (
-                  <button
-                    key={`toggle-${radio.value}`}
-                    value={radio.value}
-                    onClick={handleToggleChange}
-                  >
-                    {radio.name}
+    <>
+      <Div>
+        <div className="listWrapper">
+          <Row>
+            <Container>
+              <ButtonGroup>
+                <ButtonWrapper>
+                  {radios.map((radio) => (
+                    <button
+                      key={`toggle-${radio.value}`}
+                      value={radio.value}
+                      onClick={handleToggleChange}
+                    >
+                      {radio.name}
+                    </button>
+                  ))}
+                </ButtonWrapper>
+                <ButtonWrapper>
+                  <button onClick={handleSearchClick}>
+                    <span className="pe-7s-search"></span>
                   </button>
-                ))}
-              </ButtonWrapper>
-              <ButtonWrapper>
-                <button onClick={handleSearchClick}>
-                  <span className="pe-7s-search"></span>
-                </button>
-                <button onClick={handlePostClick}>새 글 작성</button>
-              </ButtonWrapper>
-            </ButtonGroup>
-          </Container>
-        </Row>
-        <Row>
-          <Container>
-            <CommunityPostList sortState={sortState} />
-          </Container>
-        </Row>
-      </div>
-    </Div>
+                  <button onClick={handlePostClick}>새 글 작성</button>
+                </ButtonWrapper>
+              </ButtonGroup>
+            </Container>
+          </Row>
+          <Row>
+            <Container>
+              <CommunityPostList sortState={sortState} />
+            </Container>
+          </Row>
+        </div>
+      </Div>
+    </>
   );
 };
 
@@ -97,7 +95,6 @@ const Div = styled.div`
     position: fixed;
   }
   .listWrapper {
-    margin-left: 130px;
     width: 100%;
     display: flex;
     flex-direction: column;
