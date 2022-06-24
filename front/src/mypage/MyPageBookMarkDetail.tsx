@@ -29,6 +29,7 @@ const MypageBookmarkDetail = () => {
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
   const [newLink, setNewLink] = useState("");
+  const [throttle, setThrottle] = useState(false);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -38,8 +39,25 @@ const MypageBookmarkDetail = () => {
     const items = Array.from(list);
     const [newOrder] = items.splice(source.index, 1);
     items.splice(destination.index, 0, newOrder);
-
+    // 순서 정렬할 때 사용 => API 연결 시
+    console.log(items.map((v) => ({ ...v, bookmark_id: items.indexOf(v) })));
     setList(items);
+    if (!throttle) {
+      console.log(`throttling`);
+      setThrottle(true);
+      handleThrottle(items);
+    }
+  };
+
+  const handleThrottle = (items: any) => {
+    if (!throttle) return;
+    if (throttle) {
+      setTimeout(async () => {
+        console.log("업데이트 시작");
+        setThrottle(false);
+        console.log(items);
+      }, 5000);
+    }
   };
 
   const handleClick = () => {
@@ -60,8 +78,9 @@ const MypageBookmarkDetail = () => {
 
   useEffect(() => {
     Api.get(`folders/${params.folderId}/bookmarks`).then((res) => {
-      setList(res.data);
+      // setList(res.data);
       console.log("폴더 상세 데이터", res.data);
+      setList(res.data);
     });
   }, []);
 
@@ -91,15 +110,15 @@ const MypageBookmarkDetail = () => {
                   ref={provided.innerRef}
                 >
                   {list.map((item, index) => {
+                    const { website } = item;
                     return (
                       <div
-                        key={item.id}
+                        key={`mybookmark-${item.bookmark_id}`}
                         className="dnd-item"
-                        onClick={() => setLink(item.link)}
+                        onClick={() => setLink(website.url)}
                       >
                         <Draggable
-                          key={item.id}
-                          draggableId={item.id}
+                          draggableId={`mybookmark-${item.bookmark_id}`}
                           index={index}
                         >
                           {(provided, snapshot) => (
@@ -116,12 +135,12 @@ const MypageBookmarkDetail = () => {
                                 <div>
                                   <span className="pe-7s-menu" />
                                 </div>
+                                <Img>
+                                  <img src={website.img} alt="이미지" />
+                                </Img>
                                 <div>
-                                  <img src={item.image} alt="이미지" />
-                                </div>
-                                <div>
-                                  <div>{item.title}</div>
-                                  <div>{item.content}</div>
+                                  <div>{website.meta_title}</div>
+                                  <div>{`${website.url.substr(0, 20)}...`}</div>
                                 </div>
                                 <div>
                                   <span
@@ -130,7 +149,23 @@ const MypageBookmarkDetail = () => {
                                   />
                                   <span
                                     className="pe-7s-trash icon"
-                                    onClick={() => alert("삭제하기")}
+                                    onClick={() => {
+                                      Api.delete(
+                                        `bookmarks/${item.bookmark_id}`,
+                                      )
+                                        .then(() => {
+                                          console.log("삭제 성공");
+                                          const copied = list.filter(
+                                            (v) =>
+                                              v.bookmark_id !==
+                                              item.bookmark_id,
+                                          );
+                                          setList(copied);
+                                        })
+                                        .catch((err) =>
+                                          console.log(err.response.data),
+                                        );
+                                    }}
                                   />
                                 </div>
                               </div>
@@ -216,4 +251,15 @@ const DnDiv = styled.div`
     border: 2px solid rgba(76, 76, 76, 0.1);
   }
 `;
+
+const Img = styled.div`
+  width: 20%;
+  height: 10%;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 export default MypageBookmarkDetail;
