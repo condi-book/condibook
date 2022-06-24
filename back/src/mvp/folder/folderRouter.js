@@ -107,6 +107,29 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     }
 });
 
+folderRouter.put(
+    "/:id/bookmarks/order",
+    loginRequired,
+    async (req, res, next) => {
+        try {
+            const folder_id = req.params.id;
+            const bookmarks = req.body;
+            const { user_id } = req.current;
+
+            const updatedBookmarks = await bookmarkService.updateBookmarkOrder({
+                folder_id,
+                requester_id: user_id,
+                bookmarks,
+            });
+            checkErrorMessage(updatedBookmarks);
+
+            res.status(201).send(updatedBookmarks);
+        } catch (e) {
+            next(e);
+        }
+    },
+);
+
 folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
