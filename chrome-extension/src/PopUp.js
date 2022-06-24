@@ -18,7 +18,7 @@ function getCurrentTabUrl(callback) {
   });
 }
 
-const PopUp = () => {
+const PopUp = ({ handlePage }) => {
   // 폴더 리스트, url
   const [folderList, setFolderList] = useState([]);
   const [url, setUrl] = useState("");
@@ -73,7 +73,9 @@ const PopUp = () => {
         <div className="top">
           <div className="top-box">
             <img src="/logo.png" alt="logo" width="30" />
-            <Button onClick={handleNavigate}>나의 북마크로 이동</Button>
+            <Button id="navigate-page" onClick={handleNavigate}>
+              나의 북마크로 이동
+            </Button>
           </div>
         </div>
         <div className="middle">
@@ -96,26 +98,13 @@ const PopUp = () => {
             <div className="loader10"></div>
             <div className="loading-text">키워드 분석 중 입니다.</div>
           </div> */}
-          <FolderSelect folderList={folderList} />
+          <FolderSelect folderList={folderList} handlePage={handlePage} />
         </div>
       </div>
     </Div>
   );
 };
 
-const Button = styled.button`
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-
-  &:hover {
-    background: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59);
-    color: white;
-  }
-`;
 const Div = styled.div`
   width: 300px;
   height: 400px;
@@ -365,6 +354,64 @@ const Div = styled.div`
     display: none;
     justify-content: center;
     align-items: center;
+  }
+
+  .popup {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+
+    #confirm-folder {
+      font-weight: bold;
+      font-size: 20px;
+      padding: 20px;
+    }
+  }
+
+  .bottom {
+    height: 100px;
+
+    #getUrl {
+      height: 100%;
+    }
+  }
+
+  .popup-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: flex-end;
+
+    #label {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  }
+
+  .select {
+    width: 130px;
+    height: 35px;
+  }
+
+  .input {
+    width: 130px;
+    height: 35px;
+    box-sizing: border-box;
+  }
+`;
+const Button = styled.button`
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59);
+    color: white;
   }
 `;
 

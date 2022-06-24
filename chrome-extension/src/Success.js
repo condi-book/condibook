@@ -1,9 +1,6 @@
-import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const Success = () => {
-  const params = useParams();
-
   return (
     <Div className="success">
       <Img src="/logo.png" alt="logo" width="30" />
@@ -11,7 +8,7 @@ const Success = () => {
       <div className="middle">
         <img width="150px" src="/success.svg" alt="성공" />
         <div className="folder">
-          <div>저장 폴더 : {params.folder}</div>
+          <div>저장 폴더 : </div>
         </div>
       </div>
       <div>

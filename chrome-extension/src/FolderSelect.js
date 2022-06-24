@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 
-const FolderSelect = ({ folderList }) => {
-  const navigate = useNavigate();
+const FolderSelect = ({ folderList, handlePage }) => {
   // 폴더명, 직접입력 인풋 및 값 상태 관리
   const [folder, setFolder] = useState(folderList[0]);
   const [input, setInput] = useState(false);
@@ -29,9 +27,9 @@ const FolderSelect = ({ folderList }) => {
   // 제출 이벤트
   const handleClick = () => {
     if (input && inputValue) {
-      navigate(`/${inputValue}`);
+      handlePage();
     } else if (!input && folder) {
-      navigate(`/${folder}`);
+      handlePage();
     } else {
       alert("선택된 폴더가 없습니다.");
     }
@@ -39,80 +37,83 @@ const FolderSelect = ({ folderList }) => {
 
   return (
     <>
-      <Section>
-        <Div>
+      <div className="popup">
+        <div className="popup-container">
           <div>
             <div id="label">저장 폴더 *</div>
-            <Select name="category" onChange={handleChange}>
+            <select className="select" name="category" onChange={handleChange}>
               {folderList?.map((item) => (
                 <option key={`option-${item}`} value={item}>
                   {item}
                 </option>
               ))}
               <option value="직접 입력">직접 입력</option>
-            </Select>
+            </select>
           </div>
-          <Input
+          <input
+            type="text"
+            className="input"
             value={inputValue}
             placeholder={input ? "폴더명을 입력하세요" : ""}
             disabled={input ? false : true}
             onChange={handleInputChange}
-          ></Input>
-        </Div>
+          ></input>
+        </div>
         <div id="confirm-folder">
           {folder === "직접 입력" ? inputValue : folder}
         </div>
-      </Section>
-      <SubmitButton className="bottom">
+      </div>
+      <div className="bottom">
         <button id="getUrl" onClick={handleClick}>
           저장하기
         </button>
-      </SubmitButton>
+      </div>
     </>
   );
 };
 
-const Select = styled.select`
-  width: 130px;
-  height: 35px;
-`;
-const Div = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-  align-items: flex-end;
+// const Section = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-around;
+//   align-items: center;
+//   height: 100%;
 
-  #label {
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-`;
+//   #confirm-folder {
+//     font-weight: bold;
+//     font-size: 20px;
+//     padding: 20px;
+//   }
+// `;
 
-const Input = styled.input`
-  width: 130px;
-  height: 35px;
-  box-sizing: border-box;
-`;
+// const SubmitButton = styled.div`
+//   height: 100px;
 
-const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  height: 100%;
+//   #getUrl {
+//     height: 100%;
+//   }
+// `;
+// const Div = styled.div`
+//   display: flex;
+//   width: 100%;
+//   justify-content: space-around;
+//   align-items: flex-end;
 
-  #confirm-folder {
-    font-weight: bold;
-    font-size: 20px;
-    padding: 20px;
-  }
-`;
+//   #label {
+//     margin-bottom: 10px;
+//     font-weight: bold;
+//   }
+// `;
 
-const SubmitButton = styled.div`
-  height: 100px;
+// const Select = styled.select`
+//   width: 130px;
+//   height: 35px;
+// `;
 
-  #getUrl {
-    height: 100%;
-  }
-`;
+// const Input = styled.input`
+//   width: 130px;
+//   height: 35px;
+//   box-sizing: border-box;
+// `;
+
 export default FolderSelect;

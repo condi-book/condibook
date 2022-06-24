@@ -1,18 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PopUp from "./PopUp";
 import Success from "./Success";
 import GlobalStyle from "./GlobalStyle";
+import { useState } from "react";
 
 const App = () => {
-  return (
-    <Router>
-      <GlobalStyle />
-      <Routes>
-        <Route path="/" element={<PopUp />} />
-        <Route path="/:folder" element={<Success />} />
-      </Routes>
-    </Router>
-  );
+  const [success, setSuccess] = useState(false);
+  const handlePage = () => setSuccess(true);
+  return <> {!success ? <PopUp handlePage={handlePage} /> : <Success />}</>;
 };
 
 export default App;
