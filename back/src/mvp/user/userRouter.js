@@ -58,11 +58,24 @@ userRouter.get("/info", loginRequired, async (req, res, next) => {
     }
 });
 
+userRouter.get("", loginRequired, async (req, res, next) => {
+    try {
+        const { nickname } = req.query;
+
+        const result = await userService.getUsersInfo({ nickname });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 userRouter.get("/teams", loginRequired, async (req, res, next) => {
     try {
         const { user_id } = req.current;
 
-        const result = await teamService.getTeamListUserJoined({ user_id });
+        const result = await teamService.getTeamInfoUserJoined({ user_id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
@@ -87,9 +100,12 @@ userRouter.get("/folders", loginRequired, async (req, res, next) => {
 userRouter.put("/nickname", loginRequired, async (req, res, next) => {
     try {
         const { nickname } = req.body;
-        const id = req.current.user_id;
+        const { user_id } = req.current;
 
-        const result = await userService.setNickname({ nickname, id });
+        const result = await userService.setNickname({
+            nickname,
+            requester_id: user_id,
+        });
         checkErrorMessage(result);
 
         res.status(201).send(result);
@@ -101,9 +117,12 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
 userRouter.put("/intro", loginRequired, async (req, res, next) => {
     try {
         const { intro } = req.body;
-        const id = req.current.user_id;
+        const { user_id } = req.current;
 
-        const result = await userService.setIntro({ intro, id });
+        const result = await userService.setIntro({
+            intro,
+            requester_id: user_id,
+        });
         checkErrorMessage(result);
 
         res.status(201).send(result);
@@ -114,9 +133,9 @@ userRouter.put("/intro", loginRequired, async (req, res, next) => {
 
 userRouter.delete("", loginRequired, async (req, res, next) => {
     try {
-        const id = req.current.user_id;
+        const { user_id } = req.current;
 
-        const result = await userService.deleteUser({ id });
+        const result = await userService.deleteUser({ requester_id: user_id });
         checkErrorMessage(result);
 
         res.status(204).send(result);

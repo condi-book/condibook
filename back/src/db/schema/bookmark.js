@@ -8,10 +8,15 @@ export default function BookmarkModel(sequelize, DataTypes) {
                 autoIncrement: true,
                 comment: "북마크 ID",
             },
+            order_idx: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: "북마크 순서",
+            },
         },
         {
-            charset: "utf8",
-            collate: "utf8_general_ci",
+            charset: "utf8mb4",
+            collate: "utf8mb4_unicode_ci",
             timestamps: true,
             indexes: [
                 {

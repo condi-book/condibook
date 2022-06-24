@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <Div>
       <div className="sub-content">
-        <img alt="로고" />
+        <img src="/static/img/logo.png" alt="로고" />
         <div className="button-group">
           <button className="info-button">서비스 소개</button>
           <button className="login-button" onClick={() => navigate("/login")}>
@@ -20,10 +20,9 @@ const Header = () => {
 };
 
 const Div = styled.div`
-  border: 2px black solid;
   position: fixed;
   z-index: 10;
-  // background: ${({ theme }) => theme.mainColor};
+  background: ${({ theme }) => theme.mainColor};
 
   height: 8vh;
   width: 100vw;
@@ -38,8 +37,7 @@ const Div = styled.div`
     justify-content: space-around;
 
     img {
-      border: 2px solid black;
-      width: 20%;
+      width: 10%;
       height: 6vh;
     }
   }

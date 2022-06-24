@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { folderService } from "./folderService";
+import { bookmarkService } from "../bookmark/bookmarkService";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { loginRequired } from "../../middlewares/loginRequired";
 
@@ -19,9 +20,9 @@ folderRouter.post("", loginRequired, async (req, res, next) => {
             });
         } else if (owner === "team") {
             result = await folderService.createFolderForTeam({
+                requester_id: user_id,
                 team_id,
                 title,
-                requester_id: user_id,
             });
         }
         checkErrorMessage(result);
@@ -45,6 +46,23 @@ folderRouter.get("/:id", async (req, res, next) => {
     }
 });
 
+folderRouter.get("/:id/bookmarks", loginRequired, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { user_id } = req.current;
+
+        const result = await bookmarkService.getBookmarksInFolder({
+            folder_id: id,
+            requester_id: user_id,
+        });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 folderRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -53,18 +71,10 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
 
         let result;
         result = await folderService.updateTitle({
-            id,
+            folder_id: id,
             title,
-            user_id,
+            requester_id: user_id,
         });
-        // } else if (mode === "favorites") {
-        //     const { user_id } = req.current;
-
-        //     result = await folderService.updateFolderFavorites({
-        //         id,
-        //         user_id,
-        //     });
-        // }
 
         checkErrorMessage(result);
 
@@ -79,7 +89,10 @@ folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
         const { id } = req.params;
         const { user_id } = req.current;
 
-        const result = await folderService.deleteFolder({ id, user_id });
+        const result = await folderService.deleteFolder({
+            folder_id: id,
+            requester_id: user_id,
+        });
         checkErrorMessage(result);
 
         res.status(204).json(result);
