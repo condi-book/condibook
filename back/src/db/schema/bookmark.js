@@ -10,7 +10,7 @@ export default function BookmarkModel(sequelize, DataTypes) {
             },
             order_idx: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
                 comment: "북마크 순서",
             },
         },
