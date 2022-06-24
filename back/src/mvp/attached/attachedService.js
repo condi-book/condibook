@@ -1,6 +1,6 @@
 import { Folder, Bookmark, Attached, Op, Post, Website } from "../../db";
 class attachedService {
-    static async createAttached({ user_id, post_id }) {
+    static async createAttached({ user_id, post_id, bookmark_id }) {
         const postInfo = await Post.findOne({ where: { id: post_id } });
         if (!postInfo) {
             const errorMessage = "해당 게시글이 없습니다.";
@@ -11,13 +11,11 @@ class attachedService {
             const errorMessage = "북마크 목록이 없습니다.";
             return { errorMessage };
         }
-        const folder_ids = folderInfo.map((v) => {
-            return v.id;
-        });
+
         const bookmarkInfo = await Bookmark.findAll({
             where: {
-                folder_id: {
-                    [Op.in]: folder_ids,
+                id: {
+                    [Op.in]: bookmark_id,
                 },
             },
             raw: true,
@@ -113,6 +111,20 @@ class attachedService {
         });
         const result = await Attached.findAll({
             where: { post_id },
+        });
+        return result;
+    }
+    static async deleteAttachedNull() {
+        const check = await Attached.findAll({
+            where: { post_id: null },
+        });
+        if (check) {
+            await Attached.destroy({
+                where: { post_id: null },
+            });
+        }
+        const result = await Attached.findAll({
+            where: { post_id: null },
         });
         return result;
     }
