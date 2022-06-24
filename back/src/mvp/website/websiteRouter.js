@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
+import { loginRequired } from "../../middlewares/loginRequired";
 import { parsers } from "../../util/parser/parser";
 import { websiteSerivce } from "./websiteSerivce";
 const websiteRouter = Router();
 
-websiteRouter.post("/", async (req, res, next) => {
+websiteRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const url = req.body.url;
         const meta = await parsers(url);
