@@ -85,6 +85,53 @@ class userService {
             return { errorMessage: e };
         }
     }
+
+    static async getGoogleToken(code) {
+        try {
+            // 코드로 토큰 발급
+            const res = await axios.post(
+                "https://oauth2.googleapis.com/token",
+                new URLSearchParams({
+                    code: code,
+                    client_id: process.env.GOOGLE_CLIENT_ID,
+                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    redirect_uri:
+                        process.env.CLIENT_URL + "/callback/login/google",
+                    grant_type: "authorization_code",
+                }),
+            );
+            const token = res.data.access_token;
+            return token;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getGoogleAccount(token) {
+        try {
+            const res = await axios.get(
+                `https://www.googleapis.com/oauth2/v2/userinfo?${token}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            if (res.data.verified_email === false) {
+                return {
+                    errorMessage: "인증된 구글계정으로만 가입할 수 있습니다.",
+                };
+            }
+            const account = {
+                nickname: res.data.name,
+                email: res.data.email,
+                image_url: res.data.picture,
+            };
+            return account;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
     static async getUserInfo({ user_id }) {
         try {
             const user = await User.findOne({ where: { id: user_id } });
