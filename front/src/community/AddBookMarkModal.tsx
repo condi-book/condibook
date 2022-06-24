@@ -21,8 +21,8 @@ interface Folder {
 interface props {
   isModalShow: boolean;
   setIsModalShow: (isModalShow: boolean) => void;
-  bookmarks: Bookmark[];
-  setBookmarks: React.Dispatch<React.SetStateAction<Bookmark[]>>;
+  postBookmarks: Bookmark[];
+  setPostBookmarks: React.Dispatch<React.SetStateAction<Bookmark[]>>;
 }
 const dummyData: Folder[] = [
   {
@@ -54,17 +54,52 @@ const dummyData: Folder[] = [
   },
 ];
 
+const dummyBookmark = [
+  {
+    id: "1",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://tychejin.tistory.com/231",
+  },
+  {
+    id: "2",
+    title: "okayoon",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
+  },
+  {
+    id: "3",
+    title: "nykim",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://nykim.work/107",
+  },
+  {
+    id: "4",
+    title: "티스토리",
+    image: "",
+    content: "내용을 입력해주세요",
+    link: "https://hsp0418.tistory.com/123",
+  },
+];
+
 const AddBookMarkModal = ({
   isModalShow,
   setIsModalShow,
-  bookmarks,
-  setBookmarks,
+  postBookmarks,
+  setPostBookmarks,
 }: props) => {
   const [newLink, setNewLink] = React.useState("");
   const [show, setShow] = React.useState(false);
   const [tab, setTab] = React.useState("폴더를 선택하세요");
   const [folders, setFolders] = React.useState<Folder[]>([]);
+  const [selectedFolderBookmarks, setSelectedFolderBookmarks] = React.useState<
+    Bookmark[]
+  >([]);
 
+  // 드랍메뉴에 보여줄 폴더리스트
   const folderList = (
     handleTab: (e: React.MouseEvent<HTMLDivElement>) => void,
   ) => {
@@ -75,25 +110,57 @@ const AddBookMarkModal = ({
     ));
   };
 
+  // url 입력시 이벤트
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewLink(e.target.value);
   };
 
   // 폴더 선택
-  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTab = async (e: React.MouseEvent<HTMLDivElement>) => {
     setTab((e.target as HTMLElement).textContent);
     setShow((prev) => !prev);
     // const selectedFolderID = folders.find(
     //   (folder) => folder.title === (e.target as HTMLElement).textContent,
     // ).id;
-    // const res = Api.get(`folder/${selectedFolderID}`);
-    // setBookmarks(res.data)
+    // const { data } = await Api.get(`folder/${selectedFolderID}`);
+    const data = dummyBookmark;
+    const checkAddData = data.map((bookmark) => {
+      const checkedBookmark = postBookmarks.find(
+        (postBookmark) => postBookmark.id === bookmark.id,
+      );
+      return {
+        ...bookmark,
+        checked: checkedBookmark.checked,
+      };
+    });
+    setSelectedFolderBookmarks(checkAddData);
+  };
+
+  // 포스트 추가할 북마크 선택
+  const handleCheckElement = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    const checkedbookmarkID = e.target.value;
+
+    if (checked) {
+      setPostBookmarks((prev) => [
+        ...prev,
+        selectedFolderBookmarks.find(
+          (bookmark) => bookmark.id === checkedbookmarkID,
+        ),
+      ]);
+    } else {
+      setPostBookmarks(
+        selectedFolderBookmarks.filter(
+          (bookmark) => bookmark.id !== checkedbookmarkID,
+        ),
+      );
+    }
   };
 
   // 북마크 입력
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setBookmarks((prev) => [
+      setPostBookmarks((prev) => [
         ...prev,
         {
           id: (prev.length + 1).toString(),
@@ -101,17 +168,19 @@ const AddBookMarkModal = ({
           image: "",
           content: "",
           link: newLink,
+          checked: true,
         },
       ]);
       setNewLink("");
     }
   };
 
+  // 북마크 입력
   const handleClickAdd = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    setBookmarks((prev) => [
+    setPostBookmarks((prev) => [
       ...prev,
       {
         id: (prev.length + 1).toString(),
@@ -119,16 +188,16 @@ const AddBookMarkModal = ({
         image: "",
         content: "",
         link: newLink,
+        checked: true,
       },
     ]);
     setNewLink("");
   };
 
-  const handleClickRemove =
-    (idx: number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      e.preventDefault();
-      setBookmarks(bookmarks.filter((_, i) => i !== idx));
-    };
+  const handleComplete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsModalShow(false);
+  };
 
   React.useEffect(() => {
     // 유저 폴더들 불러오기
@@ -162,11 +231,16 @@ const AddBookMarkModal = ({
           <Col>
             <Row>
               <Col>
-                {bookmarks.map((bookmark, idx) => (
+                {selectedFolderBookmarks.map((bookmark, idx) => (
                   <Row key={`postBookmark-${idx}`}>
+                    <input
+                      type="checkbox"
+                      value={bookmark.id}
+                      onChange={handleCheckElement}
+                      checked={bookmark.checked}
+                    />
                     <span>{bookmark.title}</span>
                     <span>{bookmark.link}</span>
-                    <button onClick={handleClickRemove(idx)}>X</button>
                   </Row>
                 ))}
               </Col>
@@ -175,7 +249,7 @@ const AddBookMarkModal = ({
               <Input
                 value={newLink}
                 onChange={handleChange}
-                placeholder="북마크를 입력해주세요"
+                placeholder="링크를 입력해주세요"
                 onKeyPress={handleKeyPress}
               ></Input>
               <button onClick={handleClickAdd}>
@@ -184,6 +258,10 @@ const AddBookMarkModal = ({
             </Row>
           </Col>
         </Modal.Body>
+        <Modal.Footer>
+          <button onClick={() => setIsModalShow(false)}>취소</button>
+          <button onClick={handleComplete}>완료</button>
+        </Modal.Footer>
       </Modal>
     </>
   );
