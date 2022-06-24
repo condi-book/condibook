@@ -10,7 +10,7 @@ import { attachedRouter } from "./attached/attachedRouter";
 import { favoriteRouter } from "./favorite/favoriteRouter";
 
 const indexRouter = (app) => {
-    app.use("/users", userRouter);
+    app.use("/user", userRouter);
     app.use("/websites", websiteRouter);
     app.use("/bookmarks", bookmarkRouter);
     app.use("/folders", folderRouter);

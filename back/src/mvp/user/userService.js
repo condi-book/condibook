@@ -20,17 +20,6 @@ class userService {
                 secretKey,
             );
             // 사용자 정보 + JWT 반환
-            const myFolderIds = await folderService.getUserFolderIds({
-                user_id: user.id,
-            });
-            let bookmarkCount = 0;
-            if (myFolderIds.length > 0) {
-                bookmarkCount = await bookmarkService.getBookmarkCountInFolders(
-                    {
-                        folder_ids: myFolderIds,
-                    },
-                );
-            }
             const result = {
                 id: user.id,
                 email: user.email,
@@ -38,8 +27,6 @@ class userService {
                 image_url: user.image_url,
                 intro: user.intro ?? null,
                 token: token,
-                folderCount: myFolderIds.length,
-                bookmarkCount,
             };
             return result;
         } catch (e) {
