@@ -34,6 +34,13 @@ class bookmarkService {
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
             }
+            // 존재하는 북마크인지 확인
+            const previousBookmark = await Bookmark.findAll({
+                where: { folder_id, website_id },
+            });
+            if (previousBookmark) {
+                return { errorMessage: "이미 존재한 북마크입니다." };
+            }
             // 북마크 생성
             let bookmark = await Bookmark.create({
                 website_id: website.id,
