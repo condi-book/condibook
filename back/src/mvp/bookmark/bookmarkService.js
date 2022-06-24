@@ -36,9 +36,9 @@ class bookmarkService {
             }
             // 존재하는 북마크인지 확인
             const previousBookmark = await Bookmark.findAll({
-                where: { folder_id, website_id },
+                where: { folder_id: folder.id, website_id: website.id },
             });
-            if (previousBookmark) {
+            if (previousBookmark.length > 0) {
                 return { errorMessage: "이미 존재한 북마크입니다." };
             }
             // 북마크 생성
@@ -134,7 +134,7 @@ class bookmarkService {
                 include: [
                     {
                         model: Website,
-                        required: true,
+                        // required: true,
                         include: [
                             { model: Keyword, attributes: ["keyword"] },
                             { model: Emoji, attributes: ["emoji"] },
