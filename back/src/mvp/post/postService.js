@@ -44,12 +44,36 @@ class postService {
         });
         return { postInfo, websiteInfo };
     }
-    static async getPostList() {
-        const query = { exclude: ["content"] };
-        const result = Post.findAll({ attributes: query });
+    static async getPostList({ query }) {
+        const excludes = { exclude: ["content"] };
+        if (query == "views") {
+            const result = Post.findAll({
+                attributes: excludes,
+                order: [["views", "DESC"]],
+                limit: 20,
+            });
+            if (!result) {
+                const errorMessage = "해당 게시글이 없습니다.";
+                return { errorMessage };
+            }
+            return result;
+        }
+        if (query == "likes") {
+            const result = Post.findAll({
+                attributes: excludes,
+                order: [["like_counts", "DESC"]],
+                limit: 20,
+            });
+            if (!result) {
+                const errorMessage = "해당 게시글이 없습니다.";
+                return { errorMessage };
+            }
+            return result;
+        }
+        const result = Post.findAll({ attributes: excludes });
 
         if (!result) {
-            const errorMessage = "해당 데이터가 없습니다.";
+            const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
         }
         return result;

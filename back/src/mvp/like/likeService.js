@@ -22,6 +22,15 @@ class likeService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
+        const updateLikes = Post.increment(
+            { like_counts: 1 },
+            { where: { id: post_id } },
+        );
+
+        if (!updateLikes) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
         return result;
     }
     static async getMyLike({ user_id }) {
@@ -54,15 +63,23 @@ class likeService {
             where: { user_id, post_id },
         });
         if (!check) {
-            const errorMessage = "해당 데이터가 없습니다.";
+            const errorMessage = "좋아요한 게시글이 없습니다.";
             return { errorMessage };
         }
         const result = await Like.destroy({
             where: { user_id, post_id },
         });
-        if (result == 1) {
-            const message = "삭제가 완료 되었습니다.";
-            return { message };
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+        const updateLikes = Post.increment(
+            { like_counts: -1 },
+            { where: { id: post_id } },
+        );
+        if (!updateLikes) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
         }
         return result;
     }
