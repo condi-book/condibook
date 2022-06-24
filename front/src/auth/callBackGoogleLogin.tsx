@@ -24,24 +24,21 @@ const CallBackGoogleLogin = () => {
 
     async function sendCode() {
       const url = SERVER_URL + "/user/login/google";
-      return await axios.post(url, { code });
+      const res = await axios.post(url, { code });
+      const user = res.data;
+
+      await sessionStorage.setItem("userToken", user.token);
+      await sessionStorage.setItem("user", JSON.stringify(user));
+      console.log(user);
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: user,
+      });
+
+      await navigate("/bookmark", { replace: true });
     }
 
-    sendCode()
-      .then((res) => {
-        // email, nickname, image_url, token(JWT) 반환됩니다.
-        const user = res.data;
-
-        sessionStorage.setItem("userToken", user.token);
-        sessionStorage.setItem("user", JSON.stringify(user));
-        dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: user,
-        });
-
-        alert("로그인 성공");
-      })
-      .then(navigate("/bookmark", { replace: true }));
+    sendCode();
   }, []);
 
   return <div>로그인 처리 중</div>;
