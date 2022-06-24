@@ -27,8 +27,8 @@ const CallBackGoogleLogin = () => {
       const res = await axios.post(url, { code });
       const user = res.data;
 
-      await sessionStorage.setItem("userToken", user.token);
-      await sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("userToken", user.token);
+      sessionStorage.setItem("user", JSON.stringify(user));
       console.log(user);
       dispatch({
         type: "LOGIN_SUCCESS",
