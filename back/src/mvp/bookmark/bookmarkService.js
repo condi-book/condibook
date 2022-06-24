@@ -186,9 +186,18 @@ class bookmarkService {
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
+            // 북마크 소유 여부 확인
+            const folder = await Folder.findOne({
+                where: { id: bookmark.folder_id },
+            });
+            if (!folder || folder.user_id !== requester.id) {
+                return {
+                    errorMessage: "사용자는 북마크를 삭제할 권한이 없습니다.",
+                };
+            }
             // 북마크 삭제
             const result = await Bookmark.destroy({
-                where: { id: bookmark.id, user_id: requester.id },
+                where: { id: bookmark.id },
             });
 
             if (result === 0) {
