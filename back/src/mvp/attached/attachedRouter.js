@@ -16,7 +16,7 @@ attachedRouter.post("/:post_id", loginRequired, async (req, res, next) => {
             throw new Error(result.errorMessage);
         }
 
-        res.status(201).json(result);
+        res.status(201).send(result);
     } catch (error) {
         next(error);
     }

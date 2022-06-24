@@ -8,6 +8,7 @@ const postRouter = Router();
 postRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const { title, content } = req.body;
+        const { bookmark_id } = req.body;
         const user_id = req.current.user_id;
         const views = 0;
         const toCreate = {
@@ -16,12 +17,16 @@ postRouter.post("/", loginRequired, async (req, res, next) => {
             views,
         };
         const postInfo = await postService.createPost({ toCreate, user_id });
+        if (postInfo.errorMessage) {
+            throw new Error(postInfo.errorMessage);
+        }
         const post_id = postInfo.id;
-        await attachedService.createAttached({
+        const attachedInfo = await attachedService.createAttached({
             user_id,
             post_id,
+            bookmark_id,
         });
-        if (postInfo.errorMessage) {
+        if (attachedInfo.errorMessage) {
             throw new Error(postInfo.errorMessage);
         }
 
@@ -33,7 +38,8 @@ postRouter.post("/", loginRequired, async (req, res, next) => {
 
 postRouter.get("/list", async (req, res, next) => {
     try {
-        const result = await postService.getPostList();
+        const query = req.query.order;
+        const result = await postService.getPostList({ query });
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }
@@ -95,13 +101,16 @@ postRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
         const user_id = req.current.user_id;
-        const result = await postService.deletePost({ id, user_id });
+        const deletePost = await postService.deletePost({ id, user_id });
 
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
+        if (deletePost.errorMessage) {
+            throw new Error(deletePost.errorMessage);
         }
-
-        res.status(204).send(result);
+        const deleteAttached = await attachedService.deleteAttachedNull();
+        if (deleteAttached.errorMessage) {
+            throw new Error(deleteAttached.errorMessage);
+        }
+        res.status(204).json({ msg: "삭제 완료!" });
     } catch (error) {
         next(error);
     }
