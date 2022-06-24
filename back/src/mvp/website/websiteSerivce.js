@@ -35,7 +35,6 @@ class websiteSerivce {
             };
         }
         // 웹사이트 생성
-        console.log(title, description, img);
         const newWebsite = await Website.create({
             url,
             meta_title: title,
