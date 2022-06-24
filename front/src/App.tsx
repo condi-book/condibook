@@ -12,6 +12,7 @@ import CommunityPostWrite from "./community/CommunityPostWrite";
 import CommunitySearch from "./community/CommunitySearch";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
+import CallBackGoogleLogin from "./auth/callBackGoogleLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
 import Config from "config/Config";
@@ -59,6 +60,10 @@ const App: React.FC = () => {
                 <Route
                   path="/callback/login/kakao"
                   element={<CallBackKakaoLogin />}
+                />
+                <Route
+                  path="/callback/login/google"
+                  element={<CallBackGoogleLogin />}
                 />
                 <Route path="/" element={<Main />} />
                 <Route path="/community" element={<Community />}>
