@@ -1,0 +1,16 @@
+{
+  "name": "your project name",
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "64": "logo.png",
+    "128": "logo.png"
+  },
+  "permissions": ["activeTab", "tabs", "storage"],
+  "manifest_version": 3,
+  "version": "0.0.1",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "your project title"
+  }
+}
