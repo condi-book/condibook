@@ -14,11 +14,11 @@ class userService {
                 user = await User.create({ nickname, email, image_url });
             }
             // JWT 생성
+            const payload = { user_id: user.id, email: user.email };
             const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-            const token = jwt.sign(
-                { user_id: user.id, email: user.email },
-                secretKey,
-            );
+            const options = { expiresIn: "5d" };
+
+            const token = jwt.sign(payload, secretKey, options);
             // 사용자 정보 + JWT 반환
             const result = {
                 id: user.id,
