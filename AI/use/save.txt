@@ -1,0 +1,103 @@
+# 깨져서 지워질 것을 대비해서 저장해놓은 hotfix.py 파일입니다.
+
+import re
+import os
+import csv
+from konlpy.tag import Okt
+import sys
+import pandas as pd
+from gensim.models import Word2Vec
+
+model = Word2Vec.load('./last_ko.bin')
+model.wv.save_word2vec_format("./last_ko.bin", binary=False)
+
+tokenized_data  = set(model.wv.vocab.keys())
+# tokenized_data2 = []
+
+data1 = pd.read_csv('./new_merge/editorial_nouns.csv',index_col = 0)
+data2 = pd.read_csv('./new_merge/emotion1_nouns.csv',index_col = 0)
+data3 = pd.read_csv('./new_merge/emotion2_nouns.csv', index_col = 0)
+data4 = pd.read_csv('./new_merge/law_nouns.csv', index_col = 0)
+data5 = pd.read_csv('./new_merge/news_nouns.csv', index_col = 0)
+data6 = pd.read_csv('./new_merge/petition_nouns.csv', index_col = 0)
+del data6['Unnamed: 0']
+
+partial_result = pd.concat([data1,data2,data3,data4,data5,data6],ignore_index=True)
+del data1, data2, data3, data4, data5, data6
+
+temp = []
+for i in range(len(partial_result)):
+    if type(partial_result['tokens'][i]) != str:
+        temp.append(i)
+
+partial_result = partial_result.drop(temp).reindex(range(1042996))
+
+for i in range(5):
+    for j in range(1042996):
+        try:
+            x = partial_result['tokens'][j][2:-2].split("', '")
+            tokenized_data.update(x)
+            # tokenized_data2.append(x)
+        except:
+            pass
+
+filenames2 = sorted(os.listdir("./data_split_prep1"))
+
+for file in filenames2:
+    f = open('./data_split_prep1/' + file)
+    cc = csv.reader(f)
+
+    for i in cc:
+        x = ''.join(i).split(',')
+        if len(x) == 1:
+            continue
+        
+        tokenized_data.update(x)
+        # tokenized_data2.append(x)
+
+tokenized_data = list(tokenized_data)
+
+#### !
+# model_2 = Word2Vec(size=200, window=5, min_count=1, workers=4)
+
+# model_2 = Word2Vec(sentences=tokenized_data2, size=200, window=5, min_count=1, workers=4,sg=0)
+model_2 = Word2Vec(sentences=tokenized_data, size=200, window=5, min_count=1, workers=4, sg=0)
+# model_2.build_vocab(tokenized_data)
+total_examples = model_2.corpus_count
+
+# model_2.train(tokenized_data2, total_examples=total_examples, epochs=3)
+
+
+print('train1 start')
+
+for i in range(5):
+    for j in range(1042996):
+        try:
+            x = partial_result['tokens'][j][2:-2].split("', '")
+            model.train(x, total_examples = len(x), epochs=1)
+        except:
+            pass
+        
+del partial_result
+print('train1 end')
+
+print('train2 start')
+
+for file in filenames2:
+    f = open('./data_split_prep1/' + file)
+    cc = csv.reader(f)
+
+    print(file,'train start')
+
+    for i in cc:
+        x = ''.join(i).split(',')
+        if len(x) == 1:
+            continue
+        
+        model.train(x,total_examples = len(x) , epochs = 5)
+
+print('train2 end')
+
+model.save('./hotfix_ko2.bin')
+
+print('model saved')
