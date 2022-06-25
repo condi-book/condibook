@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const FolderSelect = ({ folderList, handlePage }) => {
+const FolderSelect = ({ folderList, handlePage, cookie }) => {
   // 폴더명, 직접입력 인풋 및 값 상태 관리
   const [folder, setFolder] = useState(folderList[0]);
   const [input, setInput] = useState(false);
@@ -28,6 +28,20 @@ const FolderSelect = ({ folderList, handlePage }) => {
   const handleClick = () => {
     if (input && inputValue) {
       handlePage();
+      // fetch("http://localhost:5001/bookmarks", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //         Authorization: `Bearer ${cookie}`,
+      //       },
+      //       mode: "cors",
+      //       body: JSON.stringify({
+      //         folder_id: 0,
+      //         website_id: 59
+      //       }),
+      //     })
+      //       .then((res) => console.log("성공"))
+      window.close();
     } else if (!input && folder) {
       handlePage();
     } else {
@@ -43,8 +57,8 @@ const FolderSelect = ({ folderList, handlePage }) => {
             <div id="label">저장 폴더 *</div>
             <select className="select" name="category" onChange={handleChange}>
               {folderList?.map((item) => (
-                <option key={`option-${item}`} value={item}>
-                  {item}
+                <option key={`option-${item.id}`} value={item.title}>
+                  {item.title}
                 </option>
               ))}
               <option value="직접 입력">직접 입력</option>
