@@ -30,8 +30,7 @@ class websiteSerivce {
                 previous.meta_description === description)
         ) {
             return {
-                website_id: previous.id,
-                keyword: previous.keywords.keyword,
+                website: previous,
             };
         }
         // 웹사이트 생성
@@ -69,7 +68,7 @@ class websiteSerivce {
         // });
 
         return {
-            website_id: newWebsite.id,
+            website: newWebsite,
             keyword: keyword,
         };
     }
