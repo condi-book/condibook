@@ -21,10 +21,7 @@ const dummyData = {
 
 export interface Bookmark {
   id: string;
-  title: string;
-  content: string;
-  link: string;
-  image: string;
+  url: string;
   checked: boolean;
 }
 

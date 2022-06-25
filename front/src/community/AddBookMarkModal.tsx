@@ -68,10 +68,20 @@ const AddBookMarkModal = ({
     ).id;
     const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
     console.log(data);
+
+    const handledData = data.map((data: any) => {
+      const checkedBookmark = postBookmarks.find(
+        (postBookmark) => postBookmark.id === data.bookmark_id,
+      );
+      return {
+        id: data.bookmark_id,
+        url: data.website.url,
+        checked: checkedBookmark ? true : false,
+      };
+    });
+    setSelectedFolderBookmarks(handledData);
     // const checkAddData = data.map((bookmark) => {
-    //   const checkedBookmark = postBookmarks.find(
-    //     (postBookmark) => postBookmark.id === bookmark.id,
-    //   );
+    //
     //   return {
     //     ...bookmark,
     //     checked: checkedBookmark.checked,
@@ -123,7 +133,6 @@ const AddBookMarkModal = ({
         url: newLink,
       });
       console.log(res);
-      setSelectedFolderBookmarks((prev) => [...prev]);
       setNewLink("");
     }
   };
@@ -138,7 +147,6 @@ const AddBookMarkModal = ({
       url: newLink,
     });
     console.log(res);
-    setSelectedFolderBookmarks((prev) => [...prev]);
     setNewLink("");
   };
 
@@ -196,7 +204,7 @@ const AddBookMarkModal = ({
                       onChange={handleCheckElement}
                       checked={bookmark.checked}
                     />
-                    <Link onClick={handleClickLink}>{bookmark.link}</Link>
+                    <Link onClick={handleClickLink}>{bookmark.url}</Link>
                   </Row>
                 ))}
               </Col>
