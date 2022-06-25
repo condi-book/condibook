@@ -25,41 +25,6 @@ interface props {
   setPostBookmarks: React.Dispatch<React.SetStateAction<Bookmark[]>>;
 }
 
-const dummyBookmark = [
-  {
-    id: "1",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://tychejin.tistory.com/231",
-    checked: false,
-  },
-  {
-    id: "2",
-    title: "okayoon",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
-    checked: false,
-  },
-  {
-    id: "3",
-    title: "nykim",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://nykim.work/107",
-    checked: false,
-  },
-  {
-    id: "4",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://hsp0418.tistory.com/123",
-    checked: false,
-  },
-];
-
 const AddBookMarkModal = ({
   isModalShow,
   setIsModalShow,
@@ -85,6 +50,10 @@ const AddBookMarkModal = ({
     ));
   };
 
+  const handleClickLink = (e: React.MouseEvent<HTMLDivElement>) => {
+    window.open(`${e.currentTarget.innerText}`);
+  };
+
   // url 입력시 이벤트
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewLink(e.target.value);
@@ -94,12 +63,12 @@ const AddBookMarkModal = ({
   const handleTab = async (e: React.MouseEvent<HTMLDivElement>) => {
     setTab((e.target as HTMLElement).textContent);
     setShow((prev) => !prev);
-    // const selectedFolderID = folders.find(
-    //   (folder) => folder.title === (e.target as HTMLElement).textContent,
-    // ).id;
-    // const { data } = await Api.get(`folder/${selectedFolderID}`);
-    // const data = dummyBookmark;
-    // const checkAddData = dummyBookmark.map((bookmark) => {
+    const selectedFolderID = folders.find(
+      (folder) => folder.title === (e.target as HTMLElement).textContent,
+    ).id;
+    const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
+    console.log(data);
+    // const checkAddData = data.map((bookmark) => {
     //   const checkedBookmark = postBookmarks.find(
     //     (postBookmark) => postBookmark.id === bookmark.id,
     //   );
@@ -108,40 +77,42 @@ const AddBookMarkModal = ({
     //     checked: checkedBookmark.checked,
     //   };
     // });
-    setSelectedFolderBookmarks(dummyBookmark);
   };
 
   // 포스트 추가할 북마크 선택
-  const handleCheckElement = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    const checkedbookmarkID = e.target.value;
+  const handleCheckElement = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked;
+      const checkedbookmarkID = e.target.value;
 
-    if (checked) {
-      setSelectedFolderBookmarks((current) => {
-        return current.map((bookmark) => {
-          if (bookmark.id === checkedbookmarkID) {
-            bookmark.checked = true;
-            setPostBookmarks([...postBookmarks, bookmark]);
-          }
-          return bookmark;
+      if (checked) {
+        setSelectedFolderBookmarks((current) => {
+          return current.map((bookmark) => {
+            if (bookmark.id === checkedbookmarkID) {
+              bookmark.checked = true;
+              setPostBookmarks([...postBookmarks, bookmark]);
+            }
+            return bookmark;
+          });
         });
-      });
-    } else {
-      setSelectedFolderBookmarks((current) => {
-        return current.map((bookmark) => {
-          if (bookmark.id === checkedbookmarkID) {
-            bookmark.checked = false;
-            setPostBookmarks(
-              postBookmarks.filter(
-                (bookmark) => bookmark.id !== checkedbookmarkID,
-              ),
-            );
-          }
-          return bookmark;
+      } else {
+        setSelectedFolderBookmarks((current) => {
+          return current.map((bookmark) => {
+            if (bookmark.id === checkedbookmarkID) {
+              bookmark.checked = false;
+              setPostBookmarks(
+                postBookmarks.filter(
+                  (bookmark) => bookmark.id !== checkedbookmarkID,
+                ),
+              );
+            }
+            return bookmark;
+          });
         });
-      });
-    }
-  };
+      }
+    },
+    [Checkbox, postBookmarks],
+  );
 
   // 북마크 입력
   const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -186,6 +157,10 @@ const AddBookMarkModal = ({
     fetchFolderData();
   }, []);
 
+  React.useEffect(() => {
+    console.log(postBookmarks);
+  }, [postBookmarks]);
+
   return (
     <>
       <Modal
@@ -198,14 +173,13 @@ const AddBookMarkModal = ({
           <Modal.Title id="example-modal-sizes-title-lg">
             <DropDown show={show}>
               <div className="container">
-                <div
-                  className="dropdown-header"
-                  onClick={() => setShow((prev) => !prev)}
-                >
+                <DropdownHeader onClick={() => setShow((prev) => !prev)}>
                   <p>{tab}</p>
                   <span className="pe-7s-angle-down" />
+                </DropdownHeader>
+                <div className="select">
+                  <div className="scroll">{folderList(handleTab)}</div>
                 </div>
-                <div className="select">{folderList(handleTab)}</div>
               </div>
             </DropDown>
           </Modal.Title>
@@ -216,14 +190,13 @@ const AddBookMarkModal = ({
               <Col>
                 {selectedFolderBookmarks.map((bookmark, idx) => (
                   <Row key={`postBookmark-${idx}`}>
-                    <input
+                    <Checkbox
                       type="checkbox"
                       value={bookmark.id}
                       onChange={handleCheckElement}
                       checked={bookmark.checked}
                     />
-                    <span>{bookmark.title}</span>
-                    <span>{bookmark.link}</span>
+                    <Link onClick={handleClickLink}>{bookmark.link}</Link>
                   </Row>
                 ))}
               </Col>
@@ -282,6 +255,39 @@ const Input = styled.input`
   }
 `;
 
+const Checkbox = styled.input`
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  &:checked {
+    background-color: #00bcd4;
+  }
+`;
+
+const Link = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #000;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  overflow: scroll;
+  overflow-y: scroll;
+  text-overflow: ellipsis;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const DropDown = styled.div<StyleProps>`
   position: relative;
   width: auto;
@@ -318,6 +324,18 @@ const DropDown = styled.div<StyleProps>`
     visibility: ${({ show }) => (show ? "visible" : "hidden")};
     transition: height 0.3s ease-out;
 
+    .scroll {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      height: ${({ show }) => (show ? "168px" : "50px")};
+      width: 100%;
+      padding: 0px;
+      margin: 0px;
+      border-radius: 8px;
+      background-color: rgb(235, 235, 235);
+      z-index: 2;
+      
+
     div {
       display: flex;
       -webkit-box-pack: start;
@@ -333,32 +351,33 @@ const DropDown = styled.div<StyleProps>`
       font-weight: 700;
     }
   }
-  .dropdown-header {
-    position: absolute;
-    top: 0px;
-    display: flex;
-    -webkit-box-pack: justify;
-    justify-content: space-between;
-    -webkit-box-align: center;
-    align-items: center;
-    width: 200px;
-    height: 50px;
-    padding: 0px 20px;
-    border-radius: 8px;
-    color: rgb(96, 96, 96);
-    background-color: rgb(235, 235, 235);
-    font-size: 16px;
-    font-weight: 400;
-    letter-spacing: -0.05em;
-    z-index: 4;
-    cursor: pointer;
+`;
 
-    p {
-      margin: auto 0;
-    }
-    span {
-      font-size: 20px;
-      font-weight: bolder;
-    }
+const DropdownHeader = styled.div`
+  position: absolute;
+  top: 0px;
+  display: flex;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  padding: 0px 20px;
+  border-radius: 8px;
+  color: rgb(96, 96, 96);
+  background-color: rgb(235, 235, 235);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  z-index: 4;
+  cursor: pointer;
+
+  p {
+    margin: auto 0;
+  }
+  span {
+    font-size: 20px;
+    font-weight: bolder;
   }
 `;
