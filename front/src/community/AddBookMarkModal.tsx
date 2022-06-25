@@ -60,33 +60,13 @@ const AddBookMarkModal = ({
   };
 
   // 폴더 선택
-  const handleTab = async (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
     setTab((e.target as HTMLElement).textContent);
     setShow((prev) => !prev);
     const selectedFolderID = folders.find(
       (folder) => folder.title === (e.target as HTMLElement).textContent,
     ).id;
-    const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
-    console.log(data);
-
-    const handledData = data.map((data: any) => {
-      const checkedBookmark = postBookmarks.find(
-        (postBookmark) => postBookmark.id === data.bookmark_id,
-      );
-      return {
-        id: data.bookmark_id,
-        url: data.website.url,
-        checked: checkedBookmark ? true : false,
-      };
-    });
-    setSelectedFolderBookmarks(handledData);
-    // const checkAddData = data.map((bookmark) => {
-    //
-    //   return {
-    //     ...bookmark,
-    //     checked: checkedBookmark.checked,
-    //   };
-    // });
+    fetchFolderBookmarkData(selectedFolderID);
   };
 
   // 포스트 추가할 북마크 선택
@@ -143,10 +123,12 @@ const AddBookMarkModal = ({
   ) => {
     e.preventDefault();
     const selectedFolderID = folders.find((folder) => folder.title === tab).id;
-    const res = await Api.post(`folders/${selectedFolderID}/bookmarks`, {
+    await Api.post(`folders/${selectedFolderID}/bookmarks`, {
       url: newLink,
     });
-    console.log(res);
+
+    fetchFolderBookmarkData(selectedFolderID);
+
     setNewLink("");
   };
 
@@ -158,6 +140,23 @@ const AddBookMarkModal = ({
   const fetchFolderData = async () => {
     const { data } = await Api.get("user/folders");
     setFolders(data);
+  };
+
+  const fetchFolderBookmarkData = async (selectedFolderID: string) => {
+    const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
+    console.log(data);
+
+    const handledData = data.map((data: any) => {
+      const checkedBookmark = postBookmarks.find(
+        (postBookmark) => postBookmark.id === data.bookmark_id,
+      );
+      return {
+        id: data.bookmark_id,
+        url: data.website.url,
+        checked: checkedBookmark ? true : false,
+      };
+    });
+    setSelectedFolderBookmarks(handledData);
   };
 
   React.useEffect(() => {
