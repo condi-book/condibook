@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SERVER_URL, GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
+import { setCookie } from "./util/cookie";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
@@ -29,6 +30,8 @@ const CallBackGoogleLogin = () => {
 
       await sessionStorage.setItem("userToken", user.token);
       await sessionStorage.setItem("user", JSON.stringify(user));
+      await localStorage.setItem("userToken", user.token);
+      setCookie("userToken", user.token);
       console.log(user);
       dispatch({
         type: "LOGIN_SUCCESS",

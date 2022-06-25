@@ -37,6 +37,8 @@ const PopUp = ({ handlePage }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Token:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6Impvb2hlNzFAZ21haWwuY29tIiwiaWF0IjoxNjU2MTQzMzEyLCJleHAiOjE2NTY1NzUzMTJ9.2VJTQunEvMy2ENX0maGp9OC1BCKu3m7fZKyxsJkDnNY",
         },
         mode: "cors",
         body: JSON.stringify({
