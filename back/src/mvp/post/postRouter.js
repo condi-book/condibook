@@ -39,7 +39,8 @@ postRouter.post("/", loginRequired, async (req, res, next) => {
 postRouter.get("/list", async (req, res, next) => {
     try {
         const query = req.query.order;
-        const result = await postService.getPostList({ query });
+        const pageNumber = req.query.pageNumber;
+        const result = await postService.getPostList({ query, pageNumber });
         if (result.errorMessage) {
             throw new Error(result.errorMessage);
         }

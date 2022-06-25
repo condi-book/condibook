@@ -130,7 +130,7 @@ class bookmarkService {
             // 북마크 조회
             let bookmarks = await Bookmark.findAll({
                 where: { folder_id: folder.id },
-                attributes: [["id", "bookmark_id"], "createdAt", "updatedAt"],
+                attributes: [["id", "bookmark_id"], "order_idx"],
                 include: [
                     {
                         model: Website,
@@ -148,6 +148,7 @@ class bookmarkService {
                     },
                     { model: BMFavorite },
                 ],
+                order: ["order_idx", "createdAt"],
                 nest: true,
                 raw: true,
             });
@@ -171,6 +172,36 @@ class bookmarkService {
                 where: { folder_id: folder_ids },
             }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
             return result;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async updateBookmarkOrder({ folder_id, requester_id, bookmarks }) {
+        try {
+            // 존재하는 사용자인지 확인
+            const requester = await User.findOne({
+                where: { id: requester_id },
+            });
+            if (!requester) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 존재하는 폴더인지 확인
+            const folder = await Folder.findOne({ where: { id: folder_id } });
+            if (!folder) {
+                return getFailMsg({ entity: "폴더", action: "조회" });
+            }
+            // 폴더 내 북마크의 순서 변경
+            bookmarks = bookmarks.map((bookmark) => {
+                return {
+                    id: bookmark.bookmark_id,
+                    order_idx: bookmark.order_idx,
+                };
+            });
+            const updatedBookmarks = await Bookmark.bulkCreate(bookmarks, {
+                updateOnDuplicate: ["order_idx"],
+            });
+            return updatedBookmarks;
         } catch (e) {
             return { errorMessage: e };
         }
