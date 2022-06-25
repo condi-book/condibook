@@ -29,10 +29,16 @@ export default function PostModel(sequelize, DataTypes) {
                 allowNull: false,
                 comment: "게시글 작성자 닉네임",
             },
+            like_counts: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+                allowNull: false,
+                comment: "게시글 좋아요 갯수",
+            },
         },
         {
-            charset: "utf8",
-            collate: "utf8_general_ci",
+            charset: "utf8mb4",
+            collate: "utf8mb4_unicode_ci",
             timestamps: true,
             indexes: [
                 {

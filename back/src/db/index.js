@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes, Op } from "sequelize";
 // sequelize 인스턴스 생성
 const database = process.env.DB_DATABASE || "env 확인해주십시오.";
 const username = process.env.DB_USER || "env 확인해주십시오.";
@@ -50,6 +50,12 @@ const Like = LikeModel(sequelize, DataTypes);
 import FolderModel from "./schema/folder";
 const Folder = FolderModel(sequelize, DataTypes);
 
+import FDFavoriteModel from "./schema/folderfavorite";
+const FDFavorite = FDFavoriteModel(sequelize, DataTypes);
+
+import BMFavoriteModel from "./schema/bookmarkfavorite";
+const BMFavorite = BMFavoriteModel(sequelize, DataTypes);
+
 // 관계 정의
 
 // Website : Emoji = 1 : 1
@@ -96,7 +102,7 @@ Attached.belongsTo(Bookmark, { foreignKey: attached_fk_bookmark });
 const attached_fk_post = {
     name: "post_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "게시물 ID",
 };
 Post.hasMany(Attached, { foreignKey: attached_fk_post });
@@ -116,7 +122,7 @@ Post.belongsTo(User, { foreignKey: post_fk_user });
 const comment_fk_post = {
     name: "post_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "게시물 ID",
 };
 Post.hasMany(Comment, { foreignKey: comment_fk_post });
@@ -212,6 +218,46 @@ const team_fk_user = {
 User.hasMany(Team, { foreignKey: team_fk_user });
 Team.belongsTo(User, { foreignKey: team_fk_user });
 
+// Folder: FDFavorite = 1 : N
+const fdfavorite_fk_folder = {
+    name: "folder_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "폴더 ID",
+};
+Folder.hasMany(FDFavorite, { foreignKey: fdfavorite_fk_folder });
+FDFavorite.belongsTo(Folder, { foreignKey: fdfavorite_fk_folder });
+
+// User: FDFavorite = 1 : N
+const fdfavorite_fk_user = {
+    name: "user_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "사용자 ID",
+};
+User.hasMany(FDFavorite, { foreignKey: fdfavorite_fk_user });
+FDFavorite.belongsTo(User, { foreignKey: fdfavorite_fk_user });
+
+// Bookmark: BMFavorite = 1 : N
+const bmfavorite_fk_bookmark = {
+    name: "bookmark_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "북마크 ID",
+};
+Bookmark.hasMany(BMFavorite, { foreignKey: bmfavorite_fk_bookmark });
+BMFavorite.belongsTo(Bookmark, { foreignKey: bmfavorite_fk_bookmark });
+
+// User: BMFavorite = 1 : N
+const bmfavorite_fk_user = {
+    name: "user_id",
+    type: DataTypes.INTEGER,
+    onDelete: "setNull",
+    comment: "사용자 ID",
+};
+User.hasMany(BMFavorite, { foreignKey: bmfavorite_fk_user });
+BMFavorite.belongsTo(User, { foreignKey: bmfavorite_fk_user });
+
 // 모델 동기화
 // sequelize
 //     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
@@ -232,4 +278,7 @@ export {
     Membership,
     Like,
     Folder,
+    FDFavorite,
+    BMFavorite,
+    Op,
 };

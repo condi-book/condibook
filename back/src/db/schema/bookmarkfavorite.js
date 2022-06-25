@@ -1,12 +1,12 @@
-export default function LikeModel(sequelize, DataTypes) {
+export default function BMFavoriteModel(sequelize, DataTypes) {
     return sequelize.define(
-        "like",
+        "bmfavorite",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "좋아요 ID",
+                comment: "북마크 즐겨찾기 ID",
             },
         },
         {
