@@ -195,17 +195,21 @@ const AddBookMarkModal = ({
           <Col>
             <Row>
               <Col>
-                {selectedFolderBookmarks.map((bookmark, idx) => (
-                  <Row key={`postBookmark-${idx}`}>
-                    <Checkbox
-                      type="checkbox"
-                      value={bookmark.id}
-                      onChange={handleCheckElement}
-                      checked={bookmark.checked}
-                    />
-                    <Link onClick={handleClickLink}>{bookmark.url}</Link>
-                  </Row>
-                ))}
+                {tab !== "폴더를 선택하세요" ? (
+                  selectedFolderBookmarks.map((bookmark, idx) => (
+                    <Row key={`postBookmark-${idx}`}>
+                      <Checkbox
+                        type="checkbox"
+                        value={bookmark.id}
+                        onChange={handleCheckElement}
+                        checked={bookmark.checked}
+                      />
+                      <Link onClick={handleClickLink}>{bookmark.url}</Link>
+                    </Row>
+                  ))
+                ) : (
+                  <Row>폴더를 선택해주세요</Row>
+                )}
               </Col>
             </Row>
             <Row>
