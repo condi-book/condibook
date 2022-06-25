@@ -215,9 +215,7 @@ const AddBookMarkModal = ({
                 placeholder="링크를 입력해주세요"
                 onKeyPress={handleKeyPress}
               ></Input>
-              <button onClick={handleClickAdd}>
-                <span>등록</span>
-              </button>
+              <Button onClick={handleClickAdd}>등록</Button>
             </Row>
           </Col>
         </Modal.Body>
@@ -253,8 +251,10 @@ const Input = styled.input`
 
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 5px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 10px;
   font-size: 14px;
   color: #000;
   &:focus {
@@ -262,10 +262,27 @@ const Input = styled.input`
   }
 `;
 
+const Button = styled.button`
+  width: 10%;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Checkbox = styled.input`
   width: 20px;
   height: 20px;
   margin-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px
   &:checked {
     background-color: #00bcd4;
   }
@@ -281,7 +298,8 @@ const Link = styled.div`
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   font-size: 14px;
   color: #000;
   word-break: break-word;
