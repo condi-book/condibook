@@ -203,6 +203,19 @@ class userService {
             return { errorMessage: e };
         }
     }
+    static async validationUser({ userInfo }) {
+        try {
+            const id = userInfo.user_id;
+            const email = userInfo.email;
+            const checkUser = await User.findOne({ where: { id, email } });
+            if (!checkUser) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            return checkUser;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
 }
 
 export { userService };
