@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { loginRequired } from "../../middlewares/loginRequired";
-import { parsers } from "../../util/parser/parser";
 import { folderService } from "../folder/folderService";
 import { websiteSerivce } from "./websiteSerivce";
 
