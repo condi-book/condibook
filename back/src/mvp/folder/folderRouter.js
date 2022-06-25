@@ -3,8 +3,31 @@ import { folderService } from "./folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { loginRequired } from "../../middlewares/loginRequired";
+import { websiteSerivce } from "../website/websiteSerivce";
 
 const folderRouter = Router();
+
+folderRouter.post("/:id/bookmarks", loginRequired, async (req, res, next) => {
+    try {
+        const folder_id = req.params.id;
+        const { url } = req.body;
+        const { user_id } = req.current;
+
+        const website = await websiteSerivce.createWebsite({ url });
+        checkErrorMessage(website);
+
+        const bookmark = await bookmarkService.createBookmark({
+            folder_id: folder_id,
+            website_id: website.website_id,
+            requester_id: user_id,
+        });
+        checkErrorMessage(bookmark);
+
+        res.status(201).send(bookmark);
+    } catch (e) {
+        next(e);
+    }
+});
 
 folderRouter.post("", loginRequired, async (req, res, next) => {
     try {
@@ -83,6 +106,29 @@ folderRouter.put("/:id", loginRequired, async (req, res, next) => {
         next(e);
     }
 });
+
+folderRouter.put(
+    "/:id/bookmarks/order",
+    loginRequired,
+    async (req, res, next) => {
+        try {
+            const folder_id = req.params.id;
+            const bookmarks = req.body;
+            const { user_id } = req.current;
+
+            const updatedBookmarks = await bookmarkService.updateBookmarkOrder({
+                folder_id,
+                requester_id: user_id,
+                bookmarks,
+            });
+            checkErrorMessage(updatedBookmarks);
+
+            res.status(201).send(updatedBookmarks);
+        } catch (e) {
+            next(e);
+        }
+    },
+);
 
 folderRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {

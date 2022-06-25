@@ -14,23 +14,12 @@ class userService {
                 user = await User.create({ nickname, email, image_url });
             }
             // JWT 생성
+            const payload = { user_id: user.id, email: user.email };
             const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-            const token = jwt.sign(
-                { user_id: user.id, email: user.email },
-                secretKey,
-            );
+            const options = { expiresIn: "5d" };
+
+            const token = jwt.sign(payload, secretKey, options);
             // 사용자 정보 + JWT 반환
-            const myFolderIds = await folderService.getUserFolderIds({
-                user_id: user.id,
-            });
-            let bookmarkCount = 0;
-            if (myFolderIds.length > 0) {
-                bookmarkCount = await bookmarkService.getBookmarkCountInFolders(
-                    {
-                        folder_ids: myFolderIds,
-                    },
-                );
-            }
             const result = {
                 id: user.id,
                 email: user.email,
@@ -38,8 +27,6 @@ class userService {
                 image_url: user.image_url,
                 intro: user.intro ?? null,
                 token: token,
-                folderCount: myFolderIds.length,
-                bookmarkCount,
             };
             return result;
         } catch (e) {
@@ -79,6 +66,53 @@ class userService {
                 nickname: res.data.properties.nickname,
                 email: res.data.kakao_account.email,
                 image_url: res.data.properties.profile_image,
+            };
+            return account;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getGoogleToken(code) {
+        try {
+            // 코드로 토큰 발급
+            const res = await axios.post(
+                "https://oauth2.googleapis.com/token",
+                new URLSearchParams({
+                    code: code,
+                    client_id: process.env.GOOGLE_CLIENT_ID,
+                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    redirect_uri:
+                        process.env.CLIENT_URL + "/callback/login/google",
+                    grant_type: "authorization_code",
+                }),
+            );
+            const token = res.data.access_token;
+            return token;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async getGoogleAccount(token) {
+        try {
+            const res = await axios.get(
+                `https://www.googleapis.com/oauth2/v2/userinfo?${token}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            if (res.data.verified_email === false) {
+                return {
+                    errorMessage: "인증된 구글계정으로만 가입할 수 있습니다.",
+                };
+            }
+            const account = {
+                nickname: res.data.name,
+                email: res.data.email,
+                image_url: res.data.picture,
             };
             return account;
         } catch (e) {
