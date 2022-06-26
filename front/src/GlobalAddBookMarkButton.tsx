@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import GlobalAddBookmarkModal from "./GlobalAddBookMarkModal";
 
 const GlobalAddBookmarkButton = () => {
+  const [show, setShow] = useState(false);
+
+  const handleClick = () => {
+    setShow((prev) => !prev);
+  };
   return (
-    <Div>
-      <button>
-        <span className="pe-7s-plus"></span>
-      </button>
-    </Div>
+    <>
+      <Div>
+        <button onClick={handleClick}>
+          <span className="pe-7s-plus"></span>
+        </button>
+      </Div>
+      {show && <GlobalAddBookmarkModal open={show} close={handleClick} />}
+    </>
   );
 };
 
