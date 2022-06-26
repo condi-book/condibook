@@ -4,6 +4,7 @@ import axios from "axios";
 import { SERVER_URL } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
+import Loading from "layout/Loading";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -35,7 +36,7 @@ const CallBackKakaoLogin = () => {
       .then(navigate("/bookmark", { replace: true }));
   }, []);
 
-  return <div>로그인 처리 중</div>;
+  return <Loading />;
 };
 
 export default CallBackKakaoLogin;

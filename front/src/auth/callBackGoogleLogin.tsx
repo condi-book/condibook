@@ -4,6 +4,7 @@ import axios from "axios";
 import { SERVER_URL, GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
+import Loading from "layout/Loading";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
@@ -43,7 +44,7 @@ const CallBackGoogleLogin = () => {
     sendCode();
   }, []);
 
-  return <div>로그인 처리 중</div>;
+  return <Loading />;
 };
 
 export default CallBackGoogleLogin;
