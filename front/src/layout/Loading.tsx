@@ -3,15 +3,15 @@ import HashLoader from "react-spinners/HashLoader";
 import styled from "styled-components";
 
 const override: CSSProperties = {
-  background: `yellow`,
+  background: "linear-gradient(135deg, #12c2e9, #c471ed, #f64f59)",
   borderRadius: `50%`,
-  margin: `50px`,
+  padding: `50px`,
 };
 
 const Loading = () => {
   return (
     <Div>
-      <HashLoader size={50} cssOverride={override} />
+      <HashLoader size={70} cssOverride={override} color={"white"} />
     </Div>
   );
 };
@@ -22,5 +22,6 @@ const Div = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background: ${({ theme }) => theme.lightMainColor};
 `;
 export default Loading;
