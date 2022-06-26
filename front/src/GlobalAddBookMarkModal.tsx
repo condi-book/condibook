@@ -71,7 +71,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
       .readText()
       .then((text) => {
         console.log("Pasted content: ", text);
-        if (text.includes("http")) {
+        if (text.startsWith("http")) {
           setLink(text);
         } else {
           setInputShow(true);
