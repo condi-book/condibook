@@ -199,7 +199,6 @@ const AddBookMarkModal = ({
         setBookmarkModifiedID("");
       }
     }
-    console.log(postBookmarks);
   }, [bookmarkModifiedID]);
 
   return (

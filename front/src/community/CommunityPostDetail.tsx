@@ -7,16 +7,19 @@ import { Viewer } from "@toast-ui/react-editor";
 import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
 
-// import * from "../Api";
-const dummyData = {
-  title: "Lorem Ipsum",
-  author: "hayeong",
-  content:
-    "**Lorem ipsum dolor sit amet**, consectetur adipiscing elit. Aliquam lobortis, lorem at vehicula faucibus, ligula enim aliquam nibh, non imperdiet eros risus eu dui. Nulla sodales suscipit finibus. Maecenas ornare tempus auctor. Aenean blandit dui risus, pharetra lacinia nunc luctus et. Integer molestie scelerisque est, in vestibulum elit pellentesque at. Praesent suscipit vehicula auctor. In vitae justo eu ex vestibulum maximus. Ut accumsan lacus eget tellus iaculis dapibus.",
-  views: "123",
-  created_at: new Date(),
-  updated_at: new Date(),
-};
+import * as Api from "../api";
+
+interface FetchData {
+  author: string;
+  author_name: string;
+  title: string;
+  content: string;
+  views: number;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  like_counts: number;
+}
 
 interface Bookmark {
   id: string;
@@ -35,6 +38,7 @@ export interface Comment {
   updatedAt: Date;
   createdAt: Date;
 }
+
 const bookmarkList: Bookmark[] = [
   {
     id: "1",
@@ -86,7 +90,6 @@ const bookmarkList: Bookmark[] = [
     link: "link4",
   },
 ];
-
 type postDetailRouteParams = {
   postId: string;
 };
@@ -95,29 +98,38 @@ const CommunityPostDetail = () => {
   const { postId } = useParams<
     keyof postDetailRouteParams
   >() as postDetailRouteParams;
+  const viewerRef = React.useRef<Viewer>(null);
+  const [fetchData, setFetchData] = React.useState<FetchData>(null);
+  const [isfetched, setIsfetched] = React.useState<boolean>(false);
   const [list, setList] = React.useState<Bookmark[]>([]);
+  const [liked, setLiked] = React.useState<boolean>(false);
   const [link, setLink] = React.useState("");
-  const [like, setLike] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
   const [comment, setComment] = React.useState("");
   const [comments, setComments] = React.useState<Comment[]>([]);
 
   // 시간 계산 함수
-  const createdTime = CalcDate(dummyData.created_at);
-
-  const updatedTime = (createdDate: Date, updatedDate: Date) => {
-    let resultText = "";
-    if (createdDate.getTime() === updatedDate.getTime()) {
-      return resultText;
-    } else {
-      resultText = "(" + CalcDate(updatedDate) + "수정 됨)";
-      return resultText;
-    }
-  };
+  const createdTime = React.useCallback(CalcDate, [fetchData]);
+  const updatedTime = React.useCallback(
+    (createdDate: Date, updatedDate: Date) => {
+      let resultText = "";
+      console.log(createdDate, updatedDate);
+      if (createdDate === undefined || updatedDate === undefined) {
+        return resultText;
+      }
+      if (createdDate?.getTime() === updatedDate?.getTime()) {
+        return resultText;
+      } else {
+        resultText = "(" + CalcDate(updatedDate) + " 수정 됨)";
+        return resultText;
+      }
+    },
+    [fetchData],
+  );
 
   const handleLikeClick = () => {
-    setLike(!like);
-    like ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
+    setLiked(!liked);
+    liked ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
   };
 
   const handleEditClick = () => {
@@ -147,20 +159,44 @@ const CommunityPostDetail = () => {
       },
     ]);
   };
-  // // 파라미터로 게시글 내용 받아오는 함수
-  // const fetchPostDetail = async () => {
-  //   try {
-  //     const res = await Api.get('community', params)
-  //     const {title, author, content, view, created_at, updated_at} = res.data
-  //
-
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
+  // 파라미터로 게시글 내용 받아오는 함수
 
   React.useEffect(() => {
-    // fetchPostDetail()
+    const fetchPostDetail = async () => {
+      try {
+        const res = await Api.get(`posts/${postId}`);
+        const {
+          author,
+          author_name,
+          content,
+          createdAt,
+          updatedAt,
+          id,
+          title,
+          like_counts,
+          views,
+        }: FetchData = res.data.postInfo;
+
+        const paredCreatedAt = new Date(createdAt);
+        const paredUpdatedAt = new Date(updatedAt);
+        setFetchData({
+          author,
+          author_name,
+          content,
+          createdAt: paredCreatedAt,
+          updatedAt: paredUpdatedAt,
+          id,
+          title,
+          like_counts,
+          views,
+        });
+        viewerRef.current?.getInstance().setMarkdown(content);
+        setIsfetched(true);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPostDetail();
     setList(bookmarkList);
     const user = sessionStorage.getItem("user");
     const { id } = JSON.parse(user);
@@ -173,9 +209,9 @@ const CommunityPostDetail = () => {
         <div className="detailWrapper">
           <HeaderContainer>
             <TitleContainer>
-              <H1>{dummyData.title}</H1>
+              <H1>{fetchData?.title}</H1>
               <div className="likeWrapper" onClick={handleLikeClick}>
-                <LikeButton className="pe-7s-like" like={like} />
+                <LikeButton className="pe-7s-like" like={liked} />
                 <p className="likeCount">{likeCount}</p>
               </div>
             </TitleContainer>
@@ -188,12 +224,12 @@ const CommunityPostDetail = () => {
             </ButtonContainer>
             <InfoContainer>
               <div>
-                <span className="username">{dummyData.author}</span>
+                <span className="username">{fetchData?.author_name}</span>
                 <span className="separator">·</span>
-                <span>{createdTime}</span>
+                <span>{createdTime(new Date())}</span>
                 <span className="separator">·</span>
                 <span>
-                  {updatedTime(dummyData.created_at, dummyData.updated_at)}
+                  {updatedTime(fetchData?.createdAt, fetchData?.updatedAt)}
                 </span>
               </div>
             </InfoContainer>
@@ -218,7 +254,11 @@ const CommunityPostDetail = () => {
             </Ol>
           </BookmarkContainer>
           <div>
-            <Viewer initialValue={dummyData.content} />
+            {isfetched ? (
+              <Viewer initialValue={fetchData.content} />
+            ) : (
+              <div>로딩중...</div>
+            )}
           </div>
           <CommentCount>{`${comments.length}개의 댓글`}</CommentCount>
           <div>

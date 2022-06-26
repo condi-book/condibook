@@ -8,16 +8,7 @@ import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import AddBookMarkModal from "./AddBookMarkModal";
-
-const dummyData = {
-  title: "무야호",
-  author: "hayeong",
-  content:
-    "무야호는 2021년 3~5월부터 대한민국에서 유행하기 시작한 인터넷 밈이다. MBC 무한도전의 2011년 방영분에서 연출된 미국 알래스카 교민 할아버지의 함성에서 유래하였다.",
-  views: "123",
-  created_at: new Date(),
-  updated_at: new Date(),
-};
+import * as Api from "../api";
 
 export interface Bookmark {
   id: string;
@@ -65,12 +56,40 @@ const CommunityPostWrite = () => {
     }
   };
 
-  const handlePostButtonClick = (
+  // 글쓰기
+  const handlePostButtonClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
 
-    console.log(title, content); // 글 보내기
+    const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
+
+    console.log(
+      `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
+    );
+
+    try {
+      if (isModifying) {
+        const body = {
+          title,
+          content,
+        };
+        const res = await Api.put(`posts/${postId}`, body);
+        console.log(res);
+      } else {
+        const body = {
+          title,
+          content,
+          bookmark_id,
+        };
+
+        const res = await Api.post("posts", body);
+        console.log(res);
+      }
+      // navigate(`/community/${postId}`);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // const fetchPostContent = async () => {
@@ -107,9 +126,9 @@ const CommunityPostWrite = () => {
     if (postId !== null) {
       // fetchPostContent()
       setIsModifying(true);
-      setTitle(dummyData.title);
-      setContent(dummyData.content);
-      editorRef.current?.getInstance().setMarkdown(dummyData.content);
+      setTitle(title);
+      setContent(content);
+      editorRef.current?.getInstance().setMarkdown(content);
     }
   }, []);
 
