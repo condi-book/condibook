@@ -29,8 +29,12 @@ const GoogleLoginBtn = () => {
 const Div = styled.div`
   text-align: center;
   background: #4285f4;
-  width: 70%;
+  width: 90%;
   border-radius: 5px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 3%;
 
   &:hover {
     background: white;
@@ -51,6 +55,7 @@ const Div = styled.div`
     div {
       width: 100%;
       text-align: center;
+      font-weight: bold;
     }
   }
 `;
