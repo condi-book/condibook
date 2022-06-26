@@ -21,10 +21,7 @@ const dummyData = {
 
 export interface Bookmark {
   id: string;
-  title: string;
-  content: string;
-  link: string;
-  image: string;
+  url: string;
   checked: boolean;
 }
 
@@ -44,7 +41,7 @@ const CommunityPostWrite = () => {
   const [content, setContent] = React.useState<string | undefined>();
   const [isModifying, setIsModifying] = React.useState(false); // 새글 작성, 수정인지 구분
   const [isModalShow, setIsModalShow] = React.useState(false); // 북마크 추가 모달
-  const [postBookmarks, setPostBookmarks] = React.useState<Bookmark[]>([]); // 북마크 목록
+  const [postBookmarks, setPostBookmarks] = React.useState<Bookmark[]>([]); // 첨부된 북마크 목록
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -104,7 +101,6 @@ const CommunityPostWrite = () => {
 
   const ModalShow = () => {
     setIsModalShow(true);
-    console.log("ModalShow");
   };
 
   React.useEffect(() => {
