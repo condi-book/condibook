@@ -11,7 +11,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
   const handleChange = (e) => {
     setFolder(e.target.value);
 
-    if (e.target.value === "직접 입력") {
+    if (e.target.value === "직접입력") {
       setInput(true);
     } else {
       setInput(false);
@@ -75,6 +75,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
       }).then((res) => {
         handlePage();
         console.log("성공");
+        console.log(folderId, id);
       });
     } else {
       alert("선택된 폴더가 없습니다.");
@@ -87,13 +88,17 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
         <div className="popup-container">
           <div>
             <div id="label">저장 폴더 *</div>
-            <select className="select" name="category" onChange={handleChange}>
+            <select
+              defaultValue={folderList[0]?.title}
+              className="select"
+              name="category"
+              onChange={handleChange}
+            >
               {folderList?.map((item) => (
                 <option key={`option-${item.id}`} value={item.title}>
                   {item.title}
                 </option>
               ))}
-              <option value="직접 입력">직접 입력</option>
             </select>
           </div>
           <input
