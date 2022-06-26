@@ -44,12 +44,17 @@ class postService {
         });
         return { postInfo, websiteInfo };
     }
-    static async getPostList({ query }) {
+    static async getPostList({ query, pageNumber }) {
+        let offset = 0;
+        if (pageNumber > 1) {
+            offset = 20 * (pageNumber - 1);
+        }
         const excludes = { exclude: ["content"] };
         if (query == "views") {
             const result = Post.findAll({
                 attributes: excludes,
                 order: [["views", "DESC"]],
+                offset: offset,
                 limit: 20,
             });
             if (!result) {
@@ -62,6 +67,7 @@ class postService {
             const result = Post.findAll({
                 attributes: excludes,
                 order: [["like_counts", "DESC"]],
+                offset: offset,
                 limit: 20,
             });
             if (!result) {
@@ -70,7 +76,12 @@ class postService {
             }
             return result;
         }
-        const result = Post.findAll({ attributes: excludes });
+        const result = Post.findAll({
+            attributes: excludes,
+            order: [["createdAt", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
 
         if (!result) {
             const errorMessage = "해당 게시글이 없습니다.";

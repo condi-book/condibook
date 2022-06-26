@@ -1,29 +1,44 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Carousel from "./carousel/Carousel";
 import Footer from "./Footer";
 import Header from "./Header";
+import { UserStateContext } from "App";
+
+export interface ContextProps {
+  userContext: { user: any };
+  handleNavigate: () => void;
+}
 
 const Main = () => {
+  const userContext: ContextProps["userContext"] = useContext(UserStateContext);
   const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    if (userContext.user) navigate("/bookmark");
+    else navigate("/login");
+  };
+
   return (
     <Wrap>
-      <Header />
+      <Header userContext={userContext} handleNavigate={handleNavigate} />
       <Container>
         <header className="part header">
           <div className="container">
             <div>
               <div>
                 <div className="caption animate__animated animate__fadeInDown">
-                  <h1>북마크 관리가 쉬워진다</h1>
+                  <h1>
+                    <strong>북마크 관리가 쉬워진다</strong>
+                  </h1>
                   <p>
                     북마크,
                     <br />
                     이제 스마트하게 저장하세요
                   </p>
-                  <button onClick={() => navigate("/login")}>
-                    무료로 시작하기
+                  <button className="custom-btn btn-3" onClick={handleNavigate}>
+                    <span>무료로 시작하기</span>
                   </button>
                 </div>
               </div>
@@ -33,11 +48,13 @@ const Main = () => {
             </div> */}
           </div>
         </header>
-        <div className="part even ">
+        <div className="part even review">
           <div className="title">사용자 후기</div>
-          <Carousel />
+          <div className="carousel-wrap">
+            <Carousel />
+          </div>
         </div>
-        <section className="part">
+        <section className="part" id="service-info">
           <div className="container">
             <div>
               <img alt="소개이미지" />
@@ -90,7 +107,9 @@ const Main = () => {
         </section>
         <section className="side">
           <h3>나만의 북마크, 정리부터 공유까지</h3>
-          <button onClick={() => navigate("/login")}>무료로 시작하기</button>
+          <button onClick={handleNavigate}>
+            <span>무료로 시작하기</span>
+          </button>
         </section>
       </Container>
       <Footer />
@@ -107,6 +126,22 @@ const Wrap = styled.div`
 
 const Container = styled.div`
   width: 100vw;
+  .caption p {
+    font-size: 1.2vw;
+  }
+
+  .review {
+    display: flex;
+    flex-direction: column;
+    .title {
+      margin: 5% 0;
+    }
+  }
+
+  .carousel-wrap {
+    display: flex;
+    justify-content: center;
+  }
 
   .header {
     display: flex;
@@ -122,9 +157,101 @@ const Container = styled.div`
       align-items: center;
       justify-content: end !important;
       padding-right: 5%;
+
       button {
+        // background: ${({ theme }) => theme.mainColor};
+        // color: white;
+        // padding: 3%;
+        // font-size: 1.2vw;
+      }
+      .custom-btn {
+        width: 40%;
+        height: 15%;
+        color: #fff;
+        border-radius: 5px;
+        // padding: 1% 2.5%;
+        font-weight: 500;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+        box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+          7px 7px 20px 0px rgba(0, 0, 0, 0.1),
+          4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+        outline: none;
+      }
+      .btn-3 {
+        background: rgb(0, 172, 238);
         background: ${({ theme }) => theme.mainColor};
-        color: white;
+        width: 40%;
+        height: 15%;
+        padding: 0;
+        border: none;
+      }
+      .btn-3 span {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        font-size: 1vw;
+        padding: 5%;
+      }
+      .btn-3:before,
+      .btn-3:after {
+        position: absolute;
+        content: "";
+        right: 0;
+        top: 0;
+        background: ${({ theme }) => theme.mainColor};
+        transition: all 0.3s ease;
+      }
+      .btn-3:before {
+        height: 0%;
+        width: 2px;
+      }
+      .btn-3:after {
+        width: 0%;
+        height: 2px;
+      }
+      .btn-3:hover {
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow: none;
+      }
+      .btn-3:hover:before {
+        height: 100%;
+      }
+      .btn-3:hover:after {
+        width: 100%;
+      }
+      .btn-3 span:hover {
+        background: ${({ theme }) => theme.mainColor};
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
+      }
+      .btn-3 span:before,
+      .btn-3 span:after {
+        position: absolute;
+        content: "";
+        left: 0;
+        bottom: 0;
+        background: ${({ theme }) => theme.mainColor};
+        transition: all 0.3s ease;
+      }
+      .btn-3 span:before {
+        width: 2px;
+        height: 0%;
+      }
+      .btn-3 span:after {
+        width: 0%;
+        height: 2px;
+      }
+      .btn-3 span:hover:before {
+        height: 100%;
+      }
+      .btn-3 span:hover:after {
+        width: 100%;
       }
     }
   }
@@ -159,9 +286,9 @@ const Container = styled.div`
 
     .title {
       font-weight: 700;
-      font-size: 30px;
+      font-size: 2vw;
       text-align: center;
-      padding: 40px 0;
+      padding: 2% 0;
     }
   }
 
@@ -180,10 +307,12 @@ const Container = styled.div`
 
     button {
       cursor: pointer;
+      background: ${({ theme }) => theme.subBlackColor};
+      color: white;
+      padding: 1%;
 
       &:hover {
-        background: black;
-        color: white;
+        border: 1px solid white;
       }
     }
   }

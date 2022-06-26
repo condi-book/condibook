@@ -7,15 +7,7 @@ class websiteSerivce {
     static async createWebsite({ url }) {
         // 웹사이트 파싱
         let { title, description, img } = await parsers(url);
-        if (!title) {
-            title = "정보 없음";
-        }
-        if (!description) {
-            description = "정보 없음";
-        }
-        if (!img) {
-            img = "정보 없음";
-        }
+
         // DB에 이미 존재하는 웹사이트인지 확인
         const previous = await Website.findOne({
             where: { url },
@@ -30,8 +22,7 @@ class websiteSerivce {
                 previous.meta_description === description)
         ) {
             return {
-                website_id: previous.id,
-                keyword: previous.keywords.keyword,
+                website: previous,
             };
         }
         // 웹사이트 생성
@@ -46,8 +37,9 @@ class websiteSerivce {
         }
         // 키워드 생성
         let keyword = null;
+        let AI_SERVER_URL = process.env.AI_SERVER_URL;
         axios
-            .post("http://localhost:5003/translate", {
+            .post(`${AI_SERVER_URL}/translate`, {
                 title: newWebsite.meta_title,
                 description: newWebsite.meta_description,
             })
@@ -69,7 +61,7 @@ class websiteSerivce {
         // });
 
         return {
-            website_id: newWebsite.id,
+            website: newWebsite,
             keyword: keyword,
         };
     }

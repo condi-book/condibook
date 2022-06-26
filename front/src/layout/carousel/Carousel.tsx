@@ -13,6 +13,8 @@ const Carousel = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
     dotsClass: "custom-dots",
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -27,41 +29,31 @@ const Carousel = () => {
   const data = [
     {
       review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-      dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
-      obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
-      laudantium!`,
+      dolorum odit,`,
       name: `username`,
       job: `freelancer`,
     },
     {
       review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-  dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
-  obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
-  laudantium!`,
+      dolorum odit,`,
       name: `username`,
       job: `freelancer`,
     },
     {
       review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
-obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
-laudantium!`,
+      dolorum odit,`,
       name: `username`,
       job: `freelancer`,
     },
     {
       review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
-obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
-laudantium!`,
+      dolorum odit,`,
       name: `username`,
       job: `freelancer`,
     },
     {
       review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-dolorum odit, fugiat in odio eos dignissimos tempora quas explicabo
-obcaecati quo assumenda, nulla facere, ab ipsa quasi saepe quia
-laudantium!`,
+dolorum odit, `,
       name: `username`,
       job: `freelancer`,
     },
@@ -77,7 +69,7 @@ laudantium!`,
             <div className="info">
               <span className="color-font pe-7s-user"></span>
               <h6>{value.name}</h6>
-              <span>{value.job}</span>
+              <span id="job">{value.job}</span>
             </div>
           </div>
         ))}
@@ -87,15 +79,16 @@ laudantium!`,
 };
 
 const Section = styled.section`
+  height: 80%;
+  width: 80%;
   .slick-slider {
     display: flex;
     flex-direction: row;
     align-items: center;
   }
   .item {
-    height: 60vh;
     width: 80% !important;
-    padding: 10px 20px;
+    padding: 1% 2%;
     margin: auto;
     display: flex !important;
     flex-direction: column;
@@ -105,17 +98,22 @@ const Section = styled.section`
 
     div:first-of-type {
       width: 70%;
+      font-size: 1vw;
     }
 
     .info {
-      margin-top: 30px;
+      margin-top: 15%;
       text-align: center;
+      padding-bottom: 5%;
 
       h6 {
         font-weight: 700;
-        margin-bottom: 10px;
-        font-size: 20px;
-        margin-top: 20px;
+        margin-bottom: 1%;
+        font-size: 1.2vw;
+        margin-top: 2%;
+      }
+      #job {
+        font-size: 1vw;
       }
     }
 
@@ -123,17 +121,18 @@ const Section = styled.section`
       background: ${({ theme }) => theme.mainColor};
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-size: 60px;
+      font-size: 4vw;
     }
 
     img {
-      width: 50px;
-      margin-bottom: 50px;
+      width: 16%;
+      margin-top: 5%;
+      margin-bottom: 15%;
     }
   }
   .custom-dots {
     position: absolute;
-    bottom: -15px;
+    bottom: -10%;
     display: block;
     width: 100%;
     padding: 0;
@@ -144,8 +143,8 @@ const Section = styled.section`
   .custom-dots li {
     position: relative;
     display: inline-block;
-    width: 40px;
-    height: 20px;
+    width: 2vw;
+    height: 1vw;
     margin: 0 5px;
     padding: 0;
     cursor: pointer;
@@ -155,11 +154,11 @@ const Section = styled.section`
     font-size: 0;
     line-height: 0;
     display: block;
-    width: 40px;
-    height: 20px;
+    width: 2vw;
+    height: 1vw;
     padding: 5px;
     cursor: pointer;
-    color: black;
+    color: ${({ theme }) => theme.subBlackColor};
     border: 0;
     outline: none;
   }
@@ -182,7 +181,7 @@ const Section = styled.section`
 
   .custom-dots li.slick-active button:before {
     opacity: 1;
-    color: red;
+    color: ${({ theme }) => theme.subRedColor};
     content: "o";
   }
 `;
