@@ -6,13 +6,13 @@ import * as Api from "../api";
 import Profile from "../user/Profile";
 
 const iconList = [
-  "pe-7s-user",
-  "pe-7s-home",
-  "pe-7s-folder",
-  "pe-7s-global",
-  "pe-7s-users",
-  "pe-7s-search",
-  "pe-7s-config",
+  { title: "프로필", className: "pe-7s-user" },
+  { title: "홈", className: "pe-7s-home" },
+  { title: "나의 북마크", className: "pe-7s-folder" },
+  { title: "커뮤니티", className: "pe-7s-global" },
+  { title: "그룹 북마크", className: "pe-7s-users" },
+  { title: "통합 검색", className: "pe-7s-search" },
+  { title: "설정", className: "pe-7s-config" },
 ];
 
 const SideBar = () => {
@@ -53,9 +53,14 @@ const SideBar = () => {
   return (
     <>
       <Section>
-        {iconList.map((item: string, index: number) => (
-          <div key={`icon-${index}`} id={item} onClick={handleClick}>
-            <span className={item}></span>
+        {iconList.map((item: any, index: number) => (
+          <div
+            title={item.title}
+            key={`icon-${index}`}
+            id={item.className}
+            onClick={handleClick}
+          >
+            <span className={item.className}></span>
           </div>
         ))}
       </Section>
