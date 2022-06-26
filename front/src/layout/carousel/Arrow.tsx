@@ -22,6 +22,11 @@ export const PrevArrow = ({ onClick }: ArrowProps) => {
 
 const Span = styled.span<{ blank: string }>`
   cursor: pointer;
-  font-size: 50px;
+  font-size: 4vw;
+  color: ${({ theme }) => theme.subBlackColor};
   padding: ${(props) => props.blank};
+
+  &:hover {
+    color: ${({ theme }) => theme.subRedColor};
+  }
 `;

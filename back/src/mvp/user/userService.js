@@ -14,23 +14,12 @@ class userService {
                 user = await User.create({ nickname, email, image_url });
             }
             // JWT 생성
+            const payload = { user_id: user.id, email: user.email };
             const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-            const token = jwt.sign(
-                { user_id: user.id, email: user.email },
-                secretKey,
-            );
+            const options = { expiresIn: "5d" };
+
+            const token = jwt.sign(payload, secretKey, options);
             // 사용자 정보 + JWT 반환
-            const myFolderIds = await folderService.getUserFolderIds({
-                user_id: user.id,
-            });
-            let bookmarkCount = 0;
-            if (myFolderIds.length > 0) {
-                bookmarkCount = await bookmarkService.getBookmarkCountInFolders(
-                    {
-                        folder_ids: myFolderIds,
-                    },
-                );
-            }
             const result = {
                 id: user.id,
                 email: user.email,
@@ -38,8 +27,6 @@ class userService {
                 image_url: user.image_url,
                 intro: user.intro ?? null,
                 token: token,
-                folderCount: myFolderIds.length,
-                bookmarkCount,
             };
             return result;
         } catch (e) {
@@ -246,6 +233,19 @@ class userService {
                 return { errorMessage: "서버에러" };
             }
             return getSuccessMsg({ entity: "사용자 계정", action: "삭제" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+    static async validationUser({ userInfo }) {
+        try {
+            const id = userInfo.user_id;
+            const email = userInfo.email;
+            const checkUser = await User.findOne({ where: { id, email } });
+            if (!checkUser) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            return checkUser;
         } catch (e) {
             return { errorMessage: e };
         }

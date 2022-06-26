@@ -6,7 +6,7 @@ import { websiteSerivce } from "./websiteSerivce";
 
 const websiteRouter = Router();
 
-websiteRouter.post("", loginRequired, async (req, res, next) => {
+websiteRouter.post("/", loginRequired, async (req, res, next) => {
     try {
         const { url } = req.body;
         const { user_id } = req.current;

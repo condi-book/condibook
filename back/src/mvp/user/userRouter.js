@@ -148,4 +148,23 @@ userRouter.delete("", loginRequired, async (req, res, next) => {
     }
 });
 
+userRouter.get("/validation", loginRequired, async (req, res, next) => {
+    try {
+        const userInfo = req.current;
+        if (!userInfo) {
+            if (validation.errorMessage) {
+                res.status(401).json({ mes: "검증실패", redirect: "주소~~" });
+            }
+        }
+        const validation = await userService.validationUser({ userInfo });
+        if (validation.errorMessage) {
+            res.status(401).json({ mes: "검증실패", redirect: "주소~~" });
+        }
+        checkErrorMessage(validation);
+        res.status(200).json(validation);
+    } catch (e) {
+        next(e);
+    }
+});
+
 export { userRouter };

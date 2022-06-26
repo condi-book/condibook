@@ -75,7 +75,7 @@ const App: React.FC = () => {
                 <Route path="/bookmark" element={<Mypage />} />
                 <Route path="/login" element={<Login />} />
                 <Route
-                  path="/bookmark/:group"
+                  path="/:title/:folderId/"
                   element={<MypageBookmarkDetail />}
                 />
                 <Route path="/config" element={<Config />} />
