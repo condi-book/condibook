@@ -29,8 +29,8 @@ const AddBookMarkModal = ({
   isModalShow,
   setIsModalShow,
   postBookmarks,
-  setPostBookmarks,
-}: props) => {
+}: // setPostBookmarks,
+props) => {
   const [newLink, setNewLink] = React.useState("");
   const [show, setShow] = React.useState(false);
   const [tab, setTab] = React.useState("폴더를 선택하세요");
@@ -38,6 +38,7 @@ const AddBookMarkModal = ({
   const [selectedFolderBookmarks, setSelectedFolderBookmarks] = React.useState<
     Bookmark[]
   >([]);
+  // const [bookmarkAdded, setBookmarkAdded] = React.useState<boolean>(false);
 
   // 드랍메뉴에 보여줄 폴더리스트
   const folderList = (
@@ -60,48 +61,45 @@ const AddBookMarkModal = ({
   };
 
   // 폴더 선택
-  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTab((e.target as HTMLElement).textContent);
-    setShow((prev) => !prev);
-    const selectedFolderID = folders.find(
-      (folder) => folder.title === (e.target as HTMLElement).textContent,
-    ).id;
-    fetchFolderBookmarkData(selectedFolderID);
-  };
+  const handleTab = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      setTab((e.target as HTMLElement).textContent);
+      setShow((prev) => !prev);
+      const selectedFolderID = folders.find(
+        (folder) => folder.title === (e.target as HTMLElement).textContent,
+      )?.id;
+      fetchFolderBookmarkData(selectedFolderID);
+    },
+    [folders],
+  );
 
   // 포스트 추가할 북마크 선택
-  const handleCheckElement = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const checked = e.target.checked;
-      const checkedbookmarkID = e.target.value;
+  const onCheckedElement = React.useCallback(
+    (checked: boolean, id: string) => {
+      console.log(id, checked);
 
       if (checked) {
-        setSelectedFolderBookmarks((current) => {
-          return current.map((bookmark) => {
-            if (bookmark.id === checkedbookmarkID) {
-              bookmark.checked = true;
-              setPostBookmarks([...postBookmarks, bookmark]);
+        setSelectedFolderBookmarks((prev) => {
+          return prev.map((item) => {
+            console.log(item.id, id);
+            if (item.id === id) {
+              return { ...item, checked: true };
             }
-            return bookmark;
+            return item;
           });
         });
       } else {
         setSelectedFolderBookmarks((current) => {
           return current.map((bookmark) => {
-            if (bookmark.id === checkedbookmarkID) {
-              bookmark.checked = false;
-              setPostBookmarks(
-                postBookmarks.filter(
-                  (bookmark) => bookmark.id !== checkedbookmarkID,
-                ),
-              );
+            if (bookmark.id === id) {
+              return { ...bookmark, checked: false };
             }
             return bookmark;
           });
         });
       }
     },
-    [Checkbox, postBookmarks],
+    [selectedFolderBookmarks],
   );
 
   // 북마크 입력
@@ -109,11 +107,11 @@ const AddBookMarkModal = ({
     const selectedFolderID = folders.find((folder) => folder.title === tab).id;
 
     if (e.key === "Enter") {
-      const res = await Api.post(`folders/${selectedFolderID}/bookmarks`, {
+      await Api.post(`folders/${selectedFolderID}/bookmarks`, {
         url: newLink,
       });
-      console.log(res);
-      setNewLink("");
+
+      fetchFolderBookmarkData(selectedFolderID);
     }
   };
 
@@ -138,29 +136,34 @@ const AddBookMarkModal = ({
   };
 
   const fetchFolderData = async () => {
-    const { data } = await Api.get("user/folders");
-    setFolders(data);
+    try {
+      const { data } = await Api.get("user/folders");
+      setFolders(data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const fetchFolderBookmarkData = async (selectedFolderID: string) => {
-    const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
-    console.log(data);
+  const fetchFolderBookmarkData = React.useCallback(
+    async (selectedFolderID: string) => {
+      const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
 
-    const handledData = data.map((data: any) => {
-      const checkedBookmark = postBookmarks.find(
-        (postBookmark) => postBookmark.id === data.bookmark_id,
-      );
-      return {
-        id: data.bookmark_id,
-        url: data.website.url,
-        checked: checkedBookmark ? true : false,
-      };
-    });
-    setSelectedFolderBookmarks(handledData);
-  };
+      const handledData = data.map((data: any) => {
+        // const checkedBookmark = postBookmarks.find(
+        //   (postBookmark) => postBookmark.id === data.bookmark_id,
+        // );
+        return {
+          id: data.bookmark_id.toString(),
+          url: data.website.url,
+          checked: false,
+        };
+      });
+      setSelectedFolderBookmarks(handledData);
+    },
+    [tab],
+  );
 
   React.useEffect(() => {
-    // 유저 폴더들 불러오기
     fetchFolderData();
   }, []);
 
@@ -195,21 +198,19 @@ const AddBookMarkModal = ({
           <Col>
             <Row>
               <Col>
-                {tab !== "폴더를 선택하세요" ? (
-                  selectedFolderBookmarks.map((bookmark, idx) => (
-                    <Row key={`postBookmark-${idx}`}>
-                      <Checkbox
-                        type="checkbox"
-                        value={bookmark.id}
-                        onChange={handleCheckElement}
-                        checked={bookmark.checked}
-                      />
-                      <Link onClick={handleClickLink}>{bookmark.url}</Link>
-                    </Row>
-                  ))
-                ) : (
-                  <Row>폴더를 선택해주세요</Row>
-                )}
+                {selectedFolderBookmarks.map((bookmark, idx) => (
+                  <Row key={`postBookmark-${idx}`}>
+                    <Checkbox
+                      type="checkbox"
+                      value={bookmark.id}
+                      onChange={(e) => {
+                        onCheckedElement(e.target.checked, e.target.value);
+                      }}
+                      checked={bookmark.checked}
+                    />
+                    <Link onClick={handleClickLink}>{bookmark.url}</Link>
+                  </Row>
+                ))}
               </Col>
             </Row>
             <Row>
@@ -286,10 +287,7 @@ const Checkbox = styled.input`
   height: 20px;
   margin-right: 10px;
   padding-left: 5px;
-  padding-right: 5px
-  &:checked {
-    background-color: #00bcd4;
-  }
+  padding-right: 5px;
 `;
 
 const Link = styled.div`
