@@ -19,8 +19,8 @@ const GoogleLoginBtn = () => {
   return (
     <Div>
       <a href={GOOGLE_REQUEST_URL} id="googleSignInDiv">
-        {/* <img width="90%" src={`static/img/kakaoButton.png`} /> */}
-        구글로그인
+        <img src="/static/img/googleLogo.svg" alt="googleLogo" />
+        <div>Google로 시작하기</div>
       </a>
     </Div>
   );
@@ -28,5 +28,30 @@ const GoogleLoginBtn = () => {
 
 const Div = styled.div`
   text-align: center;
+  background: #4285f4;
+  width: 70%;
+  border-radius: 5px;
+
+  &:hover {
+    background: white;
+    border: 1px solid #4285f4;
+
+    #googleSignInDiv div {
+      color: #4285f4;
+    }
+  }
+
+  #googleSignInDiv {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+
+    div {
+      width: 100%;
+      text-align: center;
+    }
+  }
 `;
 export default GoogleLoginBtn;
