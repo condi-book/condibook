@@ -29,8 +29,8 @@ const AddBookMarkModal = ({
   isModalShow,
   setIsModalShow,
   postBookmarks,
-}: // setPostBookmarks,
-props) => {
+  setPostBookmarks,
+}: props) => {
   const [newLink, setNewLink] = React.useState("");
   const [show, setShow] = React.useState(false);
   const [tab, setTab] = React.useState("폴더를 선택하세요");
@@ -38,7 +38,8 @@ props) => {
   const [selectedFolderBookmarks, setSelectedFolderBookmarks] = React.useState<
     Bookmark[]
   >([]);
-  // const [bookmarkAdded, setBookmarkAdded] = React.useState<boolean>(false);
+  const [bookmarkModifiedID, setBookmarkModifiedID] =
+    React.useState<string>("");
 
   // 드랍메뉴에 보여줄 폴더리스트
   const folderList = (
@@ -76,18 +77,16 @@ props) => {
   // 포스트 추가할 북마크 선택
   const onCheckedElement = React.useCallback(
     (checked: boolean, id: string) => {
-      console.log(id, checked);
-
       if (checked) {
         setSelectedFolderBookmarks((prev) => {
           return prev.map((item) => {
-            console.log(item.id, id);
             if (item.id === id) {
               return { ...item, checked: true };
             }
             return item;
           });
         });
+        setBookmarkModifiedID(id);
       } else {
         setSelectedFolderBookmarks((current) => {
           return current.map((bookmark) => {
@@ -97,6 +96,7 @@ props) => {
             return bookmark;
           });
         });
+        setBookmarkModifiedID(id);
       }
     },
     [selectedFolderBookmarks],
@@ -107,9 +107,13 @@ props) => {
     const selectedFolderID = folders.find((folder) => folder.title === tab).id;
 
     if (e.key === "Enter") {
-      await Api.post(`folders/${selectedFolderID}/bookmarks`, {
-        url: newLink,
-      });
+      try {
+        await Api.post(`folders/${selectedFolderID}/bookmarks`, {
+          url: newLink,
+        });
+      } catch (e) {
+        alert(`err: ${e}`);
+      }
 
       fetchFolderBookmarkData(selectedFolderID);
     }
@@ -130,11 +134,13 @@ props) => {
     setNewLink("");
   };
 
+  // 완료버튼을 누르면 모달을 닫기
   const handleComplete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsModalShow(false);
   };
 
+  // 폴더 데이터 가져오기
   const fetchFolderData = async () => {
     try {
       const { data } = await Api.get("user/folders");
@@ -144,32 +150,57 @@ props) => {
     }
   };
 
+  // 폴더 북마크 데이터 가져오기
   const fetchFolderBookmarkData = React.useCallback(
     async (selectedFolderID: string) => {
-      const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
-
-      const handledData = data.map((data: any) => {
-        // const checkedBookmark = postBookmarks.find(
-        //   (postBookmark) => postBookmark.id === data.bookmark_id,
-        // );
-        return {
-          id: data.bookmark_id.toString(),
-          url: data.website.url,
-          checked: false,
-        };
-      });
-      setSelectedFolderBookmarks(handledData);
+      try {
+        const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
+        const handledData = data.map((data: any) => {
+          const checkedBookmark = postBookmarks.find(
+            (postBookmark) => postBookmark.id === data.bookmark_id,
+          );
+          return {
+            id: data.bookmark_id.toString(),
+            url: data.website.url,
+            checked: checkedBookmark ? true : false,
+          };
+        });
+        setSelectedFolderBookmarks(handledData);
+      } catch (e) {
+        alert(`err: ${e}`);
+      }
     },
     [tab],
   );
 
+  // 유저의 폴더 데이터 가져오기
   React.useEffect(() => {
     fetchFolderData();
   }, []);
 
+  // 유저가 선택한 북마크 데이터 세팅
   React.useEffect(() => {
+    if (bookmarkModifiedID !== "") {
+      const checkedBookmark = postBookmarks.find(
+        (postBookmark) => postBookmark.id === bookmarkModifiedID,
+      );
+      if (checkedBookmark) {
+        setPostBookmarks((prev) => {
+          return prev.filter((bookmark) => bookmark.id !== bookmarkModifiedID);
+        });
+        setBookmarkModifiedID("");
+      } else {
+        setPostBookmarks((prev) => {
+          const newBookmark = selectedFolderBookmarks.find(
+            (bookmark) => bookmark.id === bookmarkModifiedID,
+          );
+          return [...prev, newBookmark];
+        });
+        setBookmarkModifiedID("");
+      }
+    }
     console.log(postBookmarks);
-  }, [postBookmarks]);
+  }, [bookmarkModifiedID]);
 
   return (
     <>
