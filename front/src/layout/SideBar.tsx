@@ -73,22 +73,27 @@ const Section = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  border: 2px solid black;
   border-radius: 20px;
   position: sticky;
   top: 0;
+  background: ${({ theme }) => theme.profileBackground};
   div {
     text-align: center;
   }
   span {
-    font-size: 60px;
+    font-size: 40px;
     font-weight: bold;
+    color: ${({ theme }) => theme.subBlackColor};
+    padding: 10px;
+    border-radius: 50%;
+    background: white;
 
     &:hover {
       cursor: pointer;
-      background: ${({ theme }) => theme.mainColor};
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background: ${({ theme }) => theme.subBlackColor};
+      // -webkit-background-clip: text;
+      // -webkit-text-fill-color: transparent;
+      color: white;
     }
   }
 `;
