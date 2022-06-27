@@ -10,7 +10,8 @@ export interface MypageBookmarkProps {
     title: string;
     favorites: boolean;
     createdAt: string;
-    bookmarkCount: number;
+    bookmark_count: number;
+    first_bookmark_url: string;
   }[];
   title: string;
   handleRemove: (e: React.MouseEvent, value: any) => void;
@@ -23,7 +24,8 @@ interface BookmarkItem {
   title: string;
   favorites: boolean;
   createdAt: string;
-  bookmarkCount: number;
+  bookmark_count: number;
+  first_bookmark_url: string;
 }
 
 const MypageBookmark = () => {
@@ -67,7 +69,8 @@ const MypageBookmark = () => {
         title: item.title,
         favorites: item.favorites,
         createdAt: item.createdAt,
-        bookmarkCount: item.bookmarkCount,
+        bookmark_count: item.bookmark_count,
+        first_bookmark_url: item.first_bookmark_url,
       }));
       const orderedData = data.sort(
         (a: any, b: any) => +new Date(b.createdAt) - +new Date(a.createdAt),

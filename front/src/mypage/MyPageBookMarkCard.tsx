@@ -9,9 +9,10 @@ interface MypageBookmarkCardProps {
     id: string;
     image: string;
     title: string;
-    bookmarkCount: number;
+    bookmark_count: number;
     favorites: boolean;
     createdAt: string;
+    first_bookmark_url: string;
   };
   handleRemove: (e: React.MouseEvent, value: any) => void;
 }
@@ -86,8 +87,8 @@ const MypageBookmarkCard = ({
       <div className="top part">
         <div className="top-container">
           <LinkPreview
-            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            width="40%"
+            url={item?.first_bookmark_url}
+            width="35%"
             height="70%"
             fetcher={customFetcher}
             descriptionLength={0}
@@ -122,10 +123,10 @@ const MypageBookmarkCard = ({
       <div className="bottom part">
         <div>
           <span className="pe-7s-link"></span>
-          <span>{item.bookmarkCount}</span>
+          <span>{item.bookmark_count}</span>
         </div>
         <div>
-          <span onClick={handleFavorites} className="pe-7s-ribbon"></span>
+          <span onClick={handleFavorites} className="pe-7s-star"></span>
         </div>
       </div>
     </Div>
@@ -177,7 +178,7 @@ const Div = styled.div<StyleProps>`
     transform: rotate(90deg);
   }
 
-  .pe-7s-ribbon {
+  .pe-7s-star {
     color: ${({ item }) => (item.favorites === true ? "red" : "black")};
 
     &:hover {
@@ -208,6 +209,18 @@ const Div = styled.div<StyleProps>`
       font-weight: bold;
       cursor: pointer;
     }
+  }
+  .pe-7s-folder {
+    margin; auto;
+    font-size: 3vw;
+    background: ${({ theme }) => theme.mainColor};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    
+  }
+  .pe-7s-link {
+    margin-right: 3px;
   }
 `;
 
