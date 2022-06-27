@@ -1,3 +1,6 @@
 .env
 last_ko2.bin
 ko.bin
+data/data_split_prep1
+data/new_merge
+data/py & ipynb
