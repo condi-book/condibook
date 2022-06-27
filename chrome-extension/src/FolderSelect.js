@@ -94,7 +94,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
           ></input>
         </div>
         <div id="confirm-folder">
-          {folder === "직접 입력" ? inputValue : folder}
+          {folder === "직접입력" ? inputValue : folder}
         </div>
       </div>
       <div className="bottom">
