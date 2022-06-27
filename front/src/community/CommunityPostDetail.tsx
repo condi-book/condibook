@@ -97,16 +97,16 @@ const CommunityPostDetail = () => {
   const navigate = useNavigate();
   const { postId } = useParams<
     keyof postDetailRouteParams
-  >() as postDetailRouteParams;
-  const viewerRef = React.useRef<Viewer>(null);
-  const [fetchData, setFetchData] = React.useState<FetchData>(null);
-  const [isfetched, setIsfetched] = React.useState<boolean>(false);
-  const [list, setList] = React.useState<Bookmark[]>([]);
-  const [liked, setLiked] = React.useState<boolean>(false);
-  const [link, setLink] = React.useState("");
-  const [likeCount, setLikeCount] = React.useState(0);
-  const [comment, setComment] = React.useState("");
-  const [comments, setComments] = React.useState<Comment[]>([]);
+  >() as postDetailRouteParams; // 이렇게 하면 postId를 string으로 받을 수 있다.
+  const viewerRef = React.useRef<Viewer>(null); // toast ui viewer ref
+  const [fetchData, setFetchData] = React.useState<FetchData>(null); // 디테일 데이터
+  const [isfetched, setIsfetched] = React.useState<boolean>(false); // 정보를 받아왔는지
+  const [list, setList] = React.useState<Bookmark[]>([]); // 북마크 리스트
+  const [liked, setLiked] = React.useState<boolean>(false); // 보고있는 유저가 좋아요를 눌렀는지
+  const [link, setLink] = React.useState(""); // iframe에 넣을 link
+  const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
+  const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
+  const [comments, setComments] = React.useState<Comment[]>([]); // 댓글 리스트
 
   // 시간 계산 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
@@ -158,6 +158,7 @@ const CommunityPostDetail = () => {
         createdAt: new Date(),
       },
     ]);
+    setComment("");
   };
   // 파라미터로 게시글 내용 받아오는 함수
 
@@ -176,9 +177,26 @@ const CommunityPostDetail = () => {
           like_counts,
           views,
         }: FetchData = res.data.postInfo;
+        console.log(createdAt, updatedAt);
+        const convertFromStringToDate = (responseDate: string) => {
+          let dateComponents = responseDate.split("T");
+          let datePieces = dateComponents[0].split("-");
+          let timePieces = dateComponents[1].split(":");
+          let date = new Date(
+            parseInt(datePieces[0]),
+            parseInt(datePieces[1]) - 1,
+            parseInt(datePieces[2]),
+            parseInt(timePieces[0]),
+            parseInt(timePieces[1]),
+            parseInt(timePieces[2]),
+          );
+          return date;
+        };
 
-        const paredCreatedAt = new Date(createdAt);
-        const paredUpdatedAt = new Date(updatedAt);
+        const paredCreatedAt = convertFromStringToDate(createdAt.toString());
+        const paredUpdatedAt = convertFromStringToDate(updatedAt.toString());
+        console.log(paredCreatedAt, paredUpdatedAt);
+
         setFetchData({
           author,
           author_name,
@@ -226,11 +244,14 @@ const CommunityPostDetail = () => {
               <div>
                 <span className="username">{fetchData?.author_name}</span>
                 <span className="separator">·</span>
-                <span>{createdTime(new Date())}</span>
+                <span>{createdTime(fetchData?.createdAt)}</span>
                 <span className="separator">·</span>
+
                 <span>
                   {updatedTime(fetchData?.createdAt, fetchData?.updatedAt)}
                 </span>
+                <span className="separator">·</span>
+                <span>조회수 {fetchData?.views}</span>
               </div>
             </InfoContainer>
           </HeaderContainer>
@@ -242,38 +263,36 @@ const CommunityPostDetail = () => {
               ) : (
                 list.map((item) => {
                   return (
-                    <li
-                      key={`bookmark-${item.id}`}
-                      onClick={() => setLink(item.link)}
-                    >
-                      <span className="pointer">{item.title}</span>
+                    <li key={`bookmark-${item.id}`}>
+                      <span
+                        className="pointer"
+                        onClick={() => setLink(item.link)}
+                      >
+                        {item.title}
+                      </span>
                     </li>
                   );
                 })
               )}
             </Ol>
           </BookmarkContainer>
-          <div>
-            {isfetched ? (
-              <Viewer initialValue={fetchData.content} />
-            ) : (
-              <div>로딩중...</div>
-            )}
-          </div>
+          {isfetched ? (
+            <Viewer initialValue={fetchData.content} />
+          ) : (
+            <div>로딩중...</div>
+          )}
           <CommentCount>{`${comments.length}개의 댓글`}</CommentCount>
-          <div>
-            <CommentInput
-              placeholder="댓글을 입력하세요"
-              value={comment}
-              onChange={handleCommentChange}
-            ></CommentInput>
-            <ButtonContainer>
-              <button className="hoverButton" onClick={handleCommentPostClick}>
-                댓글 등록
-              </button>
-            </ButtonContainer>
-            <CommunityPostComments comments={comments} />
-          </div>
+          <CommentInput
+            placeholder="댓글을 입력하세요"
+            value={comment}
+            onChange={handleCommentChange}
+          ></CommentInput>
+          <ButtonContainer>
+            <button className="hoverButton" onClick={handleCommentPostClick}>
+              댓글 등록
+            </button>
+          </ButtonContainer>
+          <CommunityPostComments comments={comments} />
         </div>
         <div className="contentWrapper">
           <iframe src={link} width="100%" height="100%"></iframe>
@@ -300,21 +319,20 @@ const Div = styled.div`
     display: flex;
     flex-direction: row;
     border: 2px solid black;
-    height: 100vh;
+    height: 100%;
   }
   .detailWrapper {
     min-width: 0px;
-    height: 100%;
     width: 50%;
     position: relative;
     padding: 1%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     border: 2px solid blue;
   }
   .contentWrapper {
     min-width: 0px;
-    height: 100%;
     width: 50%;
     padding: 1%;
     display: block;
@@ -367,6 +385,8 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
   margin-bottom: -2rem;
   z-index: 5;
+  width: 100%;
+  position: relative;
 
   .hoverButton {
     height: 100%;
