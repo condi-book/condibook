@@ -5,13 +5,14 @@ class postService {
         const title = toCreate.title;
         const content = toCreate.content;
         const views = toCreate.views;
-        const userinfo = await User.findOne({ where: { id: user_id } });
+        const userInfo = await User.findOneById({ user_id });
+        const nickname = userInfo.nickname;
         const result = await Post.create({
             title,
             content,
             views,
-            author: user_id,
-            author_name: userinfo.nickname,
+            user_id,
+            nickname,
         });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -20,11 +21,7 @@ class postService {
         return result;
     }
     static async getPost({ id }) {
-        const postInfo = await Post.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const postInfo = await Post.findOneById({ id });
         if (!postInfo) {
             const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };

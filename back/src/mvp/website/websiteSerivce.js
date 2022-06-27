@@ -10,12 +10,7 @@ class websiteSerivce {
         let { title, description, img } = await parsers(url);
 
         // DB에 이미 존재하는 웹사이트인지 확인
-        const previous = await Website.findOne({
-            where: { url },
-            include: [Keyword],
-            nest: true,
-            raw: true,
-        });
+        const previous = await Website.findByUrl({ url });
         // meta_title, meta_description 변한게 없으면 그대로 반환
         if (
             previous &&
@@ -29,9 +24,9 @@ class websiteSerivce {
         // 웹사이트 생성
         const newWebsite = await Website.create({
             url,
-            meta_title: title,
-            meta_description: description,
-            img: img,
+            title,
+            description,
+            img,
         });
         if (!newWebsite) {
             return { errorMessage: "서버에러" };
@@ -67,21 +62,13 @@ class websiteSerivce {
         };
     }
     static async getWebsite({ id }) {
-        const info = await Website.findOne({
-            where: { id: id },
-            raw: true,
-            nest: true,
-        });
+        const info = await Website.findOneById({ id });
         if (!info) {
             const errorMessage = "해당 웹사이트가 없습니다.";
             return { errorMessage };
         }
-        const keywords = await Keyword.findAll({
-            where: { website_id: id },
-            attributes: ["keyword", "id"],
-            raw: true,
-            nest: true,
-        });
+        const keywords = await Keyword.findAllById({ id });
+
         const emojis = await Emoji.findAll({
             where: { website_id: id },
             attributes: ["emoji", "id"],

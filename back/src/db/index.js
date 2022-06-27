@@ -1,3 +1,5 @@
 import { WebsiteModel } from "./model/website";
 import { KeywordModel } from "./model/keyword";
-export { WebsiteModel, KeywordModel };
+import { PostModel } from "./model/post";
+import { UserModel } from "./model/user";
+export { WebsiteModel, KeywordModel, PostModel, UserModel };
