@@ -1,3 +1,4 @@
+import Logout from "auth/Logout";
 import React, { useState } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
@@ -36,6 +37,7 @@ const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
       <Div>
         <div className="container">
           <div className="background">
+            <Logout />
             <button onClick={() => setShow((prev) => !prev)}>
               프로필 수정
             </button>
@@ -94,7 +96,7 @@ const Div = styled.div`
   .background {
     width: 100%;
     height: 50%;
-    background: ${({ theme }) => theme.profileBackground};
+    background: ${({ theme }) => theme.middleMainColor};
     text-align: right;
   }
 
