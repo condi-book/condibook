@@ -60,6 +60,7 @@ const CommunityPostDetail = () => {
   const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
   const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
   const [comments, setComments] = React.useState<Comment[]>([]); // 댓글 리스트
+  const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
 
   // 시간 계산하여 문자열 리턴해주는 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
@@ -108,6 +109,10 @@ const CommunityPostDetail = () => {
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setComment(event.target.value);
+  };
+
+  const handleClickBookmark = async (url: string) => {
+    setLink(url);
   };
 
   const handleCommentPostClick = (
@@ -198,12 +203,26 @@ const CommunityPostDetail = () => {
   }, []);
 
   React.useEffect(() => {
-    try {
-      console.log(iframeRef.current.innerHTML);
-    } catch (err) {
-      console.error(err);
+    iframeRef.current.onload = () => {
+      try {
+        console.log(iframeRef.current.contentWindow["0"]);
+      } catch (e) {
+        if (window.confirm("열지 못하는 페이지입니다. 새탭에서 여시겠습니까")) {
+          setNewWindowOpen(!newWindowOpen);
+          console.log(newWindowOpen);
+        } else {
+          setLink("");
+        }
+      }
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (newWindowOpen) {
+      window.open(link, "_blank");
+      setNewWindowOpen(false);
     }
-  }, [link]);
+  }, [newWindowOpen]);
 
   return (
     <Div>
@@ -250,7 +269,7 @@ const CommunityPostDetail = () => {
                     <li key={`bookmark-${item.id}`}>
                       <span
                         className="pointer"
-                        onClick={() => setLink(item.url)}
+                        onClick={() => handleClickBookmark(item.url)}
                       >
                         {item.meta_title ?? item.meta_description ?? item.url}
                       </span>
@@ -284,6 +303,7 @@ const CommunityPostDetail = () => {
             width="100%"
             height="100%"
             ref={iframeRef}
+            loading="lazy"
           ></iframe>
         </div>
       </div>
