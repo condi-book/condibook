@@ -55,7 +55,7 @@ const CommunityPostDetail = () => {
   const [fetchData, setFetchData] = React.useState<FetchData>(null); // 디테일 데이터
   const [isfetched, setIsfetched] = React.useState<boolean>(false); // 정보를 받아왔는지
   const [list, setList] = React.useState<Bookmark[]>(null); // 북마크 리스트
-  const [liked, setLiked] = React.useState<boolean>(false); // 보고있는 유저가 좋아요를 눌렀는지
+  const [liked, setLiked] = React.useState<boolean>(true); // 보고있는 유저가 좋아요를 눌렀는지
   const [link, setLink] = React.useState(""); // iframe에 넣을 link
   const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
   const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
@@ -85,13 +85,15 @@ const CommunityPostDetail = () => {
     try {
       const body = {};
       if (liked) {
-        await Api.delete(`likes`, postId);
+        const res = await Api.delete(`likes`, postId);
+        console.log(res);
         setLiked(false);
         setLikeCount(likeCount - 1);
       } else {
-        await Api.post(`likes/${postId}`, body);
+        const res = await Api.post(`likes/${postId}`, body);
         setLiked(true);
         setLikeCount(likeCount + 1);
+        console.log(res);
       }
     } catch (e) {
       console.log(e);
@@ -337,7 +339,6 @@ const Div = styled.div`
     position: fixed;
   }
   .postWrapper {
-    height:
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -350,7 +351,7 @@ const Div = styled.div`
     padding: 1%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    // justify-content: center;
     border: 2px solid blue;
   }
   .contentWrapper {

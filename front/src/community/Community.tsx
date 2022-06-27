@@ -30,6 +30,6 @@ const Div = styled.div`
     margin: auto;
     width: 90vw;
     border: 2px solid red;
-    height: 100%;
+    height: 100vh;
   }
 `;
