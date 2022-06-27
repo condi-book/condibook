@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-// import * as Api from "../api";
 
 interface MypageBookmarkCardProps {
   item: {
@@ -15,6 +14,10 @@ interface MypageBookmarkCardProps {
     first_bookmark_url: string;
   };
   handleRemove: (e: React.MouseEvent, value: any) => void;
+  handleFavorites: (
+    e: React.MouseEvent,
+    item: MypageBookmarkCardProps["item"],
+  ) => void;
 }
 
 // 스타일 컴포넌트 프롭 인터페이스
@@ -27,9 +30,9 @@ interface StyleProps {
 const MypageBookmarkCard = ({
   item,
   handleRemove,
+  handleFavorites,
 }: MypageBookmarkCardProps) => {
-  // 즐겨찾기 상태값, 더보기 상태값, 더보기 ref 값
-  const [checked, setChecked] = useState<boolean>(item.favorites);
+  // 더보기 상태값, 더보기 ref 값
   const [view, setView] = useState<boolean>(false);
   const viewMore: any = useRef([]);
 
@@ -67,15 +70,6 @@ const MypageBookmarkCard = ({
     }
   };
 
-  // 아직 기능 완성 안됨
-  const handleFavorites = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // 즐겨찾기 추가 or 제거
-    setChecked((prev) => !prev);
-    console.log(checked);
-    // Api.put(`folders/${item.id}?mode=favorites`, {})
-  };
-
   // 더보기 상태값 변경 함수
   const handleViewMore = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -87,7 +81,7 @@ const MypageBookmarkCard = ({
       <div className="top part">
         <div className="top-container">
           <LinkPreview
-            url={item?.first_bookmark_url}
+            url={item.first_bookmark_url}
             width="35%"
             height="70%"
             fetcher={customFetcher}
@@ -126,7 +120,12 @@ const MypageBookmarkCard = ({
           <span>{item.bookmark_count}</span>
         </div>
         <div>
-          <span onClick={handleFavorites} className="pe-7s-star"></span>
+          <span
+            onClick={(e) => handleFavorites(e, item)}
+            className="material-symbols-outlined"
+          >
+            {item.favorites ? "star" : "grade"}
+          </span>
         </div>
       </div>
     </Div>
@@ -178,8 +177,8 @@ const Div = styled.div<StyleProps>`
     transform: rotate(90deg);
   }
 
-  .pe-7s-star {
-    color: ${({ item }) => (item.favorites === true ? "red" : "black")};
+  .material-symbols-outlined {
+    color: ${({ item }) => (item.favorites === true ? "#FEE500" : "black")}; 
 
     &:hover {
       font-size: 1.5em;

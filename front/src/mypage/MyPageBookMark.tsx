@@ -16,6 +16,7 @@ export interface MypageBookmarkProps {
   title: string;
   handleRemove: (e: React.MouseEvent, value: any) => void;
   handlePushData: (value: BookmarkItem) => void;
+  handleFavorites: (e: React.MouseEvent, item: BookmarkItem) => void;
 }
 
 interface BookmarkItem {
@@ -43,6 +44,33 @@ const MypageBookmark = () => {
 
   const title1 = "즐겨찾기";
   const title2 = "전체보기";
+
+  // 즐겨찾기 상태 변경 함수
+  const handleFavorites = (e: React.MouseEvent, item: BookmarkItem) => {
+    e.stopPropagation();
+    const copied = Array.from(folderData);
+    const newData = { ...item, favorites: !item.favorites };
+
+    // 즐겨찾기 삭제
+    if (item.favorites) {
+      Api.delete(`favorites?object=folder&id=${item.id}`).then((res) => {
+        console.log(res.data);
+        setFolderData(
+          copied.map((item) => (item.id === newData.id ? newData : item)),
+        );
+      });
+    } else {
+      // 즐겨찾기 추가
+      Api.post(`favorites?object=folder&id=${item.id}`, {
+        folder_id: item.id,
+      }).then((res) => {
+        console.log(res.data);
+        setFolderData(
+          copied.map((item) => (item.id === newData.id ? newData : item)),
+        );
+      });
+    }
+  };
 
   // 폴더 삭제 함수
   const handleRemove = (e: React.MouseEvent, value: any) => {
@@ -86,12 +114,14 @@ const MypageBookmark = () => {
         title={title1}
         handleRemove={handleRemove}
         handlePushData={handlePushData}
+        handleFavorites={handleFavorites}
       />
       <MypageBookmarkList
         folderData={folderData}
         title={title2}
         handleRemove={handleRemove}
         handlePushData={handlePushData}
+        handleFavorites={handleFavorites}
       />
     </div>
   );
