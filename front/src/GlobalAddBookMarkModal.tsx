@@ -38,19 +38,16 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
   // 제출 이벤트
   const handleSubmit = () => {
     if (folderInput) {
-      Api.post("folders?owner=user", { title: folderInput }).then(
-        async (res) => {
-          console.log(res.data);
-          await Api.post(`folders/${res.data.id}/bookmarks`, {
-            url: data.website.url,
-          })
-            .then(() => {
-              alert("데이터 전달 성공");
-              close();
-            })
-            .catch(() => alert("실패"));
-        },
-      );
+      Api.post("bookmarks", {
+        folder_name: folderInput,
+        website_id: data.website.id,
+      })
+
+        .then(() => {
+          alert("데이터 전달 성공");
+          close();
+        })
+        .catch(() => alert("실패"));
     } else if (folder) {
       Api.post(`bookmarks`, {
         folder_id: data.folders.find(
