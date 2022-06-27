@@ -9,7 +9,8 @@ interface props {
   newLink: string;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
   title?: string;
-  handlePushData: (data: any) => void;
+  handlePushData?: (data: any) => void;
+  handleFolderEdit?: () => void;
 }
 const Modal = ({
   open,
@@ -18,14 +19,21 @@ const Modal = ({
   handleChange,
   title,
   handlePushData,
+  handleFolderEdit,
 }: props) => {
   const params = useParams();
+
   const handleClick = () => {
-    Api.post(`folders?owner=user`, { title: newLink }).then((res) => {
+    if (title === "폴더 이름 변경") {
+      handleFolderEdit();
       close();
-      console.log(res.data);
-      handlePushData(res.data);
-    });
+    } else {
+      Api.post(`folders?owner=user`, { title: newLink }).then((res) => {
+        close();
+        console.log(res.data);
+        handlePushData(res.data);
+      });
+    }
   };
 
   const handleCreate = () => {
@@ -47,6 +55,7 @@ const Modal = ({
       })
       .catch((err) => alert(err.response.data));
   };
+
   return (
     <Div newLink={newLink}>
       <div className={open ? "bg" : ""}></div>
@@ -61,14 +70,12 @@ const Modal = ({
                 value={newLink}
                 onChange={handleChange}
                 placeholder={
-                  title === "전체보기"
-                    ? "폴더를 추가해주세요"
-                    : "링크를 추가해주세요"
+                  title ? "폴더명을 입력하세요" : "링크를 입력하세요"
                 }
               />
             </div>
             <button
-              onClick={title === "전체보기" ? handleClick : handleCreate}
+              onClick={title ? handleClick : handleCreate}
               disabled={newLink === "" ? true : false}
             >
               저장하기

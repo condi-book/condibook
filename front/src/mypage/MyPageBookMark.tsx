@@ -4,22 +4,15 @@ import MypageBookmarkList from "./MyPageBookMarkList";
 import * as Api from "../api";
 
 export interface MypageBookmarkProps {
-  folderData: {
-    id: string;
-    image: string;
-    title: string;
-    favorites: boolean;
-    createdAt: string;
-    bookmark_count: number;
-    first_bookmark_url: string;
-  }[];
+  folderData: BookmarkItem[];
   title: string;
   handleRemove: (e: React.MouseEvent, value: any) => void;
   handlePushData: (value: BookmarkItem) => void;
   handleFavorites: (e: React.MouseEvent, item: BookmarkItem) => void;
+  handleFolderEdit: (value: any, title: string) => void;
 }
 
-interface BookmarkItem {
+export interface BookmarkItem {
   id: string;
   image: string;
   title: string;
@@ -72,6 +65,14 @@ const MypageBookmark = () => {
     }
   };
 
+  // const handleEdit = (e: React.MouseEvent, item: BookmarkItem) => {
+  //   e.stopPropagation();
+  //   console.log(item);
+  //   Api.put(`folders/${item.id}`, {
+  //     title: item.title,
+  //   })
+  // }
+
   // 폴더 삭제 함수
   const handleRemove = (e: React.MouseEvent, value: any) => {
     e.stopPropagation();
@@ -81,6 +82,15 @@ const MypageBookmark = () => {
     setFolderData(filtered);
   };
 
+  // 폴더 이름 수정 함수
+  const handleFolderEdit = (value: any, title: string) => {
+    const copied = Array.from(folderData);
+    setFolderData(
+      copied.map((item) => (item.id === value ? { ...item, title } : item)),
+    );
+  };
+
+  // 폴더 추가 함수
   const handlePushData = (value: BookmarkItem) => {
     const copied = [...folderData];
     copied.splice(0, 0, value);
@@ -115,6 +125,7 @@ const MypageBookmark = () => {
         handleRemove={handleRemove}
         handlePushData={handlePushData}
         handleFavorites={handleFavorites}
+        handleFolderEdit={handleFolderEdit}
       />
       <MypageBookmarkList
         folderData={folderData}
@@ -122,6 +133,7 @@ const MypageBookmark = () => {
         handleRemove={handleRemove}
         handlePushData={handlePushData}
         handleFavorites={handleFavorites}
+        handleFolderEdit={handleFolderEdit}
       />
     </div>
   );
