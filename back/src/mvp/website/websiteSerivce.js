@@ -7,7 +7,6 @@ class websiteSerivce {
     static async createWebsite({ url }) {
         // 웹사이트 파싱
         let { title, description, img } = await parsers(url);
-
         // DB에 이미 존재하는 웹사이트인지 확인
         const previous = await Website.findOne({
             where: { url },
@@ -15,15 +14,50 @@ class websiteSerivce {
             nest: true,
             raw: true,
         });
-        // meta_title, meta_description 변한게 없으면 그대로 반환
-        if (
-            previous &&
-            (previous.meta_title === title ||
-                previous.meta_description === description)
-        ) {
-            return {
-                website: previous,
-            };
+        // meta_title, meta_description 변한게 없으면 그대로 반환 아니면 업데이트
+        if (previous) {
+            if (
+                previous.meta_title === title &&
+                previous.meta_description === description
+            ) {
+                // 그대로 유지
+                return {
+                    website: previous,
+                };
+            } else {
+                //업데이트 하기
+                await Website.update(
+                    {
+                        meta_title: title,
+                        meta_description: description,
+                        img: img,
+                    },
+                    { where: { id: previous.id } },
+                ); // postgresql을 사용해야 업데이트된 레코드를 받을 수 있다.
+                const updatedWebsite = await Website.findOne({
+                    where: { url },
+                    include: [Keyword],
+                    nest: true,
+                    raw: true,
+                });
+                let keyword = null;
+                if (title !== null && description !== null) {
+                    keyword = this.getAIKeyword({
+                        website_id: updatedWebsite.id,
+                        title: updatedWebsite.meta_title,
+                        description: updatedWebsite.meta_description,
+                    });
+                }
+                await this.updateKeyword({
+                    keyword_id: previous.keywords.id,
+                    website_id: updatedWebsite.id,
+                    keyword: keyword,
+                });
+                return {
+                    website: updatedWebsite,
+                    keyword: keyword,
+                };
+            }
         }
         // 웹사이트 생성
         const newWebsite = await Website.create({
@@ -37,22 +71,14 @@ class websiteSerivce {
         }
         // 키워드 생성
         let keyword = null;
-        let AI_SERVER_URL = process.env.AI_SERVER_URL;
-        axios
-            .post(`${AI_SERVER_URL}/translate`, {
-                title: newWebsite.meta_title,
-                description: newWebsite.meta_description,
-            })
-            .then((res) => {
-                keyword = sortKeyword(res.data);
-                this.createKeyword({
-                    website_id: newWebsite.id,
-                    keyword: keyword,
-                });
-            })
-            .catch(() => {
-                console.log("AI 서버 에러❌");
+        if (title !== null && description !== null) {
+            keyword = await this.getAIKeyword({
+                website_id: newWebsite.id,
+                title,
+                description,
             });
+        }
+
         //이모지 생성 부분 -> 미완
         // const ai_emoji = ai 에서 받아올 것
         // await websiteSerivce.createEmoji({
@@ -65,6 +91,37 @@ class websiteSerivce {
             keyword: keyword,
         };
     }
+    static async getAIKeyword({ website_id, title, description, keyword_id }) {
+        let keyword = null;
+        let AI_SERVER_URL = process.env.AI_SERVER_URL;
+
+        axios
+            .post(`${AI_SERVER_URL}/translate`, {
+                title: title,
+                description: description,
+            })
+            .then((res) => {
+                keyword = sortKeyword(res.data);
+                if (keyword_id) {
+                    this.updateKeyword({
+                        keyword_id: keyword_id,
+                        website_id: website_id,
+                        keyword: keyword,
+                    });
+                } else {
+                    this.createKeyword({
+                        website_id: website_id,
+                        keyword: keyword,
+                    });
+                }
+            })
+            .catch(() => {
+                console.log("AI 서버 에러❌");
+            });
+
+        return keyword;
+    }
+
     static async getWebsite({ id }) {
         const info = await Website.findOne({
             where: { id: id },
@@ -148,8 +205,7 @@ class websiteSerivce {
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
-        }
-        if (result) {
+        } else {
             const Message = "삭제가 완료 되었습니다.";
             return Message;
         }
@@ -162,9 +218,19 @@ class websiteSerivce {
             website_id,
         });
         if (!result) {
-            const errorMessage = "해당 키워드가 없습니다.";
-            return { errorMessage };
+            return { errorMessage: "키워드 생성 실패" };
         }
+
+        return result;
+    }
+    static async updateKeyword({ keyword_id, website_id, keyword }) {
+        const result = await Keyword.update(
+            {
+                keyword,
+                website_id,
+            },
+            { where: { id: keyword_id } },
+        );
 
         return result;
     }
