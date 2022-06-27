@@ -13,8 +13,9 @@ interface ProfileProps {
     id: number;
   };
   handleApply: (value: any) => void;
+  handleChange: (e: any) => void;
 }
-const Profile = ({ data, handleApply }: ProfileProps) => {
+const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
   const [show, setShow] = useState(false);
 
   const handleClick = () => {
@@ -29,6 +30,7 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
           open={show}
           close={handleClick}
           handleApply={handleApply}
+          handleChange={handleChange}
         />
       )}
       <Div>
@@ -103,6 +105,7 @@ const Div = styled.div`
   img {
     border-radius: 50%;
     margin-right: 10%;
+    width: 30%;
   }
   .top {
     position: absolute;
@@ -120,7 +123,7 @@ const Div = styled.div`
     }
 
     .top-detail {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       text-align: center;
       display: flex;
       flex-direction: column;

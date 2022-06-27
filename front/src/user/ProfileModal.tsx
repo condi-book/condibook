@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
 // import UserDelete from "./UserDelete";
@@ -16,23 +16,23 @@ interface ProfileProps {
     id: number;
   };
   handleApply: (value: any) => void;
+  handleChange: (e: any) => void;
 }
 
-const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
-  const [userData, setUserData] = useState(data);
-
+const ProfileModal = ({
+  data,
+  open,
+  close,
+  handleApply,
+  handleChange,
+}: ProfileProps) => {
   // 프로필 수정 버튼 클릭 함수
   const handleClick = async () => {
-    await Api.put(`user/nickname`, { nickname: userData.nickname });
-    await Api.put(`user/intro`, { intro: userData.intro });
-    await handleApply(userData);
+    await Api.put(`user/nickname`, { nickname: data.nickname });
+    await Api.put(`user/intro`, { intro: data.intro });
+    await handleApply(data);
     await alert("수정이 완료되었습니다.");
     await close();
-  };
-
-  // 프로필 수정 내용 변경 함수
-  const handleChange = (e: any) => {
-    setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
@@ -51,9 +51,9 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
                   className="profile-input"
                   placeholder="닉네임을 입력해주세요"
                   maxLength={10}
-                  value={userData.nickname}
+                  value={data.nickname}
                   name="nickname"
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
               <p>10자 이하로 작성해주세요</p>
@@ -64,12 +64,12 @@ const ProfileModal = ({ data, open, close, handleApply }: ProfileProps) => {
                 className="profile-textarea"
                 maxLength={200}
                 placeholder="소개글을 입력해주세요"
-                value={userData.intro ? userData.intro : ""}
+                value={data.intro ? data.intro : ""}
                 name="intro"
                 onChange={handleChange}
               />
               <div className="profile-textlimit">
-                {userData.intro.length}/120
+                {data.intro ? data.intro.length : "0"}/120
               </div>
               <p>120자 이하로 입력해주세요</p>
             </div>

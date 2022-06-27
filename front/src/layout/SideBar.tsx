@@ -17,7 +17,10 @@ const iconList = [
 
 const SideBar = () => {
   useEffect(() => {
-    Api.get(`user/info`).then((res) => setData(res.data));
+    Api.get(`user/info`).then((res) => {
+      console.log(res.data);
+      setData(res.data);
+    });
   }, []);
 
   const [show, setShow] = useState(false);
@@ -25,6 +28,11 @@ const SideBar = () => {
   const navigate = useNavigate();
 
   const handleApply = (value: any) => setData(value);
+
+  // 프로필 수정 내용 변경 함수
+  const handleChange = (e: any) => {
+    setData((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.currentTarget.id === "pe-7s-user") {
@@ -65,7 +73,13 @@ const SideBar = () => {
         ))}
       </Section>
       <GlobalAddBookmarkButton />
-      {show && <Profile data={data} handleApply={handleApply} />}
+      {show && (
+        <Profile
+          data={data}
+          handleApply={handleApply}
+          handleChange={handleChange}
+        />
+      )}
     </>
   );
 };
