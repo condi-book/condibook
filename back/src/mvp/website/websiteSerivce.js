@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Website, Keyword, Emoji } from "../../db";
+import { WebsiteModel as Website } from "../../db";
+import { KeywordModel as Keyword } from "../../db";
 import { sortKeyword } from "../../util/AiFunction/sortKeyword";
 import { parsers } from "../../util/parser/parser";
 
