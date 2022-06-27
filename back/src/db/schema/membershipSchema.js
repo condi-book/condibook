@@ -1,12 +1,12 @@
-export default function LikeModel(sequelize, DataTypes) {
+export default function MembershipSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "like",
+        "membership",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "좋아요 ID",
+                comment: "멤버십 ID",
             },
         },
         {

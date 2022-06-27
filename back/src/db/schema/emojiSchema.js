@@ -1,22 +1,17 @@
-export default function TeamModel(sequelize, DataTypes) {
+export default function EmojiSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "team",
+        "emoji",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "팀 ID",
+                comment: "이모지 ID",
             },
-            name: {
+            emoji: {
                 type: DataTypes.STRING,
-                allowNull: false,
-                comment: "팀 이름",
-            },
-            explanation: {
-                type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "팀 설명",
+                comment: "이모지",
             },
         },
         {

@@ -1,4 +1,4 @@
-import { User, Op } from "../../db";
+import { User } from "../../db";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
@@ -8,7 +8,7 @@ class userService {
     static async login({ nickname, email, image_url }) {
         try {
             // 사용자 조회
-            let user = await User.findOne({ where: { email } });
+            let user = await User.findOneByEmail({ email });
             // 존재하지 않은 사용자 -> 계정 생성
             if (!user) {
                 user = await User.create({ nickname, email, image_url });
@@ -121,7 +121,7 @@ class userService {
     }
     static async getUserInfo({ user_id }) {
         try {
-            const user = await User.findOne({ where: { id: user_id } });
+            const user = await User.findOne({ user_id });
             if (!user) {
                 return getFailMsg({ entity: "사용자 계정", action: "조회" });
             }
@@ -152,15 +152,7 @@ class userService {
     }
     static async getUsersInfo({ nickname }) {
         try {
-            const user = await User.findAll({
-                attributes: ["id", "nickname", "email", "image_url"],
-                where: {
-                    nickname: {
-                        [Op.like]: `%${nickname}%`,
-                    },
-                },
-                order: ["nickname"],
-            });
+            const user = await User.findAllByNickname({ nickname });
             if (!user) {
                 return getFailMsg({ entity: "사용자 계정", action: "조회" });
             }
@@ -172,15 +164,15 @@ class userService {
     static async setNickname({ nickname, requester_id }) {
         try {
             // 사용자 존재 여부 확인
-            const user = await User.findOne({ where: { id: requester_id } });
+            const user = await User.findOne({ user_id: requester_id });
             if (!user) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 닉네임 수정
-            const affectedRows = await User.update(
-                { nickname },
-                { where: { id: user.id } },
-            );
+            const affectedRows = await User.updateNickname({
+                user_id: user.id,
+                nickname,
+            });
             if (affectedRows === 0) {
                 return { errorMessage: "서버에러" };
             }
@@ -193,17 +185,15 @@ class userService {
     static async setIntro({ intro, requester_id }) {
         try {
             // 사용자 존재 여부 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 짧은 소개글 수정
-            const affectedRows = await User.update(
-                { intro },
-                { where: { id: requester.id } },
-            );
+            const affectedRows = await User.updateIntro({
+                user_id: requester.id,
+                intro,
+            });
             if (affectedRows === 0) {
                 return { errorMessage: "서버에러" };
             }
@@ -219,16 +209,12 @@ class userService {
     static async deleteUser({ requester_id }) {
         try {
             // 사용자 존재 여부 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 사용자 삭제
-            const deletedRow = await User.destroy({
-                where: { id: requester.id },
-            });
+            const deletedRow = await User.destroyOne({ user_id: requester.id });
             if (deletedRow !== 1) {
                 return { errorMessage: "서버에러" };
             }
@@ -241,7 +227,10 @@ class userService {
         try {
             const id = userInfo.user_id;
             const email = userInfo.email;
-            const checkUser = await User.findOne({ where: { id, email } });
+            const checkUser = await User.findOneByUserIdEmail({
+                user_id: id,
+                email,
+            });
             if (!checkUser) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }

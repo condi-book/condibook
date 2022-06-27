@@ -1,33 +1,33 @@
-export default function WebsiteModel(sequelize, DataTypes) {
+export default function UserSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "website",
+        "user",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "사이트 ID",
+                comment: "사용자 ID",
             },
-            url: {
+            email: {
                 type: DataTypes.STRING,
-                allowNull: false,
                 unique: true,
-                comment: "사이트 링크",
+                allowNull: false,
+                comment: "사용자 이메일",
             },
-            meta_title: {
+            nickname: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                comment: "메타 제목",
+                comment: "사용자 별명",
             },
-            meta_description: {
+            image_url: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                comment: "메타 내용",
+                comment: "사용자 프로필 이미지 url",
             },
-            img: {
+            intro: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                comment: "사이트 이미지",
+                comment: "자신에 대한 짧은 소개글",
             },
         },
         {
@@ -38,6 +38,10 @@ export default function WebsiteModel(sequelize, DataTypes) {
                 {
                     unique: true,
                     fields: ["id"],
+                },
+                {
+                    unique: true,
+                    fields: ["email"],
                 },
             ],
         },
