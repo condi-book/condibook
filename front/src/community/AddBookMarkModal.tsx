@@ -196,7 +196,8 @@ const AddBookMarkModal = ({
 
   React.useEffect(() => {
     console.log(postBookmarks);
-  }, [postBookmarks]);
+    console.log(selectedFolderBookmarks);
+  }, [postBookmarks, selectedFolderBookmarks]);
 
   React.useEffect(() => {
     if (tab !== "폴더를 선택하세요") {

@@ -9,7 +9,7 @@ import CommunityPostComments from "./CommunityPostComments";
 
 import * as Api from "../api";
 
-interface FetchData {
+export interface FetchData {
   author: string;
   author_name: string;
   title: string;
@@ -164,7 +164,6 @@ const CommunityPostDetail = () => {
           like_counts,
           views,
         }: FetchData = res.data.postInfo;
-        console.log(res.data.postInfo);
 
         const convertFromStringToDate = (responseDate: string) => {
           let dateComponents = responseDate.split("T");
@@ -199,8 +198,7 @@ const CommunityPostDetail = () => {
         setIsfetched(true);
         setLikeCount(like_counts);
 
-        const attachedRes = await Api.get(`attached/${postId}`);
-        const bookmarkData: Omit<Bookmark[], "checked"> = attachedRes.data;
+        const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
         setList(() => {
           if (bookmarkData === undefined) {
             return;
@@ -223,7 +221,6 @@ const CommunityPostDetail = () => {
       } catch (e) {
         if (window.confirm("열지 못하는 페이지입니다. 새탭에서 여시겠습니까")) {
           setNewWindowOpen(!newWindowOpen);
-          console.log(newWindowOpen);
         } else {
           setLink("");
         }
@@ -340,12 +337,11 @@ const Div = styled.div`
     position: fixed;
   }
   .postWrapper {
-    min-height: 100%;
+    height:
     width: 100%;
     display: flex;
     flex-direction: row;
     border: 2px solid black;
-    height: 100%;
   }
   .detailWrapper {
     min-width: 0px;

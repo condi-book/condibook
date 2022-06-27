@@ -8,6 +8,7 @@ import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import AddBookMarkModal from "./AddBookMarkModal";
+// import FetchData from "./CommunityPostDetail";
 import * as Api from "../api";
 
 export interface Bookmark {
@@ -91,18 +92,54 @@ const CommunityPostWrite = () => {
     }
   };
 
-  // const fetchPostContent = async () => {
-  //   try {
-  //     const res = await Api.get("community", postId)
-  //     const fetchedItem = res.data;
+  const handlePutButtonClick = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
 
-  //     setTitle(fetchedItem.title)
-  //     setContent(fetchedItem.content)
-  //   } catch (err) {
-  //     alert('error', err)
-  //     navigate(-1)
-  //   }
-  // }
+    const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
+
+    console.log(
+      `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
+    );
+
+    try {
+      const body = {
+        title,
+        content,
+      };
+      const res = await Api.put(`posts/${postId}`, body);
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchPostContent = async () => {
+    try {
+      const res = await Api.get(`posts/${postId}`);
+      console.log(res);
+      const fetchedItem = res.data.postInfo;
+
+      setTitle(fetchedItem?.title);
+      setContent(fetchedItem?.content);
+      editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
+
+      const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
+      setPostBookmarks(
+        bookmarkData.map((bookmark) => {
+          return {
+            id: bookmark.id,
+            url: bookmark.url,
+            checked: true,
+          };
+        }),
+      );
+    } catch (err) {
+      console.log(err);
+      navigate(-1);
+    }
+  };
 
   // 에디터에 북마크 추가 버튼을 생성하는 함수 이후에 모달 창으로 추가 할 수 있도록 한다.
   // 모달창은 isModalShow state Hooks에 의해 열고 닫혀지고 체크박스안에 체크된 북마크를 추가할 수 있는 리스트를 보여주며 useRef로 렌더링 최적화한다.
@@ -123,11 +160,8 @@ const CommunityPostWrite = () => {
 
   React.useEffect(() => {
     if (postId !== null) {
-      // fetchPostContent()
       setIsModifying(true);
-      setTitle(title);
-      setContent(content);
-      editorRef.current?.getInstance().setMarkdown(content);
+      fetchPostContent();
     }
   }, []);
 
@@ -212,9 +246,15 @@ const CommunityPostWrite = () => {
             <span>나가기</span>
           </button>
           <div className="postBox">
-            <button className="hoverButton" onClick={handlePostButtonClick}>
-              <span>{isModifying ? "수정하기" : "등록하기"}</span>
-            </button>
+            {isModifying ? (
+              <button className="hoverButton" onClick={handlePostButtonClick}>
+                <span>등록하기</span>
+              </button>
+            ) : (
+              <button className="hoverButton" onClick={handlePutButtonClick}>
+                <span>수정하기</span>
+              </button>
+            )}
           </div>
         </ButtonContainer>
       </ItemContainer>
