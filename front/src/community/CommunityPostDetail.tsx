@@ -23,10 +23,13 @@ interface FetchData {
 
 interface Bookmark {
   id: string;
-  title: string;
-  image: string;
-  content: string;
-  link: string;
+  meta_title: string;
+  img: string;
+  meta_description: string;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
+  checked: boolean;
 }
 
 export interface Comment {
@@ -39,57 +42,6 @@ export interface Comment {
   createdAt: Date;
 }
 
-const bookmarkList: Bookmark[] = [
-  {
-    id: "1",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://tychejin.tistory.com/231",
-  },
-  {
-    id: "2",
-    title: "okayoon",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
-  },
-  {
-    id: "3",
-    title: "nykim",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://nykim.work/107",
-  },
-  {
-    id: "5",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-  {
-    id: "6",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-  {
-    id: "7",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-  {
-    id: "8",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-];
 type postDetailRouteParams = {
   postId: string;
 };
@@ -97,23 +49,23 @@ const CommunityPostDetail = () => {
   const navigate = useNavigate();
   const { postId } = useParams<
     keyof postDetailRouteParams
-  >() as postDetailRouteParams; // 이렇게 하면 postId를 string으로 받을 수 있다.
+  >() as postDetailRouteParams; // 이렇게 하면 postId를 쿼리로 받을 수 있다.
   const viewerRef = React.useRef<Viewer>(null); // toast ui viewer ref
+  const iframeRef = React.useRef<HTMLIFrameElement>(null); // iframe ref
   const [fetchData, setFetchData] = React.useState<FetchData>(null); // 디테일 데이터
   const [isfetched, setIsfetched] = React.useState<boolean>(false); // 정보를 받아왔는지
-  const [list, setList] = React.useState<Bookmark[]>([]); // 북마크 리스트
+  const [list, setList] = React.useState<Bookmark[]>(null); // 북마크 리스트
   const [liked, setLiked] = React.useState<boolean>(false); // 보고있는 유저가 좋아요를 눌렀는지
   const [link, setLink] = React.useState(""); // iframe에 넣을 link
   const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
   const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
   const [comments, setComments] = React.useState<Comment[]>([]); // 댓글 리스트
 
-  // 시간 계산 함수
+  // 시간 계산하여 문자열 리턴해주는 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
   const updatedTime = React.useCallback(
     (createdDate: Date, updatedDate: Date) => {
       let resultText = "";
-      console.log(createdDate, updatedDate);
       if (createdDate === undefined || updatedDate === undefined) {
         return resultText;
       }
@@ -127,15 +79,31 @@ const CommunityPostDetail = () => {
     [fetchData],
   );
 
-  const handleLikeClick = () => {
-    setLiked(!liked);
-    liked ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
+  // 좋아요 버튼 클릭 시 이벤트
+  const handleLikeClick = async () => {
+    try {
+      const body = {};
+      if (liked) {
+        await Api.delete(`likes`, postId);
+        setLiked(false);
+        setLikeCount(likeCount - 1);
+      } else {
+        await Api.post(`likes/${postId}`, body);
+        setLiked(true);
+        setLikeCount(likeCount + 1);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const handleEditClick = () => {
+  // 게시글 수정 이벤트
+  const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     navigate(`/community/write?id=${postId}`);
   };
 
+  // 댓글 변경 이벤트
   const handleCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -160,8 +128,8 @@ const CommunityPostDetail = () => {
     ]);
     setComment("");
   };
-  // 파라미터로 게시글 내용 받아오는 함수
 
+  // 게시글 내용 받아오는 함수
   React.useEffect(() => {
     const fetchPostDetail = async () => {
       try {
@@ -177,7 +145,8 @@ const CommunityPostDetail = () => {
           like_counts,
           views,
         }: FetchData = res.data.postInfo;
-        console.log(createdAt, updatedAt);
+        console.log(res.data.postInfo);
+
         const convertFromStringToDate = (responseDate: string) => {
           let dateComponents = responseDate.split("T");
           let datePieces = dateComponents[0].split("-");
@@ -195,7 +164,6 @@ const CommunityPostDetail = () => {
 
         const paredCreatedAt = convertFromStringToDate(createdAt.toString());
         const paredUpdatedAt = convertFromStringToDate(updatedAt.toString());
-        console.log(paredCreatedAt, paredUpdatedAt);
 
         setFetchData({
           author,
@@ -208,18 +176,34 @@ const CommunityPostDetail = () => {
           like_counts,
           views,
         });
-        viewerRef.current?.getInstance().setMarkdown(content);
+        viewerRef.current?.getInstance().setMarkdown(content); // 받아온 값으로 뷰어 세팅
         setIsfetched(true);
+        setLikeCount(like_counts);
+
+        const attachedRes = await Api.get(`attached/${postId}`);
+        const bookmarkData: Omit<Bookmark[], "checked"> = attachedRes.data;
+        setList(() => {
+          if (bookmarkData === undefined) {
+            return;
+          }
+          return bookmarkData.map((bookmark) => {
+            return { ...bookmark, checked: true };
+          });
+        });
       } catch (err) {
         console.log(err);
       }
     };
     fetchPostDetail();
-    setList(bookmarkList);
-    const user = sessionStorage.getItem("user");
-    const { id } = JSON.parse(user);
-    console.log(id);
   }, []);
+
+  React.useEffect(() => {
+    try {
+      console.log(iframeRef.current.innerHTML);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [link]);
 
   return (
     <Div>
@@ -258,17 +242,17 @@ const CommunityPostDetail = () => {
           <BookmarkContainer>
             <h4 className="title">북마크</h4>
             <Ol>
-              {list?.length === 0 ? (
+              {list === null || list?.length === 0 ? (
                 <p>북마크 없음</p>
               ) : (
-                list.map((item) => {
+                list?.map((item) => {
                   return (
                     <li key={`bookmark-${item.id}`}>
                       <span
                         className="pointer"
-                        onClick={() => setLink(item.link)}
+                        onClick={() => setLink(item.url)}
                       >
-                        {item.title}
+                        {item.meta_title ?? item.meta_description ?? item.url}
                       </span>
                     </li>
                   );
@@ -295,7 +279,12 @@ const CommunityPostDetail = () => {
           <CommunityPostComments comments={comments} />
         </div>
         <div className="contentWrapper">
-          <iframe src={link} width="100%" height="100%"></iframe>
+          <iframe
+            src={link}
+            width="100%"
+            height="100%"
+            ref={iframeRef}
+          ></iframe>
         </div>
       </div>
     </Div>
