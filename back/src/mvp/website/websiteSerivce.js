@@ -209,8 +209,6 @@ class websiteSerivce {
             const Message = "삭제가 완료 되었습니다.";
             return Message;
         }
-
-        return result;
     }
     static async createKeyword({ website_id, keyword }) {
         const result = await Keyword.create({
