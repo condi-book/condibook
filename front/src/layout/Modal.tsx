@@ -44,9 +44,8 @@ const Modal = ({
         Api.get(`websites/${res.data.website_id}`).then((res) => {
           console.log("추가한 링크", res.data);
           handlePushData({
-            createdAt: needs.createdAt,
-            updatedAt: needs.updatedAt,
-            bookmark_id: needs.bookmark_id,
+            bookmark_id: needs.id,
+            order_idx: null,
             favorites: false,
             website: res.data,
           });
