@@ -40,7 +40,6 @@ const AddBookMarkModal = ({
   >([]);
   const [bookmarkModifiedID, setBookmarkModifiedID] =
     React.useState<number>(null);
-  const [postBookmarksID, setPostBookmarksID] = React.useState<number[]>([]);
 
   // 드랍메뉴에 보여줄 폴더리스트
   const folderList = (
@@ -152,10 +151,8 @@ const AddBookMarkModal = ({
     try {
       const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
       const handledData = data.map((data: any) => {
-        console.log(data);
-        console.log(postBookmarksID);
-        const checkedBookmark = postBookmarksID.find(
-          (id) => id === data.bookmark_id,
+        const checkedBookmark = postBookmarks.find(
+          (bookmark) => bookmark.id === data.bookmark_id,
         );
         return {
           id: data.bookmark_id,
@@ -185,9 +182,6 @@ const AddBookMarkModal = ({
           return prev.filter((bookmark) => bookmark.id !== bookmarkModifiedID);
         });
         setBookmarkModifiedID(null);
-        setPostBookmarksID((prev) => {
-          return prev.filter((id) => id !== bookmarkModifiedID);
-        });
       } else {
         setPostBookmarks((prev) => {
           const newBookmark = selectedFolderBookmarks.find(
@@ -196,9 +190,6 @@ const AddBookMarkModal = ({
           return [...prev, newBookmark];
         });
         setBookmarkModifiedID(null);
-        setPostBookmarksID((prev) => {
-          return [...prev, bookmarkModifiedID];
-        });
       }
     }
   }, [bookmarkModifiedID, selectedFolderBookmarks, postBookmarks]);
