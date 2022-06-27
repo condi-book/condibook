@@ -104,6 +104,20 @@ const CommunityPostDetail = () => {
     navigate(`/community/write?id=${postId}`);
   };
 
+  const handleDeleteClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      if (window.confirm("정말로 삭제하시겠습니까?")) {
+        await Api.delete(`posts/${postId}`);
+        navigate("/community");
+      } else {
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // 댓글 변경 이벤트
   const handleCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -241,7 +255,9 @@ const CommunityPostDetail = () => {
               <button className="hoverButton" onClick={handleEditClick}>
                 수정
               </button>
-              <button className="hoverButton">삭제</button>
+              <button className="hoverButton" onClick={handleDeleteClick}>
+                삭제
+              </button>
             </ButtonContainer>
             <InfoContainer>
               <div>
@@ -324,6 +340,7 @@ const Div = styled.div`
     position: fixed;
   }
   .postWrapper {
+    min-height: 100%;
     width: 100%;
     display: flex;
     flex-direction: row;
