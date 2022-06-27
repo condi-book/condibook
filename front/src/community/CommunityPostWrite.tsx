@@ -11,7 +11,7 @@ import AddBookMarkModal from "./AddBookMarkModal";
 import * as Api from "../api";
 
 export interface Bookmark {
-  id: string;
+  id: number;
   url: string;
   checked: boolean;
 }
@@ -86,7 +86,6 @@ const CommunityPostWrite = () => {
         const res = await Api.post("posts", body);
         console.log(res);
       }
-      // navigate(`/community/${postId}`);
     } catch (err) {
       console.error(err);
     }

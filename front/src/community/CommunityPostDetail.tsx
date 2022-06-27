@@ -22,7 +22,7 @@ interface FetchData {
 }
 
 interface Bookmark {
-  id: string;
+  id: number;
   meta_title: string;
   img: string;
   meta_description: string;
