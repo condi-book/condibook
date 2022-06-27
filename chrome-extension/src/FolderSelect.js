@@ -27,7 +27,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
   // 제출 이벤트
   const handleClick = () => {
     if (input && inputValue) {
-      fetch("http://localhost:5001/folders?owner=user", {
+      fetch("http://localhost:5001/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,33 +35,16 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
         },
         mode: "cors",
         body: JSON.stringify({
-          title: inputValue,
+          folder_name: inputValue,
+          website_id: id,
         }),
-      })
-        .then((res) => {
-          return res.json(); //Promise 반환
-        })
-        .then((data) => {
-          fetch(`http://localhost:5001/folders/${data.id}/bookmarks`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${cookie}`,
-            },
-            mode: "cors",
-            body: JSON.stringify({
-              url: url,
-            }),
-          })
-            .then((res) => {
-              alert("데이터 전달 성공");
-              handlePage();
-            })
-            .catch((err) => alert("실패"));
-        });
+      }).then((res) => {
+        handlePage();
+        console.log("성공");
+      });
     } else if (!input && folder) {
       const folderId = folderList.find((item) => item.title === folder).id;
-      fetch("http://localhost:5001/", {
+      fetch("http://localhost:5001/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
