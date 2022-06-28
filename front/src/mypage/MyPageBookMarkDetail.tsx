@@ -83,16 +83,8 @@ const MypageBookmarkDetail = () => {
   // 링크 추가 함수
   const handlePushData = async (v: any) => {
     const copied = Array.from(list);
-    const data = { ...v, order_idx: copied.length + 1 };
-    await copied.push(data);
+    await copied.push(v);
     await setList(copied);
-    await Api.put(
-      `folders/${params.folderId}/bookmarks/order`,
-      copied.map(({ bookmark_id, order_idx }) => ({
-        bookmark_id,
-        order_idx,
-      })),
-    ).then(() => console.log("순서 정렬"));
     setNewLink("");
   };
 
@@ -173,10 +165,6 @@ const MypageBookmarkDetail = () => {
                                   <div>{`${website.url.substr(0, 20)}...`}</div>
                                 </div>
                                 <div>
-                                  {/* <span
-                                    className="pe-7s-comment icon"
-                                    onClick={() => alert("댓글달기")}
-                                  /> */}
                                   <span
                                     className="pe-7s-trash icon"
                                     onClick={(e) => handleDelete(e, item)}
