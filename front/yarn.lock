@@ -1175,6 +1175,11 @@
   dependencies:
     react-loading-skeleton "^2.2.0"
 
+"@emailjs/browser@^3.6.2":
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/@emailjs/browser/-/browser-3.6.2.tgz#8124b656953fae490405ba330aa3aebc1aeb6cd2"
+  integrity sha512-Swc8w+vwDX4XPy6tPegOFGSwHqNiEmEsIKbtAkqHo2WqnS0ORZUnnuZats2R3XqwfxNQD0F6RwnlVWHIMf6sCQ==
+
 "@emotion/cache@^10.0.27":
   version "10.0.29"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.29.tgz#87e7e64f412c060102d589fe7c6dc042e6f9d1e0"
@@ -9362,7 +9367,7 @@ unique-string@^2.0.0:
   dependencies:
     crypto-random-string "^2.0.0"
 
-universal-cookie@^4.0.0:
+universal-cookie@*, universal-cookie@^4.0.0, universal-cookie@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/universal-cookie/-/universal-cookie-4.0.4.tgz#06e8b3625bf9af049569ef97109b4bb226ad798d"
   integrity sha512-lbRVHoOMtItjWbM7TwDLdl8wug7izB0tq3/YVKhT/ahB4VDvWMyvnADfnJI8y6fSvsjh51Ix7lTGC6Tn4rMPhw==

@@ -35,7 +35,7 @@ const Col = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 10;
+  margin-top: 10px;
 `;
 
 const Row = styled.div`
