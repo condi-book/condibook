@@ -54,23 +54,7 @@ const MypageBookmarkDetail = () => {
       })),
     ).then(() => console.log("순서 정렬"));
     setList(items);
-    // if (!throttle) {
-    //   console.log(`throttling`);
-    //   setThrottle(true);
-    //   handleThrottle(items);
-    // }
   };
-
-  // const handleThrottle = (items: any) => {
-  //   if (!throttle) return;
-  //   if (throttle) {
-  //     setTimeout(async () => {
-  //       console.log("업데이트 시작");
-  //       setThrottle(false);
-  //       console.log(items);
-  //     }, 5000);
-  //   }
-  // };
 
   const handleClick = () => {
     setShow((prev) => !prev);
@@ -183,7 +167,15 @@ const MypageBookmarkDetail = () => {
           </DragDropContext>
         </div>
         <div className="content box">
-          <iframe src={link} width="100%" height="100%"></iframe>
+          {list.length === 0 ? (
+            <Empty className="empty">
+              <img src="/static/img/bookmark.svg" alt="preview"></img>
+              <div>북마크를 추가하여</div>
+              <div>미리보기(preview) 기능을 사용해보세요</div>
+            </Empty>
+          ) : (
+            <iframe src={link} width="100%" height="100%"></iframe>
+          )}
         </div>
       </div>
     </Div>
@@ -208,6 +200,10 @@ const Div = styled.div`
   .box {
     width: 50%;
     padding: 1%;
+    margin: 10px;
+    border: 1px solid red;
+    background: #f5f5f5;
+    border-radius: 10px;
   }
 
   .add {
@@ -263,6 +259,20 @@ const Img = styled.div`
   img {
     width: 100%;
     height: 100%;
+  }
+`;
+
+const Empty = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid green;
+  img {
+    width: 15%;
+    margin-bottom: 20px;
   }
 `;
 
