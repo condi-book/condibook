@@ -9,6 +9,10 @@ import { Team } from "./model/team";
 import { BMFavorite } from "./model/bookmarkfavorite";
 import { FDFavorite } from "./model/folderfavorite";
 import { Post } from "./model/post";
+import { Attached } from "./model/attached";
+import { Comment } from "./model/comment";
+import { Like } from "./model/like";
+import { sequelize, Op } from "./schema";
 
 export {
     User,
@@ -22,4 +26,9 @@ export {
     Post,
     BMFavorite,
     FDFavorite,
+    Attached,
+    Comment,
+    Like,
+    sequelize,
+    Op,
 };
