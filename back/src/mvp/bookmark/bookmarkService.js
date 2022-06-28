@@ -20,7 +20,7 @@ class bookmarkService {
                 return getFailMsg({ entity: "폴더", action: "조회" });
             }
             // 존재하는 북마크인지 확인
-            const previousBookmark = await Bookmark.finidAll({
+            const previousBookmark = await Bookmark.findAll({
                 folder_id: folder.id,
                 website_id: website.id,
             });
