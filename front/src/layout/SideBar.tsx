@@ -60,18 +60,20 @@ const SideBar = () => {
 
   return (
     <>
-      <Section>
-        {iconList.map((item: any, index: number) => (
-          <div
-            title={item.title}
-            key={`icon-${index}`}
-            id={item.className}
-            onClick={handleClick}
-          >
-            <span className={item.className}></span>
-          </div>
-        ))}
-      </Section>
+      <Div>
+        <Section>
+          {iconList.map((item: any, index: number) => (
+            <div
+              title={item.title}
+              key={`icon-${index}`}
+              id={item.className}
+              onClick={handleClick}
+            >
+              <span className={item.className}></span>
+            </div>
+          ))}
+        </Section>
+      </Div>
       <GlobalAddBookmarkButton />
       {show && (
         <Profile
@@ -84,16 +86,20 @@ const SideBar = () => {
   );
 };
 
-const Section = styled.section`
+const Div = styled.div`
   height: 100vh;
-  width: 60px;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  border-radius: 20px;
+  width: 70px;
+  padding: 10px;
   position: sticky;
   top: 0;
+`;
+
+const Section = styled.section`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-around;
+  border-radius: 15px;
   background: ${({ theme }) => theme.profileBackground};
   div {
     text-align: center;
