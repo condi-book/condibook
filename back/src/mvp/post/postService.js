@@ -24,7 +24,7 @@ class postService {
             const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
         }
-        const attchedInfo = await Attached.findByPostId({ id });
+        const attchedInfo = await Attached.findByPostId({ post_id: id });
         if (!attchedInfo) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
