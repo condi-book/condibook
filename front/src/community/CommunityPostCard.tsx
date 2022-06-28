@@ -30,7 +30,7 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
       </CardBody>
       <CardFooter>
         <div className="userInfo">
-          <b>{PostPreview.author}</b>
+          <b>{PostPreview.author_name}</b>
         </div>
         <div className="likes">
           <span className="pe-7s-like like"></span>
@@ -47,7 +47,7 @@ const Card = styled.div`
   border-radius: 4px;
   box-shadow: rgb(0 0 0 / 4%) 0px 4px 16px 0px;
   transition: box-shadow 0.25s ease-in 0s, transform 0.25s ease-in 0s;
-  margin: 1rem;
+  margin: 0.25rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -90,7 +90,7 @@ const CardinfoText = styled.div`
   line-height: 1.5;
 `;
 const CardFooter = styled.div`
-  padding: 0.625rem 1rem;
+  padding: 0.2rem 1rem;
   display: flex;
   font-size: 0.75rem;
   line-height: 1.5;

@@ -85,7 +85,7 @@ const CommunityPostWrite = () => {
         };
 
         const res = await Api.post("posts", body);
-        console.log(res);
+        navigate(`/community/${res.data.id}`);
       }
     } catch (err) {
       console.error(err);

@@ -24,11 +24,11 @@ const Div = styled.div`
   flex-direction: row;
   background: #f8f9fc;
   height: 100vh;
-  height: auto;
 
   .community-container {
     margin: auto;
     width: 90vw;
     border: 2px solid red;
+    height: 100%;
   }
 `;
