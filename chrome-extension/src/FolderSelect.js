@@ -27,7 +27,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
   // 제출 이벤트
   const handleClick = () => {
     if (input && inputValue) {
-      fetch("http://localhost:5001/bookmarks", {
+      fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
       });
     } else if (!input && folder) {
       const folderId = folderList.find((item) => item.title === folder).id;
-      fetch("http://localhost:5001/bookmarks", {
+      fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
