@@ -58,6 +58,7 @@ class bookmarkService {
                     user_id: requester.id,
                 });
             bookmarks = bookmarks.map((bookmark) => {
+                delete bookmark["bmfavorites"];
                 return {
                     ...bookmark,
                     favorites: bookmark.favorites === 1 ? true : false,
