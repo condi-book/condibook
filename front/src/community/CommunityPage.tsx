@@ -13,14 +13,20 @@ export interface PostPreview {
   views: number;
 }
 
+type StyleProps = {
+  value: string;
+  sortState: string;
+};
+
 const CommunityPage = () => {
   const navigate = useNavigate();
-  const [sortState, setSortState] = useState<string>("newest");
+  const [sortState, setSortState] = useState<string>("new");
 
   const radios = React.useMemo(
     () => [
-      { name: "최신순", value: "newest" },
-      { name: "인기순", value: "popular" },
+      { name: "최신순", value: "new" },
+      { name: "좋아요순", value: "like" },
+      { name: "조회수순", value: "view" },
     ],
     [],
   );
@@ -55,13 +61,14 @@ const CommunityPage = () => {
               <ButtonGroup>
                 <ButtonWrapper>
                   {radios.map((radio) => (
-                    <button
+                    <SortButton
                       key={`toggle-${radio.value}`}
                       value={radio.value}
                       onClick={handleToggleChange}
+                      sortState={sortState}
                     >
                       {radio.name}
-                    </button>
+                    </SortButton>
                   ))}
                 </ButtonWrapper>
                 <ButtonWrapper>
@@ -133,4 +140,21 @@ const ButtonWrapper = styled.div`
     font-size: 20px;
     font-weight: bold;
   }
+`;
+
+const SortButton = styled.button<StyleProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 0 0.2rem;
+  background: ${(props) =>
+    props.sortState === props.value ? "black" : "white"};
+  color: ${(props) => (props.sortState === props.value ? "white" : "black")};
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
 `;

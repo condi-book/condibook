@@ -14,6 +14,12 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
     useRef(null);
 
+  // observer 초기화할때 전달하는 인자
+  const options = {
+    rootMargin: "20px", // 관찰하는 viewport margin 지정
+    threshold: 1.0, // 관찰 요소와 얼마큼 겹쳤을 때 콜백 수행하도록 지정
+  };
+
   const observer = (node: HTMLDivElement) => {
     if (isLoading) {
       return;
@@ -26,10 +32,14 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
       if (entry.isIntersecting && hasMore) {
         setPageNum((page) => page + 1);
       }
-    });
+    }, options);
 
     node && observerRef.current.observe(node);
   };
+
+  React.useEffect(() => {
+    setPageNum(1);
+  }, [sortState]);
 
   return (
     <Div>

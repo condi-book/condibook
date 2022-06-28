@@ -1,13 +1,32 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-// import * as Api from "../api";
+import * as Api from "../api";
 
 interface Props {
   createModalShow: boolean;
   setCreateModalShow: (show: boolean) => void;
 }
 const TeamCreateModal = ({ createModalShow, setCreateModalShow }: Props) => {
+  const navigate = useNavigate();
+  const [name, setName] = React.useState("");
+  const [explanation, setExplanation] = React.useState("");
+
+  const handleCreateTeam = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      const res = await Api.post("teams", {
+        name,
+        explanation,
+      });
+      console.log(res);
+      setCreateModalShow(false);
+      navigate("/team/1", { replace: true });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <Modal
@@ -21,14 +40,22 @@ const TeamCreateModal = ({ createModalShow, setCreateModalShow }: Props) => {
         </Modal.Header>
         <Modal.Body>
           <InputContainer>
-            <TeamInput type="text" placeholder="팀 이름" />
+            <TeamInput
+              type="text"
+              placeholder="팀 이름"
+              onChange={(e) => setName(e.target.value)}
+            />
           </InputContainer>
           <InputContainer>
-            <TeamInput type="text" placeholder="팀 설명" />
+            <TeamInput
+              type="text"
+              placeholder="팀 설명"
+              onChange={(e) => setExplanation(e.target.value)}
+            />
           </InputContainer>
         </Modal.Body>
         <Modal.Footer>
-          <button>생성</button>
+          <button onClick={handleCreateTeam}>생성</button>
         </Modal.Footer>
       </Modal>
     </>
