@@ -4,6 +4,7 @@ import axios from "axios";
 import { SERVER_URL } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
+import Loading from "layout/Loading";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -14,28 +15,29 @@ const CallBackKakaoLogin = () => {
 
     async function sendCode() {
       const url = SERVER_URL + "/user/login/kakao";
-      return await axios.post(url, { code });
+      const res = await axios.post(url, { code });
+      const user = res.data;
+
+      await sessionStorage.setItem("userToken", user.token);
+      await sessionStorage.setItem("user", JSON.stringify(user));
+      // 쿠키 경로, 유효기간 설정 필수
+      setCookie("userToken", user.token, {
+        path: "/",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      });
+      console.log(user);
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: user,
+      });
+
+      await navigate("/bookmark", { replace: true });
     }
 
-    sendCode()
-      .then((res) => {
-        // email, nickname, image_url, token(JWT) 반환됩니다.
-        const user = res.data;
-        sessionStorage.setItem("userToken", user.token);
-        sessionStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("userToken", user.token);
-        setCookie("userToken", user.token);
-        dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: user,
-        });
-
-        // alert("로그인 성공");
-      })
-      .then(navigate("/bookmark", { replace: true }));
+    sendCode();
   }, []);
 
-  return <div>로그인 처리 중</div>;
+  return <Loading />;
 };
 
 export default CallBackKakaoLogin;

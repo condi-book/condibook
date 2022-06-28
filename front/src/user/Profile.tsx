@@ -1,3 +1,4 @@
+import Logout from "auth/Logout";
 import React, { useState } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
@@ -13,8 +14,9 @@ interface ProfileProps {
     id: number;
   };
   handleApply: (value: any) => void;
+  handleChange: (e: any) => void;
 }
-const Profile = ({ data, handleApply }: ProfileProps) => {
+const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
   const [show, setShow] = useState(false);
 
   const handleClick = () => {
@@ -29,11 +31,13 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
           open={show}
           close={handleClick}
           handleApply={handleApply}
+          handleChange={handleChange}
         />
       )}
       <Div>
         <div className="container">
           <div className="background">
+            <Logout />
             <button onClick={() => setShow((prev) => !prev)}>
               프로필 수정
             </button>
@@ -92,7 +96,7 @@ const Div = styled.div`
   .background {
     width: 100%;
     height: 50%;
-    background: ${({ theme }) => theme.profileBackground};
+    background: ${({ theme }) => theme.middleMainColor};
     text-align: right;
   }
 
@@ -103,6 +107,7 @@ const Div = styled.div`
   img {
     border-radius: 50%;
     margin-right: 10%;
+    width: 30%;
   }
   .top {
     position: absolute;
@@ -120,7 +125,7 @@ const Div = styled.div`
     }
 
     .top-detail {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       text-align: center;
       display: flex;
       flex-direction: column;

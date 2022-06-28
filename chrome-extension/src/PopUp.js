@@ -4,7 +4,7 @@ import FolderSelect from "./FolderSelect";
 const PopUp = ({ handlePage, url, title, folderList, cookie, id }) => {
   // 서비스 페이지 새탭으로 열기
   const handleNavigate = () => {
-    window.open("http://localhost:3000", "newWindow");
+    window.open("http://localhost:3000/bookmark", "newWindow");
   };
 
   return (

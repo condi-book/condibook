@@ -29,7 +29,7 @@ const MypageBookmarkDetail = () => {
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
   const [newLink, setNewLink] = useState("");
-  const [throttle, setThrottle] = useState(false);
+  // const [throttle, setThrottle] = useState(false);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -40,25 +40,37 @@ const MypageBookmarkDetail = () => {
     const [newOrder] = items.splice(source.index, 1);
     items.splice(destination.index, 0, newOrder);
     // 순서 정렬할 때 사용 => API 연결 시
-    console.log(items.map((v) => ({ ...v, bookmark_id: items.indexOf(v) })));
+    console.log(
+      items.map((v) => ({
+        bookmark_id: v.bookmark_id,
+        order_idx: items.indexOf(v) + 1,
+      })),
+    );
+    Api.put(
+      `folders/${params.folderId}/bookmarks/order`,
+      items.map((v) => ({
+        bookmark_id: v.bookmark_id,
+        order_idx: items.indexOf(v) + 1,
+      })),
+    ).then(() => console.log("순서 정렬"));
     setList(items);
-    if (!throttle) {
-      console.log(`throttling`);
-      setThrottle(true);
-      handleThrottle(items);
-    }
+    // if (!throttle) {
+    //   console.log(`throttling`);
+    //   setThrottle(true);
+    //   handleThrottle(items);
+    // }
   };
 
-  const handleThrottle = (items: any) => {
-    if (!throttle) return;
-    if (throttle) {
-      setTimeout(async () => {
-        console.log("업데이트 시작");
-        setThrottle(false);
-        console.log(items);
-      }, 5000);
-    }
-  };
+  // const handleThrottle = (items: any) => {
+  //   if (!throttle) return;
+  //   if (throttle) {
+  //     setTimeout(async () => {
+  //       console.log("업데이트 시작");
+  //       setThrottle(false);
+  //       console.log(items);
+  //     }, 5000);
+  //   }
+  // };
 
   const handleClick = () => {
     setShow((prev) => !prev);
@@ -69,11 +81,29 @@ const MypageBookmarkDetail = () => {
   };
 
   // 링크 추가 함수
-  const handlePushData = (v: any) => {
+  const handlePushData = async (v: any) => {
     const copied = Array.from(list);
-    copied.push(v);
-    setList(copied);
+    const data = { ...v, order_idx: copied.length + 1 };
+    await copied.push(data);
+    await setList(copied);
+    await Api.put(
+      `folders/${params.folderId}/bookmarks/order`,
+      copied.map(({ bookmark_id, order_idx }) => ({
+        bookmark_id,
+        order_idx,
+      })),
+    ).then(() => console.log("순서 정렬"));
     setNewLink("");
+  };
+
+  const handleDelete = (e: any, item: any) => {
+    e.stopPropagation();
+    Api.delete(`bookmarks/${item.bookmark_id}`).then(() => {
+      const copied = Array.from(list);
+      copied.splice(copied.indexOf(item), 1);
+      setList(copied);
+      alert("삭제 성공");
+    });
   };
 
   useEffect(() => {
@@ -143,29 +173,13 @@ const MypageBookmarkDetail = () => {
                                   <div>{`${website.url.substr(0, 20)}...`}</div>
                                 </div>
                                 <div>
-                                  <span
+                                  {/* <span
                                     className="pe-7s-comment icon"
                                     onClick={() => alert("댓글달기")}
-                                  />
+                                  /> */}
                                   <span
                                     className="pe-7s-trash icon"
-                                    onClick={() => {
-                                      Api.delete(
-                                        `bookmarks/${item.bookmark_id}`,
-                                      )
-                                        .then(() => {
-                                          console.log("삭제 성공");
-                                          const copied = list.filter(
-                                            (v) =>
-                                              v.bookmark_id !==
-                                              item.bookmark_id,
-                                          );
-                                          setList(copied);
-                                        })
-                                        .catch((err) =>
-                                          console.log(err.response.data),
-                                        );
-                                    }}
+                                    onClick={(e) => handleDelete(e, item)}
                                   />
                                 </div>
                               </div>

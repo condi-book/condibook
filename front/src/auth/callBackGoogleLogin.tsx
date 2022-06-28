@@ -4,6 +4,7 @@ import axios from "axios";
 import { SERVER_URL, GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
+import Loading from "layout/Loading";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
@@ -30,7 +31,11 @@ const CallBackGoogleLogin = () => {
 
       await sessionStorage.setItem("userToken", user.token);
       await sessionStorage.setItem("user", JSON.stringify(user));
-      setCookie("userToken", user.token);
+      // 쿠키 경로, 유효기간 설정 필수
+      await setCookie("userToken", user.token, {
+        path: "/",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      });
       console.log(user);
       dispatch({
         type: "LOGIN_SUCCESS",
@@ -43,7 +48,7 @@ const CallBackGoogleLogin = () => {
     sendCode();
   }, []);
 
-  return <div>로그인 처리 중</div>;
+  return <Loading />;
 };
 
 export default CallBackGoogleLogin;
