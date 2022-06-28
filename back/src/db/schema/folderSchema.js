@@ -1,12 +1,17 @@
-export default function MembershipModel(sequelize, DataTypes) {
+export default function FolderSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "membership",
+        "folder",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "멤버십 ID",
+                comment: "폴더 ID",
+            },
+            title: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                comment: "폴더 이름",
             },
         },
         {

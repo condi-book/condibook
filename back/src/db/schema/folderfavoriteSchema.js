@@ -1,12 +1,12 @@
-export default function BMFavoriteModel(sequelize, DataTypes) {
+export default function FDFavoriteSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "bmfavorite",
+        "fdfavorite",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "북마크 즐겨찾기 ID",
+                comment: "폴더 즐겨찾기 ID",
             },
         },
         {

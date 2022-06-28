@@ -1,17 +1,22 @@
-export default function BookmarkModel(sequelize, DataTypes) {
+export default function TeamSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "bookmark",
+        "team",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "북마크 ID",
+                comment: "팀 ID",
             },
-            order_idx: {
-                type: DataTypes.INTEGER,
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                comment: "팀 이름",
+            },
+            explanation: {
+                type: DataTypes.TEXT,
                 allowNull: true,
-                comment: "북마크 순서",
+                comment: "팀 설명",
             },
         },
         {

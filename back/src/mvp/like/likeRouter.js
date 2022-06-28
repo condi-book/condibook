@@ -72,7 +72,7 @@ likeRouter.delete("/:post_id", loginRequired, async (req, res, next) => {
             throw new Error(result.errorMessage);
         }
 
-        res.status(204).send(result);
+        res.status(204).json({ mes: "좋아요 삭제 완료!" });
     } catch (error) {
         next(error);
     }
