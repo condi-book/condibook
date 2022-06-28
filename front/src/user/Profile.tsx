@@ -47,7 +47,7 @@ const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
               {/* <span className="pe-7s-user"></span> */}
               <img src={data.image_url} alt="profile-image" />
               <div className="top-detail">
-                <div>{data.nickname}</div>
+                <Font>{data.nickname}</Font>
                 <div>{data.email}</div>
               </div>
             </div>
@@ -59,11 +59,11 @@ const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
             <div className="bottom-box">
               <div>
                 <span>{data.folderCount}</span>
-                <span>폴더</span>
+                <span className="pe-7s-folder"></span>
               </div>
               <div>
                 <span>{data.bookmarkCount}</span>
-                <span>북마크</span>
+                <span className="pe-7s-link"></span>
               </div>
             </div>
           </div>
@@ -141,6 +141,7 @@ const Div = styled.div`
     div {
       width: 80%;
       margin: 20% 0;
+      height: 60%;
     }
   }
   .bottom {
@@ -156,11 +157,28 @@ const Div = styled.div`
       display: flex;
       justify-content: space-around;
 
+      div {
+        display: flex;
+        align-items: center;
+      }
+
       span {
         margin: 0 10px;
         font-size: 1.5rem;
       }
+      .pe-7s-folder,
+      .pe-7s-link {
+        background: ${({ theme }) => theme.profileBackground};
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        font-weight: bold;
+      }
     }
   }
+`;
+
+const Font = styled.div`
+  color: white;
+  font-weight: bold;
 `;
 export default Profile;
