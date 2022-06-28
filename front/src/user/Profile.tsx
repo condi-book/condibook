@@ -96,7 +96,7 @@ const Div = styled.div`
   .background {
     width: 100%;
     height: 50%;
-    background: ${({ theme }) => theme.middleMainColor};
+    background: ${({ theme }) => theme.mainColor};
     text-align: right;
   }
 
