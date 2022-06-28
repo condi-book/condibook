@@ -38,6 +38,8 @@ const AddBookMarkModal = ({
   const [selectedFolderBookmarks, setSelectedFolderBookmarks] = React.useState<
     Bookmark[]
   >([]);
+  const [bookmarkModifiedID, setBookmarkModifiedID] =
+    React.useState<number>(null);
 
   // 드랍메뉴에 보여줄 폴더리스트
   const folderList = (
@@ -60,48 +62,40 @@ const AddBookMarkModal = ({
   };
 
   // 폴더 선택
-  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTab((e.target as HTMLElement).textContent);
-    setShow((prev) => !prev);
-    const selectedFolderID = folders.find(
-      (folder) => folder.title === (e.target as HTMLElement).textContent,
-    ).id;
-    fetchFolderBookmarkData(selectedFolderID);
-  };
+  const handleTab = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      setTab((e.target as HTMLElement).textContent);
+      setShow((prev) => !prev);
+    },
+    [folders],
+  );
 
   // 포스트 추가할 북마크 선택
-  const handleCheckElement = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const checked = e.target.checked;
-      const checkedbookmarkID = e.target.value;
-
+  const onCheckedElement = React.useCallback(
+    (checked: boolean, id: number) => {
       if (checked) {
-        setSelectedFolderBookmarks((current) => {
-          return current.map((bookmark) => {
-            if (bookmark.id === checkedbookmarkID) {
-              bookmark.checked = true;
-              setPostBookmarks([...postBookmarks, bookmark]);
+        setSelectedFolderBookmarks((prev) => {
+          return prev.map((item) => {
+            if (item.id === id) {
+              return { ...item, checked: true };
             }
-            return bookmark;
+            return item;
           });
         });
+        setBookmarkModifiedID(id);
       } else {
         setSelectedFolderBookmarks((current) => {
           return current.map((bookmark) => {
-            if (bookmark.id === checkedbookmarkID) {
-              bookmark.checked = false;
-              setPostBookmarks(
-                postBookmarks.filter(
-                  (bookmark) => bookmark.id !== checkedbookmarkID,
-                ),
-              );
+            if (bookmark.id === id) {
+              return { ...bookmark, checked: false };
             }
             return bookmark;
           });
         });
+        setBookmarkModifiedID(id);
       }
     },
-    [Checkbox, postBookmarks],
+    [selectedFolderBookmarks],
   );
 
   // 북마크 입력
@@ -109,11 +103,15 @@ const AddBookMarkModal = ({
     const selectedFolderID = folders.find((folder) => folder.title === tab).id;
 
     if (e.key === "Enter") {
-      const res = await Api.post(`folders/${selectedFolderID}/bookmarks`, {
-        url: newLink,
-      });
-      console.log(res);
-      setNewLink("");
+      try {
+        await Api.post(`folders/${selectedFolderID}/bookmarks`, {
+          url: newLink,
+        });
+      } catch (e) {
+        alert(`err: ${e}`);
+      }
+
+      fetchFolderBookmarkData(selectedFolderID);
     }
   };
 
@@ -132,41 +130,82 @@ const AddBookMarkModal = ({
     setNewLink("");
   };
 
+  // 완료버튼을 누르면 모달을 닫기
   const handleComplete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsModalShow(false);
   };
 
+  // 폴더 데이터 가져오기
   const fetchFolderData = async () => {
-    const { data } = await Api.get("user/folders");
-    setFolders(data);
+    try {
+      const { data } = await Api.get("user/folders");
+      setFolders(data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
+  // 폴더 북마크 데이터 가져오기
   const fetchFolderBookmarkData = async (selectedFolderID: string) => {
-    const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
-    console.log(data);
-
-    const handledData = data.map((data: any) => {
-      const checkedBookmark = postBookmarks.find(
-        (postBookmark) => postBookmark.id === data.bookmark_id,
-      );
-      return {
-        id: data.bookmark_id,
-        url: data.website.url,
-        checked: checkedBookmark ? true : false,
-      };
-    });
-    setSelectedFolderBookmarks(handledData);
+    try {
+      const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
+      const handledData = data.map((data: any) => {
+        const checkedBookmark = postBookmarks.find(
+          (bookmark) => bookmark.id === data.bookmark_id,
+        );
+        return {
+          id: data.bookmark_id,
+          url: data.website.url,
+          checked: checkedBookmark ? true : false,
+        };
+      });
+      setSelectedFolderBookmarks(handledData);
+    } catch (e) {
+      alert(`err: ${e}`);
+    }
   };
 
+  // 유저의 폴더 데이터 가져오기
   React.useEffect(() => {
-    // 유저 폴더들 불러오기
     fetchFolderData();
   }, []);
 
+  // 유저가 선택한 북마크 데이터 세팅 (warning 방지용)
+  React.useEffect(() => {
+    if (bookmarkModifiedID) {
+      const checkedBookmark = postBookmarks.find(
+        (postBookmark) => postBookmark.id === bookmarkModifiedID,
+      );
+      if (checkedBookmark) {
+        setPostBookmarks((prev) => {
+          return prev.filter((bookmark) => bookmark.id !== bookmarkModifiedID);
+        });
+        setBookmarkModifiedID(null);
+      } else {
+        setPostBookmarks((prev) => {
+          const newBookmark = selectedFolderBookmarks.find(
+            (bookmark) => bookmark.id === bookmarkModifiedID,
+          );
+          return [...prev, newBookmark];
+        });
+        setBookmarkModifiedID(null);
+      }
+    }
+  }, [bookmarkModifiedID, selectedFolderBookmarks, postBookmarks]);
+
   React.useEffect(() => {
     console.log(postBookmarks);
-  }, [postBookmarks]);
+    console.log(selectedFolderBookmarks);
+  }, [postBookmarks, selectedFolderBookmarks]);
+
+  React.useEffect(() => {
+    if (tab !== "폴더를 선택하세요") {
+      fetchFolderBookmarkData(
+        folders.find((folder) => folder.title === tab)?.id,
+      );
+    }
+  }, [tab]);
 
   return (
     <>
@@ -195,21 +234,22 @@ const AddBookMarkModal = ({
           <Col>
             <Row>
               <Col>
-                {tab !== "폴더를 선택하세요" ? (
-                  selectedFolderBookmarks.map((bookmark, idx) => (
-                    <Row key={`postBookmark-${idx}`}>
-                      <Checkbox
-                        type="checkbox"
-                        value={bookmark.id}
-                        onChange={handleCheckElement}
-                        checked={bookmark.checked}
-                      />
-                      <Link onClick={handleClickLink}>{bookmark.url}</Link>
-                    </Row>
-                  ))
-                ) : (
-                  <Row>폴더를 선택해주세요</Row>
-                )}
+                {selectedFolderBookmarks.map((bookmark, idx) => (
+                  <Row key={`postBookmark-${idx}`}>
+                    <Checkbox
+                      type="checkbox"
+                      value={bookmark.id}
+                      onChange={(e) => {
+                        onCheckedElement(
+                          e.target.checked,
+                          parseInt(e.target.value),
+                        );
+                      }}
+                      checked={bookmark.checked}
+                    />
+                    <Link onClick={handleClickLink}>{bookmark.url}</Link>
+                  </Row>
+                ))}
               </Col>
             </Row>
             <Row>
@@ -286,10 +326,7 @@ const Checkbox = styled.input`
   height: 20px;
   margin-right: 10px;
   padding-left: 5px;
-  padding-right: 5px
-  &:checked {
-    background-color: #00bcd4;
-  }
+  padding-right: 5px;
 `;
 
 const Link = styled.div`
