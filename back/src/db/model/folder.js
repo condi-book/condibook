@@ -64,7 +64,7 @@ class Folder {
             ON folder.id = bookmark.folder_id
             LEFT JOIN ${FDFavoriteModel.tableName} AS fdfavorite
             ON folder.id = fdfavorite.folder_id and fdfavorite.user_id = ${user_id}
-            GROUP BY folder.id
+            GROUP BY folder.id, fdfavorite.id
             ORDER BY fdfavorite.createdAt DESC, folder.createdAt ASC;`,
             { type: sequelize.QueryTypes.SELECT },
         );

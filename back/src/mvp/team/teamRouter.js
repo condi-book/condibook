@@ -62,9 +62,9 @@ teamRouter.get("", async (req, res, next) => {
 
 teamRouter.get("/:id/members", async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const team_id = req.params.id;
 
-        const result = await teamService.getTeamMembers({ team_id: id });
+        const result = await teamService.getTeamMembers({ team_id });
         checkErrorMessage(result);
 
         res.status(200).send(result);

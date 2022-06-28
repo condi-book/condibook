@@ -7,15 +7,15 @@ import {
 } from "../schema";
 
 class Membership {
-    static create({ manager_id, team_id }) {
+    static create({ member_id, team_id }) {
         return MembershipModel.create({
-            member_id: manager_id,
+            member_id: member_id,
             team_id: team_id,
         });
     }
-    static findOne(team_id, requester_id) {
+    static findOne({ team_id, member_id }) {
         return MembershipModel.findOne({
-            where: { team_id: team_id, member_id: requester_id },
+            where: { team_id: team_id, member_id: member_id },
         });
     }
     static count({ member_id, team_id }) {
@@ -25,7 +25,7 @@ class Membership {
     }
     static findAllMemberWithUserByTeamId({ team_id }) {
         return sequelize.query(
-            `SELECT user.id, user.nickname, user.email, user.image_url, user.intro
+            `SELECT user.id AS user_id, user.nickname, user.email, user.image_url, user.intro
             FROM (SELECT * FROM ${MembershipModel.tableName} WHERE ${MembershipModel.tableName}.team_id = ${team_id}) as membership
             INNER JOIN ${UserModel.tableName} as user
             ON membership.member_id = user.id`,
@@ -40,7 +40,7 @@ class Membership {
             ON membership.team_id = team.id
             LEFT JOIN ${FolderModel.tableName} as folder
             ON team.id = folder.team_id
-            GROUP BY team.id
+            GROUP BY team.id, membership.createdAt
             ORDER BY membership.createdAt DESC;`,
             { type: sequelize.QueryTypes.SELECT },
         );
