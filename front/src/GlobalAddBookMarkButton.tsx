@@ -22,7 +22,7 @@ const GlobalAddBookmarkButton = () => {
 
 const Div = styled.div`
   position: fixed;
-  bottom: 8%;
+  bottom: 5%;
   right: 3%;
   width: 50px;
   height: 50px;
