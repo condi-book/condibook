@@ -1,17 +1,17 @@
-export default function EmojiSchema(sequelize, DataTypes) {
+export default function CategorySchema(sequelize, DataTypes) {
     return sequelize.define(
-        "emoji",
+        "category",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "이모지 ID",
+                comment: "카테고리 ID",
             },
-            emoji: {
+            category: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                comment: "이모지",
+                comment: "카테고리",
             },
         },
         {

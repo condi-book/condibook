@@ -2,7 +2,7 @@ import { User } from "./model/user";
 import { Bookmark } from "./model/bookmark";
 import { Website } from "./model/website";
 import { Keyword } from "./model/keyword";
-import { Emoji } from "./model/emoji";
+import { Category } from "./model/category";
 import { Folder } from "./model/folder";
 import { Membership } from "./model/membership";
 import { Team } from "./model/team";
@@ -19,7 +19,7 @@ export {
     Bookmark,
     Website,
     Keyword,
-    Emoji,
+    Category,
     Folder,
     Membership,
     Team,
