@@ -6,7 +6,10 @@ class Category {
         return result;
     }
     static findOneById({ category_id }) {
-        return CategoryModel.findOne({ id: category_id });
+        return CategoryModel.findOne({
+            where: { id: category_id },
+            attribute: ["category"],
+        });
     }
 }
 

@@ -18,7 +18,7 @@ class websiteSerivce {
                 // 그대로 유지
                 return {
                     website: previous,
-                    keyword: previous.keywords,
+                    keywords: previous.keywords,
                 };
             } else {
                 //업데이트 하기
@@ -39,7 +39,7 @@ class websiteSerivce {
                 }
                 return {
                     website: updatedWebsite,
-                    keyword: keyword,
+                    keywords: keyword,
                 };
             }
         }
@@ -66,7 +66,7 @@ class websiteSerivce {
 
         return {
             website: newWebsite,
-            keyword: keyword,
+            keywords: keyword,
         };
     }
     static async getWebsite({ id }) {
@@ -76,14 +76,12 @@ class websiteSerivce {
                 const errorMessage = "해당 웹사이트가 없습니다.";
                 return { errorMessage };
             }
-            const keywords = await Keyword.findAllById({ id });
+            const keywords = await Keyword.findOneById({ id });
 
             const category = await Category.findOneById({
                 category_id: info.category_id,
             });
-            if (!category) {
-                throw Error("카테고리 찾기 실패");
-            }
+
             const keyword_list = keywords
                 .map((v) => {
                     return v.keyword.split(",");
@@ -97,7 +95,7 @@ class websiteSerivce {
             }
             return result;
         } catch (e) {
-            throw Error(e);
+            return { errorMessage: e };
         }
     }
     static async getWebsiteList() {

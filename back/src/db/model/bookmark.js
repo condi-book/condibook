@@ -4,6 +4,7 @@ import {
     CategoryModel,
     KeywordModel,
     WebsiteModel,
+    sequelize,
 } from "../schema";
 import { Op } from "../../db";
 
@@ -55,7 +56,11 @@ class Bookmark {
                 },
                 { model: BMFavoriteModel },
             ],
-            order: ["order_idx", "createdAt"],
+            order: [
+                sequelize.fn("isnull", sequelize.col("order_idx")),
+                "order_idx",
+                "createdAt",
+            ],
             nest: true,
             raw: true,
         });
@@ -82,7 +87,11 @@ class Bookmark {
                 },
                 { model: BMFavoriteModel },
             ],
-            order: ["order_idx", "createdAt"],
+            order: [
+                sequelize.fn("isnull", sequelize.col("order_idx")),
+                "order_idx",
+                "createdAt",
+            ],
             nest: true,
             raw: true,
         });
