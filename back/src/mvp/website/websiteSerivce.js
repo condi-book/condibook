@@ -18,7 +18,7 @@ class websiteSerivce {
                 // 그대로 유지
                 return {
                     website: previous,
-                    keyword: previous.keywords,
+                    keywords: previous.keywords,
                 };
             } else {
                 //업데이트 하기
@@ -39,7 +39,7 @@ class websiteSerivce {
                 }
                 return {
                     website: updatedWebsite,
-                    keyword: keyword,
+                    keywords: keyword,
                 };
             }
         }
@@ -66,8 +66,37 @@ class websiteSerivce {
 
         return {
             website: newWebsite,
-            keyword: keyword,
+            keywords: keyword,
         };
+    }
+    static async getAIKeyword({ website_id, title, description, keyword_id }) {
+        let keyword = null;
+
+        try {
+            const res = await axios.post(`${AI_SERVER_URL}/translate`, {
+                title: title,
+                description: description,
+            });
+
+            keyword = res.data.hashtags.join(",");
+
+            if (keyword_id) {
+                this.updateKeyword({
+                    keyword_id: keyword_id,
+                    website_id: website_id,
+                    keyword: keyword,
+                });
+            } else {
+                this.createKeyword({
+                    website_id: website_id,
+                    keyword: keyword,
+                });
+            }
+            return keyword;
+        } catch (e) {
+            console.log("AI 서버 에러❌");
+            return keyword;
+        }
     }
     static async getWebsite({ id }) {
         try {
@@ -76,14 +105,12 @@ class websiteSerivce {
                 const errorMessage = "해당 웹사이트가 없습니다.";
                 return { errorMessage };
             }
-            const keywords = await Keyword.findAllById({ id });
+            const keywords = await Keyword.findOneById({ id });
 
             const category = await Category.findOneById({
                 category_id: info.category_id,
             });
-            if (!category) {
-                throw Error("카테고리 찾기 실패");
-            }
+
             const keyword_list = keywords
                 .map((v) => {
                     return v.keyword.split(",");
@@ -97,7 +124,7 @@ class websiteSerivce {
             }
             return result;
         } catch (e) {
-            throw Error(e);
+            return { errorMessage: e };
         }
     }
     static async getWebsiteList() {
@@ -142,35 +169,6 @@ class websiteSerivce {
         }
 
         return result;
-    }
-    static async getAIKeyword({ website_id, title, description, keyword_id }) {
-        let keyword = null;
-
-        try {
-            const res = await axios.post(`${AI_SERVER_URL}/translate`, {
-                title: title,
-                description: description,
-            });
-
-            keyword = res.data.hashtags.join(",");
-
-            if (keyword_id) {
-                this.updateKeyword({
-                    keyword_id: keyword_id,
-                    website_id: website_id,
-                    keyword: keyword,
-                });
-            } else {
-                this.createKeyword({
-                    website_id: website_id,
-                    keyword: keyword,
-                });
-            }
-            return keyword;
-        } catch (e) {
-            console.log("AI 서버 에러❌");
-            return keyword;
-        }
     }
     static async updateKeyword({ keyword_id, website_id, keyword }) {
         const result = await Keyword.updateOne({

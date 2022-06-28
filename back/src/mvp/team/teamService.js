@@ -221,13 +221,13 @@ class teamService {
             }
             const membership = await Membership.findOne({
                 team_id: team.id,
-                requester_id: requester.id,
+                member_id: member.id,
             });
             if (!membership) {
                 return getFailMsg({ entity: "멤버십", action: "조회" });
             }
             // 회원 삭제
-            const result = await Membership.destroy({
+            const result = await Membership.destroyOne({
                 team_id: team.id,
                 member_id: member.id,
             });

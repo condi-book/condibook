@@ -56,26 +56,45 @@ class Bookmark {
                 },
                 { model: BMFavoriteModel },
             ],
-            order: ["order_idx", "createdAt"],
+            order: [
+                sequelize.fn("isnull", sequelize.col("order_idx")),
+                "order_idx",
+                "createdAt",
+            ],
             nest: true,
             raw: true,
         });
     }
 
-    static findOneWithWebsiteFavoriteByBookmarkId({ bookmark_id, user_id }) {
-        return sequelize.query(
-            `SELECT bookmark.id AS bookmark_id, website.id AS website_id, website.url AS website_url, 
-                website.meta_title, website.meta_description, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
-                , CASE WHEN bmfavorite.id IS NULL THEN false ELSE true END favorites
-            FROM (SELECT * FROM ${BookmarkModel.tableName} WHERE ${BookmarkModel.tableName}.id = ${bookmark_id}) AS bookmark
-                INNER JOIN ${WebsiteModel.tableName} AS website 
-                ON bookmark.website_id = website.id
-                INNER JOIN ${KeywordModel.tableName} AS keyword 
-                ON keyword.website_id = website.id
-                LEFT JOIN ${BMFavoriteModel.tableName} AS bmfavorite
-                ON bookmark.id = bmfavorite.bookmark_id and bmfavorite.user_id = ${user_id};`,
-            { type: sequelize.QueryTypes.SELECT },
-        );
+    static findOneWithWebsiteFavoriteByBookmarkId({ bookmark_id }) {
+        return BookmarkModel.findAll({
+            where: { id: bookmark_id },
+            attributes: [["id", "bookmark_id"], "order_idx"],
+            include: [
+                {
+                    model: WebsiteModel,
+                    attributes: [
+                        ["id", "website_id"],
+                        "url",
+                        "meta_title",
+                        "meta_description",
+                        "img",
+                    ],
+                    include: [
+                        { model: KeywordModel, attributes: ["keyword"] },
+                        { model: CategoryModel, attributes: ["category"] },
+                    ],
+                },
+                { model: BMFavoriteModel },
+            ],
+            order: [
+                sequelize.fn("isnull", sequelize.col("order_idx")),
+                "order_idx",
+                "createdAt",
+            ],
+            nest: true,
+            raw: true,
+        });
     }
 
     static countAllInFolders({ folder_ids }) {

@@ -9,7 +9,7 @@ class Keyword {
         return result;
     }
 
-    static async findAllById({ id }) {
+    static async findOneById({ id }) {
         const result = await KeywordModel.findAll({
             where: { website_id: id },
             attributes: ["keyword", "id"],
