@@ -138,6 +138,7 @@ const Div = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
+      box-shadow: ${({ theme }) => theme.boxShadow};
 
       &:hover {
         background: black;
@@ -159,11 +160,16 @@ const Div = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: box-shadow 0.1s linear;
+
     &:hover {
       cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
     }
     .pe-7s-plus {
-      font-size: 3rem;
+      font-size: 3vw;
+      color: white;
+      font-weight: bold;
     }
   }
   .pe-7s-angle-up,

@@ -5,6 +5,7 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import { BookmarkItem } from "./MyPageBookMark";
 import Modal from "layout/Modal";
 import * as Api from "../api";
+import { Alert, warningAlert } from "layout/Alert";
 
 interface MypageBookmarkCardProps {
   item: {
@@ -97,6 +98,19 @@ const MypageBookmarkCard = ({
     setTitle(e.target.value);
   };
 
+  // 폴더 삭제 로직
+  const folderDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    warningAlert(e, "해당 폴더를 삭제하시겠습니까?", async () => {
+      await handleRemove(e, item);
+      await setView(false);
+      await Alert.fire({
+        icon: "success",
+        title: "폴더 삭제 성공",
+      });
+    });
+  };
+
   return (
     <>
       <Div view={view} item={item} onClick={handleClick}>
@@ -125,13 +139,7 @@ const MypageBookmarkCard = ({
             >
               수정
             </li>
-            <li
-              ref={(el) => (viewMore.current[2] = el)}
-              onClick={(e) => {
-                handleRemove(e, item);
-                setView(false);
-              }}
-            >
+            <li ref={(el) => (viewMore.current[2] = el)} onClick={folderDelete}>
               삭제
             </li>
           </ul>
@@ -190,8 +198,11 @@ const Div = styled.div<StyleProps>`
   flex-direction: column;
   justify-content: space-between;
   border-radius: 7px;
+  transition: box-shadow 0.1s linear;
   &:hover {
     cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
+    
   }
 
   .top-container {
@@ -247,10 +258,10 @@ const Div = styled.div<StyleProps>`
   .dropdown {
     display: ${({ view }) => (view ? "block" : "none")};
     position: absolute;
-    margin-left: 12.5%;
+    margin-left: 11%;
     background-color: #f9f9f9;
     min-width: 60px;
-    padding: 8px;
+    padding: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     list-style-type: none;
 
@@ -259,10 +270,8 @@ const Div = styled.div<StyleProps>`
       text-align: center;
     }
     li:hover {
-      background: black;
+      background: ${({ theme }) => theme.profileBackground};
       color: white;
-      border-radius: 2px;
-      font-weight: bold;
       cursor: pointer;
     }
   }

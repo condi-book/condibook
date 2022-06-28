@@ -12,6 +12,8 @@ const middleMainColor: String =
 const subBlackColor: String = "#111215";
 const subRedColor: String = "#f45162";
 const background: String = "#eff6fc";
+const boxShadow: String =
+  "0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2)";
 const theme = {
   mainColor,
   profileBackground,
@@ -21,6 +23,7 @@ const theme = {
   lightMainColor,
   middleMainColor,
   background,
+  boxShadow,
 };
 
 export default theme;
