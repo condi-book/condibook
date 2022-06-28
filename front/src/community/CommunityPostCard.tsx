@@ -11,8 +11,7 @@ interface CommunityPostCardProps {
 
 const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
   const navigate = useNavigate();
-  const URL = "/static/img/dog.jpg";
-  const createdTime = CalcDate(PostPreview.created_at);
+  const createdTime = CalcDate(new Date(PostPreview.createdAt));
 
   //이후에 버튼이 아닌 title과 description 클릭시 이동으로 변경
   const handleDetailClick = React.useCallback((event: React.MouseEvent) => {
@@ -23,12 +22,8 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
 
   return (
     <Card onClick={handleDetailClick}>
-      <CardHeader>
-        <Img src={URL} alt={`previewImg-${PostPreview.id}`} />
-      </CardHeader>
       <CardBody>
         <CardTitle>{PostPreview.title}</CardTitle>
-        <CardText>{PostPreview.content}</CardText>
         <CardinfoText>
           <span>{createdTime}</span>
         </CardinfoText>
@@ -39,7 +34,7 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
         </div>
         <div className="likes">
           <span className="pe-7s-like like"></span>
-          <p>100</p>
+          <p>{PostPreview.like_counts}</p>
         </div>
       </CardFooter>
     </Card>
@@ -63,22 +58,6 @@ const Card = styled.div`
   }
 `;
 
-const CardHeader = styled.div`
-  position: relative;
-  align-items: center;
-  width: 120px;
-  height: 120px;
-  overflow: hidden;
-  align-self: center;
-`;
-
-const Img = styled.img`
-  position: absolute;
-  left: 25px
-  width: 100%;
-  height: 100%;
-  display: block;
-`;
 const CardBody = styled.div`
   padding: 1rem;
   display: flex;
@@ -95,17 +74,17 @@ const CardTitle = styled.h4`
   overflow: hidden;
   font-weight: bold;
 `;
-const CardText = styled.p`
-  display: block;
-  margin: 0px 0px 1.5rem;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  height: 3.9375rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
+// const CardText = styled.p`
+//   display: block;
+//   margin: 0px 0px 1.5rem;
+//   word-break: break-word;
+//   overflow-wrap: break-word;
+//   font-size: 0.875rem;
+//   line-height: 1.5;
+//   height: 3.9375rem;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// `;
 const CardinfoText = styled.div`
   font-size: 0.75rem;
   line-height: 1.5;

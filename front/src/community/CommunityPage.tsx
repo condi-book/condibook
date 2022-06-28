@@ -7,9 +7,11 @@ import CommunityPostList from "./CommunityPostList";
 export interface PostPreview {
   id: string;
   author: string;
-  created_at: Date;
+  author_name: string;
+  createdAt: Date;
   title: string;
-  content: string;
+  like_counts: number;
+  updatedAt: Date;
   views: number;
 }
 
@@ -121,7 +123,8 @@ const ButtonGroup = styled.div`
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
-  position: relative;
+  position: sticky;
+  top: 0;
   justify-content: space-between;
 `;
 

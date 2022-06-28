@@ -7,18 +7,35 @@ import { PostPreview } from "./CommunityPage";
 interface CommunityPostListProps {
   sortState: string;
 }
+// class PostPreviewModel implements PostPreview {
+//   id: string;
+//   author: string;
+//   author_name: string;
+//   createdAt: Date;
+//   title: string;
+//   like_counts: number;
+//   updatedAt: Date;
+//   views: number;
+
+//   constructor() {
+//     this.id = `${Math.floor(Math.random() * 10000)}`;
+//     this.author = "";
+//     this.createdAt = new Date();
+//     this.title = "";
+//     this.views = Math.floor(Math.random() * 10);
+//   }
+// }
+
+// const loadingData: PostPreview[] = Array(20)
+//   .fill(undefined)
+//   .map(() => new PostPreviewModel());
 
 const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
   const [pageNum, setPageNum] = useState(1);
-  const { postsForScroll, hasMore, isLoading } = useFetch(pageNum, sortState);
+  const [posts, setPosts] = useState<PostPreview[]>([]);
+  const { hasMore, isLoading } = useFetch(pageNum, sortState, setPosts);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
     useRef(null);
-
-  // observer 초기화할때 전달하는 인자
-  const options = {
-    rootMargin: "20px", // 관찰하는 viewport margin 지정
-    threshold: 1.0, // 관찰 요소와 얼마큼 겹쳤을 때 콜백 수행하도록 지정
-  };
 
   const observer = (node: HTMLDivElement) => {
     if (isLoading) {
@@ -32,25 +49,39 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
       if (entry.isIntersecting && hasMore) {
         setPageNum((page) => page + 1);
       }
-    }, options);
+    });
 
     node && observerRef.current.observe(node);
   };
 
-  React.useEffect(() => {
+  const handleChangeSort = () => {
     setPageNum(1);
+    setPosts([]);
+  };
+
+  React.useEffect(() => {
+    handleChangeSort();
   }, [sortState]);
 
   return (
     <Div>
       <Row>
-        {postsForScroll.map((PostPreview: PostPreview) => (
-          <Col key={`preview-${PostPreview.id}`}>
+        {posts.map((PostPreview: PostPreview) => (
+          <Col key={`preview-${sortState}-${PostPreview.id}`}>
             <CommunityPostCard PostPreview={PostPreview} />
           </Col>
         ))}
         <div ref={observer} />
-        <>{isLoading && <p>Loading...</p>}</>
+        <>
+          {isLoading && (
+            // loadingData.map((PostPreview: PostPreview) => (
+            //   <Col key={`preview-${sortState}-${PostPreview.id}`}>
+            //     <CommunityPostCard PostPreview={PostPreview} />
+            //   </Col>
+            // ))}
+            <div>loading</div>
+          )}
+        </>
       </Row>
     </Div>
   );
