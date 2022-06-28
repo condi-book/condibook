@@ -76,6 +76,22 @@ class Post {
 
         return result;
     }
+    static async updateLike({ id }) {
+        const result = await PostModel.increment(
+            { like_counts: 1 },
+            { where: { id } },
+        );
+
+        return result;
+    }
+    static async decreaseLike({ id }) {
+        const result = await PostModel.increment(
+            { like_counts: -1 },
+            { where: { id } },
+        );
+
+        return result;
+    }
 
     static async deleteOne({ id }) {
         const result = await PostModel.destroy({
