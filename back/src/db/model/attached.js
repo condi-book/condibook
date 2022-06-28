@@ -9,9 +9,9 @@ class Attached {
         return result;
     }
 
-    static async findByPostId({ id }) {
+    static async findByPostId({ post_id }) {
         const result = await AttachedModel.findAll({
-            where: { post_id: id },
+            where: { post_id: post_id },
             include: [
                 { model: BookmarkModel, include: [{ model: WebsiteModel }] },
             ],
@@ -26,6 +26,7 @@ class Attached {
         });
         return result;
     }
+
     static async deleteOne({ post_id, bookmark_id }) {
         const result = await AttachedModel.destroy({
             where: { post_id, bookmark_id },

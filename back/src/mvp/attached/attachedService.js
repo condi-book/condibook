@@ -23,11 +23,11 @@ class attachedService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        const result = await Attached.findByPostId({ id: post_id });
+        const result = await Attached.findByPostId({ post_id });
         return result;
     }
     static async getAttached({ post_id }) {
-        const result = await Attached.findByPostId({ id: post_id });
+        const result = await Attached.findByPostId({ post_id });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -44,7 +44,7 @@ class attachedService {
             post_id,
             bookmark_id,
         });
-        const result = await Attached.findByPostId({ id: post_id });
+        const result = await Attached.findByPostId({ post_id });
         return result;
     }
     static async deleteOneAttached({ post_id, bookmark_id }) {

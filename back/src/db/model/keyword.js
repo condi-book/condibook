@@ -18,6 +18,16 @@ class Keyword {
         });
         return result;
     }
-}
 
+    static async updateOne({ keyword, website_id, keyword_id }) {
+        const result = await KeywordModel.update(
+            {
+                keyword,
+                website_id,
+            },
+            { where: { id: keyword_id } },
+        );
+        return result;
+    }
+}
 export { Keyword };
