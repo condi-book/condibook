@@ -1,4 +1,4 @@
-import { LikeModel, Op, PostModel } from "../schema";
+import { LikeModel, PostModel } from "../schema";
 
 class Like {
     static async create({ user_id, postInfo_id }) {

@@ -10,7 +10,6 @@ commentRouter.post("/:post_id", loginRequired, async (req, res, next) => {
         const user_id = req.current.user_id;
         const post_id = req.params.post_id; // 게시판 아이디
 
-        console.log(post_id, user_id, content);
         const result = await commentSerivce.createComment({
             content,
             user_id,
@@ -84,7 +83,7 @@ commentRouter.delete("/:id", loginRequired, async (req, res, next) => {
             throw new Error(result.errorMessage);
         }
 
-        res.status(204).send(result);
+        res.status(204).json({ mse: "댓글 삭제 완료!" });
     } catch (error) {
         next(error);
     }
