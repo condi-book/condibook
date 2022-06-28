@@ -55,7 +55,7 @@ const CommunityPostDetail = () => {
   const [fetchData, setFetchData] = React.useState<FetchData>(null); // 디테일 데이터
   const [isfetched, setIsfetched] = React.useState<boolean>(false); // 정보를 받아왔는지
   const [list, setList] = React.useState<Bookmark[]>(null); // 북마크 리스트
-  const [liked, setLiked] = React.useState<boolean>(true); // 보고있는 유저가 좋아요를 눌렀는지
+  const [liked, setLiked] = React.useState<boolean>(false); // 보고있는 유저가 좋아요를 눌렀는지
   const [link, setLink] = React.useState(""); // iframe에 넣을 link
   const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
   const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
