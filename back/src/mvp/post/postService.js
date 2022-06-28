@@ -2,9 +2,7 @@ import { Post, User, Bookmark, Website, Attached } from "../../db";
 
 class postService {
     static async createPost({ toCreate, user_id }) {
-        const title = toCreate.title;
-        const content = toCreate.content;
-        const views = toCreate.views;
+        const { title, content, views } = toCreate;
         const userInfo = await User.findOneById({ user_id });
         const nickname = userInfo.nickname;
         const result = await Post.create({

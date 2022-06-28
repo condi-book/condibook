@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Website } from "../../db";
 import { Keyword } from "../../db";
+import { Emoji } from "../../db";
 import { sortKeyword } from "../../util/AiFunction/sortKeyword";
 import { parsers } from "../../util/parser/parser";
 
@@ -69,12 +70,7 @@ class websiteSerivce {
         }
         const keywords = await Keyword.findAllById({ id });
 
-        const emojis = await Emoji.findAll({
-            where: { website_id: id },
-            attributes: ["emoji", "id"],
-            raw: true,
-            nest: true,
-        });
+        const emojis = await Emoji.findAllById({ id });
         const keyword_list = keywords
             .map((v) => {
                 return v.keyword.split(",");
@@ -92,10 +88,7 @@ class websiteSerivce {
         return result;
     }
     static async getWebsiteList() {
-        const result = await Website.findAll({
-            raw: true,
-            nest: true,
-        });
+        const result = await Website.findAllList();
         // const result = await sequelize.query('SELECT * FROM condibook.websites;');
         console.log(result);
         if (!result) {
@@ -105,33 +98,17 @@ class websiteSerivce {
         return result;
     }
     static async updateWebsite({ id, toUpdate }) {
-        const check = await Website.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const check = await Website.findOneById({ id });
         if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        await Website.update(toUpdate, {
-            where: { id },
-            raw: true,
-            nest: true,
-        });
-        const result = await Website.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        await Website.updateOne({ id }, toUpdate);
+        const result = await Website.findOneById({ id });
         return result;
     }
     static async deleteWebsite({ id }) {
-        const result = await Website.destroy({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const result = await Website.deleteOne({ id });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -145,10 +122,7 @@ class websiteSerivce {
         return result;
     }
     static async createKeyword({ website_id, keyword }) {
-        const result = await Keyword.create({
-            keyword,
-            website_id,
-        });
+        const result = await Keyword.create({ website_id, keyword });
         if (!result) {
             const errorMessage = "해당 키워드가 없습니다.";
             return { errorMessage };
@@ -157,10 +131,7 @@ class websiteSerivce {
         return result;
     }
     static async createEmoji({ website_id, ai_emoji }) {
-        const result = await Emoji.create({
-            emoji: ai_emoji,
-            website_id,
-        });
+        const result = await Emoji.create({ website_id, ai_emoji });
         if (!result) {
             const errorMessage = "해당 이모지가 없습니다.";
             return { errorMessage };
