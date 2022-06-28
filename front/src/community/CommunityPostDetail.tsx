@@ -1,185 +1,325 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Viewer } from "@toast-ui/react-editor";
 
-import SideBar from "../layout/SideBar";
 import CalcDate from "./tools/CalcDate";
+import CommunityPostComments from "./CommunityPostComments";
 
-// import * from "../Api";
-const dummyData = {
-  title: "Lorem Ipsum",
-  author: "hayeong",
-  content:
-    "**Lorem ipsum dolor sit amet**, consectetur adipiscing elit. Aliquam lobortis, lorem at vehicula faucibus, ligula enim aliquam nibh, non imperdiet eros risus eu dui. Nulla sodales suscipit finibus. Maecenas ornare tempus auctor. Aenean blandit dui risus, pharetra lacinia nunc luctus et. Integer molestie scelerisque est, in vestibulum elit pellentesque at. Praesent suscipit vehicula auctor. In vitae justo eu ex vestibulum maximus. Ut accumsan lacus eget tellus iaculis dapibus.",
-  views: "123",
-  created_at: new Date(),
-  updated_at: new Date(),
-};
+import * as Api from "../api";
+
+export interface FetchData {
+  author: string;
+  author_name: string;
+  title: string;
+  content: string;
+  views: number;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  like_counts: number;
+}
 
 interface Bookmark {
-  id: string;
-  title: string;
-  image: string;
-  content: string;
-  link: string;
+  id: number;
+  meta_title: string;
+  img: string;
+  meta_description: string;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
+  checked: boolean;
 }
-const bookmarkList: Bookmark[] = [
-  {
-    id: "1",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://tychejin.tistory.com/231",
-  },
-  {
-    id: "2",
-    title: "okayoon",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://okayoon.tistory.com/entry/%EC%95%84%EC%9D%B4%ED%94%84%EB%A0%88%EC%9E%84iframe",
-  },
-  {
-    id: "3",
-    title: "nykim",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "https://nykim.work/107",
-  },
-  {
-    id: "5",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-  {
-    id: "6",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-  {
-    id: "7",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-  {
-    id: "8",
-    title: "티스토리",
-    image: "",
-    content: "내용을 입력해주세요",
-    link: "link4",
-  },
-];
 
+export interface Comment {
+  id: string;
+  content: string;
+  author: string;
+  author_name: string;
+  board_id: string;
+  updatedAt: Date;
+  createdAt: Date;
+}
+
+type postDetailRouteParams = {
+  postId: string;
+};
 const CommunityPostDetail = () => {
-  const params = useParams();
-  const [list, setList] = React.useState<Bookmark[]>([]);
-  const [link, setLink] = React.useState("");
-  const [like, setLike] = React.useState(false);
-  const [likeCount, setLikeCount] = React.useState(0);
+  const navigate = useNavigate();
+  const { postId } = useParams<
+    keyof postDetailRouteParams
+  >() as postDetailRouteParams; // 이렇게 하면 postId를 쿼리로 받을 수 있다.
+  const viewerRef = React.useRef<Viewer>(null); // toast ui viewer ref
+  const iframeRef = React.useRef<HTMLIFrameElement>(null); // iframe ref
+  const [fetchData, setFetchData] = React.useState<FetchData>(null); // 디테일 데이터
+  const [isfetched, setIsfetched] = React.useState<boolean>(false); // 정보를 받아왔는지
+  const [list, setList] = React.useState<Bookmark[]>(null); // 북마크 리스트
+  const [liked, setLiked] = React.useState<boolean>(true); // 보고있는 유저가 좋아요를 눌렀는지
+  const [link, setLink] = React.useState(""); // iframe에 넣을 link
+  const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
+  const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
+  const [comments, setComments] = React.useState<Comment[]>([]); // 댓글 리스트
+  const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
 
-  // 시간 계산 함수
-  const createdTime = CalcDate(dummyData.created_at);
+  // 시간 계산하여 문자열 리턴해주는 함수
+  const createdTime = React.useCallback(CalcDate, [fetchData]);
+  const updatedTime = React.useCallback(
+    (createdDate: Date, updatedDate: Date) => {
+      let resultText = "";
+      if (createdDate === undefined || updatedDate === undefined) {
+        return resultText;
+      }
+      if (createdDate?.getTime() === updatedDate?.getTime()) {
+        return resultText;
+      } else {
+        resultText = "(" + CalcDate(updatedDate) + " 수정 됨)";
+        return resultText;
+      }
+    },
+    [fetchData],
+  );
 
-  const updatedTime = (createdDate: Date, updatedDate: Date) => {
-    let resultText = "";
-    if (createdDate.getTime() === updatedDate.getTime()) {
-      return resultText;
-    } else {
-      resultText = "(" + CalcDate(updatedDate) + "수정 됨)";
-      return resultText;
+  // 좋아요 버튼 클릭 시 이벤트
+  const handleLikeClick = async () => {
+    try {
+      const body = {};
+      if (liked) {
+        const res = await Api.delete(`likes`, postId);
+        console.log(res);
+        setLiked(false);
+        setLikeCount(likeCount - 1);
+      } else {
+        const res = await Api.post(`likes/${postId}`, body);
+        setLiked(true);
+        setLikeCount(likeCount + 1);
+        console.log(res);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
-  const handleLikeClick = () => {
-    setLike(!like);
-    like ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
+  // 게시글 수정 이벤트
+  const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    navigate(`/community/write?id=${postId}`);
   };
 
-  // // 파라미터로 게시글 내용 받아오는 함수
-  // const fetchPostDetail = async () => {
-  //   try {
-  //     const res = await Api.get('community', params)
-  //     const {title, author, content, view, created_at, updated_at} = res.data
-  //
+  const handleDeleteClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      if (window.confirm("정말로 삭제하시겠습니까?")) {
+        await Api.delete(`posts/${postId}`);
+        navigate("/community");
+      } else {
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
+  // 댓글 변경 이벤트
+  const handleCommentChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setComment(event.target.value);
+  };
+
+  const handleClickBookmark = async (url: string) => {
+    setLink(url);
+  };
+
+  const handleCommentPostClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    setComments([
+      ...comments,
+      {
+        id: "1",
+        content: comment,
+        author: "hayeong",
+        author_name: "하영",
+        board_id: postId,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      },
+    ]);
+    setComment("");
+  };
+
+  // 게시글 내용 받아오는 함수
+  React.useEffect(() => {
+    const fetchPostDetail = async () => {
+      try {
+        const res = await Api.get(`posts/${postId}`);
+        const {
+          author,
+          author_name,
+          content,
+          createdAt,
+          updatedAt,
+          id,
+          title,
+          like_counts,
+          views,
+        }: FetchData = res.data.postInfo;
+
+        const convertFromStringToDate = (responseDate: string) => {
+          let dateComponents = responseDate.split("T");
+          let datePieces = dateComponents[0].split("-");
+          let timePieces = dateComponents[1].split(":");
+          let date = new Date(
+            parseInt(datePieces[0]),
+            parseInt(datePieces[1]) - 1,
+            parseInt(datePieces[2]),
+            parseInt(timePieces[0]),
+            parseInt(timePieces[1]),
+            parseInt(timePieces[2]),
+          );
+          return date;
+        };
+
+        const paredCreatedAt = convertFromStringToDate(createdAt.toString());
+        const paredUpdatedAt = convertFromStringToDate(updatedAt.toString());
+
+        setFetchData({
+          author,
+          author_name,
+          content,
+          createdAt: paredCreatedAt,
+          updatedAt: paredUpdatedAt,
+          id,
+          title,
+          like_counts,
+          views,
+        });
+        viewerRef.current?.getInstance().setMarkdown(content); // 받아온 값으로 뷰어 세팅
+        setIsfetched(true);
+        setLikeCount(like_counts);
+
+        const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
+        setList(() => {
+          if (bookmarkData === undefined) {
+            return;
+          }
+          return bookmarkData.map((bookmark) => {
+            return { ...bookmark, checked: true };
+          });
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPostDetail();
+  }, []);
 
   React.useEffect(() => {
-    console.log("params", params);
-    // fetchPostDetail()
-    setList(bookmarkList);
+    iframeRef.current.onload = () => {
+      try {
+        console.log(iframeRef.current.contentWindow["0"]);
+      } catch (e) {
+        if (window.confirm("열지 못하는 페이지입니다. 새탭에서 여시겠습니까")) {
+          setNewWindowOpen(!newWindowOpen);
+        } else {
+          setLink("");
+        }
+      }
+    };
   }, []);
+
+  React.useEffect(() => {
+    if (newWindowOpen) {
+      window.open(link, "_blank");
+      setNewWindowOpen(false);
+    }
+  }, [newWindowOpen]);
 
   return (
     <Div>
-      <div className="sidebarWrapper">
-        <SideBar />
-      </div>
       <div className="postWrapper">
         <div className="detailWrapper">
           <HeaderContainer>
             <TitleContainer>
-              <H1>{dummyData.title}</H1>
+              <H1>{fetchData?.title}</H1>
               <div className="likeWrapper" onClick={handleLikeClick}>
-                <LikeButton className="pe-7s-like" like={like} />
+                <LikeButton className="pe-7s-like" like={liked} />
                 <p className="likeCount">{likeCount}</p>
               </div>
             </TitleContainer>
 
             <ButtonContainer>
-              <button className="hoverButton">수정</button>
-              <button className="hoverButton">삭제</button>
+              <button className="hoverButton" onClick={handleEditClick}>
+                수정
+              </button>
+              <button className="hoverButton" onClick={handleDeleteClick}>
+                삭제
+              </button>
             </ButtonContainer>
             <InfoContainer>
               <div>
-                <span className="username">{dummyData.author}</span>
+                <span className="username">{fetchData?.author_name}</span>
                 <span className="separator">·</span>
-                <span>{createdTime}</span>
+                <span>{createdTime(fetchData?.createdAt)}</span>
                 <span className="separator">·</span>
+
                 <span>
-                  {updatedTime(dummyData.created_at, dummyData.updated_at)}
+                  {updatedTime(fetchData?.createdAt, fetchData?.updatedAt)}
                 </span>
+                <span className="separator">·</span>
+                <span>조회수 {fetchData?.views}</span>
               </div>
             </InfoContainer>
           </HeaderContainer>
           <BookmarkContainer>
             <h4 className="title">북마크</h4>
             <Ol>
-              {list?.length === 0 ? (
+              {list === null || list?.length === 0 ? (
                 <p>북마크 없음</p>
               ) : (
-                list.map((item) => {
+                list?.map((item) => {
                   return (
-                    <li
-                      key={`bookmark-${item.id}`}
-                      onClick={() => setLink(item.link)}
-                    >
-                      <span className="pointer">{item.title}</span>
+                    <li key={`bookmark-${item.id}`}>
+                      <span
+                        className="pointer"
+                        onClick={() => handleClickBookmark(item.url)}
+                      >
+                        {item.meta_title ?? item.meta_description ?? item.url}
+                      </span>
                     </li>
                   );
                 })
               )}
             </Ol>
           </BookmarkContainer>
-          <div>
-            <Viewer initialValue={dummyData.content} />
-          </div>
-          <div>
-            <span>댓글</span>
-          </div>
+          {isfetched ? (
+            <Viewer initialValue={fetchData.content} />
+          ) : (
+            <div>로딩중...</div>
+          )}
+          <CommentCount>{`${comments.length}개의 댓글`}</CommentCount>
+          <CommentInput
+            placeholder="댓글을 입력하세요"
+            value={comment}
+            onChange={handleCommentChange}
+          ></CommentInput>
+          <ButtonContainer>
+            <button className="hoverButton" onClick={handleCommentPostClick}>
+              댓글 등록
+            </button>
+          </ButtonContainer>
+          <CommunityPostComments comments={comments} />
         </div>
         <div className="contentWrapper">
-          <iframe src={link} width="100%" height="100%"></iframe>
+          <iframe
+            src={link}
+            width="100%"
+            height="100%"
+            ref={iframeRef}
+            loading="lazy"
+          ></iframe>
         </div>
       </div>
     </Div>
@@ -192,31 +332,30 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
+  width: 100%;
+  height: 100%;
 
   .sidebarWrapper {
     position: fixed;
   }
   .postWrapper {
-    margin-left: 130px;
     width: 100%;
     display: flex;
     flex-direction: row;
     border: 2px solid black;
-    height: 100vh;
   }
   .detailWrapper {
     min-width: 0px;
-    height: 100%;
     width: 50%;
     position: relative;
     padding: 1%;
     display: flex;
     flex-direction: column;
+    // justify-content: center;
     border: 2px solid blue;
   }
   .contentWrapper {
     min-width: 0px;
-    height: 100%;
     width: 50%;
     padding: 1%;
     display: block;
@@ -269,6 +408,8 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
   margin-bottom: -2rem;
   z-index: 5;
+  width: 100%;
+  position: relative;
 
   .hoverButton {
     height: 100%;
@@ -329,4 +470,24 @@ const Ol = styled.ol`
   .pointer {
     cursor: pointer;
   }
+`;
+
+const CommentCount = styled.h4`
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const CommentInput = styled.textarea`
+  resize: none;
+  padding: 1rem 1rem 1.5rem;
+  outline: none;
+  border: 1px solid black;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  border-radius: 4px;
+  min-height: 6.125rem;
+  font-size: 1rem;
+  line-height: 1.75;
 `;

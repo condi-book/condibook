@@ -1,4 +1,7 @@
 const CalcDate = (date: Date) => {
+  if (!date) {
+    return null;
+  }
   const seconds = 1;
   const minute = seconds * 60;
   const hour = minute * 60;

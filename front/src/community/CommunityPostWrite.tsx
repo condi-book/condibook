@@ -7,18 +7,20 @@ import styled from "styled-components";
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
-const dummyData = {
-  title: "무야호",
-  author: "hayeong",
-  content:
-    "무야호는 2021년 3~5월부터 대한민국에서 유행하기 시작한 인터넷 밈이다. MBC 무한도전의 2011년 방영분에서 연출된 미국 알래스카 교민 할아버지의 함성에서 유래하였다.",
-  views: "123",
-  created_at: new Date(),
-  updated_at: new Date(),
-};
+import AddBookMarkModal from "./AddBookMarkModal";
+// import FetchData from "./CommunityPostDetail";
+import * as Api from "../api";
+
+export interface Bookmark {
+  id: number;
+  url: string;
+  checked: boolean;
+}
 
 // eslint-disable-next-line no-undef
 window.Buffer = window.Buffer || require("buffer").Buffer;
+
+const button = document.createElement("span");
 
 const CommunityPostWrite = () => {
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ const CommunityPostWrite = () => {
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<string | undefined>();
   const [isModifying, setIsModifying] = React.useState(false); // 새글 작성, 수정인지 구분
+  const [isModalShow, setIsModalShow] = React.useState(false); // 북마크 추가 모달
+  const [postBookmarks, setPostBookmarks] = React.useState<Bookmark[]>([]); // 첨부된 북마크 목록
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -53,31 +57,93 @@ const CommunityPostWrite = () => {
     }
   };
 
-  const handlePostButtonClick = (
+  // 글쓰기
+  const handlePostButtonClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
 
-    console.log(title, content); // 글 보내기
+    const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
+
+    console.log(
+      `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
+    );
+
+    try {
+      if (isModifying) {
+        const body = {
+          title,
+          content,
+        };
+        const res = await Api.put(`posts/${postId}`, body);
+        console.log(res);
+      } else {
+        const body = {
+          title,
+          content,
+          bookmark_id,
+        };
+
+        const res = await Api.post("posts", body);
+        console.log(res);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  // const fetchPostContent = async () => {
-  //   try {
-  //     const res = await Api.get("community", postId)
-  //     const fetchedItem = res.data;
+  const handlePutButtonClick = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
 
-  //     setTitle(fetchedItem.title)
-  //     setContent(fetchedItem.content)
-  //   } catch (err) {
-  //     alert('error', err)
-  //     navigate(-1)
-  //   }
-  // }
+    const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
+
+    console.log(
+      `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
+    );
+
+    try {
+      const body = {
+        title,
+        content,
+      };
+      const res = await Api.put(`posts/${postId}`, body);
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchPostContent = async () => {
+    try {
+      const res = await Api.get(`posts/${postId}`);
+      console.log(res);
+      const fetchedItem = res.data.postInfo;
+
+      setTitle(fetchedItem?.title);
+      setContent(fetchedItem?.content);
+      editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
+
+      const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
+      setPostBookmarks(
+        bookmarkData.map((bookmark) => {
+          return {
+            id: bookmark.id,
+            url: bookmark.url,
+            checked: true,
+          };
+        }),
+      );
+    } catch (err) {
+      console.log(err);
+      navigate(-1);
+    }
+  };
 
   // 에디터에 북마크 추가 버튼을 생성하는 함수 이후에 모달 창으로 추가 할 수 있도록 한다.
   // 모달창은 isModalShow state Hooks에 의해 열고 닫혀지고 체크박스안에 체크된 북마크를 추가할 수 있는 리스트를 보여주며 useRef로 렌더링 최적화한다.
   const createCustomButton = () => {
-    const button = document.createElement("span");
     button.textContent = "북마크 추가";
     button.style.cursor = "pointer";
     button.style.background =
@@ -85,18 +151,17 @@ const CommunityPostWrite = () => {
     button.style.color = "transparent";
     button.style.webkitBackgroundClip = "text";
 
-    // setIsModalShow(true);
-
     return button;
+  };
+
+  const ModalShow = () => {
+    setIsModalShow(true);
   };
 
   React.useEffect(() => {
     if (postId !== null) {
-      // fetchPostContent()
       setIsModifying(true);
-      setTitle(dummyData.title);
-      setContent(dummyData.content);
-      editorRef.current?.getInstance().setMarkdown(dummyData.content);
+      fetchPostContent();
     }
   }, []);
 
@@ -121,6 +186,16 @@ const CommunityPostWrite = () => {
         });
     }
   }, []);
+
+  React.useEffect(() => {
+    button.addEventListener("click", ModalShow);
+  }, []);
+
+  React.useEffect(() => {
+    button.removeEventListener("click", ModalShow);
+
+    return button.addEventListener("click", ModalShow);
+  }, [AddBookMarkModal]);
 
   return (
     <Container>
@@ -150,18 +225,20 @@ const CommunityPostWrite = () => {
                 el: createCustomButton(),
                 tooltip: "bookmark add",
                 className: "last",
-                // popup: {
-                //   className: "last",
-                //   body: container,
-                //   style: {},
-                // },
               },
             ],
           ]}
           language="ko-KR"
           onChange={handleContentChange}
           initialValue={content}
+          placeholder="내용을 입력하세요"
         ></ToastEditor>
+        <AddBookMarkModal
+          isModalShow={isModalShow}
+          setIsModalShow={setIsModalShow}
+          postBookmarks={postBookmarks}
+          setPostBookmarks={setPostBookmarks}
+        />
       </ItemContainer>
       <ItemContainer>
         <ButtonContainer>
@@ -169,9 +246,15 @@ const CommunityPostWrite = () => {
             <span>나가기</span>
           </button>
           <div className="postBox">
-            <button className="hoverButton" onClick={handlePostButtonClick}>
-              <span>{isModifying ? "수정하기" : "등록하기"}</span>
-            </button>
+            {isModifying ? (
+              <button className="hoverButton" onClick={handlePostButtonClick}>
+                <span>등록하기</span>
+              </button>
+            ) : (
+              <button className="hoverButton" onClick={handlePutButtonClick}>
+                <span>수정하기</span>
+              </button>
+            )}
           </div>
         </ButtonContainer>
       </ItemContainer>
@@ -210,6 +293,10 @@ const ItemContainer = styled.div`
   padding-top: 2rem;
   padding-left: 3rem;
   padding-right: 3rem;
+  .placeholder {
+    cursor: auto;
+    background-color: inherit;
+  }
 `;
 
 const ButtonContainer = styled.div`
