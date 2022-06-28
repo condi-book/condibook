@@ -105,7 +105,7 @@ def make_reserved_bookmark_list(lst):
 def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
     # description이 없는 경우.. title의 keyword는 있겠지..
     if len(description_nouns) == 0:
-        return reserved_bookmark_list
+        return False, {i[0]:i[1] for i in reserved_bookmark_list}
     
     # keyword_similarity_sum 구하고 return.
     keywords_ordered = dict()
@@ -131,7 +131,7 @@ def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
         else:
             keywords_ordered['!'+keyword] = -1 # title에서 뽑은 noun이 없는 경우. 경고(!)와 함께 value = -1로 표기.
     
-    return keywords_ordered
+    return True, keywords_ordered
 
 def get_category(hashtags):
     categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리')]
@@ -161,23 +161,22 @@ def get_category(hashtags):
 
 # 지금까지 모든 사용자가 북마크하면서 등록된 헤시태그들....  : hashtag_list
 
-def recommend_by_keyword(keywords,hashtag_list):
+def recommend_from_hashtag(hashtags):
 
     # 요리, 경제, 자전거
     # ['a','b','c','d','e'... ~~ 'z']
 
     #관심사 키워드 + bookmark된 키워드 리스트의 목록중 받아온 북마크에 있는 것만 뽑아주기. -- be가 어떻게 짜여졌냐에 따라 수정해야 할 수도?
-    x = model.wv.most_similar(positive = keywords,topn=30) # len = 30  --> 바꾸기.
-    # 가
-    # 모든 것을 뽑는거는 애매하고 유사한 것중에서 3개 이하로 뽑기.(없으면 없는대로 보내기.)
+    x = model.wv.most_similar(positive = hashtags) # len = 30  --> 바꾸기.
     temp = []
     for i in x:
-        if i[0] in hashtag_list:
-            temp.append(i[0])
-        if len(temp) == 3:
+        temp.append(i[0])
+        if len(temp) == 10:
             break
 
-    return tuple(keywords + temp)
+    return hashtags + temp
 
+def word_detection(arr):
+    return translator.detect(arr).lang
 
 # 뽑아낸 것... short name 보내기?
