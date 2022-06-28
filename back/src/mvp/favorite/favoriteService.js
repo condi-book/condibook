@@ -56,7 +56,7 @@ class favoriteService {
     static async deleteFolderFavorites({ folder_id, requester_id }) {
         try {
             // 사용자 존재 확인
-            const user = await Folder.findOne({ user_id: requester_id });
+            const user = await User.findOne({ user_id: requester_id });
             if (!user) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
