@@ -144,15 +144,10 @@ class websiteSerivce {
             raw: true,
             nest: true,
         });
-        const keyword_list = keywords
-            .map((v) => {
-                return v.keyword.split(",");
-            })
-            .flat();
         const emoji_list = emojis.map((v) => {
             return v.keyword;
         });
-        const result = { ...info, keyword_list, emoji_list };
+        const result = { ...info, keywords, emoji_list };
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";

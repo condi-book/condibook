@@ -162,6 +162,7 @@ class bookmarkService {
                     favorites: bookmark.bmfavorites.id === null ? false : true,
                 };
                 delete result["bmfavorites"];
+                result.website.keywords = result.website.keywords?.keyword;
                 return result;
             });
             return bookmarks;
