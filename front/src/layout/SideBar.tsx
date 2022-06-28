@@ -88,7 +88,7 @@ const SideBar = () => {
 
 const Div = styled.div`
   height: 100vh;
-  width: 70px;
+  width: 80px;
   padding: 10px;
   position: sticky;
   top: 0;

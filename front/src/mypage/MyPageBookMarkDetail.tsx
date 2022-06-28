@@ -193,14 +193,16 @@ const MypageBookmarkDetail = () => {
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
+  background: ${({ theme }) => theme.background};
 
   .detail-container {
     display: flex;
-    // justify-content: center;
-    width: 90vw;
+    width: 100%;
     border: 2px solid green;
     margin: 10px;
+    margin-left: 0;
+    background: white;
+    border-radius: 10px;
   }
 
   .box {

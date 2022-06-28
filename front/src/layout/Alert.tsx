@@ -17,6 +17,8 @@ export const warningAlert = (e: any, title: string, callback: () => void) =>
     title: title,
     icon: "warning",
     showCancelButton: true,
+    confirmButtonColor: "#f45162",
+    backdrop: "rgba(0, 0, 0, 0.5)",
     confirmButtonText: "삭제",
     cancelButtonText: "취소",
   }).then((result) => {

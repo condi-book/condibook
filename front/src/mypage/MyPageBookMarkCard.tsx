@@ -237,7 +237,8 @@ const Div = styled.div<StyleProps>`
   }
   .pe-7s-more {
     transform: rotate(90deg);
-    padding: 5px;
+    padding: 0px 5px 5px 5px;
+    margin: 5px 0 0 0;
 
     &:hover {
       cursor: pointer;
