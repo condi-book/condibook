@@ -5,6 +5,7 @@ import { SERVER_URL } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
+import { Alert } from "layout/Alert";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -21,14 +22,18 @@ const CallBackKakaoLogin = () => {
       await sessionStorage.setItem("userToken", user.token);
       await sessionStorage.setItem("user", JSON.stringify(user));
       // 쿠키 경로, 유효기간 설정 필수
-      setCookie("userToken", user.token, {
+      await setCookie("userToken", user.token, {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
       });
-      console.log(user);
-      dispatch({
+      await dispatch({
         type: "LOGIN_SUCCESS",
         payload: user,
+      });
+
+      await Alert.fire({
+        icon: "success",
+        title: "로그인 성공",
       });
 
       await navigate("/bookmark", { replace: true });

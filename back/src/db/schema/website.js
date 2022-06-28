@@ -9,7 +9,7 @@ export default function WebsiteModel(sequelize, DataTypes) {
                 comment: "사이트 ID",
             },
             url: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: false,
                 unique: true,
                 comment: "사이트 링크",
@@ -25,7 +25,7 @@ export default function WebsiteModel(sequelize, DataTypes) {
                 comment: "메타 내용",
             },
             img: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: true,
                 comment: "사이트 이미지",
             },

@@ -65,14 +65,6 @@ const MypageBookmark = () => {
     }
   };
 
-  // const handleEdit = (e: React.MouseEvent, item: BookmarkItem) => {
-  //   e.stopPropagation();
-  //   console.log(item);
-  //   Api.put(`folders/${item.id}`, {
-  //     title: item.title,
-  //   })
-  // }
-
   // 폴더 삭제 함수
   const handleRemove = (e: React.MouseEvent, value: any) => {
     e.stopPropagation();
