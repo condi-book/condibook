@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import CommunityPostList from "./CommunityPostList";
-import SideBar from "../layout/SideBar";
-import { KeyboardContext } from "../App";
 
 export interface PostPreview {
   id: string;
@@ -17,8 +15,7 @@ export interface PostPreview {
 
 const CommunityPage = () => {
   const navigate = useNavigate();
-  const [sortState, setSortState] = React.useState<string>("newest");
-  const keyboardContext: any = React.useContext(KeyboardContext);
+  const [sortState, setSortState] = useState<string>("newest");
 
   const radios = React.useMemo(
     () => [
@@ -43,37 +40,47 @@ const CommunityPage = () => {
 
     navigate("/community/write");
   };
+
+  const handleSearchClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    navigate("/community/search");
+  };
   return (
-    <Div>
-      {keyboardContext.sidebar === true && <SideBar />}
-      <div className="listWrapper">
-        <Row>
-          <Container>
-            <ButtonGroup>
-              <ButtonWrapper>
-                {radios.map((radio) => (
-                  <button
-                    key={`toggle-${radio.value}`}
-                    value={radio.value}
-                    onClick={handleToggleChange}
-                  >
-                    {radio.name}
+    <>
+      <Div>
+        <div className="listWrapper">
+          <Row>
+            <Container>
+              <ButtonGroup>
+                <ButtonWrapper>
+                  {radios.map((radio) => (
+                    <button
+                      key={`toggle-${radio.value}`}
+                      value={radio.value}
+                      onClick={handleToggleChange}
+                    >
+                      {radio.name}
+                    </button>
+                  ))}
+                </ButtonWrapper>
+                <ButtonWrapper>
+                  <button onClick={handleSearchClick}>
+                    <span className="pe-7s-search"></span>
                   </button>
-                ))}
-              </ButtonWrapper>
-              <ButtonWrapper>
-                <button onClick={handlePostClick}>새 글 작성</button>
-              </ButtonWrapper>
-            </ButtonGroup>
-          </Container>
-        </Row>
-        <Row>
-          <Container>
-            <CommunityPostList sortState={sortState} />
-          </Container>
-        </Row>
-      </div>
-    </Div>
+                  <button onClick={handlePostClick}>새 글 작성</button>
+                </ButtonWrapper>
+              </ButtonGroup>
+            </Container>
+          </Row>
+          <Row>
+            <Container>
+              <CommunityPostList sortState={sortState} />
+            </Container>
+          </Row>
+        </div>
+      </Div>
+    </>
   );
 };
 
@@ -83,12 +90,12 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
-  position: relative;
 
+  .sidebarWrapper {
+    position: fixed;
+  }
   .listWrapper {
-    margin: auto;
     width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     border: 2px solid black;
@@ -115,4 +122,15 @@ const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  span {
+    align-self: baseline;
+    font-size: 20px;
+    font-weight: bold;
+  }
 `;

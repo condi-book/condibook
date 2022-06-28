@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
+import { useParams } from "react-router-dom";
 
 interface props {
   open: boolean;
@@ -18,6 +19,7 @@ const Modal = ({
   title,
   handlePushData,
 }: props) => {
+  const params = useParams();
   const handleClick = () => {
     Api.post(`folders?owner=user`, { title: newLink }).then((res) => {
       close();
@@ -26,16 +28,24 @@ const Modal = ({
     });
   };
 
-  const handleCreate = (v: any) => {
-    console.log("링크 추가");
-    handlePushData({
-      id: "5",
-      title: "okayoon",
-      image: "",
-      content: "내용을 입력해주세요",
-      link: v,
-    });
-    close();
+  const handleCreate = () => {
+    Api.post(`folders/${params.folderId}/bookmarks`, { url: newLink })
+      .then((res) => {
+        console.log("링크 추가", res.data);
+        const needs = res.data;
+        Api.get(`websites/${res.data.website_id}`).then((res) => {
+          console.log("추가한 링크", res.data);
+          handlePushData({
+            createdAt: needs.createdAt,
+            updatedAt: needs.updatedAt,
+            bookmark_id: needs.bookmark_id,
+            favorites: false,
+            website: res.data,
+          });
+          close();
+        });
+      })
+      .catch((err) => alert(err.response.data));
   };
   return (
     <Div newLink={newLink}>

@@ -1,17 +1,18 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { ContextProps } from "./Main";
 
-const Header = () => {
-  const navigate = useNavigate();
+const Header = ({ userContext, handleNavigate }: ContextProps) => {
   return (
     <Div>
       <div className="sub-content">
-        <img alt="로고" />
+        <img src="/static/img/logo.png" alt="로고" />
         <div className="button-group">
-          <button className="info-button">서비스 소개</button>
-          <button className="login-button" onClick={() => navigate("/login")}>
-            로그인 / 회원가입
+          <button className="info-button">
+            <a href="#service-info">서비스 소개</a>
+          </button>
+          <button className="login-button" onClick={handleNavigate}>
+            {userContext.user ? "마이페이지로 이동" : "로그인 / 회원가입"}
           </button>
         </div>
       </div>
@@ -20,11 +21,15 @@ const Header = () => {
 };
 
 const Div = styled.div`
-  border: 2px black solid;
   position: fixed;
   z-index: 10;
-  // background: ${({ theme }) => theme.mainColor};
-
+  // background: linear-gradient(
+  //   98.94deg,
+  //   rgba(18, 194, 233, 0.4) 0.61%,
+  //   rgba(196, 113, 237, 0.4) 51.86%,
+  //   rgba(246, 79, 89, 0.4) 100%
+  // );
+  background: #111215;
   height: 8vh;
   width: 100vw;
   display: flex;
@@ -33,14 +38,16 @@ const Div = styled.div`
   .sub-content {
     margin: auto;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    align-items: center;
 
     img {
-      border: 2px solid black;
-      width: 20%;
-      height: 6vh;
+      width: 10%;
+      height: 60%;
+      margin-left: 10%;
     }
   }
 
@@ -49,12 +56,23 @@ const Div = styled.div`
     flex-direction: row;
     justify-content: space-around;
     width: 20%;
-    height: 6vh;
+    height: 80%;
+    margin-right: 10%;
+
+    button {
+      background: none;
+      color: white;
+      font-size: 1.1vw;
+      width: 50%;
+      a {
+        text-decoration: none;
+        color: white;
+      }
+    }
 
     button:hover {
       cursor: pointer;
-      background: black;
-      color: white;
+      border: 1px solid white;
     }
   }
 `;

@@ -9,6 +9,7 @@ const iconList = [
   "pe-7s-home",
   "pe-7s-folder",
   "pe-7s-global",
+  "pe-7s-users",
   "pe-7s-search",
   "pe-7s-config",
 ];
@@ -29,7 +30,7 @@ const SideBar = () => {
       setShow((prev: boolean) => !prev);
     }
     if (e.currentTarget.id === "pe-7s-home") {
-      console.log("홈");
+      navigate("/");
     }
     if (e.currentTarget.id === "pe-7s-folder") {
       navigate("/bookmark");
@@ -38,10 +39,13 @@ const SideBar = () => {
       navigate("/community");
     }
     if (e.currentTarget.id === "pe-7s-search") {
-      console.log("검색");
+      navigate("/search");
     }
     if (e.currentTarget.id === "pe-7s-config") {
       navigate("/config");
+    }
+    if (e.currentTarget.id === "pe-7s-users") {
+      navigate("/team");
     }
   };
 

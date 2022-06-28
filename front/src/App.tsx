@@ -9,11 +9,15 @@ import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
 import CommunityPostDetail from "./community/CommunityPostDetail";
 import CommunityPostWrite from "./community/CommunityPostWrite";
+import CommunitySearch from "./community/CommunitySearch";
 import { Mypage } from "./mypage/MyPage";
 import CallBackKakaoLogin from "./auth/callBackKakaoLogin";
+import CallBackGoogleLogin from "./auth/callBackGoogleLogin";
 import MypageBookmarkDetail from "./mypage/MyPageBookMarkDetail";
 import Login from "./auth/Login";
 import Config from "config/Config";
+import Search from "search/Search";
+import TeamPage from "./team/TeamPage";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -57,19 +61,26 @@ const App: React.FC = () => {
                   path="/callback/login/kakao"
                   element={<CallBackKakaoLogin />}
                 />
+                <Route
+                  path="/callback/login/google"
+                  element={<CallBackGoogleLogin />}
+                />
                 <Route path="/" element={<Main />} />
                 <Route path="/community" element={<Community />}>
                   <Route path="" element={<CommunityPage />} />
                   <Route path=":postId" element={<CommunityPostDetail />} />
                   <Route path="write" element={<CommunityPostWrite />} />
+                  <Route path="search" element={<CommunitySearch />} />
                 </Route>
                 <Route path="/bookmark" element={<Mypage />} />
                 <Route path="/login" element={<Login />} />
                 <Route
-                  path="/bookmark/:group"
+                  path="/:title/:folderId/"
                   element={<MypageBookmarkDetail />}
                 />
                 <Route path="/config" element={<Config />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/team" element={<TeamPage />} />
               </Routes>
             </Router>
           </ThemeProvider>

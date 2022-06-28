@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SERVER_URL } from "../config";
 import { DispatchContext } from "../App";
+import { setCookie } from "./util/cookie";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -22,12 +23,14 @@ const CallBackKakaoLogin = () => {
         const user = res.data;
         sessionStorage.setItem("userToken", user.token);
         sessionStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("userToken", user.token);
+        setCookie("userToken", user.token);
         dispatch({
           type: "LOGIN_SUCCESS",
           payload: user,
         });
 
-        alert("로그인 성공");
+        // alert("로그인 성공");
       })
       .then(navigate("/bookmark", { replace: true }));
   }, []);

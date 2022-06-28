@@ -34,7 +34,7 @@ const MypageBookmarkCard = ({
 
   const navigate = useNavigate();
   // 폴더 디테일 페이지로 이동 함수
-  const handleClick = () => navigate(`/bookmark/${item.title}`);
+  const handleClick = () => navigate(`/${item.title}/${item.id}`);
 
   const customFetcher = async (url: string) => {
     const response = await fetch(
@@ -133,7 +133,7 @@ const MypageBookmarkCard = ({
 };
 
 const Div = styled.div<StyleProps>`
-  border: 2px solid black;
+  background-color: white;
   margin: 0.833%;
   padding: 10px;
   width: 15%;
