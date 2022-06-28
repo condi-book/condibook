@@ -1,7 +1,6 @@
 import axios from "axios";
-import { Website } from "../../db";
-import { Keyword } from "../../db";
-import { Emoji } from "../../db";
+import { Website, Emoji, Keyword } from "../../db";
+import { AI_SERVER_URL } from "../../config";
 import { parsers } from "../../util/parser/parser";
 
 class websiteSerivce {
@@ -159,15 +158,15 @@ class websiteSerivce {
     }
     static async getAIKeyword({ website_id, title, description, keyword_id }) {
         let keyword = null;
-        let AI_SERVER_URL = process.env.AI_SERVER_URL;
 
         try {
             const res = await axios.post(`${AI_SERVER_URL}/translate`, {
                 title: title,
                 description: description,
             });
+
             keyword = res.data.hashtags.join(",");
-            console.log(keyword);
+
             if (keyword_id) {
                 this.updateKeyword({
                     keyword_id: keyword_id,
