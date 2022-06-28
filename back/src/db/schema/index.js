@@ -24,8 +24,8 @@ const BookmarkModel = BookmarkSchema(sequelize, DataTypes);
 import WebsiteSchema from "./websiteSchema";
 const WebsiteModel = WebsiteSchema(sequelize, DataTypes);
 
-import EmojiSchema from "./emojiSchema";
-const EmojiModel = EmojiSchema(sequelize, DataTypes);
+import CategorySchema from "./categorySchema";
+const CategoryModel = CategorySchema(sequelize, DataTypes);
 
 import KeywordSchema from "./keywordSchema";
 const KeywordModel = KeywordSchema(sequelize, DataTypes);
@@ -59,15 +59,15 @@ const BMFavoriteModel = BMFavoriteSchema(sequelize, DataTypes);
 
 // 관계 정의
 
-// Website : Emoji = 1 : 1
-const emojis_fk_website = {
-    name: "website_id",
+// Category : Website = 1 : N
+const websites_fk_category = {
+    name: "category_id",
     type: DataTypes.INTEGER,
-    onDelete: "cascade",
-    comment: "사이트 ID",
+    onDelete: "setNull",
+    comment: "카테고리 ID",
 };
-WebsiteModel.hasOne(EmojiModel, { foreignKey: emojis_fk_website });
-EmojiModel.belongsTo(WebsiteModel, { foreignKey: emojis_fk_website });
+CategoryModel.hasOne(WebsiteModel, { foreignKey: websites_fk_category });
+WebsiteModel.belongsTo(CategoryModel, { foreignKey: websites_fk_category });
 
 // Website : Keyword = 1 : N
 const keywords_fk_website = {
@@ -273,7 +273,7 @@ export {
     UserModel,
     BookmarkModel,
     WebsiteModel,
-    EmojiModel,
+    CategoryModel,
     KeywordModel,
     AttachedModel,
     PostModel,

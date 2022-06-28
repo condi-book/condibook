@@ -1,6 +1,5 @@
 import {
     Bookmark,
-    Emoji,
     Keyword,
     Website,
     sequelize,
@@ -61,21 +60,11 @@ class bookmarkService {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
             // 북마크 상세 정보 조회
-            let bookmarks = await sequelize.query(
-                `SELECT bookmark.id AS bookmark_id, website.id AS website_id, website.url AS website_url, 
-                    website.meta_title, website.meta_description, emoji.emoji as emoji, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
-                    , CASE WHEN bmfavorite.id IS NULL THEN false ELSE true END favorites
-                FROM (SELECT * FROM ${Bookmark.tableName} WHERE ${Bookmark.tableName}.id = ${bookmark.id}) AS bookmark
-                    INNER JOIN ${Website.tableName} AS website 
-                    ON bookmark.website_id = website.id
-                    LEFT JOIN ${Emoji.tableName} AS emoji 
-                    ON emoji.website_id = website.id
-                    INNER JOIN ${Keyword.tableName} AS keyword 
-                    ON keyword.website_id = website.id
-                    LEFT JOIN ${BMFavorite.tableName} AS bmfavorite
-                    ON bookmark.id = bmfavorite.bookmark_id and bmfavorite.user_id = ${requester.id};`,
-                { type: sequelize.QueryTypes.SELECT },
-            );
+            let bookmarks =
+                await Bookmark.findOneWithWebsiteFavoriteByBookmarkId({
+                    bookmark_id: bookmark.id,
+                    user_id: requester.id,
+                });
             bookmarks = bookmarks.map((bookmark) => {
                 return {
                     ...bookmark,

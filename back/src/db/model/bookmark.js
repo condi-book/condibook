@@ -1,9 +1,10 @@
 import {
     BMFavoriteModel,
     BookmarkModel,
-    EmojiModel,
+    CategoryModel,
     KeywordModel,
     WebsiteModel,
+    sequelize,
 } from "../schema";
 
 class Bookmark {
@@ -49,7 +50,7 @@ class Bookmark {
                     ],
                     include: [
                         { model: KeywordModel, attributes: ["keyword"] },
-                        { model: EmojiModel, attributes: ["emoji"] },
+                        { model: CategoryModel, attributes: ["category"] },
                     ],
                 },
                 { model: BMFavoriteModel },
@@ -58,6 +59,22 @@ class Bookmark {
             nest: true,
             raw: true,
         });
+    }
+
+    static findOneWithWebsiteFavoriteByBookmarkId({ bookmark_id, user_id }) {
+        return sequelize.query(
+            `SELECT bookmark.id AS bookmark_id, website.id AS website_id, website.url AS website_url, 
+                website.meta_title, website.meta_description, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
+                , CASE WHEN bmfavorite.id IS NULL THEN false ELSE true END favorites
+            FROM (SELECT * FROM ${BookmarkModel.tableName} WHERE ${BookmarkModel.tableName}.id = ${bookmark_id}) AS bookmark
+                INNER JOIN ${WebsiteModel.tableName} AS website 
+                ON bookmark.website_id = website.id
+                INNER JOIN ${KeywordModel.tableName} AS keyword 
+                ON keyword.website_id = website.id
+                LEFT JOIN ${BMFavoriteModel.tableName} AS bmfavorite
+                ON bookmark.id = bmfavorite.bookmark_id and bmfavorite.user_id = ${user_id};`,
+            { type: sequelize.QueryTypes.SELECT },
+        );
     }
 
     static countAllInFolders({ folder_ids }) {
