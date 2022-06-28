@@ -11,7 +11,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
   const handleChange = (e) => {
     setFolder(e.target.value);
 
-    if (e.target.value === "직접 입력") {
+    if (e.target.value === "직접입력") {
       setInput(true);
     } else {
       setInput(false);
@@ -27,7 +27,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
   // 제출 이벤트
   const handleClick = () => {
     if (input && inputValue) {
-      fetch("http://localhost:5001/folders?owner=user", {
+      fetch("http://localhost:5001/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,33 +35,16 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
         },
         mode: "cors",
         body: JSON.stringify({
-          title: inputValue,
+          folder_name: inputValue,
+          website_id: id,
         }),
-      })
-        .then((res) => {
-          return res.json(); //Promise 반환
-        })
-        .then((data) => {
-          fetch(`http://localhost:5001/folders/${data.id}/bookmarks`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${cookie}`,
-            },
-            mode: "cors",
-            body: JSON.stringify({
-              url: url,
-            }),
-          })
-            .then((res) => {
-              alert("데이터 전달 성공");
-              handlePage();
-            })
-            .catch((err) => alert("실패"));
-        });
+      }).then((res) => {
+        handlePage();
+        console.log("성공");
+      });
     } else if (!input && folder) {
       const folderId = folderList.find((item) => item.title === folder).id;
-      fetch("http://localhost:5001/", {
+      fetch("http://localhost:5001/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,6 +58,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
       }).then((res) => {
         handlePage();
         console.log("성공");
+        console.log(folderId, id);
       });
     } else {
       alert("선택된 폴더가 없습니다.");
@@ -87,13 +71,17 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
         <div className="popup-container">
           <div>
             <div id="label">저장 폴더 *</div>
-            <select className="select" name="category" onChange={handleChange}>
+            <select
+              defaultValue={folderList[0]?.title}
+              className="select"
+              name="category"
+              onChange={handleChange}
+            >
               {folderList?.map((item) => (
                 <option key={`option-${item.id}`} value={item.title}>
                   {item.title}
                 </option>
               ))}
-              <option value="직접 입력">직접 입력</option>
             </select>
           </div>
           <input
@@ -106,7 +94,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
           ></input>
         </div>
         <div id="confirm-folder">
-          {folder === "직접 입력" ? inputValue : folder}
+          {folder === "직접입력" ? inputValue : folder}
         </div>
       </div>
       <div className="bottom">

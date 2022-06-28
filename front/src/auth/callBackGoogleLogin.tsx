@@ -4,6 +4,8 @@ import axios from "axios";
 import { SERVER_URL, GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
+import Loading from "layout/Loading";
+import { Alert } from "layout/Alert";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
@@ -17,8 +19,11 @@ const CallBackGoogleLogin = () => {
       params.get("error") ||
       params.get("state") !== `${GOOGLE_LOGIN_STATE}`
     ) {
-      alert("로그인 실패");
-      return navigate("/", { replace: true });
+      Alert.fire({
+        title: "로그인 실패",
+        icon: "error",
+      });
+      return navigate("/login", { replace: true });
     }
 
     const code = params.get("code");
@@ -30,20 +35,27 @@ const CallBackGoogleLogin = () => {
 
       await sessionStorage.setItem("userToken", user.token);
       await sessionStorage.setItem("user", JSON.stringify(user));
-      setCookie("userToken", user.token);
+      // 쿠키 경로, 유효기간 설정 필수
+      await setCookie("userToken", user.token, {
+        path: "/",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      });
       console.log(user);
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: user,
       });
-
+      await Alert.fire({
+        icon: "success",
+        title: "로그인 성공",
+      });
       await navigate("/bookmark", { replace: true });
     }
 
     sendCode();
   }, []);
 
-  return <div>로그인 처리 중</div>;
+  return <Loading />;
 };
 
 export default CallBackGoogleLogin;

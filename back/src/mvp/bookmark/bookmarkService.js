@@ -148,7 +148,11 @@ class bookmarkService {
                     },
                     { model: BMFavorite },
                 ],
-                order: ["order_idx", "createdAt"],
+                order: [
+                    sequelize.fn("isnull", sequelize.col("order_idx")),
+                    "order_idx",
+                    "createdAt",
+                ],
                 nest: true,
                 raw: true,
             });
@@ -158,6 +162,7 @@ class bookmarkService {
                     favorites: bookmark.bmfavorites.id === null ? false : true,
                 };
                 delete result["bmfavorites"];
+                result.website.keywords = result.website.keywords?.keyword;
                 return result;
             });
             return bookmarks;

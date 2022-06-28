@@ -8,7 +8,8 @@ const KakaoLoginBtn = () => {
   return (
     <Div>
       <a href={KAKAO_REQUEST_URL} id="kakaoSignInDiv">
-        <img width="90%" src={`static/img/kakaoButton.png`} />
+        <img width="25px" src="/static/img/kakaoSymbol.png" alt="kakaoSymbol" />
+        <div>Kakao로 시작하기</div>
       </a>
     </Div>
   );
@@ -16,5 +17,34 @@ const KakaoLoginBtn = () => {
 
 const Div = styled.div`
   text-align: center;
+  background: #FEE500;
+  width: 90%;
+  border-radius: 5px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background: white;
+    border: 1px solid #FEE500;
+  }
+
+  #kakaoSignInDiv {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+
+    img {
+      margin-left:10px;
+    }
+
+    div {
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      color: rgba(60,30,30,1);
+    }
 `;
 export default KakaoLoginBtn;

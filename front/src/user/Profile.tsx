@@ -1,3 +1,4 @@
+import Logout from "auth/Logout";
 import React, { useState } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
@@ -13,8 +14,9 @@ interface ProfileProps {
     id: number;
   };
   handleApply: (value: any) => void;
+  handleChange: (e: any) => void;
 }
-const Profile = ({ data, handleApply }: ProfileProps) => {
+const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
   const [show, setShow] = useState(false);
 
   const handleClick = () => {
@@ -29,11 +31,13 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
           open={show}
           close={handleClick}
           handleApply={handleApply}
+          handleChange={handleChange}
         />
       )}
       <Div>
         <div className="container">
           <div className="background">
+            <Logout />
             <button onClick={() => setShow((prev) => !prev)}>
               프로필 수정
             </button>
@@ -43,7 +47,7 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
               {/* <span className="pe-7s-user"></span> */}
               <img src={data.image_url} alt="profile-image" />
               <div className="top-detail">
-                <div>{data.nickname}</div>
+                <Font>{data.nickname}</Font>
                 <div>{data.email}</div>
               </div>
             </div>
@@ -55,11 +59,11 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
             <div className="bottom-box">
               <div>
                 <span>{data.folderCount}</span>
-                <span>폴더</span>
+                <span className="pe-7s-folder"></span>
               </div>
               <div>
                 <span>{data.bookmarkCount}</span>
-                <span>북마크</span>
+                <span className="pe-7s-link"></span>
               </div>
             </div>
           </div>
@@ -92,7 +96,7 @@ const Div = styled.div`
   .background {
     width: 100%;
     height: 50%;
-    background: ${({ theme }) => theme.profileBackground};
+    background: ${({ theme }) => theme.mainColor};
     text-align: right;
   }
 
@@ -103,6 +107,7 @@ const Div = styled.div`
   img {
     border-radius: 50%;
     margin-right: 10%;
+    width: 30%;
   }
   .top {
     position: absolute;
@@ -120,7 +125,7 @@ const Div = styled.div`
     }
 
     .top-detail {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -136,6 +141,7 @@ const Div = styled.div`
     div {
       width: 80%;
       margin: 20% 0;
+      height: 60%;
     }
   }
   .bottom {
@@ -151,11 +157,28 @@ const Div = styled.div`
       display: flex;
       justify-content: space-around;
 
+      div {
+        display: flex;
+        align-items: center;
+      }
+
       span {
         margin: 0 10px;
         font-size: 1.5rem;
       }
+      .pe-7s-folder,
+      .pe-7s-link {
+        background: ${({ theme }) => theme.profileBackground};
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        font-weight: bold;
+      }
     }
   }
+`;
+
+const Font = styled.div`
+  color: white;
+  font-weight: bold;
 `;
 export default Profile;

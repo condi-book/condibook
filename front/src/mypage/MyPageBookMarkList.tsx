@@ -10,6 +10,8 @@ const MypageBookmarkList = ({
   title,
   handleRemove,
   handlePushData,
+  handleFavorites,
+  handleFolderEdit,
 }: MypageBookmarkProps) => {
   const [show, setShow] = useState<MypageProps["show"]>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
@@ -65,6 +67,8 @@ const MypageBookmarkList = ({
               item={item}
               key={index}
               handleRemove={handleRemove}
+              handleFavorites={handleFavorites}
+              handleFolderEdit={handleFolderEdit}
             />
           ))}
           {show &&
@@ -74,6 +78,8 @@ const MypageBookmarkList = ({
                 item={item}
                 key={index}
                 handleRemove={handleRemove}
+                handleFavorites={handleFavorites}
+                handleFolderEdit={handleFolderEdit}
               />
             ))}
         </div>
