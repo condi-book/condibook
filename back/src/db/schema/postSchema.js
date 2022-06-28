@@ -1,4 +1,4 @@
-export default function PostModel(sequelize, DataTypes) {
+export default function PostSchema(sequelize, DataTypes) {
     return sequelize.define(
         "post",
         {

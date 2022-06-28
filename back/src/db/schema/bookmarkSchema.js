@@ -1,17 +1,17 @@
-export default function FolderModel(sequelize, DataTypes) {
+export default function BookmarkSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "folder",
+        "bookmark",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "폴더 ID",
+                comment: "북마크 ID",
             },
-            title: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                comment: "폴더 이름",
+            order_idx: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                comment: "북마크 순서",
             },
         },
         {

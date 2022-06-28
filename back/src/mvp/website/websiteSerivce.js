@@ -132,7 +132,7 @@ class websiteSerivce {
             const errorMessage = "해당 웹사이트가 없습니다.";
             return { errorMessage };
         }
-        const keywords = await Keyword.findOne({
+        const keywords = await Keyword.findAll({
             where: { website_id: id },
             attributes: ["keyword", "id"],
             raw: true,

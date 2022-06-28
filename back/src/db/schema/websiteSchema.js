@@ -1,4 +1,4 @@
-export default function WebsiteModel(sequelize, DataTypes) {
+export default function WebsiteSchema(sequelize, DataTypes) {
     return sequelize.define(
         "website",
         {
