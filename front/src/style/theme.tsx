@@ -11,6 +11,7 @@ const middleMainColor: String =
   "linear-gradient(135deg, rgba(18, 194, 233, 0.5) 0.61%, rgba(196, 113, 237, 0.5) 51.86%, rgba(246, 79, 89, 0.5) 100%)";
 const subBlackColor: String = "#111215";
 const subRedColor: String = "#f45162";
+const background: String = "#eff6fc";
 const theme = {
   mainColor,
   profileBackground,
@@ -19,6 +20,7 @@ const theme = {
   reverseMainColor,
   lightMainColor,
   middleMainColor,
+  background,
 };
 
 export default theme;

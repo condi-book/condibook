@@ -34,7 +34,7 @@ export const Mypage = () => {
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
+  background: #eff6fc;
   height: 100%;
 
   .mypage-container {
