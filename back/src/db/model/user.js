@@ -1,10 +1,10 @@
-import { User } from "../schema";
+import { UserModel } from "../schema";
 
-class UserModel {
+class User {
     static async findOneById({ user_id }) {
-        const result = await User.findOne({ where: { id: user_id } });
+        const result = await UserModel.findOne({ where: { id: user_id } });
         return result;
     }
 }
 
-export { UserModel };
+export { User };

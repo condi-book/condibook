@@ -1,4 +1,4 @@
-export default function FolderModel(sequelize, DataTypes) {
+export default function FolderSchema(sequelize, DataTypes) {
     return sequelize.define(
         "folder",
         {

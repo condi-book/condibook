@@ -1,4 +1,4 @@
-export default function TeamModel(sequelize, DataTypes) {
+export default function TeamSchema(sequelize, DataTypes) {
     return sequelize.define(
         "team",
         {

@@ -1,8 +1,8 @@
-import { Keyword } from "../schema";
+import { KeywordModel } from "../schema";
 
-class KeywordModel {
+class Keyword {
     static async findOneById({ id }) {
-        const result = await Keyword.findAll({
+        const result = await KeywordModel.findAll({
             where: { website_id: id },
             attributes: ["keyword", "id"],
             raw: true,
@@ -12,4 +12,4 @@ class KeywordModel {
     }
 }
 
-export { KeywordModel };
+export { Keyword };

@@ -1,4 +1,4 @@
-export default function KeywordModel(sequelize, DataTypes) {
+export default function KeywordSchema(sequelize, DataTypes) {
     return sequelize.define(
         "keyword",
         {

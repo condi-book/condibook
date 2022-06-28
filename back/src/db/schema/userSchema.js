@@ -1,4 +1,4 @@
-export default function UserModel(sequelize, DataTypes) {
+export default function UserSchema(sequelize, DataTypes) {
     return sequelize.define(
         "user",
         {

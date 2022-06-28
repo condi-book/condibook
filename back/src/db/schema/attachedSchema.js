@@ -1,4 +1,4 @@
-export default function AttachedModel(sequelize, DataTypes) {
+export default function AttachedSchema(sequelize, DataTypes) {
     return sequelize.define(
         "attached",
         {

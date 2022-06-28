@@ -1,4 +1,4 @@
-export default function FDFavoriteModel(sequelize, DataTypes) {
+export default function FDFavoriteSchema(sequelize, DataTypes) {
     return sequelize.define(
         "fdfavorite",
         {

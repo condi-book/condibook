@@ -1,9 +1,9 @@
-import { Website } from "../schema";
-import { Keyword } from "../schema";
+import { WebsiteModel } from "../schema";
+import { KeywordModel } from "../schema";
 
-class WebsiteModel {
+class Website {
     static async create({ url, title, description, img }) {
-        const result = await Website.create({
+        const result = await WebsiteModel.create({
             url,
             meta_title: title,
             meta_description: description,
@@ -13,16 +13,16 @@ class WebsiteModel {
     }
 
     static async findByUrl({ url }) {
-        const result = await Website.findOne({
+        const result = await WebsiteModel.findOne({
             where: { url },
-            include: [Keyword],
+            include: [KeywordModel],
             nest: true,
             raw: true,
         });
         return result;
     }
     static async findOneById({ id }) {
-        const result = await Website.findOne({
+        const result = await WebsiteModel.findOne({
             where: { id },
             raw: true,
             nest: true,
@@ -30,7 +30,7 @@ class WebsiteModel {
         return result;
     }
     static async findAllById({ id }) {
-        const result = await Website.findAll({
+        const result = await WebsiteModel.findAll({
             where: { id },
             raw: true,
             nest: true,
@@ -38,7 +38,7 @@ class WebsiteModel {
         return result;
     }
     static async findAllList() {
-        const result = await Website.findAll({
+        const result = await WebsiteModel.findAll({
             raw: true,
             nest: true,
         });
@@ -46,7 +46,7 @@ class WebsiteModel {
     }
 
     static async updateOne({ id, toUpdate }) {
-        const result = await Website.update(toUpdate, {
+        const result = await WebsiteModel.update(toUpdate, {
             where: { id },
             raw: true,
             nest: true,
@@ -56,7 +56,7 @@ class WebsiteModel {
     }
 
     static async deleteOne({ id }) {
-        const result = await Website.destroy({
+        const result = await WebsiteModel.destroy({
             where: { id },
             raw: true,
             nest: true,
@@ -65,4 +65,4 @@ class WebsiteModel {
     }
 }
 
-export { WebsiteModel };
+export { Website };

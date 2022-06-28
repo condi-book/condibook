@@ -1,4 +1,4 @@
-export default function EmojiModel(sequelize, DataTypes) {
+export default function EmojiSchema(sequelize, DataTypes) {
     return sequelize.define(
         "emoji",
         {

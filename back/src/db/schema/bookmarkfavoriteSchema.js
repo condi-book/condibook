@@ -1,4 +1,4 @@
-export default function BMFavoriteModel(sequelize, DataTypes) {
+export default function BMFavoriteSchema(sequelize, DataTypes) {
     return sequelize.define(
         "bmfavorite",
         {

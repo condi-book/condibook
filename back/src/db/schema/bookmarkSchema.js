@@ -1,4 +1,4 @@
-export default function BookmarkModel(sequelize, DataTypes) {
+export default function BookmarkSchema(sequelize, DataTypes) {
     return sequelize.define(
         "bookmark",
         {

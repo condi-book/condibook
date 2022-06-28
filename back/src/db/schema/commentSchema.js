@@ -1,4 +1,4 @@
-export default function CommentModel(sequelize, DataTypes) {
+export default function CommentSchema(sequelize, DataTypes) {
     return sequelize.define(
         "comment",
         {

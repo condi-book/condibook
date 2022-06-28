@@ -1,5 +1,5 @@
-import { WebsiteModel } from "./model/website";
-import { KeywordModel } from "./model/keyword";
-import { PostModel } from "./model/post";
-import { UserModel } from "./model/user";
-export { WebsiteModel, KeywordModel, PostModel, UserModel };
+import { Website } from "./model/website";
+import { Keyword } from "./model/keyword";
+import { Post } from "./model/post";
+import { User } from "./model/user";
+export { Website, Keyword, Post, User };

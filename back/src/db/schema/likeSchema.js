@@ -1,4 +1,4 @@
-export default function LikeModel(sequelize, DataTypes) {
+export default function LikeSchema(sequelize, DataTypes) {
     return sequelize.define(
         "like",
         {

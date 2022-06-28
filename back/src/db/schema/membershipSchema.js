@@ -1,4 +1,4 @@
-export default function MembershipModel(sequelize, DataTypes) {
+export default function MembershipSchema(sequelize, DataTypes) {
     return sequelize.define(
         "membership",
         {

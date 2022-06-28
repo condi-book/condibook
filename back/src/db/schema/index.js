@@ -15,47 +15,47 @@ const sequelize = new Sequelize(database, username, password, {
     query: { raw: true },
 });
 
-import UserModel from "./userSchema";
-const User = UserModel(sequelize, DataTypes);
+import UserSchema from "./schema/user";
+const UserModel = UserSchema(sequelize, DataTypes);
 
-import BookmarkModel from "./bookmarkSchema";
-const Bookmark = BookmarkModel(sequelize, DataTypes);
+import BookmarkSchema from "./schema/bookmark";
+const BookmarkModel = BookmarkSchema(sequelize, DataTypes);
 
-import WebsiteModel from "./websiteSchema";
-const Website = WebsiteModel(sequelize, DataTypes);
+import WebsiteSchema from "./schema/website";
+const WebsiteModel = WebsiteSchema(sequelize, DataTypes);
 
-import EmojiModel from "./emojiSchema";
-const Emoji = EmojiModel(sequelize, DataTypes);
+import EmojiSchema from "./schema/emoji";
+const EmojiModel = EmojiSchema(sequelize, DataTypes);
 
-import KeywordModel from "./keywordSchema";
-const Keyword = KeywordModel(sequelize, DataTypes);
+import KeywordSchema from "./schema/keyword";
+const KeywordModel = KeywordSchema(sequelize, DataTypes);
 
-import AttachedModel from "./attachedSchema";
-const Attached = AttachedModel(sequelize, DataTypes);
+import AttachedSchema from "./schema/attached";
+const AttachedModel = AttachedSchema(sequelize, DataTypes);
 
-import PostModel from "./postSchema";
-const Post = PostModel(sequelize, DataTypes);
+import PostMSchema from "./schema/post";
+const PostModel = PostMSchema(sequelize, DataTypes);
 
-import CommentModel from "./commentSchema";
-const Comment = CommentModel(sequelize, DataTypes);
+import CommentSchema from "./schema/comment";
+const CommentModel = CommentSchema(sequelize, DataTypes);
 
-import TeamModel from "./teamSchema";
-const Team = TeamModel(sequelize, DataTypes);
+import TeamSchema from "./schema/team";
+const TeamModel = TeamSchema(sequelize, DataTypes);
 
-import MembershipModel from "./membershipSchema";
-const Membership = MembershipModel(sequelize, DataTypes);
+import MembershipSchema from "./schema/membership";
+const MembershipModel = MembershipSchema(sequelize, DataTypes);
 
-import LikeModel from "./likeSchema";
-const Like = LikeModel(sequelize, DataTypes);
+import LikeSchema from "./schema/like";
+const LikeModel = LikeSchema(sequelize, DataTypes);
 
-import FolderModel from "./folderSchema";
-const Folder = FolderModel(sequelize, DataTypes);
+import FolderSchema from "./schema/folder";
+const FolderModel = FolderSchema(sequelize, DataTypes);
 
-import FDFavoriteModel from "./folderfavoriteSchema";
-const FDFavorite = FDFavoriteModel(sequelize, DataTypes);
+import FDFavoriteSchema from "./schema/folderfavorite";
+const FDFavoriteModel = FDFavoriteSchema(sequelize, DataTypes);
 
-import BMFavoriteModel from "./bookmarkfavoriteSchema";
-const BMFavorite = BMFavoriteModel(sequelize, DataTypes);
+import BMFavoriteSchema from "./schema/bookmarkfavorite";
+const BMFavoriteModel = BMFavoriteSchema(sequelize, DataTypes);
 
 // 관계 정의
 
@@ -66,8 +66,8 @@ const emojis_fk_website = {
     onDelete: "cascade",
     comment: "사이트 ID",
 };
-Website.hasOne(Emoji, { foreignKey: emojis_fk_website });
-Emoji.belongsTo(Website, { foreignKey: emojis_fk_website });
+WebsiteModel.hasOne(EmojiModel, { foreignKey: emojis_fk_website });
+EmojiModel.belongsTo(WebsiteModel, { foreignKey: emojis_fk_website });
 
 // Website : Keyword = 1 : N
 const keywords_fk_website = {
@@ -76,8 +76,8 @@ const keywords_fk_website = {
     onDelete: "cascade",
     comment: "사이트 ID",
 };
-Website.hasMany(Keyword, { foreignKey: keywords_fk_website });
-Keyword.belongsTo(Website, { foreignKey: keywords_fk_website });
+WebsiteModel.hasMany(KeywordModel, { foreignKey: keywords_fk_website });
+KeywordModel.belongsTo(WebsiteModel, { foreignKey: keywords_fk_website });
 
 // Website : Bookmark = 1 : N
 const bookmark_fk_website = {
@@ -86,8 +86,8 @@ const bookmark_fk_website = {
     onDelete: "setNull",
     comment: "사이트 ID",
 };
-Website.hasMany(Bookmark, { foreignKey: bookmark_fk_website });
-Bookmark.belongsTo(Website, { foreignKey: bookmark_fk_website });
+WebsiteModel.hasMany(BookmarkModel, { foreignKey: bookmark_fk_website });
+BookmarkModel.belongsTo(WebsiteModel, { foreignKey: bookmark_fk_website });
 
 // Bookmark : Attached = 1 : N
 const attached_fk_bookmark = {
@@ -96,8 +96,8 @@ const attached_fk_bookmark = {
     onDelete: "setNull",
     comment: "북마크 ID",
 };
-Bookmark.hasMany(Attached, { foreignKey: attached_fk_bookmark });
-Attached.belongsTo(Bookmark, { foreignKey: attached_fk_bookmark });
+BookmarkModel.hasMany(AttachedModel, { foreignKey: attached_fk_bookmark });
+AttachedModel.belongsTo(BookmarkModel, { foreignKey: attached_fk_bookmark });
 
 // Attached : Post = 1 : N
 const attached_fk_post = {
@@ -106,8 +106,8 @@ const attached_fk_post = {
     onDelete: "cascade",
     comment: "게시물 ID",
 };
-Post.hasMany(Attached, { foreignKey: attached_fk_post });
-Attached.belongsTo(Post, { foreignKey: attached_fk_post });
+PostModel.hasMany(AttachedModel, { foreignKey: attached_fk_post });
+AttachedModel.belongsTo(PostModel, { foreignKey: attached_fk_post });
 
 // User : Post = 1 : N
 const post_fk_user = {
@@ -116,8 +116,8 @@ const post_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(Post, { foreignKey: post_fk_user });
-Post.belongsTo(User, { foreignKey: post_fk_user });
+UserModel.hasMany(PostModel, { foreignKey: post_fk_user });
+PostModel.belongsTo(UserModel, { foreignKey: post_fk_user });
 
 // Post : Comment = 1 : N
 const comment_fk_post = {
@@ -126,8 +126,8 @@ const comment_fk_post = {
     onDelete: "cascade",
     comment: "게시물 ID",
 };
-Post.hasMany(Comment, { foreignKey: comment_fk_post });
-Comment.belongsTo(Post, { foreignKey: comment_fk_post });
+PostModel.hasMany(CommentModel, { foreignKey: comment_fk_post });
+CommentModel.belongsTo(PostModel, { foreignKey: comment_fk_post });
 
 // User : Comment = 1 : N
 const comment_fk_user = {
@@ -136,8 +136,8 @@ const comment_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(Comment, { foreignKey: comment_fk_user });
-Comment.belongsTo(User, { foreignKey: comment_fk_user });
+UserModel.hasMany(CommentModel, { foreignKey: comment_fk_user });
+CommentModel.belongsTo(UserModel, { foreignKey: comment_fk_user });
 
 // User : Like = 1 : N
 const like_fk_user = {
@@ -146,8 +146,8 @@ const like_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(Like, { foreignKey: like_fk_user });
-Like.belongsTo(User, { foreignKey: like_fk_user });
+UserModel.hasMany(LikeModel, { foreignKey: like_fk_user });
+LikeModel.belongsTo(UserModel, { foreignKey: like_fk_user });
 
 // Post : Like = 1 : N
 const like_fk_post = {
@@ -156,8 +156,8 @@ const like_fk_post = {
     onDelete: "setNull",
     comment: "게시물 ID",
 };
-Post.hasMany(Like, { foreignKey: like_fk_post });
-Like.belongsTo(Post, { foreignKey: like_fk_post });
+PostModel.hasMany(LikeModel, { foreignKey: like_fk_post });
+LikeModel.belongsTo(PostModel, { foreignKey: like_fk_post });
 
 // User : Membership = 1 : N
 const membership_fk_user = {
@@ -166,8 +166,8 @@ const membership_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(Membership, { foreignKey: membership_fk_user });
-Membership.belongsTo(User, { foreignKey: membership_fk_user });
+UserModel.hasMany(MembershipModel, { foreignKey: membership_fk_user });
+MembershipModel.belongsTo(UserModel, { foreignKey: membership_fk_user });
 
 // Team : Membership = 1 : N
 const membership_fk_team = {
@@ -176,8 +176,8 @@ const membership_fk_team = {
     onDelete: "setNull",
     comment: "팀 ID",
 };
-Team.hasMany(Membership, { foreignKey: membership_fk_team });
-Membership.belongsTo(Team, { foreignKey: membership_fk_team });
+TeamModel.hasMany(MembershipModel, { foreignKey: membership_fk_team });
+MembershipModel.belongsTo(TeamModel, { foreignKey: membership_fk_team });
 
 // Folder : Bookmark = 1 : N
 const bookmark_fk_folder = {
@@ -186,8 +186,8 @@ const bookmark_fk_folder = {
     onDelete: "setNull",
     comment: "폴더 ID",
 };
-Folder.hasMany(Bookmark, { foreignKey: bookmark_fk_folder });
-Bookmark.belongsTo(Folder, { foreignKey: bookmark_fk_folder });
+FolderModel.hasMany(BookmarkModel, { foreignKey: bookmark_fk_folder });
+BookmarkModel.belongsTo(FolderModel, { foreignKey: bookmark_fk_folder });
 
 // User: Folder = 1 : N
 const folder_fk_user = {
@@ -196,8 +196,8 @@ const folder_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(Folder, { foreignKey: folder_fk_user });
-Folder.belongsTo(User, { foreignKey: folder_fk_user });
+UserModel.hasMany(FolderModel, { foreignKey: folder_fk_user });
+FolderModel.belongsTo(UserModel, { foreignKey: folder_fk_user });
 
 // Team : Folder = 1 : N
 const folder_fk_team = {
@@ -206,8 +206,8 @@ const folder_fk_team = {
     onDelete: "setNull",
     comment: "팀 ID",
 };
-Team.hasMany(Folder, { foreignKey: folder_fk_team });
-Folder.belongsTo(Team, { foreignKey: folder_fk_team });
+TeamModel.hasMany(FolderModel, { foreignKey: folder_fk_team });
+FolderModel.belongsTo(TeamModel, { foreignKey: folder_fk_team });
 
 // User: Team = 1 : N
 const team_fk_user = {
@@ -216,8 +216,8 @@ const team_fk_user = {
     onDelete: "setNull",
     comment: "매니저의 사용자 ID",
 };
-User.hasMany(Team, { foreignKey: team_fk_user });
-Team.belongsTo(User, { foreignKey: team_fk_user });
+UserModel.hasMany(TeamModel, { foreignKey: team_fk_user });
+TeamModel.belongsTo(UserModel, { foreignKey: team_fk_user });
 
 // Folder: FDFavorite = 1 : N
 const fdfavorite_fk_folder = {
@@ -226,8 +226,8 @@ const fdfavorite_fk_folder = {
     onDelete: "setNull",
     comment: "폴더 ID",
 };
-Folder.hasMany(FDFavorite, { foreignKey: fdfavorite_fk_folder });
-FDFavorite.belongsTo(Folder, { foreignKey: fdfavorite_fk_folder });
+FolderModel.hasMany(FDFavoriteModel, { foreignKey: fdfavorite_fk_folder });
+FDFavoriteModel.belongsTo(FolderModel, { foreignKey: fdfavorite_fk_folder });
 
 // User: FDFavorite = 1 : N
 const fdfavorite_fk_user = {
@@ -236,8 +236,8 @@ const fdfavorite_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(FDFavorite, { foreignKey: fdfavorite_fk_user });
-FDFavorite.belongsTo(User, { foreignKey: fdfavorite_fk_user });
+UserModel.hasMany(FDFavoriteModel, { foreignKey: fdfavorite_fk_user });
+FDFavoriteModel.belongsTo(UserModel, { foreignKey: fdfavorite_fk_user });
 
 // Bookmark: BMFavorite = 1 : N
 const bmfavorite_fk_bookmark = {
@@ -246,8 +246,10 @@ const bmfavorite_fk_bookmark = {
     onDelete: "setNull",
     comment: "북마크 ID",
 };
-Bookmark.hasMany(BMFavorite, { foreignKey: bmfavorite_fk_bookmark });
-BMFavorite.belongsTo(Bookmark, { foreignKey: bmfavorite_fk_bookmark });
+BookmarkModel.hasMany(BMFavoriteModel, { foreignKey: bmfavorite_fk_bookmark });
+BMFavoriteModel.belongsTo(BookmarkModel, {
+    foreignKey: bmfavorite_fk_bookmark,
+});
 
 // User: BMFavorite = 1 : N
 const bmfavorite_fk_user = {
@@ -256,30 +258,30 @@ const bmfavorite_fk_user = {
     onDelete: "setNull",
     comment: "사용자 ID",
 };
-User.hasMany(BMFavorite, { foreignKey: bmfavorite_fk_user });
-BMFavorite.belongsTo(User, { foreignKey: bmfavorite_fk_user });
+UserModel.hasMany(BMFavoriteModel, { foreignKey: bmfavorite_fk_user });
+BMFavoriteModel.belongsTo(UserModel, { foreignKey: bmfavorite_fk_user });
 
 // 모델 동기화
-// sequelize
-//     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
-//     .then(console.log("모델 동기화 성공✅."))
-//     .catch(console.log);
+sequelize
+    .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
+    .then(console.log("모델 동기화 성공✅."))
+    .catch(console.log);
 
 export {
     sequelize,
-    User,
-    Bookmark,
-    Website,
-    Emoji,
-    Keyword,
-    Attached,
-    Post,
-    Comment,
-    Team,
-    Membership,
-    Like,
-    Folder,
-    FDFavorite,
-    BMFavorite,
+    UserModel,
+    BookmarkModel,
+    WebsiteModel,
+    EmojiModel,
+    KeywordModel,
+    AttachedModel,
+    PostModel,
+    CommentModel,
+    TeamModel,
+    MembershipModel,
+    LikeModel,
+    FolderModel,
+    FDFavoriteModel,
+    BMFavoriteModel,
     Op,
 };
