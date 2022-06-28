@@ -1,42 +1,28 @@
-import {
-    Bookmark,
-    Emoji,
-    Keyword,
-    Website,
-    sequelize,
-    Folder,
-    User,
-    BMFavorite,
-} from "../../db";
+import { Bookmark, Website, Folder, User } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
     static async createBookmark({ folder_id, website_id, requester_id }) {
         try {
             // 존재하는 사용자인지 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 존재하는 웹사이트인지 확인
-            const website = await Website.findOne({
-                where: { id: website_id },
-            });
+            const website = await Website.findOne({ website_id });
             if (!website) {
                 return getFailMsg({ entity: "웹사이트", action: "조회" });
             }
             // 존재하는 폴더인지 확인
-            const folder = await Folder.findOne({
-                where: { id: folder_id },
-            });
+            const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
             }
             // 존재하는 북마크인지 확인
             const previousBookmark = await Bookmark.findAll({
-                where: { folder_id: folder.id, website_id: website.id },
+                folder_id: folder.id,
+                website_id: website.id,
             });
             if (previousBookmark.length > 0) {
                 return { errorMessage: "이미 존재한 북마크입니다." };
@@ -56,36 +42,23 @@ class bookmarkService {
     static async getBookmark({ bookmark_id, requester_id }) {
         try {
             // 북마크 존재 확인
-            const bookmark = await Bookmark.findOne({
-                where: { id: bookmark_id },
-            });
+            const bookmark = await Bookmark.findOne({ bookmark_id });
             if (!bookmark) {
                 return getFailMsg({ entity: "북마크", action: "조회" });
             }
             // 요청자 존재 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
             // 북마크 상세 정보 조회
-            let bookmarks = await sequelize.query(
-                `SELECT bookmark.id AS bookmark_id, website.id AS website_id, website.url AS website_url, 
-                    website.meta_title, website.meta_description, emoji.emoji as emoji, GROUP_CONCAT(keyword.keyword SEPARATOR ',') AS keywords
-                    , CASE WHEN bmfavorite.id IS NULL THEN false ELSE true END favorites
-                FROM (SELECT * FROM ${Bookmark.tableName} WHERE ${Bookmark.tableName}.id = ${bookmark.id}) AS bookmark
-                    INNER JOIN ${Website.tableName} AS website 
-                    ON bookmark.website_id = website.id
-                    LEFT JOIN ${Emoji.tableName} AS emoji 
-                    ON emoji.website_id = website.id
-                    INNER JOIN ${Keyword.tableName} AS keyword 
-                    ON keyword.website_id = website.id
-                    LEFT JOIN ${BMFavorite.tableName} AS bmfavorite
-                    ON bookmark.id = bmfavorite.bookmark_id and bmfavorite.user_id = ${requester.id};`,
-                { type: sequelize.QueryTypes.SELECT },
-            );
+            let bookmarks =
+                await Bookmark.findOneWithWebsiteFavoriteByBookmarkId({
+                    bookmark_id: bookmark.id,
+                    user_id: requester.id,
+                });
             bookmarks = bookmarks.map((bookmark) => {
+                delete bookmark["bmfavorites"];
                 return {
                     ...bookmark,
                     favorites: bookmark.favorites === 1 ? true : false,
@@ -100,12 +73,7 @@ class bookmarkService {
 
     static async getFirstBookmarkUrlInFolder({ folder_id }) {
         try {
-            let bookmark = await Bookmark.findOne({
-                where: { folder_id },
-                include: [Website],
-                raw: true,
-                nest: true,
-            });
+            let bookmark = await Bookmark.findOneWithWebsite({ folder_id });
 
             return bookmark ? bookmark.website.url : null;
         } catch (e) {
@@ -116,45 +84,18 @@ class bookmarkService {
     static async getBookmarksInFolder({ folder_id, requester_id }) {
         try {
             // 폴더 존재 확인
-            const folder = await Folder.findOne({ where: { id: folder_id } });
+            const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
             }
             // 요청자 존재 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
             // 북마크 조회
-            let bookmarks = await Bookmark.findAll({
-                where: { folder_id: folder.id },
-                attributes: [["id", "bookmark_id"], "order_idx"],
-                include: [
-                    {
-                        model: Website,
-                        attributes: [
-                            ["id", "website_id"],
-                            "url",
-                            "meta_title",
-                            "meta_description",
-                            "img",
-                        ],
-                        include: [
-                            { model: Keyword, attributes: ["keyword"] },
-                            { model: Emoji, attributes: ["emoji"] },
-                        ],
-                    },
-                    { model: BMFavorite },
-                ],
-                order: [
-                    sequelize.fn("isnull", sequelize.col("order_idx")),
-                    "order_idx",
-                    "createdAt",
-                ],
-                nest: true,
-                raw: true,
+            let bookmarks = await Bookmark.findAllWithWebsite({
+                folder_id: folder.id,
             });
             bookmarks = bookmarks.map((bookmark) => {
                 const result = {
@@ -173,9 +114,7 @@ class bookmarkService {
 
     static async getBookmarkCountInFolders({ folder_ids }) {
         try {
-            const result = await Bookmark.count({
-                where: { folder_id: folder_ids },
-            }); // 폴더 id 중 하나라도 맞다면 (배열로 in 연산자 사용) 반환
+            const result = await Bookmark.countAllInFolders({ folder_ids });
             return result;
         } catch (e) {
             return { errorMessage: e };
@@ -185,14 +124,12 @@ class bookmarkService {
     static async updateBookmarkOrder({ folder_id, requester_id, bookmarks }) {
         try {
             // 존재하는 사용자인지 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 존재하는 폴더인지 확인
-            const folder = await Folder.findOne({ where: { id: folder_id } });
+            const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
             }
@@ -203,8 +140,8 @@ class bookmarkService {
                     order_idx: bookmark.order_idx,
                 };
             });
-            const updatedBookmarks = await Bookmark.bulkCreate(bookmarks, {
-                updateOnDuplicate: ["order_idx"],
+            const updatedBookmarks = await Bookmark.bulkUpdateOrderIdx({
+                bookmarks,
             });
             return updatedBookmarks;
         } catch (e) {
@@ -215,22 +152,18 @@ class bookmarkService {
     static async deleteBookmark({ bookmark_id, requester_id }) {
         try {
             // 북마크 존재 확인
-            const bookmark = await Bookmark.findOne({
-                where: { id: bookmark_id },
-            });
+            const bookmark = await Bookmark.findOne({ bookmark_id });
             if (!bookmark) {
                 return getFailMsg({ entity: "북마크", action: "조회" });
             }
             // 요청자 존재 확인
-            const requester = await User.findOne({
-                where: { id: requester_id },
-            });
+            const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
             // 북마크 소유 여부 확인
             const folder = await Folder.findOne({
-                where: { id: bookmark.folder_id },
+                folder_id: bookmark.folder_id,
             });
             if (!folder || folder.user_id !== requester.id) {
                 return {
@@ -238,8 +171,8 @@ class bookmarkService {
                 };
             }
             // 북마크 삭제
-            const result = await Bookmark.destroy({
-                where: { id: bookmark.id },
+            const result = await Bookmark.destroyOne({
+                bookmark_id: bookmark.id,
             });
 
             if (result === 0) {

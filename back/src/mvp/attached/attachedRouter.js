@@ -22,7 +22,7 @@ attachedRouter.post("/:post_id", loginRequired, async (req, res, next) => {
     }
 });
 
-attachedRouter.get("/:post_id", loginRequired, async (req, res, next) => {
+attachedRouter.get("/:post_id", async (req, res, next) => {
     try {
         const post_id = req.params.post_id; // 게시판 아이디
 

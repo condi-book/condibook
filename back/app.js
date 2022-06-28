@@ -1,7 +1,7 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
-import { sequelize } from "./src/db/index.js";
+import { sequelize } from "./src/db/schema/index.js";
 import { indexRouter } from "./src/mvp/index.js";
 import { errorMiddleware } from "./src/middlewares/errorMiddleware.js";
 import cookieParser from "cookie-parser";

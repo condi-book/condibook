@@ -1,17 +1,16 @@
-import { Post, User, Bookmark, Website, Attached } from "../../db";
+import { Post, User, Attached, Like } from "../../db";
 
 class postService {
     static async createPost({ toCreate, user_id }) {
-        const title = toCreate.title;
-        const content = toCreate.content;
-        const views = toCreate.views;
-        const userinfo = await User.findOne({ where: { id: user_id } });
+        const { title, content, views } = toCreate;
+        const userInfo = await User.findOne({ user_id });
+        const nickname = userInfo.nickname;
         const result = await Post.create({
             title,
             content,
             views,
-            author: user_id,
-            author_name: userinfo.nickname,
+            user_id,
+            nickname,
         });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -20,43 +19,29 @@ class postService {
         return result;
     }
     static async getPost({ id }) {
-        const postInfo = await Post.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const postInfo = await Post.findOneById({ id });
         if (!postInfo) {
             const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
         }
-        const attchedInfo = await Attached.findAll({
-            where: { post_id: id },
-            include: [{ model: Bookmark, include: [{ model: Website }] }],
-            raw: true,
-            nest: true,
-        });
+        const attchedInfo = await Attached.findByPostId({ post_id: id });
         if (!attchedInfo) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        const websiteInfo = attchedInfo.map((v) => {
+        const likesInfo = await Like.findLikesByPost({ post_id: id });
+        const websitesInfo = attchedInfo.map((v) => {
             return v.bookmark.website;
         });
-        return { postInfo, websiteInfo };
+        return { postInfo, websitesInfo, likesInfo };
     }
     static async getPostList({ query, pageNumber }) {
         let offset = 0;
         if (pageNumber > 1) {
             offset = 20 * (pageNumber - 1);
         }
-        const excludes = { exclude: ["content"] };
         if (query == "views") {
-            const result = Post.findAll({
-                attributes: excludes,
-                order: [["views", "DESC"]],
-                offset: offset,
-                limit: 20,
-            });
+            const result = Post.findAllByViews({ offset });
             if (!result) {
                 const errorMessage = "해당 게시글이 없습니다.";
                 return { errorMessage };
@@ -64,24 +49,14 @@ class postService {
             return result;
         }
         if (query == "likes") {
-            const result = Post.findAll({
-                attributes: excludes,
-                order: [["like_counts", "DESC"]],
-                offset: offset,
-                limit: 20,
-            });
+            const result = Post.findAllByLikes({ offset });
             if (!result) {
                 const errorMessage = "해당 게시글이 없습니다.";
                 return { errorMessage };
             }
             return result;
         }
-        const result = Post.findAll({
-            attributes: excludes,
-            order: [["createdAt", "DESC"]],
-            offset: offset,
-            limit: 20,
-        });
+        const result = Post.findAllList({ offset });
 
         if (!result) {
             const errorMessage = "해당 게시글이 없습니다.";
@@ -90,11 +65,7 @@ class postService {
         return result;
     }
     static async updatePost({ id, toUpdate, user_id }) {
-        const check = await Post.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const check = await Post.findOneById({ id });
         if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -103,22 +74,12 @@ class postService {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        await Post.update(toUpdate, {
-            where: { id },
-            raw: true,
-            nest: true,
-        });
-        const result = await Post.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        await Post.updateOne({ id, toUpdate });
+        const result = await Post.findOneById({ id });
         return result;
     }
     static async deletePost({ id, user_id }) {
-        const check = await Post.findOne({
-            where: { id },
-        });
+        const check = await Post.findOneById({ id });
         if (!check) {
             const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
@@ -127,12 +88,12 @@ class postService {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        Post.destroy({ where: { id } });
+        Post.deleteOne({ id });
 
         return check;
     }
     static async updateViews({ id }) {
-        const result = Post.increment({ views: 1 }, { where: { id } });
+        const result = Post.updateView({ id });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
