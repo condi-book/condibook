@@ -1,12 +1,4 @@
-import {
-    Bookmark,
-    Keyword,
-    Website,
-    sequelize,
-    Folder,
-    User,
-    BMFavorite,
-} from "../../db";
+import { Bookmark, Website, Folder, User } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
