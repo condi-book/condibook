@@ -148,7 +148,11 @@ class bookmarkService {
                     },
                     { model: BMFavorite },
                 ],
-                order: ["order_idx", "createdAt"],
+                order: [
+                    sequelize.fn("isnull", sequelize.col("order_idx")),
+                    "order_idx",
+                    "createdAt",
+                ],
                 nest: true,
                 raw: true,
             });
