@@ -137,7 +137,11 @@ const MypageBookmarkCard = ({
           </ul>
         </div>
         <div className="middle part">
-          <span>{item.title}</span>
+          <span>
+            {item.title.length >= 10
+              ? `${item.title.substr(0, 10)}...`
+              : item.title}
+          </span>
         </div>
         <div className="bottom part">
           <div>
@@ -185,6 +189,7 @@ const Div = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 7px;
   &:hover {
     cursor: pointer;
   }
@@ -195,10 +200,13 @@ const Div = styled.div<StyleProps>`
   }
 
   .top {
-    height: 50%;
+    height: 40%;
   }
   .middle {
     height: 20%;
+    span {
+      font-size: 1.1vw;
+    }
   }
   .part {
     box-sizing: border-box;
@@ -218,13 +226,19 @@ const Div = styled.div<StyleProps>`
   }
   .pe-7s-more {
     transform: rotate(90deg);
+    padding: 5px;
+
+    &:hover {
+      cursor: pointer;
+      font-weight: bold;
+    }
   }
 
   .material-symbols-outlined {
-    color: ${({ item }) => (item.favorites === true ? "#FEE500" : "black")}; 
+    color: ${({ item }) => (item.favorites === true ? "#FEE500" : "#c0c0c0")}; 
+    font-size: 1.7vw;
 
     &:hover {
-      font-size: 1.5em;
       cursor: pointer;
       font-weight: bold;
     }
@@ -252,6 +266,7 @@ const Div = styled.div<StyleProps>`
       cursor: pointer;
     }
   }
+
   .pe-7s-folder {
     margin; auto;
     font-size: 3vw;

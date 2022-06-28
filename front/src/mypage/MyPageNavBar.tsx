@@ -20,17 +20,15 @@ const MypageNavbar = ({
 
 const Div = styled.div<MypageProps>`
   width: 100%;
-  height: 10%;
+  height: 60px;
 
   .nav-bar-wrap {
     width: 100%;
-    padding: 10px;
+    padding: 10px 20px;
     
   }
 
   .nav-bar {
-    // border-bottom-left-radius: 10px;
-    // border-bottom-right-radius: 10px;
     display: flex;
     width: 100%;
     background: ${({ theme }) => theme.profileBackground};

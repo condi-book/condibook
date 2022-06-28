@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import styled from "styled-components";
 import MypageBookmarkList from "./MyPageBookMarkList";
 import * as Api from "../api";
 
@@ -22,10 +22,20 @@ export interface BookmarkItem {
   first_bookmark_url: string;
 }
 
+type StyleSize = {
+  styleSize: () => number;
+};
+
 const MypageBookmark = () => {
   const [folderData, setFolderData] = useState<
     MypageBookmarkProps["folderData"]
   >([]);
+
+  // 스타일 디자인 px 계산 변수
+  const styleSize = () => {
+    if (folderData?.length > 0) return 0 + (folderData.length / 6) * 10;
+    else return 0;
+  };
 
   // 즐겨찾기 데이터
   const filteredData: MypageBookmarkProps["folderData"] = React.useMemo(() => {
@@ -110,7 +120,7 @@ const MypageBookmark = () => {
   }, []);
 
   return (
-    <div>
+    <Div styleSize={styleSize}>
       <MypageBookmarkList
         folderData={filteredData}
         title={title1}
@@ -127,8 +137,16 @@ const MypageBookmark = () => {
         handleFavorites={handleFavorites}
         handleFolderEdit={handleFolderEdit}
       />
-    </div>
+    </Div>
   );
 };
+
+const Div = styled.div<StyleSize>`
+  width: 100%;
+  padding: 0 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin-bottom: ${(props) => props.styleSize}px;
+`;
 
 export default MypageBookmark;

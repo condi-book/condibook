@@ -37,18 +37,17 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #eff6fc;
-  height: 100vh;
 
   .mypage-container {
     width: 100%;
-    height: 100%;
     padding: 10px 10px 10px 0;
   }
 
   .mypage-main {
     width: 100%;
-    height: 100%;
     background: white;
     border-radius: 10px;
+    height: 100%;
+    border: 1px solid yellow;
   }
 `;
