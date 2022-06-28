@@ -1,5 +1,5 @@
 import re
-from googletrans import Translator
+from googletrans import Translator,LANGUAGES
 from konlpy.tag import Okt
 from gensim.models import Word2Vec
 import os
@@ -177,6 +177,10 @@ def recommend_from_hashtag(hashtags):
     return hashtags + temp
 
 def word_detection(arr):
-    return translator.detect(arr).lang
+    x = translator.detect(arr).lang.lower()
+    if x in LANGUAGES:
+        return LANGUAGES[x]
+    
+    return x  # module 내의 constant 단위까지 가서 살펴보았고, if 문은 혹시나 싶어서 넣어둠.
 
 # 뽑아낸 것... short name 보내기?

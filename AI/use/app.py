@@ -19,7 +19,7 @@ def translate():
     title_nouns = nouns_extractor(title)
     
     if len(title_nouns) == 0:
-        return make_response({'hashtags':'서비스를 지원하지 않는 언어입니다. 언어 종류 : ' + word_detection(title), 'category':'etc'}), 200
+        return make_response({'ErrorMessage':'서비스를 지원하지 않는 언어입니다.' ,'언어 종류' : word_detection(title)}), 200
 
     description = req['description']
 
