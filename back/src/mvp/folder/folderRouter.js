@@ -18,7 +18,7 @@ folderRouter.post("/:id/bookmarks", loginRequired, async (req, res, next) => {
 
         const bookmark = await bookmarkService.createBookmark({
             folder_id: folder_id,
-            website_id: website.website_id,
+            website_id: website.website.id,
             requester_id: user_id,
         });
         checkErrorMessage(bookmark);
