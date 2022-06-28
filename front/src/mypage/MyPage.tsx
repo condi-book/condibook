@@ -35,10 +35,10 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
-  height: 100vh;
+  height: 100%;
 
   .mypage-container {
-    margin: auto;
+    margin: 0 auto;
     width: 90vw;
     border: 2px solid red;
     height: 100%;

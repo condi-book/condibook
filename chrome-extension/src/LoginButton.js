@@ -19,6 +19,19 @@ const Div = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  button {
+    font-size: 20px;
+    background: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59);
+    border:none;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+
+    &:hover {
+      background : #111215;
+      font-weight: bold;
+  }
 `;
 
 export default LoginButton;
