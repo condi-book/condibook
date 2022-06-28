@@ -35,7 +35,7 @@ const App = () => {
 
   useEffect(() => {
     chrome.cookies
-      .get({ url: "http://localhost:3000", name: "userToken" })
+      .get({ url: "http://kdt-ai4-team14.elicecoding.com/", name: "userToken" })
       .then(async (res) => {
         const cookies = res.value;
         setCookie(cookies);
@@ -46,7 +46,7 @@ const App = () => {
           console.log("링크 가져오는 중");
           console.log("링크 값", answer);
           console.log(cookies);
-          fetch("http://localhost:5001/websites", {
+          fetch("http://kdt-ai4-team14.elicecoding.com:5001/websites", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

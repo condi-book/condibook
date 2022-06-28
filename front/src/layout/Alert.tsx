@@ -11,3 +11,16 @@ export const Alert = Swal.mixin({
     toast.addEventListener("mouseleave", Swal.resumeTimer);
   },
 });
+
+export const warningAlert = (e: any, title: string, callback: () => void) =>
+  Swal.fire({
+    title: title,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "삭제",
+    cancelButtonText: "취소",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      callback();
+    }
+  });

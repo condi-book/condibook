@@ -7,7 +7,7 @@ import MypageScrapedBookmark from "./MyPageScrapedBookMark";
 import { KeyboardContext } from "../App";
 
 export interface MypageProps {
-  handleClick: (value: boolean) => void;
+  handleClick?: (value: boolean) => void;
   tab: boolean;
   show?: boolean;
 }
@@ -24,8 +24,10 @@ export const Mypage = () => {
     <Div>
       {keyboardContext.sidebar === true && <SideBar />}
       <div className="mypage-container">
-        <MypageNavbar tab={tab} handleClick={handleClick} />
-        {tab ? <MypageBookmark /> : <MypageScrapedBookmark />}
+        <div className="mypage-main">
+          <MypageNavbar tab={tab} handleClick={handleClick} />
+          {tab ? <MypageBookmark /> : <MypageScrapedBookmark />}
+        </div>
       </div>
     </Div>
   );
@@ -34,13 +36,18 @@ export const Mypage = () => {
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
-  height: 100%;
+  background: #eff6fc;
 
   .mypage-container {
-    margin: 0 auto;
-    width: 90vw;
-    border: 2px solid red;
+    width: 100%;
+    padding: 10px 10px 10px 0;
+  }
+
+  .mypage-main {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
     height: 100%;
+    border: 1px solid yellow;
   }
 `;
