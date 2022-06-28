@@ -107,10 +107,6 @@ postRouter.delete("/:id", loginRequired, async (req, res, next) => {
         if (deletePost.errorMessage) {
             throw new Error(deletePost.errorMessage);
         }
-        const deleteAttached = await attachedService.deleteAttachedNull();
-        if (deleteAttached.errorMessage) {
-            throw new Error(deleteAttached.errorMessage);
-        }
         res.status(204).json({ msg: "삭제 완료!" });
     } catch (error) {
         next(error);

@@ -5,6 +5,7 @@ import {
     KeywordModel,
     WebsiteModel,
 } from "../schema";
+import { Op } from "../../db";
 
 class Bookmark {
     static create({ website_id, folder_id }) {
@@ -75,6 +76,17 @@ class Bookmark {
     static destroyOne({ bookmark_id }) {
         return BookmarkModel.destroy({
             where: { id: bookmark_id },
+        });
+    }
+    static findWithBookmarkId({ bookmark_id }) {
+        return BookmarkModel.findAll({
+            where: {
+                id: {
+                    [Op.in]: bookmark_id,
+                },
+            },
+            raw: true,
+            nest: true,
         });
     }
 }

@@ -53,7 +53,7 @@ class Website {
         return result;
     }
 
-    static async updateOne({ id, toUpdate }) {
+    static async updateOne({ id }, toUpdate) {
         const result = await WebsiteModel.update(toUpdate, {
             where: { id },
             raw: true,
