@@ -14,47 +14,47 @@ const sequelize = new Sequelize(database, username, password, {
     logging: console.log, // Logging (디폴트 설정임)
     query: { raw: true },
 });
-
-import UserSchema from "./schema/user";
+// 모델 정의
+import UserSchema from "./userSchema";
 const UserModel = UserSchema(sequelize, DataTypes);
 
-import BookmarkSchema from "./schema/bookmark";
+import BookmarkSchema from "./bookmarkSchema";
 const BookmarkModel = BookmarkSchema(sequelize, DataTypes);
 
-import WebsiteSchema from "./schema/website";
+import WebsiteSchema from "./websiteSchema";
 const WebsiteModel = WebsiteSchema(sequelize, DataTypes);
 
-import EmojiSchema from "./schema/emoji";
+import EmojiSchema from "./emojiSchema";
 const EmojiModel = EmojiSchema(sequelize, DataTypes);
 
-import KeywordSchema from "./schema/keyword";
+import KeywordSchema from "./keywordSchema";
 const KeywordModel = KeywordSchema(sequelize, DataTypes);
 
-import AttachedSchema from "./schema/attached";
+import AttachedSchema from "./attachedSchema";
 const AttachedModel = AttachedSchema(sequelize, DataTypes);
 
-import PostMSchema from "./schema/post";
-const PostModel = PostMSchema(sequelize, DataTypes);
+import PostSchema from "./postSchema";
+const PostModel = PostSchema(sequelize, DataTypes);
 
-import CommentSchema from "./schema/comment";
+import CommentSchema from "./commentSchema";
 const CommentModel = CommentSchema(sequelize, DataTypes);
 
-import TeamSchema from "./schema/team";
+import TeamSchema from "./teamSchema";
 const TeamModel = TeamSchema(sequelize, DataTypes);
 
-import MembershipSchema from "./schema/membership";
+import MembershipSchema from "./membershipSchema";
 const MembershipModel = MembershipSchema(sequelize, DataTypes);
 
-import LikeSchema from "./schema/like";
+import LikeSchema from "./likeSchema";
 const LikeModel = LikeSchema(sequelize, DataTypes);
 
-import FolderSchema from "./schema/folder";
+import FolderSchema from "./folderSchema";
 const FolderModel = FolderSchema(sequelize, DataTypes);
 
-import FDFavoriteSchema from "./schema/folderfavorite";
+import FDFavoriteSchema from "./folderfavoriteSchema";
 const FDFavoriteModel = FDFavoriteSchema(sequelize, DataTypes);
 
-import BMFavoriteSchema from "./schema/bookmarkfavorite";
+import BMFavoriteSchema from "./bookmarkfavoriteSchema";
 const BMFavoriteModel = BMFavoriteSchema(sequelize, DataTypes);
 
 // 관계 정의
@@ -262,13 +262,14 @@ UserModel.hasMany(BMFavoriteModel, { foreignKey: bmfavorite_fk_user });
 BMFavoriteModel.belongsTo(UserModel, { foreignKey: bmfavorite_fk_user });
 
 // 모델 동기화
-sequelize
-    .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
-    .then(console.log("모델 동기화 성공✅."))
-    .catch(console.log);
+// sequelize
+//     .sync({ alter: true }) // 전체 테이블 상태를 확인하고 일치하도록 수정 (force로 드롭가능)
+//     .then(console.log("모델 동기화 성공✅."))
+//     .catch(console.log);
 
 export {
     sequelize,
+    Op,
     UserModel,
     BookmarkModel,
     WebsiteModel,
@@ -283,5 +284,4 @@ export {
     FolderModel,
     FDFavoriteModel,
     BMFavoriteModel,
-    Op,
 };
