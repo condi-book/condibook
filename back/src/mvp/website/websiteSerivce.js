@@ -19,6 +19,7 @@ class websiteSerivce {
                 // 그대로 유지
                 return {
                     website: previous,
+                    keyword: previous.keywords,
                 };
             } else {
                 //업데이트 하기
@@ -37,11 +38,6 @@ class websiteSerivce {
                         description: updatedWebsite.meta_description,
                     });
                 }
-                await this.updateKeyword({
-                    keyword_id: previous.keywords.id,
-                    website_id: updatedWebsite.id,
-                    keyword: keyword,
-                });
                 return {
                     website: updatedWebsite,
                     keyword: keyword,
@@ -51,9 +47,9 @@ class websiteSerivce {
         // 웹사이트 생성
         const newWebsite = await Website.create({
             url,
-            meta_title: title,
-            meta_description: description,
-            img: img,
+            title,
+            description,
+            img,
         });
         if (!newWebsite) {
             return { errorMessage: "서버에러" };
@@ -165,32 +161,30 @@ class websiteSerivce {
         let keyword = null;
         let AI_SERVER_URL = process.env.AI_SERVER_URL;
 
-        axios
-            .post(`${AI_SERVER_URL}/translate`, {
+        try {
+            const res = await axios.post(`${AI_SERVER_URL}/translate`, {
                 title: title,
                 description: description,
-            })
-            .then((res) => {
-                keyword = res.data.hashtags.join(",");
-                console.log(keyword);
-                if (keyword_id) {
-                    this.updateKeyword({
-                        keyword_id: keyword_id,
-                        website_id: website_id,
-                        keyword: keyword,
-                    });
-                } else {
-                    this.createKeyword({
-                        website_id: website_id,
-                        keyword: keyword,
-                    });
-                }
-            })
-            .catch(() => {
-                console.log("AI 서버 에러❌");
             });
-
-        return keyword;
+            keyword = res.data.hashtags.join(",");
+            console.log(keyword);
+            if (keyword_id) {
+                this.updateKeyword({
+                    keyword_id: keyword_id,
+                    website_id: website_id,
+                    keyword: keyword,
+                });
+            } else {
+                this.createKeyword({
+                    website_id: website_id,
+                    keyword: keyword,
+                });
+            }
+            return keyword;
+        } catch (e) {
+            console.log("AI 서버 에러❌");
+            return keyword;
+        }
     }
     static async updateKeyword({ keyword_id, website_id, keyword }) {
         const result = await Keyword.updateOne({
