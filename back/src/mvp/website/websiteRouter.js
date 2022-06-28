@@ -40,8 +40,8 @@ websiteRouter.get("/list", async (req, res, next) => {
 websiteRouter.get("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
-        const result = await websiteSerivce.getWebsite({ id });
 
+        const result = await websiteSerivce.getWebsite({ id });
         checkErrorMessage(result);
 
         res.status(200).send(result);
