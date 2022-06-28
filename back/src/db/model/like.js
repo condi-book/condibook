@@ -34,6 +34,13 @@ class Like {
             nest: true,
         });
     }
+    static findLikesByPost({ post_id }) {
+        return LikeModel.findAll({
+            where: { post_id },
+            raw: true,
+            nest: true,
+        });
+    }
     static async findOneById({ id }) {
         const result = await LikeModel.findOne({
             where: { id },

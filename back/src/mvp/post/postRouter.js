@@ -30,7 +30,7 @@ postRouter.post("/", loginRequired, async (req, res, next) => {
             throw new Error(postInfo.errorMessage);
         }
 
-        res.status(201).json({ msg: "게시글 생성 성공!" });
+        res.status(201).send(postInfo);
     } catch (error) {
         next(error);
     }

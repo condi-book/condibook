@@ -1,4 +1,4 @@
-import { Post, User, Attached } from "../../db";
+import { Post, User, Attached, Like } from "../../db";
 
 class postService {
     static async createPost({ toCreate, user_id }) {
@@ -29,10 +29,11 @@ class postService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        const websiteInfo = attchedInfo.map((v) => {
+        const likesInfo = await Like.findLikesByPost({ post_id: id });
+        const websitesInfo = attchedInfo.map((v) => {
             return v.bookmark.website;
         });
-        return { postInfo, websiteInfo };
+        return { postInfo, websitesInfo, likesInfo };
     }
     static async getPostList({ query, pageNumber }) {
         let offset = 0;
