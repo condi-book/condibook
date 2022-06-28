@@ -86,9 +86,8 @@ const SideBar = () => {
 
 const Section = styled.section`
   height: 100vh;
-  width: 100px;
+  width: 50px;
   margin: 10px;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -100,10 +99,10 @@ const Section = styled.section`
     text-align: center;
   }
   span {
-    font-size: 40px;
+    font-size: 1.3em;
     font-weight: bold;
     color: ${({ theme }) => theme.subBlackColor};
-    padding: 10px;
+    padding: 5px;
     border-radius: 50%;
     background: white;
 
