@@ -58,8 +58,8 @@ const CommunityPage = () => {
     <>
       <Div>
         <div className="listWrapper">
-          <Row>
-            <Container>
+          <Row className="first">
+            <Container style={{ padding: 0 }}>
               <ButtonGroup>
                 <ButtonWrapper>
                   {radios.map((radio) => (
@@ -111,6 +111,11 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+  }
+
+  .first {
+    width: 100%;
   }
 
   .second {
@@ -159,6 +164,14 @@ const ButtonWrapper = styled.div`
 
   .side-btn {
     background: none;
+    border-radius: 5px;
+    font-size: 1.2vw;
+
+    &:hover {
+      font-weight: bold;
+      color: white;
+      background: ${({ theme }) => theme.mainColor};
+    }
   }
 `;
 
