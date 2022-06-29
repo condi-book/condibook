@@ -159,14 +159,16 @@ const MypageBookmarkDetail = () => {
                                   <img src={website.img} alt="이미지" />
                                 </Img>
                                 <div className="content">
-                                  <div>{`${website.meta_title.substr(
-                                    0,
-                                    30,
-                                  )}...`}</div>
-                                  <div className="sub">{`${website.url.substr(
-                                    0,
-                                    30,
-                                  )}...`}</div>
+                                  <div>
+                                    {website.meta_title.length >= 30
+                                      ? `${website.meta_title.substr(0, 30)}...`
+                                      : website.meta_title}
+                                  </div>
+                                  <div className="sub">
+                                    {website.url.length >= 50
+                                      ? `${website.url.substr(0, 50)}...`
+                                      : website.url}
+                                  </div>
                                 </div>
                                 <div>
                                   <span
@@ -211,7 +213,6 @@ const Div = styled.div`
   .detail-container {
     display: flex;
     width: 100%;
-    border: 2px solid green;
     margin: 10px;
     margin-left: 0;
     background: white;
@@ -231,7 +232,6 @@ const Div = styled.div`
     margin: auto;
     font-size: 30px;
     border: 1px solid rgba(76, 76, 76, 0.1);
-    // background: ${({ theme }) => theme.middleMainColor};
     background: white;
     border-radius: 10px;
     display: flex;
