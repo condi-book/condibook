@@ -5,6 +5,7 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import { BookmarkItem } from "./MyPageBookMark";
 import Modal from "layout/Modal";
 import * as Api from "../api";
+import { Alert, warningAlert } from "layout/Alert";
 
 interface MypageBookmarkCardProps {
   item: {
@@ -97,6 +98,19 @@ const MypageBookmarkCard = ({
     setTitle(e.target.value);
   };
 
+  // 폴더 삭제 로직
+  const folderDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    warningAlert(e, "해당 폴더를 삭제하시겠습니까?", async () => {
+      await handleRemove(e, item);
+      await setView(false);
+      await Alert.fire({
+        icon: "success",
+        title: "폴더 삭제 성공",
+      });
+    });
+  };
+
   return (
     <>
       <Div view={view} item={item} onClick={handleClick}>
@@ -125,19 +139,17 @@ const MypageBookmarkCard = ({
             >
               수정
             </li>
-            <li
-              ref={(el) => (viewMore.current[2] = el)}
-              onClick={(e) => {
-                handleRemove(e, item);
-                setView(false);
-              }}
-            >
+            <li ref={(el) => (viewMore.current[2] = el)} onClick={folderDelete}>
               삭제
             </li>
           </ul>
         </div>
         <div className="middle part">
-          <span>{item.title}</span>
+          <span>
+            {item.title.length >= 10
+              ? `${item.title.substr(0, 10)}...`
+              : item.title}
+          </span>
         </div>
         <div className="bottom part">
           <div>
@@ -185,8 +197,12 @@ const Div = styled.div<StyleProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 7px;
+  transition: box-shadow 0.1s linear;
   &:hover {
     cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
+    
   }
 
   .top-container {
@@ -195,10 +211,13 @@ const Div = styled.div<StyleProps>`
   }
 
   .top {
-    height: 50%;
+    height: 40%;
   }
   .middle {
     height: 20%;
+    span {
+      font-size: 1.1vw;
+    }
   }
   .part {
     box-sizing: border-box;
@@ -218,13 +237,20 @@ const Div = styled.div<StyleProps>`
   }
   .pe-7s-more {
     transform: rotate(90deg);
+    padding: 0px 5px 5px 5px;
+    margin: 5px 0 0 0;
+
+    &:hover {
+      cursor: pointer;
+      font-weight: bold;
+    }
   }
 
   .material-symbols-outlined {
-    color: ${({ item }) => (item.favorites === true ? "#FEE500" : "black")}; 
+    color: ${({ item }) => (item.favorites === true ? "#FEE500" : "#c0c0c0")}; 
+    font-size: 1.7vw;
 
     &:hover {
-      font-size: 1.5em;
       cursor: pointer;
       font-weight: bold;
     }
@@ -233,10 +259,10 @@ const Div = styled.div<StyleProps>`
   .dropdown {
     display: ${({ view }) => (view ? "block" : "none")};
     position: absolute;
-    margin-left: 12.5%;
+    margin-left: 11%;
     background-color: #f9f9f9;
     min-width: 60px;
-    padding: 8px;
+    padding: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     list-style-type: none;
 
@@ -245,13 +271,12 @@ const Div = styled.div<StyleProps>`
       text-align: center;
     }
     li:hover {
-      background: black;
+      background: ${({ theme }) => theme.profileBackground};
       color: white;
-      border-radius: 2px;
-      font-weight: bold;
       cursor: pointer;
     }
   }
+
   .pe-7s-folder {
     margin; auto;
     font-size: 3vw;

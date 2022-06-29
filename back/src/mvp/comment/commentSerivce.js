@@ -7,27 +7,33 @@ class commentSerivce {
             return { errorMessage };
         }
 
-        const userinfo = await User.findOne({ where: { id: user_id } });
-        const post_fk_id = await Post.findOne({ where: { id: post_id } });
+        const userInfo = await User.findOne({ user_id });
+        if (!userInfo) {
+            const errorMessage = "유저 정보가 없습니다.";
+            return { errorMessage };
+        }
+        const postInfo = await Post.findOneById({ id: post_id });
+        if (!postInfo) {
+            const errorMessage = "해당 게시글이 없습니다.";
+            return { errorMessage };
+        }
+        const userInfo_nickname = userInfo.nickname;
+        const postInfo_id = postInfo.id;
 
         const result = await Comment.create({
             content,
-            author: user_id,
-            author_name: userinfo.nickname,
-            post_id: post_fk_id.id,
+            user_id,
+            userInfo_nickname,
+            postInfo_id,
         });
         if (!result) {
-            const errorMessage = "해당 데이터가 없습니다.";
+            const errorMessage = "댓글 생성에 실패 하였습니다.";
             return { errorMessage };
         }
         return result;
     }
     static async getComment({ id }) {
-        const result = await Comment.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const result = await Comment.findById({ id });
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -35,7 +41,7 @@ class commentSerivce {
         return result;
     }
     static async getCommentList({ post_id }) {
-        const result = Comment.findAll({ where: { post_id } });
+        const result = Comment.getComments({ post_id });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -44,11 +50,7 @@ class commentSerivce {
         return result;
     }
     static async updateComment({ id, user_id, content }) {
-        const check = await Comment.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const check = await Comment.findById({ id });
         if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -57,27 +59,15 @@ class commentSerivce {
             const errorMessage = "댓글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        await Comment.update(
-            { content },
-            {
-                where: { id },
-                raw: true,
-                nest: true,
-            },
-        );
-        const result = await Comment.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        await Comment.updateOne({ id, content });
+
+        const result = await Comment.findById({ id });
+
         return result;
     }
     static async deleteComment({ id, user_id }) {
-        const check = await Comment.findOne({
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+        const check = await Comment.findById({ id });
+
         if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -86,9 +76,8 @@ class commentSerivce {
             const errorMessage = "댓글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        await Comment.destroy({
-            where: { id },
-        });
+        await Comment.deleteOne({ id });
+
         return check;
     }
 }

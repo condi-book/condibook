@@ -13,7 +13,12 @@ const Success = () => {
       </div>
       <div>
         <Button
-          onClick={() => window.open("http://localhost:3000", "newWindow")}
+          onClick={() =>
+            window.open(
+              "http://kdt-ai4-team14.elicecoding.com/bookmark",
+              "newWindow"
+            )
+          }
         >
           지금 확인하기 {">"}
         </Button>

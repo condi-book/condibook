@@ -1,4 +1,4 @@
-export default function WebsiteModel(sequelize, DataTypes) {
+export default function WebsiteSchema(sequelize, DataTypes) {
     return sequelize.define(
         "website",
         {
@@ -9,7 +9,7 @@ export default function WebsiteModel(sequelize, DataTypes) {
                 comment: "사이트 ID",
             },
             url: {
-                type: DataTypes.TEXT,
+                type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
                 comment: "사이트 링크",

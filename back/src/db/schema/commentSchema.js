@@ -1,17 +1,22 @@
-export default function KeywordModel(sequelize, DataTypes) {
+export default function CommentSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "keyword",
+        "comment",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "키워드 ID",
+                comment: "댓글 ID",
             },
-            keyword: {
+            content: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+                comment: "댓글 내용",
+            },
+            author_name: {
                 type: DataTypes.STRING,
-                allowNull: true,
-                comment: "키워드",
+                allowNull: false,
+                comment: "댓글 작성자 닉네임",
             },
         },
         {

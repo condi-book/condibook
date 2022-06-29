@@ -1,17 +1,17 @@
-export default function EmojiModel(sequelize, DataTypes) {
+export default function KeywordSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "emoji",
+        "keyword",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "이모지 ID",
+                comment: "키워드 ID",
             },
-            emoji: {
+            keyword: {
                 type: DataTypes.STRING,
                 allowNull: true,
-                comment: "이모지",
+                comment: "키워드",
             },
         },
         {

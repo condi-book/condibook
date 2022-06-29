@@ -6,6 +6,7 @@ import { Viewer } from "@toast-ui/react-editor";
 
 import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
+// import { UserStateContext } from "../App";
 
 import * as Api from "../api";
 
@@ -47,6 +48,7 @@ type postDetailRouteParams = {
 };
 const CommunityPostDetail = () => {
   const navigate = useNavigate();
+  const user = sessionStorage.getItem("user");
   const { postId } = useParams<
     keyof postDetailRouteParams
   >() as postDetailRouteParams; // 이렇게 하면 postId를 쿼리로 받을 수 있다.
@@ -55,7 +57,7 @@ const CommunityPostDetail = () => {
   const [fetchData, setFetchData] = React.useState<FetchData>(null); // 디테일 데이터
   const [isfetched, setIsfetched] = React.useState<boolean>(false); // 정보를 받아왔는지
   const [list, setList] = React.useState<Bookmark[]>(null); // 북마크 리스트
-  const [liked, setLiked] = React.useState<boolean>(true); // 보고있는 유저가 좋아요를 눌렀는지
+  const [liked, setLiked] = React.useState<boolean>(false); // 보고있는 유저가 좋아요를 눌렀는지
   const [link, setLink] = React.useState(""); // iframe에 넣을 link
   const [likeCount, setLikeCount] = React.useState(0); // 좋아요 개수
   const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
@@ -64,21 +66,21 @@ const CommunityPostDetail = () => {
 
   // 시간 계산하여 문자열 리턴해주는 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
-  const updatedTime = React.useCallback(
-    (createdDate: Date, updatedDate: Date) => {
-      let resultText = "";
-      if (createdDate === undefined || updatedDate === undefined) {
-        return resultText;
-      }
-      if (createdDate?.getTime() === updatedDate?.getTime()) {
-        return resultText;
-      } else {
-        resultText = "(" + CalcDate(updatedDate) + " 수정 됨)";
-        return resultText;
-      }
-    },
-    [fetchData],
-  );
+  // const updatedTime = React.useCallback(
+  //   (createdDate: Date, updatedDate: Date) => {
+  //     let resultText = "";
+  //     if (createdDate === undefined || updatedDate === undefined) {
+  //       return resultText;
+  //     }
+  //     if (createdDate?.getTime() === updatedDate?.getTime()) {
+  //       return resultText;
+  //     } else {
+  //       resultText = "(" + CalcDate(updatedDate) + " 수정 됨)";
+  //       return resultText;
+  //     }
+  //   },
+  //   [fetchData],
+  // );
 
   // 좋아요 버튼 클릭 시 이벤트
   const handleLikeClick = async () => {
@@ -167,30 +169,30 @@ const CommunityPostDetail = () => {
           views,
         }: FetchData = res.data.postInfo;
 
-        const convertFromStringToDate = (responseDate: string) => {
-          let dateComponents = responseDate.split("T");
-          let datePieces = dateComponents[0].split("-");
-          let timePieces = dateComponents[1].split(":");
-          let date = new Date(
-            parseInt(datePieces[0]),
-            parseInt(datePieces[1]) - 1,
-            parseInt(datePieces[2]),
-            parseInt(timePieces[0]),
-            parseInt(timePieces[1]),
-            parseInt(timePieces[2]),
-          );
-          return date;
-        };
+        // const convertFromStringToDate = (responseDate: string) => {
+        //   let dateComponents = responseDate.split("T");
+        //   let datePieces = dateComponents[0].split("-");
+        //   let timePieces = dateComponents[1].split(":");
+        //   let date = new Date(
+        //     parseInt(datePieces[0]),
+        //     parseInt(datePieces[1]) - 1,
+        //     parseInt(datePieces[2]),
+        //     parseInt(timePieces[0]),
+        //     parseInt(timePieces[1]),
+        //     parseInt(timePieces[2]),
+        //   );
+        //   return date;
+        // };
 
-        const paredCreatedAt = convertFromStringToDate(createdAt.toString());
-        const paredUpdatedAt = convertFromStringToDate(updatedAt.toString());
+        // const paredCreatedAt = convertFromStringToDate(createdAt.toString());
+        // const paredUpdatedAt = convertFromStringToDate(updatedAt.toString());
 
         setFetchData({
           author,
           author_name,
           content,
-          createdAt: paredCreatedAt,
-          updatedAt: paredUpdatedAt,
+          createdAt,
+          updatedAt,
           id,
           title,
           like_counts,
@@ -209,6 +211,16 @@ const CommunityPostDetail = () => {
             return { ...bookmark, checked: true };
           });
         });
+
+        const likedIDList = res.data.likesInfo.map(
+          (likeData: any) => likeData.user_id,
+        );
+        const userIndex = user.indexOf("id");
+        const userID = parseInt(user.slice(userIndex + 4, userIndex + 5));
+
+        if (likedIDList.includes(userID)) {
+          setLiked(true);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -228,6 +240,7 @@ const CommunityPostDetail = () => {
         }
       }
     };
+    console.log(user);
   }, []);
 
   React.useEffect(() => {
@@ -262,14 +275,16 @@ const CommunityPostDetail = () => {
               <div>
                 <span className="username">{fetchData?.author_name}</span>
                 <span className="separator">·</span>
-                <span>{createdTime(fetchData?.createdAt)}</span>
-                <span className="separator">·</span>
-
-                <span>
-                  {updatedTime(fetchData?.createdAt, fetchData?.updatedAt)}
-                </span>
+                <span>{createdTime(new Date(fetchData?.createdAt))}</span>
                 <span className="separator">·</span>
                 <span>조회수 {fetchData?.views}</span>
+                {/* <span className="separator">·</span>
+                <span>
+                  {updatedTime(
+                    new Date(fetchData?.createdAt),
+                    new Date(fetchData?.updatedAt),
+                  )}
+                </span> */}
               </div>
             </InfoContainer>
           </HeaderContainer>

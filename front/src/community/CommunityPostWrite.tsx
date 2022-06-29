@@ -85,7 +85,7 @@ const CommunityPostWrite = () => {
         };
 
         const res = await Api.post("posts", body);
-        console.log(res);
+        navigate(`/community/${res.data.id}`);
       }
     } catch (err) {
       console.error(err);
@@ -163,6 +163,7 @@ const CommunityPostWrite = () => {
       setIsModifying(true);
       fetchPostContent();
     }
+    console.log(postId, isModifying);
   }, []);
 
   // 원래 이미지 업로드를 지우고 s3 이미지 업로드 버튼으로 대체하는 함수
@@ -246,7 +247,7 @@ const CommunityPostWrite = () => {
             <span>나가기</span>
           </button>
           <div className="postBox">
-            {isModifying ? (
+            {!isModifying ? (
               <button className="hoverButton" onClick={handlePostButtonClick}>
                 <span>등록하기</span>
               </button>

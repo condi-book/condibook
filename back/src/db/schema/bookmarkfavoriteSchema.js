@@ -1,19 +1,19 @@
-export default function AttachedModel(sequelize, DataTypes) {
+export default function BMFavoriteSchema(sequelize, DataTypes) {
     return sequelize.define(
-        "attached",
+        "bmfavorite",
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
-                comment: "첨부 ID",
+                comment: "북마크 즐겨찾기 ID",
             },
         },
         {
             charset: "utf8mb4",
             collate: "utf8mb4_unicode_ci",
-            timestamps: false,
-            indexex: [
+            timestamps: true,
+            indexes: [
                 {
                     unique: true,
                     fields: ["id"],

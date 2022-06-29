@@ -14,11 +14,11 @@ const CommunityPostComments = ({ comments }: props) => {
       {comments.map((comment, idx) => (
         <Col key={`comment-${idx}`}>
           <Row>
-            <Col>
-              <div>{comment.author_name}</div>
-              <div>{CalcDate(comment.createdAt)}</div>
-            </Col>
-            <div></div>
+            <InfoContainer>
+              <span className="username">{comment.author_name}</span>
+              <span className="separator">|</span>
+              <span className="date">{CalcDate(comment.createdAt)}</span>
+            </InfoContainer>
           </Row>
           <ContentContainer>
             <p>{comment.content}</p>
@@ -34,8 +34,8 @@ export default CommunityPostComments;
 const Col = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  margin-top: 10px;
 `;
 
 const Row = styled.div`
@@ -50,4 +50,25 @@ const ContentContainer = styled.div`
   letter-spacing: -0.004em;
   word-break: keep-all;
   overflow-wrap: break-word;
+`;
+
+const InfoContainer = styled.div`
+  align-items: center;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+
+  .username {
+    font-weight: bold;
+  }
+
+  .date {
+    font-size: 0.875rem;
+    color: #8f9bb3;
+  }
+
+  .separator {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
 `;
