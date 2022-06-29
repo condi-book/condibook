@@ -64,7 +64,7 @@ class postService {
         }
         return result;
     }
-    static async updatePost({ id, toUpdate, user_id }) {
+    static async updatePost({ id, toUpdate, user_id, bookmark_id }) {
         const check = await Post.findOneById({ id });
         if (!check) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -74,7 +74,7 @@ class postService {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        await Post.updateOne({ id, toUpdate });
+        await Post.updateOne({ id, toUpdate, bookmark_id });
         const result = await Post.findOneById({ id });
         return result;
     }
@@ -88,9 +88,9 @@ class postService {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        Post.deleteOne({ id });
+        const result = Post.deleteOne({ id });
 
-        return check;
+        return result;
     }
     static async updateViews({ id }) {
         const result = Post.updateView({ id });

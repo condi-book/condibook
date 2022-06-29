@@ -1,4 +1,10 @@
-import { PostModel } from "../schema";
+import {
+    AttachedModel,
+    PostModel,
+    sequelize,
+    Op,
+    BookmarkModel,
+} from "../schema";
 
 class Post {
     static async create({ title, content, views, user_id, nickname }) {
@@ -59,14 +65,52 @@ class Post {
         return result;
     }
 
-    static async updateOne({ id, toUpdate }) {
-        const result = await PostModel.update(toUpdate, {
-            where: { id },
-            raw: true,
-            nest: true,
-        });
+    static async updateOne({ id, toUpdate, bookmark_id }) {
+        const t = await sequelize.transaction();
+        try {
+            const result = await PostModel.update(toUpdate, {
+                where: { id },
+                raw: true,
+                nest: true,
+                transaction: t,
+            });
 
-        return result;
+            if (bookmark_id) {
+                const check = await AttachedModel.findAll({
+                    where: { post_id: id },
+                    transaction: t,
+                });
+                if (check) {
+                    await AttachedModel.destroy({
+                        where: {
+                            [Op.or]: [{ post_id: null }, { post_id: id }],
+                        },
+                        transaction: t,
+                    });
+                }
+                const bookmarkInfo = await BookmarkModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: bookmark_id,
+                        },
+                    },
+                    raw: true,
+                    nest: true,
+                    transaction: t,
+                });
+                bookmarkInfo.map(async (v) => {
+                    await AttachedModel.create({
+                        bookmark_id: v.id,
+                        post_id: id,
+                    });
+                });
+                await t.commit();
+                return result;
+            }
+        } catch (e) {
+            t.rollback();
+            return { errorMessage: e };
+        }
     }
     static async updateView({ id }) {
         const result = await PostModel.increment(
@@ -94,10 +138,24 @@ class Post {
     }
 
     static async deleteOne({ id }) {
-        const result = await PostModel.destroy({
-            where: { id },
-        });
-        return result;
+        const t = await sequelize.transaction();
+        try {
+            const result = await PostModel.destroy({
+                where: { id },
+                transaction: t,
+            });
+
+            await AttachedModel.destroy({
+                where: { [Op.or]: [{ post_id: null }, { post_id: id }] },
+                transaction: t,
+            });
+            await t.commit();
+
+            return result;
+        } catch (e) {
+            await t.rollback();
+            return { errorMessage: e };
+        }
     }
 }
 
