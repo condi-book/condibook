@@ -1,8 +1,10 @@
+import { getCookie } from "auth/util/cookie";
 import React from "react";
 import styled from "styled-components";
 import { ContextProps } from "./Main";
 
-const Header = ({ userContext, handleNavigate }: ContextProps) => {
+const Header = ({ handleNavigate }: ContextProps) => {
+  const cookie = getCookie("userToken");
   return (
     <Div>
       <div className="sub-content">
@@ -12,7 +14,7 @@ const Header = ({ userContext, handleNavigate }: ContextProps) => {
             <a href="#service-info">서비스 소개</a>
           </button>
           <button className="login-button" onClick={handleNavigate}>
-            {userContext.user ? "마이페이지로 이동" : "로그인 / 회원가입"}
+            {cookie ? "마이페이지로 이동" : "로그인 / 회원가입"}
           </button>
         </div>
       </div>

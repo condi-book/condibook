@@ -1,28 +1,27 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Carousel from "./carousel/Carousel";
 import Footer from "./Footer";
 import Header from "./Header";
-import { UserStateContext } from "App";
+import { getCookie } from "auth/util/cookie";
 
 export interface ContextProps {
-  userContext: { user: any };
+  userContext?: { user: any };
   handleNavigate: () => void;
 }
 
 const Main = () => {
-  const userContext: ContextProps["userContext"] = useContext(UserStateContext);
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    if (userContext.user) navigate("/bookmark");
+    if (getCookie("userToken")) navigate("/bookmark");
     else navigate("/login");
   };
 
   return (
     <Wrap>
-      <Header userContext={userContext} handleNavigate={handleNavigate} />
+      <Header handleNavigate={handleNavigate} />
       <Container>
         <header className="part header">
           <div className="container">
