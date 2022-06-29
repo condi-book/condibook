@@ -14,7 +14,7 @@ model = Word2Vec.load('../model/train1_ko.bin') # 새로운 경로 지정.
 model_input_words = tuple(model.wv.index2word)
 
 del_arr = '''
-아 휴 아이구 아이쿠 아이고 어 나 우리 저희 따라 의해 을 를 에 의 가 으로 로 에게 뿐이다 의거하여 근거하여 입각하여 
+아 휴 아이구 아이쿠 아이고 어 나 우리 저희 따라 의해 을 를 에 의 가 으로 로 에게 뿐이다 의거하여 근거하여 입각하여 링 디 닝 웨 린 엘 높
 기준으로 예하면 예를 들면 예를 들자면 저 소인 소생 저희 지말고 하지마 하지마라 다른 물론 또한 그리고 
 해서는 안된다 뿐만 아니라 만이 아니다 만은 아니다 막론하고 관계없이 그치지 않다 그러나 그런데 하지만 든간에 
 따지지 않다 설사 비록 더라도 아니면 만 못하다 하는 편이 낫다 불문하고 향하여 향해서 향하다 쪽으로 틈타 이용하여 타다 오르다 제외하고 
@@ -68,7 +68,7 @@ def nouns_extractor(arr):
     
     #명사는 넣고, 영어는 재분류를 위해 빼기.
     for i in okt.pos(arr):
-        if i[1] == 'Noun':
+        if i[1] == 'Noun' and i[0] not in stopwords:
             reserverd_nouns.append(i[0])
         elif i[1] == 'Alpha':
             text = text + i[0]+' '
@@ -79,11 +79,12 @@ def nouns_extractor(arr):
         text1 = translator.translate(text, dest = 'ko').text
 
         for i in okt.pos(text1):
-            if i[1] == 'Noun':
+            if i[1] == 'Noun' and i[0] not in stopwords and len(i[0]) != 1:
                 reserverd_nouns.append(i[0])
     
     #불용어 제거 후 return.(중복 가능)
     # nouns = [i for i in reserverd_nouns if i not in stopwords] 요게 함수쪽으로 들어갈 경우 len(title_nouns) == 0 이 될 수 있음.
+    # print('noun_extractor.reserverd_nouns =',reserverd_nouns)
     return reserverd_nouns
 
 # model2 : 예비북마크 list.
@@ -136,16 +137,23 @@ def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
 def get_category(hashtags):
     categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리')]
     cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리'}
+    category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리']
     # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
+
+    for i in hashtags:
+        if i in category_list:
+            for j in categories:
+                if i in j:
+                    return cate_dic[j]
 
     weights = [0]*len(categories)
 
     for i in range(len(categories)):
         weights[i] = model.wv.n_similarity(categories[i],hashtags)
 
-    if max(weights) < 0.55:
-        return 'etc'
-    # ! max 값에 대한 조정이 필요함. 0.55는 API에 있는 것을 넣어 확인 후 임의로 조정한 것임..
+    # if max(weights) < 0.55:
+    #     return 'etc'
+    # ! max 값에 대한 조정이 필요함. 0.55는 API에 있는 것을 넣어 확인 후 임의로 조정한 것임.. 제거.
     # ! 최댓값 : 0.53~~
     # print(weights)
     

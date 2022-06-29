@@ -25,12 +25,11 @@ def translate():
 
     description = req['description']
 
-    title_nouns = nouns_extractor(title)
     description_nouns = nouns_extractor(description)
     reserved_bookmark_list = make_reserved_bookmark_list(title_nouns)
     check, recommend_keywords = keywords_sum_similarity(reserved_bookmark_list,description_nouns)
 
-    print('recommend_keywords =',recommend_keywords)
+    # print('recommend_keywords =',recommend_keywords)
 
     hashtags = []
     if check == True:
