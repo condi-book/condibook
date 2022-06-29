@@ -35,6 +35,10 @@ class postService {
         });
         return { postInfo, websitesInfo, likesInfo };
     }
+    static async getPostByQuery({ content }) {
+        const postInfo = await Post.findAllByQuery({ content });
+        return postInfo;
+    }
     static async getPostList({ query, pageNumber }) {
         let offset = 0;
         if (pageNumber > 1) {

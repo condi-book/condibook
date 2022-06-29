@@ -64,6 +64,45 @@ class Post {
         });
         return result;
     }
+    static async searchAllByQuery({ offset, content }) {
+        const excludes = { exclude: ["content"] };
+        const result = PostModel.findAll({
+            attributes: excludes,
+            where: {
+                title: { [Op.like]: `%${content}%` },
+            },
+            order: [["createdAt", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
+        return result;
+    }
+    static async searchAllByLikes({ offset, content }) {
+        const excludes = { exclude: ["content"] };
+        const result = PostModel.findAll({
+            attributes: excludes,
+            where: {
+                title: { [Op.like]: `%${content}%` },
+            },
+            order: [["like_counts", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
+        return result;
+    }
+    static async searchAllByViews({ offset, content }) {
+        const excludes = { exclude: ["content"] };
+        const result = PostModel.findAll({
+            attributes: excludes,
+            where: {
+                title: { [Op.like]: `%${content}%` },
+            },
+            order: [["views", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
+        return result;
+    }
 
     static async updateOne({ id, toUpdate, bookmark_id }) {
         const t = await sequelize.transaction();
