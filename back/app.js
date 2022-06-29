@@ -4,10 +4,10 @@ import express from "express";
 import { sequelize } from "./src/db/schema/index.js";
 import { indexRouter } from "./src/mvp/index.js";
 import { errorMiddleware } from "./src/middlewares/errorMiddleware.js";
+import { PORT } from "./src/config";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const PORT = process.env.PORT || 3030;
 
 app.use(cors());
 app.use(express.json());
@@ -29,7 +29,5 @@ app.listen(PORT, () => {
         console.log("DB 연결 성공✅");
     } catch (error) {
         console.error("DB 연결 실패", error);
-        // if (error.original.errno == 1049) {
-        // }
     }
 });
