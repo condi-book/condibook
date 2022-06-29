@@ -115,7 +115,7 @@ const MypageBookmarkCard = ({
     <>
       <Div view={view} item={item} onClick={handleClick}>
         <div className="top part">
-          <div className="top-container">
+          <div className="top-container" onClick={(e) => e.stopPropagation()}>
             <LinkPreview
               url={item.first_bookmark_url}
               width="35%"
