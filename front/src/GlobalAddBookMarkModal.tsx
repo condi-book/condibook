@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import * as Api from "./api";
 
@@ -16,7 +16,7 @@ type FolderProps = {
 
 const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
   const [link, setLink] = useState("");
-  const [inputShow, setInputShow] = useState(false);
+  // const [inputShow, setInputShow] = useState(false);
   const [data, setData] = useState<any>({});
   const [folder, setFolder] = useState("");
   const [detailShow, setDetailShow] = useState(false);
@@ -29,14 +29,26 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
       console.log(res.data);
       const copied = res.data;
       copied.folders.push({ title: "직접입력", id: 0 });
-      setData(copied);
-      setFolder(copied.folders[0].title);
-      setDetailShow(true);
+      const copiedList = copied.folders.map((item: any) => item.title);
+      console.log("copiedlist", copiedList);
+      if (copiedList.includes(copied.category.category)) {
+        setFolder(copied.category.category);
+        setData(copied);
+        setDetailShow(true);
+      } else {
+        copied.folders.unshift({ title: res.data.category.category, id: null });
+        setData(copied);
+        setFolder(copied.category.category);
+        setDetailShow(true);
+      }
     });
   };
 
   // 제출 이벤트
   const handleSubmit = () => {
+    const folderId = data.folders.find(
+      (f: FolderProps["folder"]) => f.title === folder,
+    ).id;
     if (folderInput) {
       Api.post("bookmarks", {
         folder_name: folderInput,
@@ -46,9 +58,10 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
         .then(() => {
           alert("데이터 전달 성공");
           close();
+          window.location.reload();
         })
         .catch(() => alert("실패"));
-    } else if (folder) {
+    } else if (folderId !== null) {
       Api.post(`bookmarks`, {
         folder_id: data.folders.find(
           (f: FolderProps["folder"]) => f.title === folder,
@@ -58,27 +71,36 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
         alert("성공");
         close();
       });
+    } else if (folderId === null) {
+      Api.post(`bookmarks`, {
+        folder_name: folder,
+        website_id: data.website.id,
+      }).then(() => {
+        alert("데이터 전달 성공");
+        close();
+        window.location.reload();
+      });
     } else {
       alert("선택된 폴더가 없습니다.");
     }
   };
 
-  useEffect(() => {
-    navigator.clipboard
-      .readText()
-      .then((text) => {
-        console.log("Pasted content: ", text);
-        if (text.startsWith("http")) {
-          setLink(text);
-        } else {
-          setInputShow(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setInputShow(true);
-      });
-  }, []);
+  // useEffect(() => {
+  //   navigator.clipboard
+  //     .readText()
+  //     .then((text) => {
+  //       console.log("Pasted content: ", text);
+  //       if (text.startsWith("http")) {
+  //         setLink(text);
+  //       } else {
+  //         setInputShow(true);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setInputShow(true);
+  //     });
+  // }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setLink(e.target.value);
@@ -105,30 +127,31 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
               ></span>
             </div>
             <div className="link-box">
-              {inputShow ? (
-                <div className="copy-link">
-                  <input
-                    className="link-input"
-                    type="text"
-                    onChange={handleChange}
-                    value={link}
-                    placeholder="링크를 입력해주세요"
-                  ></input>
-                  <button className="push-btn" onClick={handleInfo}>
-                    확인
-                  </button>
-                </div>
-              ) : (
-                <div className="copy-link" onClick={handleInfo}>
-                  <span className="pe-7s-link"></span>
-                  <div>
-                    <div>복사한 링크 붙여넣기</div>
-                    <div>
-                      {link.length >= 20 ? `${link.substring(0, 20)}...` : link}
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* {inputShow ? ( */}
+
+              <div className="copy-link">
+                <input
+                  className="link-input"
+                  type="text"
+                  onChange={handleChange}
+                  value={link}
+                  placeholder="링크를 입력해주세요"
+                ></input>
+                <button className="push-btn" onClick={handleInfo}>
+                  확인
+                </button>
+              </div>
+              {/* // ) : (
+              //   <div className="copy-link" onClick={handleInfo}>
+              //     <span className="pe-7s-link"></span>
+              //     <div>
+              //       <div>복사한 링크 붙여넣기</div>
+              //       <div>
+              //         {link.length >= 20 ? `${link.substring(0, 20)}...` : link}
+              //       </div>
+              //     </div>
+              //   </div>
+              // )} */}
             </div>
             {detailShow && (
               <div>
