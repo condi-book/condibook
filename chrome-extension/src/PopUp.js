@@ -38,7 +38,11 @@ const PopUp = ({
                   <img width="60px" src="/site-image.svg" alt="site-image" />
                 </div>
                 <div className="link-box">
-                  <div id="link-title">{title}</div>
+                  <div id="link-title">
+                    {title?.length >= 25
+                      ? `${title.substring(0, 25)}...`
+                      : title}
+                  </div>
                   <div id="link-url">
                     {url?.length >= 20 ? `${url.substring(0, 20)}...` : url}
                   </div>
