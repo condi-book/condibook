@@ -64,8 +64,33 @@ class Post {
         });
         return result;
     }
-    static async searchAllByQuery({ offset, content }) {
+    static async searchAllByQuery({ offset, content, type }) {
         const excludes = { exclude: ["content"] };
+        if (type == 1) {
+            const result = PostModel.findAll({
+                attributes: excludes,
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                        {
+                            content: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                    ],
+                },
+                order: [["views", "DESC"]],
+                offset: offset,
+                limit: 20,
+                raw: true,
+                nest: true,
+            });
+            return result;
+        }
         const result = PostModel.findAll({
             attributes: excludes,
             where: {
@@ -77,8 +102,31 @@ class Post {
         });
         return result;
     }
-    static async searchAllByLikes({ offset, content }) {
+    static async searchAllByLikes({ offset, content, type }) {
         const excludes = { exclude: ["content"] };
+        if (type == 1) {
+            const result = PostModel.findAll({
+                attributes: excludes,
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                        {
+                            content: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                    ],
+                },
+                order: [["views", "DESC"]],
+                offset: offset,
+                limit: 20,
+            });
+            return result;
+        }
         const result = PostModel.findAll({
             attributes: excludes,
             where: {
@@ -90,8 +138,31 @@ class Post {
         });
         return result;
     }
-    static async searchAllByViews({ offset, content }) {
+    static async searchAllByViews({ offset, content, type }) {
         const excludes = { exclude: ["content"] };
+        if (type == 1) {
+            const result = PostModel.findAll({
+                attributes: excludes,
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                        {
+                            content: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                    ],
+                },
+                order: [["views", "DESC"]],
+                offset: offset,
+                limit: 20,
+            });
+            return result;
+        }
         const result = PostModel.findAll({
             attributes: excludes,
             where: {
