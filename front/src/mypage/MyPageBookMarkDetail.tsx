@@ -85,11 +85,9 @@ const MypageBookmarkDetail = () => {
     Api.get(`folders/${params.folderId}/bookmarks`).then((res) => {
       // setList(res.data);
       console.log("폴더 상세 데이터", res.data);
-      setList(res.data);
+      setFolderTitle(res.data.folderTitle);
+      setList(res.data.bookmarks);
     });
-    Api.get(`folders/${params.folderId}`).then((res) =>
-      setFolderTitle(res.data.title),
-    );
   }, []);
 
   // 링크 삭제 로직
