@@ -153,15 +153,19 @@ class websiteSerivce {
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
-        } else {
+        }
+        if (result) {
             const Message = "삭제가 완료 되었습니다.";
             return Message;
         }
+
+        return result;
     }
     static async createKeyword({ website_id, keyword }) {
         const result = await Keyword.create({ website_id, keyword });
         if (!result) {
-            return { errorMessage: "키워드 생성 실패" };
+            const errorMessage = "해당 키워드가 없습니다.";
+            return { errorMessage };
         }
 
         return result;
