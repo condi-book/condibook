@@ -10,6 +10,7 @@ import Modal from "../layout/Modal";
 import SideBar from "../layout/SideBar";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
+import { warningAlert, Alert } from "layout/Alert";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -78,7 +79,6 @@ const MypageBookmarkDetail = () => {
       const copied = Array.from(list);
       copied.splice(copied.indexOf(item), 1);
       setList(copied);
-      alert("삭제 성공");
     });
   };
 
@@ -89,6 +89,18 @@ const MypageBookmarkDetail = () => {
       setList(res.data);
     });
   }, []);
+
+  // 링크 삭제 로직
+  const linkDelete = (e: React.MouseEvent, item: any) => {
+    e.stopPropagation();
+    warningAlert(e, "해당 링크를 삭제하시겠습니까?", async () => {
+      await handleDelete(e, item);
+      await Alert.fire({
+        icon: "success",
+        title: "링크 삭제 성공",
+      });
+    });
+  };
 
   return (
     <Div>
@@ -151,7 +163,7 @@ const MypageBookmarkDetail = () => {
                                 <div>
                                   <span
                                     className="pe-7s-trash icon"
-                                    onClick={(e) => handleDelete(e, item)}
+                                    onClick={(e) => linkDelete(e, item)}
                                   />
                                 </div>
                               </div>
