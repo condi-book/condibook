@@ -28,10 +28,13 @@ const App = () => {
   const [status, setStatus] = useState("READY");
   const [cookie, setCookie] = useState("");
   // 폴더 리스트, url
-  const [folderList, setFolderList] = useState([]);
+  const [data, setData] = useState([]);
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [id, setId] = useState("");
+  const [folder, setFolder] = useState("");
+
+  const handleFolderChange = (e) => setFolder(e.target.value);
 
   useEffect(() => {
     chrome.cookies
@@ -58,13 +61,25 @@ const App = () => {
             }),
           })
             .then((res) => res.json())
-            .then((data) => {
+            .then(async (data) => {
               setTitle(data.website.meta_title);
               setId(data.website.id);
-              const copied = Array.from(data.folders);
-              copied.push({ title: "직접입력", id: 0 });
-              console.log(copied);
-              setFolderList(copied);
+              console.log(data);
+              const copied = data;
+              const copiedList = copied.folders.map((item) => item.title);
+              await console.log("copiedlist", copiedList);
+              await copied.folders.push({ title: "직접입력", id: 0 });
+              if (copiedList.includes(copied.category.category)) {
+                setFolder(copied.category.category);
+                setData();
+              } else {
+                copied.folders.unshift({
+                  title: data.category.category,
+                  id: null,
+                });
+                setData(copied);
+                setFolder(copied.category.category);
+              }
             })
             .catch((err) => {
               console.log(err.message);
@@ -85,10 +100,12 @@ const App = () => {
           <PopUp
             handlePage={handlePage}
             url={url}
-            folderList={folderList}
+            data={data}
             title={title}
             cookie={cookie}
             id={id}
+            folder={folder}
+            handleFolderChange={handleFolderChange}
           />
         ) : (
           <Success />
