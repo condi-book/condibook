@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
+import { Team } from "./TeamPage";
 
 type StyleProps = {
   show: boolean;
@@ -12,15 +13,21 @@ type FolderStyleProps = {
 
 interface Props {
   setCreateModalShow: (show: boolean) => void;
+  setInviteModalShow: (show: boolean) => void;
+  setTeam: (team: Team) => void;
 }
 
-const TeamSidebar = ({ setCreateModalShow }: Props) => {
-  const [teams, setTeams] = React.useState([]);
-  const [teamFolders, setTeamFolders] = React.useState([]);
-  const [tab, setTab] = React.useState("팀을 선택하세요");
-  const [tabShow, setTabShow] = React.useState(false);
-  const [view, setView] = React.useState(false);
-  const viewMore: any = React.useRef([]);
+const TeamSidebar = ({
+  setCreateModalShow,
+  setInviteModalShow,
+  setTeam,
+}: Props) => {
+  const [teams, setTeams] = React.useState([]); // 사용자 팀목록
+  const [teamFolders, setTeamFolders] = React.useState([]); // 팀 폴더
+  const [tab, setTab] = React.useState("팀을 선택하세요"); // 팀 선택
+  const [tabShow, setTabShow] = React.useState(false); // 팀 드랍메뉴
+  const [view, setView] = React.useState(false); // 폴더 더보기
+  const viewMore: any = React.useRef([]); // 폴더 더보기 ref
 
   // 드랍메뉴에 보여줄 폴더리스트
   const teamsList = (
@@ -38,12 +45,25 @@ const TeamSidebar = ({ setCreateModalShow }: Props) => {
     (e: React.MouseEvent<HTMLDivElement>) => {
       setTab((e.target as HTMLElement).textContent);
       setTabShow((prev) => !prev);
+      setTeam(
+        teams.find(
+          (team) => team.name === (e.target as HTMLElement).textContent,
+        ),
+      );
     },
-    [teams],
+    [teams, tab],
   );
 
   const handleCreateTeam = () => {
     setCreateModalShow(true);
+  };
+
+  const handleInvite = () => {
+    if (tab === "팀을 선택하세요") {
+      alert("팀을 선택해주세요");
+      return;
+    }
+    setInviteModalShow(true);
   };
 
   const clickOutside = (e: any) => {
@@ -117,7 +137,7 @@ const TeamSidebar = ({ setCreateModalShow }: Props) => {
               </div>
             </div>
           </DropDown>
-          <ButtonContainer>
+          <ButtonContainer onClick={handleInvite}>
             <ButtonSpan className="icon pe-7s-add-user"></ButtonSpan>
             <ButtonSpan>초대</ButtonSpan>
           </ButtonContainer>

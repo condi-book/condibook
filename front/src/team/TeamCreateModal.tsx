@@ -3,12 +3,20 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import * as Api from "../api";
+import { Team } from "./TeamPage";
+import { Alert } from "../layout/Alert";
 
 interface Props {
   createModalShow: boolean;
   setCreateModalShow: (show: boolean) => void;
+  setTeam: (team: Team) => void;
 }
-const TeamCreateModal = ({ createModalShow, setCreateModalShow }: Props) => {
+
+const TeamCreateModal = ({
+  createModalShow,
+  setCreateModalShow,
+  setTeam,
+}: Props) => {
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
   const [explanation, setExplanation] = React.useState("");
@@ -22,9 +30,22 @@ const TeamCreateModal = ({ createModalShow, setCreateModalShow }: Props) => {
       });
       console.log(res);
       setCreateModalShow(false);
-      navigate("/team/1", { replace: true });
+      setTeam({
+        team_id: res.data.id,
+        name: res.data.name,
+        explanation: res.data.explanation,
+      });
+      await Alert.fire({
+        icon: "success",
+        title: "팀 생성 성공",
+      });
+      navigate(`/team/${res.data.id}`);
     } catch (err) {
       console.log(err);
+      await Alert.fire({
+        icon: "error",
+        title: "팀 생성 실패",
+      });
     }
   };
   return (
