@@ -7,7 +7,7 @@ const GlobalStyle = createGlobalStyle`
   };
 
   button {
-    background:#F8F9FC;
+    // background:#F8F9FC;
     border-radius: 30px;
     border: none;
 

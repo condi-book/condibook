@@ -22,13 +22,10 @@ export default Community;
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
-  height: 100vh;
+  background: #eff6fc;
 
   .community-container {
-    margin: auto;
-    width: 90vw;
-    border: 2px solid red;
-    height: 100%;
+    width: 100%;
+    padding: 10px 10px 10px 0;
   }
 `;

@@ -91,23 +91,30 @@ export default CommunityPostList;
 
 const Div = styled.div`
   display: flex;
-  margin-top: 2rem;
-  align-items: center;
+  // margin-top: 2rem;
+  width: 100%;
 `;
 const Col = styled.div`
   width: 15rem;
-  border: 2px solid;
-  border-radius: 3px;
+  border: ${({ theme }) => theme.border};
+  border-radius: 5px;
+  background: white;
   margin: 1rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  transition: box-shadow 0.1s linear;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const Row = styled.div`
   display: flex;
-  margin: -1rem;
+  // margin: -1rem;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;

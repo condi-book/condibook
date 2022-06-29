@@ -82,57 +82,64 @@ const Search = () => {
   return (
     <Div show={show} category={category}>
       {keyboardContext.sidebar === true && <SideBar />}
-      <div className="search-section">
-        <div className="search-container">
-          <div className="search-box">
-            <div className="search-dropdown">
-              <div
-                className="search-dropdown-header"
-                onClick={() => setShow((prev) => !prev)}
-              >
-                <p>{tab}</p>
-                <span className="pe-7s-angle-down" />
+      <div className="search-border">
+        <div className="search-section">
+          <div className="search-container">
+            <div className="search-box">
+              <div className="search-dropdown">
+                <div
+                  className="search-dropdown-header"
+                  onClick={() => setShow((prev) => !prev)}
+                >
+                  <p>{tab}</p>
+                  <span className="pe-7s-angle-down" />
+                </div>
+                <div className="search-select">
+                  <div onClick={handleTab}>전체 검색</div>
+                  <div onClick={handleTab}>나의 콘텐츠 검색</div>
+                </div>
               </div>
-              <div className="search-select">
-                <div onClick={handleTab}>전체 검색</div>
-                <div onClick={handleTab}>나의 콘텐츠 검색</div>
-              </div>
-            </div>
-            <div className="search-input">
-              <div className="search-input-box">
-                {word && (
-                  <button
-                    onClick={handleDelete}
-                    className="search-delete-button"
-                  >
-                    <img
-                      src="static/img/close_button.svg"
-                      width="22"
-                      height="22"
-                    />
+              <div className="search-input">
+                <div className="search-input-box">
+                  {word && (
+                    <button
+                      onClick={handleDelete}
+                      className="search-delete-button"
+                    >
+                      <img
+                        src="static/img/close_button.svg"
+                        width="22"
+                        height="22"
+                      />
+                    </button>
+                  )}
+                  <button>
+                    <span className="pe-7s-search"></span>
                   </button>
-                )}
-                <button>
-                  <span className="pe-7s-search"></span>
-                </button>
-                <input
-                  value={word}
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="검색어를 입력하세요"
-                />
+                  <input
+                    value={word}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="검색어를 입력하세요"
+                  />
+                </div>
               </div>
             </div>
           </div>
+          {word ? (
+            <SearchList />
+          ) : (
+            <div className="search-image">
+              <img
+                src="/static/img/allsearch.svg"
+                alt="검색"
+                width="30%"
+                height="30%"
+              />
+              <p>원하는 콘텐츠를 검색해보세요</p>
+            </div>
+          )}
         </div>
-        {word ? (
-          <SearchList />
-        ) : (
-          <div className="search-image">
-            <img src="static/img/search.svg" width="30%" height="30%" />
-            <p>원하는 콘텐츠를 검색해보세요</p>
-          </div>
-        )}
       </div>
     </Div>
   );
@@ -141,27 +148,32 @@ const Search = () => {
 const Div = styled.div<StyleProps>`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
-  height: 100vh;
+  background: #eff6fc;
+
+  .search-border {
+    width: 100%;
+    padding: 10px 10px 10px 0;
+  }
 
   .search-section {
-    margin: auto;
-    width: 90vw;
-    border: 2px solid red;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
     height: 100%;
+    padding: 10px;
   }
   .search-container {
-    position: sticky;
+    // position: sticky;
     display: flex;
     justify-content: center;
     width: 100%;
     height: 15%;
-    padding-top: 5%;
+    padding-top: 20px;
   }
   .search-box {
     position: relative;
-    width: 900px;
-    height: 50px;
+    width: 70%;
+    height: 40px;
     -webkit-box-pack: justify;
     display: flex;
     justify-content: space-between;
@@ -174,7 +186,7 @@ const Div = styled.div<StyleProps>`
       flex-direction: column;
       -webkit-box-pack: center;
       justify-content: center;
-      width: 200px;
+      width: 30%;
       height: 100%;
       margin-right: 10px;
 
@@ -186,7 +198,7 @@ const Div = styled.div<StyleProps>`
         -webkit-box-pack: center;
         justify-content: center;
         align-items: flex-start;
-        width: 200px;
+        width: 80%;
         padding: 50px 20px 0px;
         border-radius: 8px;
         background-color: rgb(235, 235, 235);
@@ -202,7 +214,7 @@ const Div = styled.div<StyleProps>`
           -webkit-box-align: center;
           align-items: center;
           width: 100%;
-          height: 35px;
+          height: 40px;
           color: rgb(96, 96, 96);
           font-size: 16px;
           letter-spacing: -0.05em;
@@ -219,8 +231,8 @@ const Div = styled.div<StyleProps>`
         justify-content: space-between;
         -webkit-box-align: center;
         align-items: center;
-        width: 200px;
-        height: 50px;
+        width: 80%;
+        height: 40px;
         padding: 0px 20px;
         border-radius: 8px;
         color: rgb(96, 96, 96);
@@ -249,7 +261,7 @@ const Div = styled.div<StyleProps>`
     justify-content: center;
     align-items: flex-start;
     width: calc(100% - 174px);
-    height: 50px;
+    height: 40px;
 
     .search-input-box {
       position: absolute;
@@ -263,7 +275,7 @@ const Div = styled.div<StyleProps>`
 
       input {
         width: 100%;
-        height: 50px;
+        height: 40px;
         padding-left: 20px;
         color: rgb(96, 96, 96);
         background-color: rgb(235, 235, 235);
@@ -292,7 +304,7 @@ const Div = styled.div<StyleProps>`
 
       .pe-7s-search {
         position: absolute;
-        top: 13px;
+        top: 9px;
         right: 22px;
         width: 18.59px;
         height: 18px;
@@ -308,10 +320,12 @@ const Div = styled.div<StyleProps>`
     justify-content: center;
     align-items: center;
     height: 85%;
+    background: #f5f5f5;
+    border-radius: 10px;
 
     p {
       margin-top: 5%;
-      font-size: 30px;
+      font-size: 1.5vw;
       font-weight: bold;
     }
   }

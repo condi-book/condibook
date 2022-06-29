@@ -199,6 +199,7 @@ const Div = styled.div<StyleProps>`
   justify-content: space-between;
   border-radius: 7px;
   transition: box-shadow 0.1s linear;
+  border: ${({ theme }) => theme.border};
   &:hover {
     cursor: pointer;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
