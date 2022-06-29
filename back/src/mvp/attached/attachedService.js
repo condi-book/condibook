@@ -12,13 +12,7 @@ class attachedService {
             return { errorMessage };
         }
 
-        const bookmarkInfo = await Bookmark.findWithBookmarkId({ bookmark_id });
-        const creation = bookmarkInfo.map(async (v) => {
-            await Attached.create({
-                bookmark_id: v.id,
-                post_id,
-            });
-        });
+        const creation = await Attached.bulkCreate({ bookmark_id, post_id });
         if (!creation) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -82,10 +76,7 @@ class attachedService {
                 where: { post_id: null },
             });
         }
-        const result = await Attached.findAll({
-            where: { post_id: null },
-        });
-        return result;
+        return check;
     }
 }
 

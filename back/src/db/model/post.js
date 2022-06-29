@@ -1,4 +1,10 @@
-import { PostModel } from "../schema";
+import {
+    AttachedModel,
+    PostModel,
+    sequelize,
+    Op,
+    BookmarkModel,
+} from "../schema";
 
 class Post {
     static async create({ title, content, views, user_id, nickname }) {
@@ -58,15 +64,163 @@ class Post {
         });
         return result;
     }
-
-    static async updateOne({ id, toUpdate }) {
-        const result = await PostModel.update(toUpdate, {
-            where: { id },
-            raw: true,
-            nest: true,
+    static async searchAllByQuery({ offset, content, type }) {
+        const excludes = { exclude: ["content"] };
+        if (type == 1) {
+            const result = PostModel.findAll({
+                attributes: excludes,
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                        {
+                            content: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                    ],
+                },
+                order: [["views", "DESC"]],
+                offset: offset,
+                limit: 20,
+                raw: true,
+                nest: true,
+            });
+            return result;
+        }
+        const result = PostModel.findAll({
+            attributes: excludes,
+            where: {
+                title: { [Op.like]: `%${content}%` },
+            },
+            order: [["createdAt", "DESC"]],
+            offset: offset,
+            limit: 20,
         });
-
         return result;
+    }
+    static async searchAllByLikes({ offset, content, type }) {
+        const excludes = { exclude: ["content"] };
+        if (type == 1) {
+            const result = PostModel.findAll({
+                attributes: excludes,
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                        {
+                            content: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                    ],
+                },
+                order: [["views", "DESC"]],
+                offset: offset,
+                limit: 20,
+            });
+            return result;
+        }
+        const result = PostModel.findAll({
+            attributes: excludes,
+            where: {
+                title: { [Op.like]: `%${content}%` },
+            },
+            order: [["like_counts", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
+        return result;
+    }
+    static async searchAllByViews({ offset, content, type }) {
+        const excludes = { exclude: ["content"] };
+        if (type == 1) {
+            const result = PostModel.findAll({
+                attributes: excludes,
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                        {
+                            content: {
+                                [Op.like]: `%${content}%`,
+                            },
+                        },
+                    ],
+                },
+                order: [["views", "DESC"]],
+                offset: offset,
+                limit: 20,
+            });
+            return result;
+        }
+        const result = PostModel.findAll({
+            attributes: excludes,
+            where: {
+                title: { [Op.like]: `%${content}%` },
+            },
+            order: [["views", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
+        return result;
+    }
+
+    static async updateOne({ id, toUpdate, bookmark_id }) {
+        const t = await sequelize.transaction();
+        try {
+            const result = await PostModel.update(toUpdate, {
+                where: { id },
+                raw: true,
+                nest: true,
+                transaction: t,
+            });
+
+            if (bookmark_id) {
+                const check = await AttachedModel.findAll({
+                    where: { post_id: id },
+                    transaction: t,
+                });
+                if (check) {
+                    await AttachedModel.destroy({
+                        where: {
+                            [Op.or]: [{ post_id: null }, { post_id: id }],
+                        },
+                        transaction: t,
+                    });
+                }
+                const bookmarkInfo = await BookmarkModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: bookmark_id,
+                        },
+                    },
+                    raw: true,
+                    nest: true,
+                    transaction: t,
+                });
+                bookmarkInfo.map(async (v) => {
+                    await AttachedModel.create({
+                        bookmark_id: v.id,
+                        post_id: id,
+                    });
+                });
+                await t.commit();
+                return result;
+            }
+        } catch (e) {
+            t.rollback();
+            return { errorMessage: e };
+        }
     }
     static async updateView({ id }) {
         const result = await PostModel.increment(
@@ -94,10 +248,24 @@ class Post {
     }
 
     static async deleteOne({ id }) {
-        const result = await PostModel.destroy({
-            where: { id },
-        });
-        return result;
+        const t = await sequelize.transaction();
+        try {
+            const result = await PostModel.destroy({
+                where: { id },
+                transaction: t,
+            });
+
+            await AttachedModel.destroy({
+                where: { [Op.or]: [{ post_id: null }, { post_id: id }] },
+                transaction: t,
+            });
+            await t.commit();
+
+            return result;
+        } catch (e) {
+            await t.rollback();
+            return { errorMessage: e };
+        }
     }
 }
 

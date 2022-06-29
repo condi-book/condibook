@@ -77,7 +77,7 @@ postRouter.put("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
         const user_id = req.current.user_id;
-        const { title, content } = req.body ?? "";
+        const { title, content, bookmark_id } = req.body ?? "";
 
         const toUpdate = {
             title,
@@ -87,11 +87,11 @@ postRouter.put("/:id", loginRequired, async (req, res, next) => {
             id,
             toUpdate,
             user_id,
+            bookmark_id,
         });
         if (update.errorMessage) {
             throw new Error(update.errorMessage);
         }
-
         res.status(201).send(update);
     } catch (error) {
         next(error);
@@ -102,8 +102,8 @@ postRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const id = req.params.id;
         const user_id = req.current.user_id;
-        const deletePost = await postService.deletePost({ id, user_id });
 
+        const deletePost = await postService.deletePost({ id, user_id });
         if (deletePost.errorMessage) {
             throw new Error(deletePost.errorMessage);
         }
