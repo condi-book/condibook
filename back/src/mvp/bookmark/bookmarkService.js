@@ -106,7 +106,7 @@ class bookmarkService {
                 result.website.keywords = result.website.keywords?.keyword;
                 return result;
             });
-            return bookmarks;
+            return { folderTitle: folder.title, bookmarks };
         } catch (e) {
             return { errorMessage: e };
         }
