@@ -111,6 +111,7 @@ const CardFooter = styled.div`
     height: 100%;
     margin-right: 0.5rem;
     font-size: 20px;
-    color: pink;
+    color: ${({ theme }) => theme.subRedColor};
+    font-weight: bold;
   }
 `;

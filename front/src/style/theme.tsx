@@ -14,6 +14,8 @@ const subRedColor: String = "#f45162";
 const background: String = "#eff6fc";
 const boxShadow: String =
   "0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2)";
+const subGrayColor: String = "#f5f5f5";
+const border: String = "1px solid rgba(76, 76, 76, 0.5)";
 const theme = {
   mainColor,
   profileBackground,
@@ -24,6 +26,8 @@ const theme = {
   middleMainColor,
   background,
   boxShadow,
+  subGrayColor,
+  border,
 };
 
 export default theme;

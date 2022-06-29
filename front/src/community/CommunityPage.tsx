@@ -74,15 +74,17 @@ const CommunityPage = () => {
                   ))}
                 </ButtonWrapper>
                 <ButtonWrapper>
-                  <button onClick={handleSearchClick}>
+                  <button className="side-btn" onClick={handleSearchClick}>
                     <span className="pe-7s-search"></span>
                   </button>
-                  <button onClick={handlePostClick}>새 글 작성</button>
+                  <button className="side-btn" onClick={handlePostClick}>
+                    새 글 작성
+                  </button>
                 </ButtonWrapper>
               </ButtonGroup>
             </Container>
           </Row>
-          <Row>
+          <Row className="second">
             <Container>
               <CommunityPostList sortState={sortState} />
             </Container>
@@ -98,7 +100,9 @@ export default CommunityPage;
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
+  background: white;
+  border-radius: 10px;
+  height: 100%;
 
   .sidebarWrapper {
     position: fixed;
@@ -107,13 +111,19 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    border: 2px solid black;
+  }
+
+  .second {
+    height: 100%;
+    margin: 10px;
+    border-radius: 10px;
+    background: ${({ theme }) => theme.subGrayColor};
   }
 `;
 
 const Row = styled.div`
   display: flex;
-  margin: -1rem;
+  // margin: -1rem;
   flex-wrap: wrap;
   flex-direction: row;
   padding: 8px 0 8px 0;
@@ -131,7 +141,10 @@ const ButtonGroup = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
+  border-radius: 5px;
+  background: ${({ theme }) => theme.subGrayColor};
   position: relative;
+  padding: 3px;
   button {
     display: flex;
     align-items: center;
@@ -140,8 +153,12 @@ const ButtonWrapper = styled.div`
 
   span {
     align-self: baseline;
-    font-size: 20px;
+    font-size: 2vw;
     font-weight: bold;
+  }
+
+  .side-btn {
+    background: none;
   }
 `;
 
@@ -150,14 +167,13 @@ const SortButton = styled.button<StyleProps>`
   align-items: center;
   justify-content: center;
   width: 100px;
-  height: 40px;
-  border: 1px solid black;
+  height: 35px;
   border-radius: 5px;
   margin: 0 0.2rem;
   background: ${(props) =>
-    props.sortState === props.value ? "black" : "white"};
+    props.sortState === props.value ? props.theme.mainColor : "none"};
   color: ${(props) => (props.sortState === props.value ? "white" : "black")};
-  font-size: 14px;
+  font-size: 1vw;
   font-weight: bold;
   cursor: pointer;
 `;
