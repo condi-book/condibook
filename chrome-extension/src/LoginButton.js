@@ -19,6 +19,14 @@ const Div = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 10px;
+  background:linear-gradient(
+    135deg,
+    rgba(18, 194, 233, 0.2) 0.61%,
+    rgba(196, 113, 237, 0.2) 51.86%,
+    rgba(246, 79, 89, 0.2) 100%
+  );
+  border-radius: 10px;
 
   button {
     font-size: 20px;
@@ -31,6 +39,7 @@ const Div = styled.div`
     &:hover {
       background : #111215;
       font-weight: bold;
+      cursor: pointer;
   }
 `;
 

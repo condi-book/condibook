@@ -4,6 +4,7 @@ import Success from "./Success";
 import { useEffect, useState } from "react";
 import LoginButton from "./LoginButton";
 import Loading from "./Loading";
+import Fail from "./Fail";
 /* global chrome */
 // 탭 링크 가져오기
 function getCurrentTabUrl(callback) {
@@ -33,8 +34,26 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [id, setId] = useState("");
   const [folder, setFolder] = useState("");
+  // 폴더명, 직접입력 인풋 및 값 상태 관리
+  const [input, setInput] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
-  const handleFolderChange = (e) => setFolder(e.target.value);
+  // 폴더 선택 이벤트
+  const handleFolderChange = (e) => {
+    setFolder(e.target.value);
+
+    if (e.target.value === "직접입력") {
+      setInput(true);
+    } else {
+      setInput(false);
+      setInputValue("");
+    }
+  };
+
+  // 직접입력 인풋 이벤트
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
 
   useEffect(() => {
     chrome.cookies
@@ -100,7 +119,7 @@ const App = () => {
             .catch((err) => {
               console.log(err.message);
               console.log("에러났어요");
-              setStatus("FAIL");
+              setStatus("NOT");
             });
         });
 
@@ -122,14 +141,19 @@ const App = () => {
             id={id}
             folder={folder}
             handleFolderChange={handleFolderChange}
+            handleInputChange={handleInputChange}
+            input={input}
+            inputValue={inputValue}
           />
         ) : (
-          <Success />
+          <Success folder={folder} inputValue={inputValue} />
         )}
       </>
     );
   } else if (status === "FAIL") {
     return <LoginButton />;
+  } else if (status === "NOT") {
+    return <Fail />;
   } else {
     return <Loading />;
   }

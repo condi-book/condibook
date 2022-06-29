@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Success = () => {
+const Success = ({ folder, inputValue }) => {
   return (
     <Div className="success">
       <Img src="/logo.png" alt="logo" width="30" />
@@ -8,7 +8,12 @@ const Success = () => {
       <div className="middle">
         <img width="150px" src="/success.svg" alt="성공" />
         <div className="folder">
-          <div>저장 폴더 : </div>
+          <div>
+            저장 폴더 :{" "}
+            <span id="folderName">
+              {folder === "직접입력" ? inputValue : folder}
+            </span>
+          </div>
         </div>
       </div>
       <div>
@@ -35,6 +40,13 @@ const Div = styled.div`
   justify-content: space-around;
   padding: 10px;
   align-items: center;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(18, 194, 233, 0.2) 0.61%,
+    rgba(196, 113, 237, 0.2) 51.86%,
+    rgba(246, 79, 89, 0.2) 100%
+  );
 
   .middle {
     text-align: center;
@@ -42,6 +54,11 @@ const Div = styled.div`
   .folder {
     div {
       font-size: 16px;
+    }
+
+    #folderName {
+      font-size: 18px;
+      font-weight: bold;
     }
   }
 `;

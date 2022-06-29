@@ -9,28 +9,10 @@ const FolderSelect = ({
   id,
   folder,
   handleFolderChange,
+  handleInputChange,
+  input,
+  inputValue,
 }) => {
-  // 폴더명, 직접입력 인풋 및 값 상태 관리
-  const [input, setInput] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
-  // 폴더 선택 이벤트
-  const handleChange = (e) => {
-    handleFolderChange(e);
-
-    if (e.target.value === "직접입력") {
-      setInput(true);
-    } else {
-      setInput(false);
-      setInputValue("");
-    }
-  };
-
-  // 직접입력 인풋 이벤트
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
   // 제출 이벤트
   const handleClick = () => {
     const folderId = data.folders.find((f) => f.title === folder).id;
@@ -91,36 +73,35 @@ const FolderSelect = ({
   return (
     <>
       <div id="confirm-folder">
-        <div id="title">
-          {folder === data?.category?.category && "AI 추천 폴더"}
-        </div>
-        <div id="category">{folder === "직접입력" ? inputValue : folder}</div>
+        <div id="title">* AI 추천 폴더 *</div>
+        <div id="category">{data?.category?.category}</div>
       </div>
       <div className="popup">
-        <div className="popup-container"></div>
-        <div>
-          <div id="label">저장 폴더 *</div>
-          <select
-            defaultValue={data?.category?.category}
-            className="select"
-            name="category"
-            onChange={handleChange}
-          >
-            {data?.folders?.map((item) => (
-              <option key={`option-${item.title}`} value={item.title}>
-                {item.title}
-              </option>
-            ))}
-          </select>
+        <div className="popup-container">
+          <div>
+            <div id="label">저장 폴더 *</div>
+            <select
+              defaultValue={data?.category?.category}
+              className="select"
+              name="category"
+              onChange={handleFolderChange}
+            >
+              {data?.folders?.map((item) => (
+                <option key={`option-${item.title}`} value={item.title}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <input
+            type="text"
+            className="input"
+            value={inputValue}
+            placeholder={input ? "폴더명을 입력하세요" : ""}
+            disabled={input ? false : true}
+            onChange={handleInputChange}
+          ></input>
         </div>
-        <input
-          type="text"
-          className="input"
-          value={inputValue}
-          placeholder={input ? "폴더명을 입력하세요" : ""}
-          disabled={input ? false : true}
-          onChange={handleInputChange}
-        ></input>
       </div>
       <div className="bottom">
         <button id="getUrl" onClick={handleClick}>

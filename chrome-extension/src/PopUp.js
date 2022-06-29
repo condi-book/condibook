@@ -10,6 +10,9 @@ const PopUp = ({
   id,
   folder,
   handleFolderChange,
+  handleInputChange,
+  input,
+  inputValue,
 }) => {
   // 서비스 페이지 새탭으로 열기
   const handleNavigate = () => {
@@ -55,6 +58,9 @@ const PopUp = ({
             id={id}
             folder={folder}
             handleFolderChange={handleFolderChange}
+            handleInputChange={handleInputChange}
+            input={input}
+            inputValue={inputValue}
           />
         </div>
       </div>
@@ -74,7 +80,6 @@ const Div = styled.div`
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
   }
   .top {
     height: 15%;
@@ -87,10 +92,16 @@ const Div = styled.div`
 
   .middle {
     width: 100%;
-    height: 75%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #f8f9fc;
+    background: linear-gradient(
+      135deg,
+      rgba(18, 194, 233, 0.2) 0.61%,
+      rgba(196, 113, 237, 0.2) 51.86%,
+      rgba(246, 79, 89, 0.2) 100%
+    );
+    border-radius: 10px;
     margin-bottom: 10px;
     justify-content: space-around;
   }
@@ -119,7 +130,7 @@ const Div = styled.div`
   }
 
   .link-section {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
   .link-section div {
     margin: 5px;
@@ -168,12 +179,18 @@ const Div = styled.div`
   }
 
   #confirm-folder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     #title {
-      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
     #category {
       font-weight: bold;
-      font-size: 15px;
+      font-size: 20px;
+      text-align: center;
+
       color: white;
       background: linear-gradient(
         135deg,
@@ -181,6 +198,9 @@ const Div = styled.div`
         #c471ed 49.78%,
         #f64f59 78.71%
       );
+      border-radius: 10px;
+      width: 60%;
+      padding: 5px;
     }
   }
 
