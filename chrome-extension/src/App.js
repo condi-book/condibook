@@ -146,7 +146,7 @@ const App = () => {
             inputValue={inputValue}
           />
         ) : (
-          <Success folder={folder} inputValue={inputValue} />
+          <Success folder={folder} inputValue={inputValue} data={data} />
         )}
       </>
     );

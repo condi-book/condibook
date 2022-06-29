@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Success = ({ folder, inputValue }) => {
+const Success = ({ folder, inputValue, data }) => {
   return (
     <Div className="success">
       <Img src="/logo.png" alt="logo" width="30" />
@@ -18,12 +18,20 @@ const Success = ({ folder, inputValue }) => {
       </div>
       <div>
         <Button
-          onClick={() =>
-            window.open(
-              "http://kdt-ai4-team14.elicecoding.com/bookmark",
-              "newWindow"
-            )
-          }
+          onClick={() => {
+            const folderId = data.folders.find((f) => f.title === folder).id;
+            if (folderId) {
+              window.open(
+                `http://kdt-ai4-team14.elicecoding.com/bookmark/${folderId}`,
+                "newWindow"
+              );
+            } else {
+              window.open(
+                "http://kdt-ai4-team14.elicecoding.com/bookmark",
+                "newWindow"
+              );
+            }
+          }}
         >
           지금 확인하기 {">"}
         </Button>
