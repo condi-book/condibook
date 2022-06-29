@@ -1,6 +1,13 @@
 import { User } from "../../db";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import {
+    CLIENT_URL,
+    KAKAO_CLIENT_ID,
+    JWT_SECRET_KEY,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+} from "../../config";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
@@ -15,10 +22,9 @@ class userService {
             }
             // JWT 생성
             const payload = { user_id: user.id, email: user.email };
-            const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
             const options = { expiresIn: "5d" };
 
-            const token = jwt.sign(payload, secretKey, options);
+            const token = jwt.sign(payload, JWT_SECRET_KEY, options);
             // 사용자 정보 + JWT 반환
             const result = {
                 id: user.id,
@@ -41,9 +47,8 @@ class userService {
                 "https://kauth.kakao.com/oauth/token",
                 new URLSearchParams({
                     grant_type: "authorization_code",
-                    client_id: process.env.KAKAO_CLIENT_ID,
-                    redirect_uri:
-                        process.env.CLIENT_URL + "/callback/login/kakao",
+                    client_id: KAKAO_CLIENT_ID,
+                    redirect_uri: CLIENT_URL + "/callback/login/kakao",
                     code: code,
                 }),
             );
@@ -80,10 +85,9 @@ class userService {
                 "https://oauth2.googleapis.com/token",
                 new URLSearchParams({
                     code: code,
-                    client_id: process.env.GOOGLE_CLIENT_ID,
-                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                    redirect_uri:
-                        process.env.CLIENT_URL + "/callback/login/google",
+                    client_id: GOOGLE_CLIENT_ID,
+                    client_secret: GOOGLE_CLIENT_SECRET,
+                    redirect_uri: CLIENT_URL + "/callback/login/google",
                     grant_type: "authorization_code",
                 }),
             );

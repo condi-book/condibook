@@ -19,27 +19,53 @@ class websiteSerivce {
                 return {
                     website: previous,
                     keywords: previous.keywords,
+                    category: previous.category,
                 };
             } else {
-                //업데이트 하기
+                // 다시 AI 결과 받아서 업데이트 하기
+                let keyword = null;
+                let category = null;
+
+                if (title !== null && description !== null) {
+                    const aiResponse = await this.getAIResponse({
+                        title: title,
+                        description: description,
+                    });
+
+                    keyword = aiResponse.keyword;
+                    category = aiResponse.category;
+
+                    // 키워드 업데이트
+                    this.updateKeyword({
+                        keyword_id: previous.keywords.id,
+                        website_id: previous.id,
+                        keyword: keyword,
+                    });
+                    // 카테고리 정보 추가
+                    category = await Category.findOneByCategory({
+                        category: aiResponse.category,
+                    });
+                    if (category) {
+                        await websiteSerivce.updateWebsite({
+                            id: previous.id,
+                            toUpdate: { category_id: category.id },
+                        });
+                    }
+                }
+                // 업데이트
                 const toUpdate = {
                     meta_title: title,
                     meta_description: description,
                     img: img,
                 };
-                await Website.updateOne({ id: previous.id }, toUpdate); // postgresql을 사용해야 업데이트된 레코드를 받을 수 있다.
-                const updatedWebsite = await Website.findByUrl({ url });
-                let keyword = null;
-                if (title !== null && description !== null) {
-                    keyword = await this.getAIKeyword({
-                        website_id: updatedWebsite.id,
-                        title: updatedWebsite.meta_title,
-                        description: updatedWebsite.meta_description,
-                    });
-                }
+                await Website.updateOne({ id: previous.id }, toUpdate);
+
+                const updatedWebsite = await Website.findByUrl({ url }); // postgresql을 사용해야 업데이트된 레코드를 받을 수 있다.
+
                 return {
                     website: updatedWebsite,
                     keywords: keyword,
+                    category: category,
                 };
             }
         }
@@ -53,24 +79,44 @@ class websiteSerivce {
         if (!newWebsite) {
             return { errorMessage: "서버에러" };
         }
-        // 키워드 생성
+        // AI 요청
         let keyword = null;
+        let category = null;
         if (title !== null && description !== null) {
-            keyword = await this.getAIKeyword({
-                website_id: newWebsite.id,
+            const aiResponse = await this.getAIResponse({
                 title,
                 description,
             });
+
+            keyword = aiResponse.keyword;
+            category = aiResponse.category;
+
+            if (keyword !== null && category !== null) {
+                // 키워드 생성
+                this.createKeyword({
+                    website_id: newWebsite.id,
+                    keyword: keyword,
+                });
+                // 카테고리 정보 추가
+                category = await Category.findOneByCategory({
+                    category: aiResponse.category,
+                });
+                await websiteSerivce.updateWebsite({
+                    id: newWebsite.id,
+                    toUpdate: { category_id: category.id },
+                });
+            }
         }
-        //카테고리 생성 부분 -> 미완
 
         return {
             website: newWebsite,
             keywords: keyword,
+            category,
         };
     }
-    static async getAIKeyword({ website_id, title, description, keyword_id }) {
+    static async getAIResponse({ title, description }) {
         let keyword = null;
+        let category = null;
 
         try {
             const res = await axios.post(`${AI_SERVER_URL}/translate`, {
@@ -78,24 +124,17 @@ class websiteSerivce {
                 description: description,
             });
 
-            keyword = res.data.hashtags.join(",");
-
-            if (keyword_id) {
-                this.updateKeyword({
-                    keyword_id: keyword_id,
-                    website_id: website_id,
-                    keyword: keyword,
-                });
-            } else {
-                this.createKeyword({
-                    website_id: website_id,
-                    keyword: keyword,
-                });
+            if (res.data.ErrorMessage) {
+                throw Error(res.data.ErrorMessage);
             }
-            return keyword;
+
+            keyword = res.data.hashtags.join(",");
+            category = res.data.category;
+
+            return { keyword, category };
         } catch (e) {
             console.log("AI 서버 에러❌");
-            return keyword;
+            return { keyword, category };
         }
     }
     static async getWebsite({ id }) {
@@ -130,7 +169,6 @@ class websiteSerivce {
     static async getWebsiteList() {
         const result = await Website.findAllList();
         // const result = await sequelize.query('SELECT * FROM condibook.websites;');
-        console.log(result);
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
@@ -144,7 +182,9 @@ class websiteSerivce {
             return { errorMessage };
         }
         await Website.updateOne({ id }, toUpdate);
-        const result = await Website.findOneById({ id });
+        const result = await Website.findWithKeywordCategoryById({
+            website_id: id,
+        });
         return result;
     }
     static async deleteWebsite({ id }) {

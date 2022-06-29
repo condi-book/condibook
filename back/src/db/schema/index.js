@@ -1,16 +1,10 @@
 import { Sequelize, DataTypes, Op } from "sequelize";
+import { DB_DATABASE, DB_USER, DB_HOST, DB_PW, DB_DIALECT } from "../../config";
 
 // sequelize 인스턴스 생성
-
-const database = process.env.DB_DATABASE || "env 확인해주십시오.";
-const username = process.env.DB_USER || "env 확인해주십시오.";
-const password = process.env.DB_PW || "env 확인해주십시오.";
-const host = process.env.DB_HOST || "env 확인해주십시오.";
-const dialect = process.env.DB_DIALECT || "env 확인해주십시오.";
-
-const sequelize = new Sequelize(database, username, password, {
-    host: host,
-    dialect: dialect,
+const sequelize = new Sequelize(DB_DATABASE, DB_USER, DB_PW, {
+    host: DB_HOST,
+    dialect: DB_DIALECT,
     logging: console.log, // Logging (디폴트 설정임)
     query: { raw: true },
 });
