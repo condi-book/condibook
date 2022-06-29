@@ -29,7 +29,7 @@ const MypageBookmarkDetail = () => {
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
   const [newLink, setNewLink] = useState("");
-  // const [throttle, setThrottle] = useState(false);
+  const [folderTitle, setFolderTitle] = useState("");
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -87,6 +87,9 @@ const MypageBookmarkDetail = () => {
       console.log("폴더 상세 데이터", res.data);
       setList(res.data);
     });
+    Api.get(`folders/${params.folderId}`).then((res) =>
+      setFolderTitle(res.data.title),
+    );
   }, []);
 
   // 링크 삭제 로직
@@ -107,7 +110,7 @@ const MypageBookmarkDetail = () => {
 
       <div className="detail-container">
         <div className="list box">
-          <Title>{params.title}</Title>
+          <Title>{folderTitle}</Title>
           <div className="add dnd-item" onClick={handleClick}>
             <span className="pe-7s-plus"></span>
           </div>
@@ -160,12 +163,12 @@ const MypageBookmarkDetail = () => {
                                 </Img>
                                 <div className="content">
                                   <div>
-                                    {website.meta_title.length >= 30
+                                    {website.meta_title?.length >= 30
                                       ? `${website.meta_title.substr(0, 30)}...`
                                       : website.meta_title}
                                   </div>
                                   <div className="sub">
-                                    {website.url.length >= 50
+                                    {website.url?.length >= 50
                                       ? `${website.url.substr(0, 50)}...`
                                       : website.url}
                                   </div>
