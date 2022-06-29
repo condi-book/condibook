@@ -15,10 +15,9 @@ import { warningAlert, Alert } from "layout/Alert";
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   color: "black",
-  border: isDragging && "2px solid rgba(76, 76, 76, 0.1)",
-  fontSize: 20,
+  // border: isDragging && "1px solid rgba(76, 76, 76, 0.1)",
   background:
-    "linear-gradient(90deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)",
+    "linear-gradient(135deg, rgba(18, 194, 233, 0.5) 0.61%, rgba(196, 113, 237, 0.5) 51.86%, rgba(246, 79, 89, 0.5) 100%)",
   borderRadius: 10,
   cursor: "pointer",
   ...draggableStyle,
@@ -108,7 +107,7 @@ const MypageBookmarkDetail = () => {
 
       <div className="detail-container">
         <div className="list box">
-          <div>{params.title}</div>
+          <Title>{params.title}</Title>
           <div className="add dnd-item" onClick={handleClick}>
             <span className="pe-7s-plus"></span>
           </div>
@@ -151,17 +150,27 @@ const MypageBookmarkDetail = () => {
                             >
                               <div className="dnd-item-element">
                                 <div>
-                                  <span className="pe-7s-menu" />
+                                  <span
+                                    title="순서 이동"
+                                    className="pe-7s-menu"
+                                  />
                                 </div>
                                 <Img>
                                   <img src={website.img} alt="이미지" />
                                 </Img>
-                                <div>
-                                  <div>{website.meta_title}</div>
-                                  <div>{`${website.url.substr(0, 20)}...`}</div>
+                                <div className="content">
+                                  <div>{`${website.meta_title.substr(
+                                    0,
+                                    30,
+                                  )}...`}</div>
+                                  <div className="sub">{`${website.url.substr(
+                                    0,
+                                    30,
+                                  )}...`}</div>
                                 </div>
                                 <div>
                                   <span
+                                    title="링크 삭제"
                                     className="pe-7s-trash icon"
                                     onClick={(e) => linkDelete(e, item)}
                                   />
@@ -213,7 +222,6 @@ const Div = styled.div`
     width: 50%;
     padding: 1%;
     margin: 10px;
-    border: 1px solid red;
     background: #f5f5f5;
     border-radius: 10px;
   }
@@ -223,28 +231,67 @@ const Div = styled.div`
     margin: auto;
     font-size: 30px;
     border: 1px solid rgba(76, 76, 76, 0.1);
+    // background: ${({ theme }) => theme.middleMainColor};
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8%;
+
+    .pe-7s-plus {
+      font-weight: bold;
+      // color: white;
+      font-size: 1.5vw;
+    }
 
     &:hover {
       cursor: pointer;
+      box-shadow: 0 0 10px rgba(76, 76, 76, 0.1);
+    }
+  }
+
+  .content {
+    width: 60%;
+    padding: 5px;
+
+    div {
+      font-size: 1vw;
+    }
+    .sub {
+      font-size: 0.8vw;
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 2px 5px;
     }
   }
 
   .dnd-item {
     margin: 3% 0;
+    border-radius: 10px;
 
     .dnd-item-element {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       background: white;
       border-radius: 10px;
+      width: 100%;
 
       span {
-        font-size: 30px;
+        font-size: 1.5vw;
+        width: 20%;
       }
 
       .pe-7s-menu {
         font-weight: bold;
         cursor: all-scroll;
+      }
+
+      .pe-7s-trash {
+        color: ${({ theme }) => theme.subRedColor};
+        &:hover {
+          font-weight: bold;
+        }
       }
 
       .icon {
@@ -265,12 +312,13 @@ const DnDiv = styled.div`
 `;
 
 const Img = styled.div`
-  width: 20%;
-  height: 10%;
+  padding: 5px;
+  width: 10%;
+  height: 5%;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 3vw;
+    font-size: 0.5vw;
   }
 `;
 
@@ -286,6 +334,11 @@ const Empty = styled.div`
     width: 15%;
     margin-bottom: 20px;
   }
+`;
+
+const Title = styled.div`
+  font-weight: bold;
+  font-size: 1.4vw;
 `;
 
 export default MypageBookmarkDetail;
