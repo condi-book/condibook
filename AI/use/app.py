@@ -12,9 +12,11 @@ def home():
 @app.route('/translate', methods = ['POST'])
 def translate():
     req = request.get_json()
-    title = req['title']
-    if title == 'etcetcetc':
-        return make_response({'hashtags':'etc','category':'etc'}), 200
+    title = ''
+    if 'title' in req:
+        title = req['title']
+    else:
+        return make_response({'ErrorMessage':'meta_title의 부재.' ,'category':'etc'}), 400
 
     title_nouns = nouns_extractor(title)
 
