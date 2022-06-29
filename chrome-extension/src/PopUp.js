@@ -1,7 +1,16 @@
 import styled from "styled-components";
 import FolderSelect from "./FolderSelect";
 
-const PopUp = ({ handlePage, url, title, folderList, cookie, id }) => {
+const PopUp = ({
+  handlePage,
+  url,
+  title,
+  data,
+  cookie,
+  id,
+  folder,
+  handleFolderChange,
+}) => {
   // 서비스 페이지 새탭으로 열기
   const handleNavigate = () => {
     window.open("http://kdt-ai4-team14.elicecoding.com/bookmark", "newWindow");
@@ -39,11 +48,13 @@ const PopUp = ({ handlePage, url, title, folderList, cookie, id }) => {
             <div className="loading-text">키워드 분석 중 입니다.</div>
           </div> */}
           <FolderSelect
-            folderList={folderList}
+            data={data}
             handlePage={handlePage}
             cookie={cookie}
             url={url}
             id={id}
+            folder={folder}
+            handleFolderChange={handleFolderChange}
           />
         </div>
       </div>
@@ -156,18 +167,29 @@ const Div = styled.div`
     margin: 5px;
   }
 
+  #confirm-folder {
+    #title {
+      font-size: 12px;
+    }
+    #category {
+      font-weight: bold;
+      font-size: 15px;
+      color: white;
+      background: linear-gradient(
+        135deg,
+        #12c2e9 19.08%,
+        #c471ed 49.78%,
+        #f64f59 78.71%
+      );
+    }
+  }
+
   .popup {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
     height: 100%;
-
-    #confirm-folder {
-      font-weight: bold;
-      font-size: 20px;
-      padding: 20px;
-    }
   }
 
   .bottom {

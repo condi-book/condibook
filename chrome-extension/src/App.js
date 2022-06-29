@@ -70,8 +70,24 @@ const App = () => {
               await console.log("copiedlist", copiedList);
               await copied.folders.push({ title: "직접입력", id: 0 });
               if (copiedList.includes(copied.category.category)) {
+                console.log(
+                  copied.folders.filter(
+                    (item) => item.title === copied.category.category
+                  )[0]
+                );
+                const folderList = copied.folders.filter(
+                  (item) => item.title !== copied.category.category
+                );
+                folderList.unshift(
+                  copied.folders.filter(
+                    (item) => item.title === copied.category.category
+                  )[0]
+                );
+                const realData = { ...copied, folders: folderList };
+
+                console.log(realData);
                 setFolder(copied.category.category);
-                setData();
+                setData(realData);
               } else {
                 copied.folders.unshift({
                   title: data.category.category,
