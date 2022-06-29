@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Fail = ({ folder, inputValue }) => {
+const Fail = () => {
   return (
     <Div className="success">
       <Img src="/logo.png" alt="logo" width="30" />
@@ -36,5 +36,6 @@ const Div = styled.div`
 const Img = styled.img`
   align-self: flex-start;
   margin-left: 6px;
+  padding-bottom: 50px;
 `;
 export default Fail;
