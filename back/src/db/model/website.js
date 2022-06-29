@@ -1,4 +1,4 @@
-import { WebsiteModel, KeywordModel } from "../schema";
+import { WebsiteModel, KeywordModel, CategoryModel } from "../schema";
 
 class Website {
     static async create({ url, title, description, img }) {
@@ -24,7 +24,15 @@ class Website {
     static findByUrl({ url }) {
         return WebsiteModel.findOne({
             where: { url },
-            include: [KeywordModel],
+            include: [KeywordModel, CategoryModel],
+            nest: true,
+            raw: true,
+        });
+    }
+    static findWithKeywordCategoryById({ website_id }) {
+        return WebsiteModel.findOne({
+            where: { id: website_id },
+            include: [KeywordModel, CategoryModel],
             nest: true,
             raw: true,
         });

@@ -11,6 +11,9 @@ class Category {
             attribute: ["category"],
         });
     }
+    static findOneByCategory({ category }) {
+        return CategoryModel.findOne({ where: { category: category } });
+    }
 }
 
 export { Category };
