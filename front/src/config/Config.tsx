@@ -27,6 +27,7 @@ const Div = styled.div`
   bottom: 5%;
   left: 77px;
   padding: 5px;
+  box-shadow: ${({ theme }) => theme.boxShadow};
 
   .config-container {
     display: flex;

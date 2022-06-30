@@ -30,12 +30,6 @@ const SideBar = () => {
   const navigate = useNavigate();
 
   const handleApply = (value: any) => setData(value);
-
-  // 프로필 수정 내용 변경 함수
-  const handleChange = (e: any) => {
-    setData((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.currentTarget.id === "pe-7s-user") {
       setShow((prev: boolean) => !prev);
@@ -77,13 +71,7 @@ const SideBar = () => {
         </Section>
       </Div>
       <GlobalAddBookmarkButton />
-      {show && (
-        <Profile
-          data={data}
-          handleApply={handleApply}
-          handleChange={handleChange}
-        />
-      )}
+      {show && <Profile data={data} handleApply={handleApply} />}
       {configShow && <Config />}
     </>
   );

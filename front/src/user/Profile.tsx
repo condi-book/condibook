@@ -1,4 +1,3 @@
-import Logout from "auth/Logout";
 import React, { useState } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
@@ -14,9 +13,8 @@ interface ProfileProps {
     id: number;
   };
   handleApply: (value: any) => void;
-  handleChange: (e: any) => void;
 }
-const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
+const Profile = ({ data, handleApply }: ProfileProps) => {
   const [show, setShow] = useState(false);
 
   const handleClick = () => {
@@ -27,20 +25,15 @@ const Profile = ({ data, handleApply, handleChange }: ProfileProps) => {
     <>
       {show && (
         <ProfileModal
-          data={data}
           open={show}
           close={handleClick}
           handleApply={handleApply}
-          handleChange={handleChange}
         />
       )}
       <Div>
         <div className="container">
           <div className="background">
-            <Logout />
-            <button onClick={() => setShow((prev) => !prev)}>
-              프로필 수정
-            </button>
+            <Button onClick={() => setShow((prev) => !prev)}>수정</Button>
           </div>
           <div className="top">
             <div className="box">
@@ -77,12 +70,13 @@ const Div = styled.div`
   position: absolute;
   width: 40vh;
   height: 70vh;
-  border: 2px solid black;
+  border: ${({ theme }) => theme.border};
   border-radius: 10px;
   background-color: #f8f9fc;
-  margin-left: 120px;
+  margin-left: 77px;
   margin-top: 10px;
   z-index: 5;
+  box-shadow: ${({ theme }) => theme.boxShadow};
 
   .container {
     height: 100%;
@@ -98,6 +92,8 @@ const Div = styled.div`
     height: 50%;
     background: ${({ theme }) => theme.mainColor};
     text-align: right;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
   }
 
   .pe-7s-user {
@@ -107,14 +103,14 @@ const Div = styled.div`
   img {
     border-radius: 50%;
     margin-right: 10%;
-    width: 30%;
+    width: 22%;
   }
   .top {
-    position: absolute;
-    top: 26%;
+    position: fixed;
+    top: 26.5%;
     display: flex;
-    width: 100%;
-    height: 30%;
+    // width: 100%;
+    // height: 30%;
     justify-content: center;
     align-items: center;
     .box {
@@ -125,7 +121,7 @@ const Div = styled.div`
     }
 
     .top-detail {
-      font-size: 1.3rem;
+      font-size: 15px;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -140,8 +136,9 @@ const Div = styled.div`
     justify-content: center;
     div {
       width: 80%;
-      margin: 20% 0;
-      height: 60%;
+      margin: 35px 0;
+      height: 80px;
+      font-size: 12px;
     }
   }
   .bottom {
@@ -152,7 +149,7 @@ const Div = styled.div`
     .bottom-box {
       width: 80%;
       margin: auto;
-      border: 1px solid black;
+      border: ${({ theme }) => theme.border};
       padding: 10px;
       display: flex;
       justify-content: space-around;
@@ -164,7 +161,7 @@ const Div = styled.div`
 
       span {
         margin: 0 10px;
-        font-size: 1.5rem;
+        font-size: 15px;
       }
       .pe-7s-folder,
       .pe-7s-link {
@@ -180,5 +177,16 @@ const Div = styled.div`
 const Font = styled.div`
   color: white;
   font-weight: bold;
+`;
+
+const Button = styled.button`
+  margin: 10px;
+  font-weight: bold;
+  background: none;
+  color: white;
+  &:hover {
+    background: rgba(255, 255, 255, 0.7);
+    color: black;
+  }
 `;
 export default Profile;
