@@ -133,23 +133,30 @@ const CommunityPostDetail = () => {
     setLink(url);
   };
 
-  const handleCommentPostClick = (
+  const handleCommentPostClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    setComments([
-      ...comments,
-      {
-        id: "1",
+    if (comment === "") {
+      alert("댓글을 입력해주세요");
+      return;
+    }
+    try {
+      const body = {
         content: comment,
-        author: "hayeong",
-        author_name: "하영",
-        board_id: postId,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-      },
-    ]);
-    setComment("");
+      };
+      const res = await Api.post(`comments/${postId}`, body);
+      console.log(res);
+      setComments((prev) => [...prev, res.data]);
+      setComment("");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const fetchComments = async () => {
+    const res = await Api.get(`comments/list/${postId}`);
+    setComments(res.data);
   };
 
   // 게시글 내용 받아오는 함수
@@ -215,8 +222,7 @@ const CommunityPostDetail = () => {
         const likedIDList = res.data.likesInfo.map(
           (likeData: any) => likeData.user_id,
         );
-        const userIndex = user.indexOf("id");
-        const userID = parseInt(user.slice(userIndex + 4, userIndex + 5));
+        const userID = JSON.parse(user).id;
 
         if (likedIDList.includes(userID)) {
           setLiked(true);
@@ -226,6 +232,8 @@ const CommunityPostDetail = () => {
       }
     };
     fetchPostDetail();
+    fetchComments();
+    console.log(list);
   }, []);
 
   React.useEffect(() => {
@@ -240,7 +248,6 @@ const CommunityPostDetail = () => {
         }
       }
     };
-    console.log(user);
   }, []);
 
   React.useEffect(() => {
@@ -288,13 +295,13 @@ const CommunityPostDetail = () => {
               </div>
             </InfoContainer>
           </HeaderContainer>
-          <BookmarkContainer>
-            <h4 className="title">북마크</h4>
-            <Ol>
-              {list === null || list?.length === 0 ? (
-                <p>북마크 없음</p>
-              ) : (
-                list?.map((item) => {
+          {list ?? true ? (
+            <></>
+          ) : (
+            <BookmarkContainer>
+              <h4 className="title">북마크</h4>
+              <Ol>
+                {list?.map((item) => {
                   return (
                     <li key={`bookmark-${item.id}`}>
                       <span
@@ -305,10 +312,10 @@ const CommunityPostDetail = () => {
                       </span>
                     </li>
                   );
-                })
-              )}
-            </Ol>
-          </BookmarkContainer>
+                })}
+              </Ol>
+            </BookmarkContainer>
+          )}
           {isfetched ? (
             <Viewer initialValue={fetchData.content} />
           ) : (

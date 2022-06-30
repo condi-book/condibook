@@ -17,7 +17,9 @@ const CommunityPostComments = ({ comments }: props) => {
             <InfoContainer>
               <span className="username">{comment.author_name}</span>
               <span className="separator">|</span>
-              <span className="date">{CalcDate(comment.createdAt)}</span>
+              <span className="date">
+                {CalcDate(new Date(comment?.createdAt))}
+              </span>
             </InfoContainer>
           </Row>
           <ContentContainer>

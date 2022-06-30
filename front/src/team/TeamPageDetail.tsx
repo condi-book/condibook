@@ -134,7 +134,7 @@ const TeamPageDetail = () => {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  {list.map((item, index) => {
+                  {list?.map((item, index) => {
                     const { website } = item;
                     return (
                       <div
