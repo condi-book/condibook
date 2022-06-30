@@ -9,7 +9,7 @@ export default function WebsiteSchema(sequelize, DataTypes) {
                 comment: "사이트 ID",
             },
             url: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(500),
                 allowNull: false,
                 unique: true,
                 comment: "사이트 링크",

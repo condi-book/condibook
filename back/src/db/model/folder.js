@@ -3,6 +3,7 @@ import {
     sequelize,
     BookmarkModel,
     FDFavoriteModel,
+    Op,
 } from "../schema";
 
 class Folder {
@@ -34,6 +35,26 @@ class Folder {
             attributes: ["id", "title"],
             where: { user_id: user_id },
             order: ["createdAt"],
+        });
+    }
+    static searchFolderByTitle({ user_id, offset, content }) {
+        return FolderModel.findAll({
+            attributes: ["id", "title"],
+            where: {
+                [Op.and]: [
+                    {
+                        user_id: user_id,
+                    },
+                    {
+                        title: {
+                            [Op.like]: `%${content}%`,
+                        },
+                    },
+                ],
+            },
+            order: [["createdAt", "DESC"]],
+            offset: offset,
+            limit: 20,
         });
     }
     static findAllOnlyId({ user_id }) {

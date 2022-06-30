@@ -36,16 +36,18 @@ class websiteSerivce {
                     category = aiResponse.category;
 
                     // 키워드 업데이트
-                    this.updateKeyword({
-                        keyword_id: previous.keywords.id,
-                        website_id: previous.id,
-                        keyword: keyword,
-                    });
+                    if (keyword) {
+                        this.updateKeyword({
+                            keyword_id: previous.keywords.id,
+                            website_id: previous.id,
+                            keyword: keyword,
+                        });
+                    }
                     // 카테고리 정보 추가
-                    category = await Category.findOneByCategory({
-                        category: aiResponse.category,
-                    });
                     if (category) {
+                        category = await Category.findOneByCategory({
+                            category: category,
+                        });
                         await websiteSerivce.updateWebsite({
                             id: previous.id,
                             toUpdate: { category_id: category.id },
@@ -91,13 +93,15 @@ class websiteSerivce {
             keyword = aiResponse.keyword;
             category = aiResponse.category;
 
-            if (keyword !== null && category !== null) {
-                // 키워드 생성
+            // 키워드 생성
+            if (keyword) {
                 this.createKeyword({
                     website_id: newWebsite.id,
                     keyword: keyword,
                 });
-                // 카테고리 정보 추가
+            }
+            // 카테고리 정보 추가
+            if (category) {
                 category = await Category.findOneByCategory({
                     category: aiResponse.category,
                 });
@@ -125,6 +129,7 @@ class websiteSerivce {
             });
 
             if (res.data.ErrorMessage) {
+                category = res.data.category;
                 throw Error(res.data.ErrorMessage);
             }
 
