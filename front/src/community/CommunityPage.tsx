@@ -115,7 +115,7 @@ const Div = styled.div`
   }
 
   .first {
-    width: 100%;
+    width: 90%;
   }
 
   .second {
