@@ -49,12 +49,7 @@ const CommunityPostWrite = () => {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate("/", { replace: true });
-    }
+    navigate("/community");
   };
 
   // 글쓰기
@@ -107,6 +102,7 @@ const CommunityPostWrite = () => {
       const body = {
         title,
         content,
+        bookmark_id,
       };
       const res = await Api.put(`posts/${postId}`, body);
       console.log(res);
@@ -127,7 +123,7 @@ const CommunityPostWrite = () => {
 
       const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
       setPostBookmarks(
-        bookmarkData.map((bookmark) => {
+        bookmarkData?.map((bookmark) => {
           return {
             id: bookmark.id,
             url: bookmark.url,
@@ -137,7 +133,6 @@ const CommunityPostWrite = () => {
       );
     } catch (err) {
       console.log(err);
-      navigate(-1);
     }
   };
 
