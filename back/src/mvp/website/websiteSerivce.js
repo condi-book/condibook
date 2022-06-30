@@ -53,6 +53,19 @@ class websiteSerivce {
                             toUpdate: { category_id: category.id },
                         });
                     }
+                } else {
+                    this.updateKeyword({
+                        keyword_id: previous.keywords.id,
+                        website_id: previous.id,
+                        keyword: "etc",
+                    });
+                    category = await Category.findOneByCategory({
+                        category: "etc",
+                    });
+                    await websiteSerivce.updateWebsite({
+                        id: previous.id,
+                        toUpdate: { category_id: category.id },
+                    });
                 }
                 // 업데이트
                 const toUpdate = {
@@ -110,6 +123,20 @@ class websiteSerivce {
                     toUpdate: { category_id: category.id },
                 });
             }
+        } else {
+            keyword = "etc";
+            category = "etc";
+            this.createKeyword({
+                website_id: newWebsite.id,
+                keyword: keyword,
+            });
+            category = await Category.findOneByCategory({
+                category: category,
+            });
+            await websiteSerivce.updateWebsite({
+                id: newWebsite.id,
+                toUpdate: { category_id: category.id },
+            });
         }
 
         return {
