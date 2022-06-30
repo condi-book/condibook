@@ -95,7 +95,7 @@ const MypageBookmark = () => {
   // 폴더 추가 함수
   const handlePushData = (value: BookmarkItem) => {
     const copied = [...folderData];
-    copied.splice(0, 0, value);
+    copied.splice(0, 0, { ...value, bookmark_count: 0 });
 
     setFolderData(copied);
   };
