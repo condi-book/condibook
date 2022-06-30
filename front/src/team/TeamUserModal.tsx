@@ -8,9 +8,10 @@ import * as Api from "../api";
 import { Alert } from "../layout/Alert";
 
 interface Props {
-  inviteModalShow: boolean;
-  setInviteModalShow: (show: boolean) => void;
+  userModalShow: boolean;
+  setUserModalShow: (show: boolean) => void;
   team: Team;
+  isBanish: boolean;
 }
 
 type StyleProps = {
@@ -18,10 +19,11 @@ type StyleProps = {
   selectedUserID: number;
 };
 
-const TeamInviteModal = ({
-  inviteModalShow,
-  setInviteModalShow,
+const TeamUserModal = ({
+  userModalShow,
+  setUserModalShow,
   team,
+  isBanish,
 }: Props) => {
   const [nickname, setNickname] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -36,9 +38,12 @@ const TeamInviteModal = ({
     (id: number) =>
     (e: React.MouseEvent<Element>): void => {
       e.preventDefault();
-      const user = searchedUsers.find((user) => user.id === id);
+
+      const user = searchedUsers.find(
+        (user) => user?.id ?? user?.user_id === id,
+      );
       setEmail(user?.email);
-      setSelectedUserID(user?.id);
+      setSelectedUserID(user?.id ?? user?.user_id);
     };
 
   const handleInvite = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -65,23 +70,64 @@ const TeamInviteModal = ({
     }
   };
 
+  const handleBanish = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await Api.delete(`teams/${team.team_id}/members/${selectedUserID}`);
+      await Alert.fire({
+        icon: "success",
+        title: "추방 성공",
+      });
+    } catch (err) {
+      console.log(err);
+      Alert.fire({
+        icon: "error",
+        title: "추방 실패",
+      });
+    }
+  };
+
   const handleUserSearch = async () => {
     try {
-      const res = await Api.get(`user?nickname=${nickname}`);
-      console.log(res);
-      setSearchedUsers(res.data);
+      if (isBanish) {
+        const res = await Api.get(`teams/${team.team_id}/members`);
+        console.log(res);
+        setSearchedUsers(res.data);
+      } else {
+        const res = await Api.get(`user?nickname=${nickname}`);
+        console.log(res);
+        setSearchedUsers(res.data);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      if (isBanish) {
+        const res = await Api.get(`teams/${team.team_id}/members`);
+        console.log(res);
+        setSearchedUsers(res.data);
+      } else {
+        const res = await Api.get(`user?nickname=${nickname}`);
+        console.log(res);
+        setSearchedUsers(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  React.useEffect(() => {}, []);
+
   const userSearchList = searchedUsers.map((user) => {
     const hiddenEmail = makeHiddenEmail(user.email, user.email.indexOf("@"));
     return (
       <UserCard
-        key={`user-${user.id}`}
-        styleID={user.id}
-        onClick={handleSelectUser(user.id)}
+        key={`user-${user.id ?? user.user_id}`}
+        styleID={user.id ?? user.user_id}
+        onClick={handleSelectUser(user.id ?? user.user_id)}
         selectedUserID={selectedUserID}
       >
         <span className="userNickname">{user.nickname}</span>
@@ -92,6 +138,10 @@ const TeamInviteModal = ({
   });
 
   React.useEffect(() => {
+    fetchUserData();
+  }, [userModalShow]);
+
+  React.useEffect(() => {
     emailjs.init("rCd7LLcggPr8C3K0N");
   }, []);
 
@@ -99,53 +149,63 @@ const TeamInviteModal = ({
     <>
       {team !== null ? (
         <Modal
-          show={inviteModalShow}
-          onHide={() => setInviteModalShow(false)}
+          show={userModalShow}
+          onHide={() => setUserModalShow(false)}
           centered
           aria-labelledby="contained-modal-title-vcenter"
           size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>팀 초대</Modal.Title>
+            <Modal.Title>{isBanish ? "팀 추방" : "팀 초대"}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Row>
-              <NickNameInput
-                type="text"
-                value={nickname}
-                placeholder="초대하실 유저의 닉네임을 검색해주세요"
-                onChange={(e) => setNickname(e.target.value)}
-              />
-              <ButtonContainer>
-                <button onClick={handleUserSearch}>
-                  <span className="pe-7s-search"></span>
-                </button>
-              </ButtonContainer>
-            </Row>
+            {!isBanish && (
+              <Row>
+                <NickNameInput
+                  type="text"
+                  value={nickname}
+                  placeholder="유저의 닉네임을 검색해주세요"
+                  onChange={(e) => setNickname(e.target.value)}
+                />
+                <ButtonContainer>
+                  <button onClick={handleUserSearch}>
+                    <span className="pe-7s-search"></span>
+                  </button>
+                </ButtonContainer>
+              </Row>
+            )}
             <UserListContainer>
               {searchedUsers.length > 0 && userSearchList}
             </UserListContainer>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={handleInvite}>초대</button>
+            {isBanish ? (
+              <button onClick={handleBanish}>추방</button>
+            ) : (
+              <button onClick={handleInvite}>초대</button>
+            )}
           </Modal.Footer>
         </Modal>
       ) : (
         <Modal
-          show={inviteModalShow}
-          onHide={() => setInviteModalShow(false)}
+          show={userModalShow}
+          onHide={() => setUserModalShow(false)}
           centered
           aria-labelledby="contained-modal-title-vcenter"
           size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>팀 초대</Modal.Title>
+            <Modal.Title>{isBanish ? "팀 추방" : "팀 초대"}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <span>팀을 선택해 주세요</span>
+          <Modal.Body style={{ textAlign: "center" }}>
+            <span>
+              {isBanish
+                ? "추방하기 위해 우선 팀을 선택해주세요"
+                : "초대하기 위해 우선 팀을 선택해주세요"}
+            </span>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={() => setInviteModalShow(false)}>나가기</button>
+            <button onClick={() => setUserModalShow(false)}>나가기</button>
           </Modal.Footer>
         </Modal>
       )}
@@ -153,7 +213,7 @@ const TeamInviteModal = ({
   );
 };
 
-export default TeamInviteModal;
+export default TeamUserModal;
 
 const NickNameInput = styled.input`
   width: 100%;

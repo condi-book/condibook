@@ -9,13 +9,17 @@ import { Alert } from "../layout/Alert";
 interface Props {
   createModalShow: boolean;
   setCreateModalShow: (show: boolean) => void;
+  team: Team;
   setTeam: (team: Team) => void;
+  isEdit: boolean;
 }
 
 const TeamCreateModal = ({
   createModalShow,
   setCreateModalShow,
+  team,
   setTeam,
+  isEdit,
 }: Props) => {
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
@@ -48,6 +52,47 @@ const TeamCreateModal = ({
       });
     }
   };
+
+  const handleEditTeam = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await Api.put(`teams/${team.team_id}/info`, {
+        name,
+        explanation,
+      });
+      setCreateModalShow(false);
+      setTeam({
+        team_id: team.team_id,
+        name,
+        explanation,
+      });
+      await Alert.fire({
+        icon: "success",
+        title: "팀 수정 성공",
+      });
+      navigate(`/team/${team.team_id}`);
+    } catch (err: any) {
+      console.log(err);
+      await Alert.fire({
+        icon: "error",
+        title: `팀 수정 실패 : ${err?.response.data}`,
+      });
+    }
+  };
+
+  const setTeamData = () => {
+    setName(team?.name);
+    setExplanation(team?.explanation);
+  };
+
+  React.useEffect(() => {
+    if (isEdit) {
+      setTeamData();
+    } else {
+      setName("");
+      setExplanation("");
+    }
+  }, [isEdit, team]);
   return (
     <>
       <Modal
@@ -57,26 +102,46 @@ const TeamCreateModal = ({
         aria-labelledby="contained-modal-title-vcenter"
       >
         <Modal.Header closeButton>
-          <Modal.Title>팀 생성</Modal.Title>
+          <Modal.Title>{isEdit ? "팀 수정" : "팀 생성"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <InputContainer>
-            <TeamInput
-              type="text"
-              placeholder="팀 이름"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </InputContainer>
-          <InputContainer>
-            <TeamInput
-              type="text"
-              placeholder="팀 설명"
-              onChange={(e) => setExplanation(e.target.value)}
-            />
-          </InputContainer>
+          {isEdit && !team ? (
+            <div style={{ textAlign: "center" }}>
+              수정 하기 위해 팀을 선택해주세요
+            </div>
+          ) : (
+            <div>
+              <InputContainer>
+                <InputLabel>팀명</InputLabel>
+                <TeamInput
+                  type="text"
+                  placeholder="팀명을 입력해주세요"
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                />
+              </InputContainer>
+              <InputContainer>
+                <InputLabel>팀 설명</InputLabel>
+                <TeamInput
+                  type="text"
+                  placeholder="팀 설명을 입력해주세요"
+                  onChange={(e) => setExplanation(e.target.value)}
+                  value={explanation}
+                />
+              </InputContainer>
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <button onClick={handleCreateTeam}>생성</button>
+          {isEdit ? (
+            !team ? (
+              <button onClick={() => setCreateModalShow(false)}>나가기</button>
+            ) : (
+              <button onClick={handleEditTeam}>수정</button>
+            )
+          ) : (
+            <button onClick={handleCreateTeam}>생성</button>
+          )}
         </Modal.Footer>
       </Modal>
     </>
@@ -103,4 +168,10 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
+`;
+
+const InputLabel = styled.div`
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 `;
