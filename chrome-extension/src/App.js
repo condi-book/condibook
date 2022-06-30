@@ -4,6 +4,7 @@ import Success from "./Success";
 import { useEffect, useState } from "react";
 import LoginButton from "./LoginButton";
 import Loading from "./Loading";
+import Fail from "./Fail";
 /* global chrome */
 // 탭 링크 가져오기
 function getCurrentTabUrl(callback) {
@@ -28,10 +29,31 @@ const App = () => {
   const [status, setStatus] = useState("READY");
   const [cookie, setCookie] = useState("");
   // 폴더 리스트, url
-  const [folderList, setFolderList] = useState([]);
+  const [data, setData] = useState([]);
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [id, setId] = useState("");
+  const [folder, setFolder] = useState("");
+  // 폴더명, 직접입력 인풋 및 값 상태 관리
+  const [input, setInput] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  // 폴더 선택 이벤트
+  const handleFolderChange = (e) => {
+    setFolder(e.target.value);
+
+    if (e.target.value === "직접입력") {
+      setInput(true);
+    } else {
+      setInput(false);
+      setInputValue("");
+    }
+  };
+
+  // 직접입력 인풋 이벤트
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
 
   useEffect(() => {
     chrome.cookies
@@ -58,18 +80,46 @@ const App = () => {
             }),
           })
             .then((res) => res.json())
-            .then((data) => {
+            .then(async (data) => {
               setTitle(data.website.meta_title);
               setId(data.website.id);
-              const copied = Array.from(data.folders);
-              copied.push({ title: "직접입력", id: 0 });
-              console.log(copied);
-              setFolderList(copied);
+              console.log(data);
+              const copied = data;
+              const copiedList = copied.folders.map((item) => item.title);
+              await console.log("copiedlist", copiedList);
+              await copied.folders.push({ title: "직접입력", id: 0 });
+              if (copiedList.includes(copied.category.category)) {
+                console.log(
+                  copied.folders.filter(
+                    (item) => item.title === copied.category.category
+                  )[0]
+                );
+                const folderList = copied.folders.filter(
+                  (item) => item.title !== copied.category.category
+                );
+                folderList.unshift(
+                  copied.folders.filter(
+                    (item) => item.title === copied.category.category
+                  )[0]
+                );
+                const realData = { ...copied, folders: folderList };
+
+                console.log(realData);
+                setFolder(copied.category.category);
+                setData(realData);
+              } else {
+                copied.folders.unshift({
+                  title: data.category.category,
+                  id: null,
+                });
+                setData(copied);
+                setFolder(copied.category.category);
+              }
             })
             .catch((err) => {
               console.log(err.message);
               console.log("에러났어요");
-              setStatus("FAIL");
+              setStatus("NOT");
             });
         });
 
@@ -85,18 +135,25 @@ const App = () => {
           <PopUp
             handlePage={handlePage}
             url={url}
-            folderList={folderList}
+            data={data}
             title={title}
             cookie={cookie}
             id={id}
+            folder={folder}
+            handleFolderChange={handleFolderChange}
+            handleInputChange={handleInputChange}
+            input={input}
+            inputValue={inputValue}
           />
         ) : (
-          <Success />
+          <Success folder={folder} inputValue={inputValue} data={data} />
         )}
       </>
     );
   } else if (status === "FAIL") {
     return <LoginButton />;
+  } else if (status === "NOT") {
+    return <Fail />;
   } else {
     return <Loading />;
   }

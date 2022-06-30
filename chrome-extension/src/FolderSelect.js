@@ -1,32 +1,22 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
-  // 폴더명, 직접입력 인풋 및 값 상태 관리
-  const [folder, setFolder] = useState("");
-  const [input, setInput] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
-  // 폴더 선택 이벤트
-  const handleChange = (e) => {
-    setFolder(e.target.value);
-
-    if (e.target.value === "직접입력") {
-      setInput(true);
-    } else {
-      setInput(false);
-      setInputValue("");
-    }
-  };
-
-  // 직접입력 인풋 이벤트
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
+const FolderSelect = ({
+  data,
+  handlePage,
+  cookie,
+  url,
+  id,
+  folder,
+  handleFolderChange,
+  handleInputChange,
+  input,
+  inputValue,
+}) => {
   // 제출 이벤트
   const handleClick = () => {
-    if (input && inputValue) {
+    const folderId = data.folders.find((f) => f.title === folder).id;
+    if (inputValue) {
       fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
         method: "POST",
         headers: {
@@ -42,8 +32,7 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
         handlePage();
         console.log("성공");
       });
-    } else if (!input && folder) {
-      const folderId = folderList.find((item) => item.title === folder).id;
+    } else if (folderId !== null) {
       fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
         method: "POST",
         headers: {
@@ -53,12 +42,28 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
         mode: "cors",
         body: JSON.stringify({
           folder_id: folderId,
-          website_id: id,
+          website_id: data.website.id,
         }),
       }).then((res) => {
         handlePage();
         console.log("성공");
         console.log(folderId, id);
+      });
+    } else if (folderId === null) {
+      fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${cookie}`,
+        },
+        mode: "cors",
+        body: JSON.stringify({
+          folder_name: folder,
+          website_id: data.website.id,
+        }),
+      }).then((res) => {
+        handlePage();
+        console.log("성공");
       });
     } else {
       alert("선택된 폴더가 없습니다.");
@@ -67,18 +72,22 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
 
   return (
     <>
+      <div id="confirm-folder">
+        <div id="title">* AI 추천 폴더 *</div>
+        <div id="category">{data?.category?.category}</div>
+      </div>
       <div className="popup">
         <div className="popup-container">
           <div>
             <div id="label">저장 폴더 *</div>
             <select
-              defaultValue={folderList[0]?.title}
+              defaultValue={data?.category?.category}
               className="select"
               name="category"
-              onChange={handleChange}
+              onChange={handleFolderChange}
             >
-              {folderList?.map((item) => (
-                <option key={`option-${item.id}`} value={item.title}>
+              {data?.folders?.map((item) => (
+                <option key={`option-${item.title}`} value={item.title}>
                   {item.title}
                 </option>
               ))}
@@ -92,9 +101,6 @@ const FolderSelect = ({ folderList, handlePage, cookie, url, id }) => {
             disabled={input ? false : true}
             onChange={handleInputChange}
           ></input>
-        </div>
-        <div id="confirm-folder">
-          {folder === "직접입력" ? inputValue : folder}
         </div>
       </div>
       <div className="bottom">
