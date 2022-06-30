@@ -34,7 +34,7 @@ class Membership {
     }
     static findAllTeamWithTeamByUserId({ user_id }) {
         return sequelize.query(
-            `SELECT membership.team_id, team.name, team.explanation, count(folder.id) as folder_count
+            `SELECT membership.team_id, team.name, team.explanation, team.manager as manager_id, count(folder.id) as folder_count
             FROM (SELECT * FROM ${MembershipModel.tableName} WHERE ${MembershipModel.tableName}.member_id = ${user_id}) as membership
             INNER JOIN ${TeamModel.tableName} AS team
             ON membership.team_id = team.id
