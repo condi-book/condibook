@@ -12,9 +12,12 @@ import TeamFolderModal from "./TeamFolderModal";
 
 type ContextType = {
   team: Team;
+  teams: Team[];
   folders: Folder[];
   selectedFolder?: Folder;
-  fetchTeamFolderData: () => Promise<void>;
+  setTeam: (team: Team) => void;
+  fetchTeamData: () => Promise<Team[]>;
+  fetchTeamFolderData: (id?: number) => Promise<void>;
   setFolderModalShow: (show: boolean) => void;
 };
 export interface Team {
@@ -51,14 +54,17 @@ const TeamPage = () => {
       const res = await Api.get("user/teams");
       console.log(res.data);
       setTeams(res.data);
+      return res.data;
     } catch (err) {
       console.log(err);
     }
   };
 
-  const fetchTeamFolderData = async () => {
+  const fetchTeamFolderData = async (id?: number) => {
     try {
-      const res = await Api.get(`teams/${team.team_id}/folders`);
+      const url = id ? `teams/${id}/folders` : `teams/${team.team_id}/folders`;
+
+      const res = await Api.get(url);
       console.log(res.data);
       setFolders(res.data);
     } catch (err) {
@@ -89,8 +95,11 @@ const TeamPage = () => {
         <Outlet
           context={{
             team,
+            teams,
             folders,
             selectedFolder,
+            setTeam,
+            fetchTeamData,
             fetchTeamFolderData,
             setFolderModalShow,
           }}

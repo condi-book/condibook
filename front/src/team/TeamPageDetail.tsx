@@ -9,7 +9,7 @@ import styled from "styled-components";
 import Modal from "../layout/Modal";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
-// import { useOutletContextProps } from "./TeamPage";
+import { useOutletContextProps } from "./TeamPage";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -25,7 +25,8 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const TeamPageDetail = () => {
   const params = useParams();
-  // const { selectedFolder } = useOutletContextProps();
+  const { setTeam, fetchTeamData, fetchTeamFolderData } =
+    useOutletContextProps();
   const [list, setList] = React.useState([]);
   const [link, setLink] = React.useState("");
   const [show, setShow] = React.useState(false);
@@ -86,12 +87,24 @@ const TeamPageDetail = () => {
     });
   };
 
+  const fetchUpdateTeam = async () => {
+    const teams = await fetchTeamData();
+    const team = teams.find((v) => v.team_id === parseInt(params.teamid));
+    await setTeam(team);
+
+    await fetchTeamFolderData(parseInt(params.teamid));
+  };
+
   React.useEffect(() => {
     Api.get(`folders/${params.folderId}/bookmarks`).then((res) => {
       // setList(res.data);
       console.log("폴더 상세 데이터", res.data);
       setList(res.data);
     });
+  }, []);
+
+  React.useEffect(() => {
+    fetchUpdateTeam();
   }, []);
   return (
     <Div>

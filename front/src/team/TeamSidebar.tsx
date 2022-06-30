@@ -130,7 +130,16 @@ const TeamSidebar = ({
 
   const handleClickMore = (id: number) => (e: React.MouseEvent) => {
     e.stopPropagation();
-    setMoreView(id);
+    setMoreView((prev: number) => {
+      if (prev === id) {
+        return null;
+      }
+      return id;
+    });
+  };
+
+  const clickOutside = () => {
+    setMoreView(null);
   };
 
   const handleClickFolderEdit = (id: number) => () => {
@@ -177,6 +186,14 @@ const TeamSidebar = ({
     fetchTeamFolderData();
     setTab(team?.name);
   }, [tab, team]);
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", clickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", clickOutside);
+    };
+  });
 
   return (
     <>
