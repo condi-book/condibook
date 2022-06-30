@@ -26,3 +26,9 @@ export const warningAlert = (e: any, title: string, callback: () => void) =>
       callback();
     }
   });
+
+export const errorAlert = (title: string) =>
+  Swal.fire({
+    icon: "error",
+    title: title,
+  });
