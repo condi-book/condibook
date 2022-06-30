@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
 import { Team, Folder } from "./TeamPage";
+import { useNavigate } from "react-router-dom";
 
 type StyleProps = {
   show: boolean;
@@ -24,25 +25,35 @@ interface Props {
   setIsBanish: (isBanish: boolean) => void;
   setIsEdit: (isEdit: boolean) => void;
   setFolderModalShow: (show: boolean) => void;
+  folders: Folder[];
+  setFolders: (folders: Folder[]) => void;
   team: Team;
   setTeam: (team: Team) => void;
+  teams: Team[];
   selectedFolder: Folder;
   setSelectedFolder: (folder: Folder) => void;
+  fetchTeamFolderData: (team: Team[], tab: string) => Promise<void>;
+  fetchTeamData: () => Promise<void>;
 }
 
 const TeamSidebar = ({
   setCreateModalShow,
   setUserModalShow,
+  folders,
+  setFolders,
   team,
   setTeam,
+  teams,
   setIsBanish,
   setIsEdit,
   setFolderModalShow,
   selectedFolder,
   setSelectedFolder,
+  fetchTeamFolderData,
+  fetchTeamData,
 }: Props) => {
-  const [teams, setTeams] = React.useState([]); // 사용자 팀목록
-  const [teamFolders, setTeamFolders] = React.useState([]); // 팀 폴더
+  const navigate = useNavigate();
+
   const [tab, setTab] = React.useState("팀을 선택하세요"); // 팀 선택
   const [tabShow, setTabShow] = React.useState(false); // 팀 드랍메뉴
   const [moreView, setMoreView] = React.useState(null); // 더보기 할 폴더 아이디 값
@@ -53,7 +64,7 @@ const TeamSidebar = ({
   const teamsList = (
     handleTab: (e: React.MouseEvent<HTMLDivElement>) => void,
   ) => {
-    return teams.map((teams, idx) => (
+    return teams?.map((teams, idx) => (
       <div key={`team-selectTab-${idx}`} onClick={handleTab}>
         {teams.name}
       </div>
@@ -70,9 +81,15 @@ const TeamSidebar = ({
           (team) => team.name === (e.target as HTMLElement).textContent,
         ),
       );
+      navigate(`${team.team_id}`);
     },
-    [teams, tab],
+    [teams, team, tab],
   );
+
+  const handleClickFolder = (folder: Folder) => () => {
+    setSelectedFolder(folder);
+    navigate(`${team.team_id}?folder=${folder.id}`);
+  };
 
   const handleCreateTeam = () => {
     setIsEdit(false);
@@ -117,9 +134,7 @@ const TeamSidebar = ({
 
   const handleClickFolderEdit = (id: number) => () => {
     setEditingFolder(id);
-    setEditingFolderTitle(
-      teamFolders.find((folder) => folder.id === id)!.title,
-    );
+    setEditingFolderTitle(folders.find((folder) => folder.id === id)!.title);
     setMoreView(null);
   };
 
@@ -128,34 +143,10 @@ const TeamSidebar = ({
       setMoreView(null);
       if (window.confirm("Are you sure you want to delete this folder?")) {
         await Api.delete(`folders/${id}`);
-        setTeamFolders(teamFolders.filter((folder) => folder.id !== id));
+        setFolders(folders.filter((folder) => folder.id !== id));
       }
     } catch (e) {
       alert("삭제에 실패했습니다.");
-    }
-  };
-
-  const fetchTeamData = async () => {
-    try {
-      const res = await Api.get("user/teams");
-      console.log(res.data);
-      setTeams(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchTeamFolderData = async () => {
-    try {
-      const teamId = teams.find((team) => team.name === tab)?.team_id;
-      if (!teamId) {
-        return;
-      }
-      const res = await Api.get(`teams/${teamId}/folders`);
-      console.log(res.data);
-      setTeamFolders(res.data);
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -165,7 +156,7 @@ const TeamSidebar = ({
         title: editingFolderTitle,
       });
       console.log(res.data);
-      await fetchTeamFolderData();
+      await fetchTeamFolderData(teams, tab);
       setEditingFolder(null);
       setEditingFolderTitle("");
     } catch (err) {
@@ -179,9 +170,10 @@ const TeamSidebar = ({
 
   React.useEffect(() => {
     if (tab !== "팀을 선택하세요") {
-      fetchTeamFolderData();
+      fetchTeamFolderData(teams, tab);
     }
     fetchTeamData();
+    fetchTeamFolderData(teams, tab);
     setTab(team?.name);
   }, [tab, team]);
 
@@ -225,13 +217,13 @@ const TeamSidebar = ({
         </SeparateContainer>
         <FoldersContainer>
           <span>폴더 리스트</span>
-          {teamFolders.map((folder) => (
+          {folders?.map((folder) => (
             <FolderContainer
               key={folder.id}
               value={folder.id}
               className="TeamFolder"
               editingFolder={editingFolder}
-              onClick={() => setSelectedFolder(folder)}
+              onClick={handleClickFolder(folder)}
               selectedFolder={selectedFolder}
             >
               {editingFolder === folder.id ? (

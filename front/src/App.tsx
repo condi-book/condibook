@@ -83,8 +83,8 @@ const App: React.FC = () => {
                 <Route path="/config" element={<Config />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/team" element={<TeamPage />}>
-                  <Route path="" element={<TeamPageMain />} />
-                  <Route path=":teamid" element={<TeamPageDetail />} />
+                  <Route path=":teamid" element={<TeamPageMain />} />
+                  <Route path=":teamid?folder" element={<TeamPageDetail />} />
                 </Route>
               </Routes>
             </Router>

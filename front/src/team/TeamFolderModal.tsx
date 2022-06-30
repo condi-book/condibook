@@ -10,12 +10,16 @@ interface Props {
   folderModalShow: boolean;
   setFolderModalShow: (show: boolean) => void;
   team: Team;
+  teams: Team[];
+  fetchTeamFolderData: (team: Team[], tab: string) => Promise<void>;
 }
 
 const TeamFolderModal = ({
   folderModalShow,
   setFolderModalShow,
   team,
+  teams,
+  fetchTeamFolderData,
 }: Props) => {
   //   const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
@@ -27,6 +31,7 @@ const TeamFolderModal = ({
     });
     console.log(res);
     setFolderModalShow(false);
+    fetchTeamFolderData(teams, team.name);
     // navigate("team/" + folder_id);
   };
   return (
