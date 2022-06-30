@@ -104,5 +104,32 @@ class postService {
             return { errorMessage };
         }
     }
+    static async setNickname({ user_id }) {
+        const userInfo = await User.findOne({ user_id });
+
+        const nickname = userInfo.nickname;
+
+        const result = Post.updateNickname({ user_id, nickname });
+
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+    }
+
+    static async deletePosts({ user_id }) {
+        const userInfo = await User.findOne({ user_id });
+        if (userInfo) {
+            const errorMessage = "유저정보가 존재 합니다.";
+            return { errorMessage };
+        }
+
+        const result = await Post.deletePosts({ user_id });
+
+        if (!result) {
+            const errorMessage = "해당 데이터가 없습니다.";
+            return { errorMessage };
+        }
+    }
 }
 export { postService };

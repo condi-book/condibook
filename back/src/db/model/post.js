@@ -4,6 +4,7 @@ import {
     sequelize,
     Op,
     BookmarkModel,
+    Sequelize,
 } from "../schema";
 
 class Post {
@@ -143,19 +144,11 @@ class Post {
         if (type == 1) {
             const result = PostModel.findAll({
                 attributes: excludes,
-                where: {
-                    [Op.or]: [
-                        {
-                            title: {
-                                [Op.like]: `%${content}%`,
-                            },
-                        },
-                        {
-                            content: {
-                                [Op.like]: `%${content}%`,
-                            },
-                        },
-                    ],
+                where: Sequelize.literal(
+                    "MATCH (`title`, `content`) AGAINST (:search)",
+                ),
+                replacements: {
+                    search: content,
                 },
                 order: [["views", "DESC"]],
                 offset: offset,
@@ -262,6 +255,43 @@ class Post {
             await t.commit();
 
             return result;
+        } catch (e) {
+            await t.rollback();
+            return { errorMessage: e };
+        }
+    }
+    static async updateNickname({ user_id, nickname }) {
+        const t = await sequelize.transaction();
+        try {
+            await PostModel.update(
+                { author_name: nickname },
+                {
+                    where: {
+                        author: user_id,
+                    },
+                    transaction: t,
+                },
+            );
+            await t.commit();
+
+            return { mes: "업데이트 완료!" };
+        } catch (e) {
+            await t.rollback();
+            return { errorMessage: e };
+        }
+    }
+    static async deletePosts({ user_id }) {
+        const t = await sequelize.transaction();
+        try {
+            await PostModel.destroy({
+                where: {
+                    [Op.or]: [{ author: null }, { author: user_id }],
+                },
+                transaction: t,
+            });
+            await t.commit();
+
+            return { mes: "삭제 완료!" };
         } catch (e) {
             await t.rollback();
             return { errorMessage: e };
