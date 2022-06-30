@@ -1,32 +1,70 @@
 import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
+import { Team, Folder } from "./TeamPage";
+import { useNavigate } from "react-router-dom";
 
 type StyleProps = {
   show: boolean;
 };
 
-type FolderStyleProps = {
-  view: boolean;
+type FolderMoreStyleProps = {
+  value: number;
+  moreView: number;
+};
+
+type FolderContainerStyleProps = {
+  value: number;
+  editingFolder: number;
+  selectedFolder: Folder;
 };
 
 interface Props {
   setCreateModalShow: (show: boolean) => void;
+  setUserModalShow: (show: boolean) => void;
+  setIsBanish: (isBanish: boolean) => void;
+  setIsEdit: (isEdit: boolean) => void;
+  setFolderModalShow: (show: boolean) => void;
+  folders: Folder[];
+  setFolders: (folders: Folder[]) => void;
+  team: Team;
+  setTeam: (team: Team) => void;
+  teams: Team[];
+  selectedFolder: Folder;
+  setSelectedFolder: (folder: Folder) => void;
+  fetchTeamFolderData: () => Promise<void>;
+  fetchTeamData: () => Promise<void>;
 }
 
-const TeamSidebar = ({ setCreateModalShow }: Props) => {
-  const [teams, setTeams] = React.useState([]);
-  const [teamFolders, setTeamFolders] = React.useState([]);
-  const [tab, setTab] = React.useState("팀을 선택하세요");
-  const [tabShow, setTabShow] = React.useState(false);
-  const [view, setView] = React.useState(false);
-  const viewMore: any = React.useRef([]);
+const TeamSidebar = ({
+  setCreateModalShow,
+  setUserModalShow,
+  folders,
+  setFolders,
+  team,
+  setTeam,
+  teams,
+  setIsBanish,
+  setIsEdit,
+  setFolderModalShow,
+  selectedFolder,
+  setSelectedFolder,
+  fetchTeamFolderData,
+  fetchTeamData,
+}: Props) => {
+  const navigate = useNavigate();
+
+  const [tab, setTab] = React.useState("팀을 선택하세요"); // 팀 선택
+  const [tabShow, setTabShow] = React.useState(false); // 팀 드랍메뉴
+  const [moreView, setMoreView] = React.useState(null); // 더보기 할 폴더 아이디 값
+  const [editingFolder, setEditingFolder] = React.useState(null); // 수정 중인 폴더 아이디값
+  const [editingFolderTitle, setEditingFolderTitle] = React.useState(""); // 수정 중인 폴더 이름
 
   // 드랍메뉴에 보여줄 폴더리스트
   const teamsList = (
     handleTab: (e: React.MouseEvent<HTMLDivElement>) => void,
   ) => {
-    return teams.map((teams, idx) => (
+    return teams?.map((teams, idx) => (
       <div key={`team-selectTab-${idx}`} onClick={handleTab}>
         {teams.name}
       </div>
@@ -36,43 +74,101 @@ const TeamSidebar = ({ setCreateModalShow }: Props) => {
   // 폴더 선택
   const handleTab = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      const findTeam = teams.find(
+        (team) => team.name === (e.target as HTMLElement).textContent,
+      );
       setTab((e.target as HTMLElement).textContent);
       setTabShow((prev) => !prev);
+      setTeam(findTeam);
+      navigate(`${findTeam.team_id}`);
     },
-    [teams],
+    [teams, team, tab],
   );
 
+  const handleClickFolder = (folder: Folder) => () => {
+    setSelectedFolder(folder);
+    navigate({
+      pathname: `${team.team_id}/${folder.id}`,
+    });
+  };
+
   const handleCreateTeam = () => {
+    setIsEdit(false);
     setCreateModalShow(true);
   };
 
-  const clickOutside = (e: any) => {
-    if (view && !viewMore.current.includes(e.target)) {
-      setView((prev) => !prev);
-    }
+  const handleEditTeam = () => {
+    setIsEdit(true);
+    setCreateModalShow(true);
   };
 
-  const handleClickMore = (e: React.MouseEvent) => {
+  const handleInvite = () => {
+    if (tab === "팀을 선택하세요") {
+      alert("팀을 선택해주세요");
+      return;
+    }
+    setIsBanish(false);
+    setUserModalShow(true);
+  };
+
+  const handleBanish = () => {
+    if (tab === "팀을 선택하세요") {
+      alert("팀을 선택해주세요");
+      return;
+    }
+    setIsBanish(true);
+    setUserModalShow(true);
+  };
+
+  const handleAddTeamFolder = () => {
+    if (tab === "팀을 선택하세요") {
+      alert("팀을 선택해주세요");
+      return;
+    }
+    setFolderModalShow(true);
+  };
+
+  const handleClickMore = (id: number) => (e: React.MouseEvent) => {
     e.stopPropagation();
-    setView((prev) => !prev);
+    setMoreView((prev: number) => {
+      if (prev === id) {
+        return null;
+      }
+      return id;
+    });
   };
 
-  const fetchTeamData = async () => {
+  const clickOutside = () => {
+    setMoreView(null);
+  };
+
+  const handleClickFolderEdit = (id: number) => () => {
+    setEditingFolder(id);
+    setEditingFolderTitle(folders.find((folder) => folder.id === id)!.title);
+    setMoreView(null);
+  };
+
+  const handleClickFolderDelete = (id: number) => async () => {
     try {
-      const res = await Api.get("user/teams");
-      console.log(res.data);
-      setTeams(res.data);
-    } catch (err) {
-      console.log(err);
+      setMoreView(null);
+      if (window.confirm("Are you sure you want to delete this folder?")) {
+        await Api.delete(`folders/${id}`);
+        setFolders(folders.filter((folder) => folder.id !== id));
+      }
+    } catch (e) {
+      alert("삭제에 실패했습니다.");
     }
   };
 
-  const fetchTeamFolderData = async () => {
+  const editFolder = async () => {
     try {
-      const teamId = teams.find((team) => team.name === tab)?.team_id;
-      const res = await Api.get(`teams/${teamId}/folders`);
+      const res = await Api.put(`folders/${editingFolder}`, {
+        title: editingFolderTitle,
+      });
       console.log(res.data);
-      setTeamFolders(res.data);
+      await fetchTeamFolderData();
+      setEditingFolder(null);
+      setEditingFolderTitle("");
     } catch (err) {
       console.log(err);
     }
@@ -86,7 +182,10 @@ const TeamSidebar = ({ setCreateModalShow }: Props) => {
     if (tab !== "팀을 선택하세요") {
       fetchTeamFolderData();
     }
-  }, [tab]);
+    fetchTeamData();
+    fetchTeamFolderData();
+    setTab(team?.name);
+  }, [tab, team]);
 
   React.useEffect(() => {
     document.addEventListener("mousedown", clickOutside);
@@ -99,17 +198,17 @@ const TeamSidebar = ({ setCreateModalShow }: Props) => {
   return (
     <>
       <Section>
-        <div className="team-sidebar-header">
+        <SeparateContainer>
           <ButtonContainer onClick={handleCreateTeam}>
             <ButtonSpan className="icon pe-7s-plus"></ButtonSpan>
             <ButtonSpan>팀 생성</ButtonSpan>
           </ButtonContainer>
-        </div>
-        <div className="team-sidebar-header">
+        </SeparateContainer>
+        <SeparateContainer>
           <DropDown show={tabShow}>
             <div className="container">
               <DropdownHeader onClick={() => setTabShow((prev) => !prev)}>
-                <p>{tab}</p>
+                <p>{tab ?? "팀을 선택해주세요"}</p>
                 <span className="pe-7s-angle-down" />
               </DropdownHeader>
               <div className="select">
@@ -117,40 +216,60 @@ const TeamSidebar = ({ setCreateModalShow }: Props) => {
               </div>
             </div>
           </DropDown>
-          <ButtonContainer>
+          <ButtonContainer onClick={handleInvite}>
             <ButtonSpan className="icon pe-7s-add-user"></ButtonSpan>
             <ButtonSpan>초대</ButtonSpan>
           </ButtonContainer>
-          <ButtonContainer>
+          <ButtonContainer onClick={handleBanish}>
             <ButtonSpan className="icon pe-7s-delete-user"></ButtonSpan>
             <ButtonSpan>추방</ButtonSpan>
           </ButtonContainer>
-          <ButtonContainer>
+          <ButtonContainer onClick={handleEditTeam}>
             <ButtonSpan className="icon pe-7s-note"></ButtonSpan>
             <ButtonSpan>수정</ButtonSpan>
           </ButtonContainer>
-        </div>
+          <ButtonContainer onClick={handleAddTeamFolder}>
+            <ButtonSpan className="icon pe-7s-folder"></ButtonSpan>
+            <ButtonSpan>폴더 추가</ButtonSpan>
+          </ButtonContainer>
+        </SeparateContainer>
         <FoldersContainer>
-          {teamFolders.map((folders) => (
-            <Folder key={folders.folder_id}>
-              <span className="pe-7s-folder"></span>
-              <span>{folders.name}</span>
-              <span onClick={handleClickMore} className="pe-7s-more"></span>
-              <FolderMore className="dropdown" view={view}>
-                <li
-                  ref={(el) => (viewMore.current[1] = el)}
-                  // onClick={handleFolderEdit(folders.folder_id)}
-                >
-                  수정
-                </li>
-                <li
-                  ref={(el) => (viewMore.current[2] = el)}
-                  // onClick={handleFolderDelete(folders.folder_id)}
-                >
-                  삭제
-                </li>
+          <span>폴더 리스트</span>
+          {folders?.map((folder) => (
+            <FolderContainer
+              key={folder.id}
+              value={folder.id}
+              className="TeamFolder"
+              editingFolder={editingFolder}
+              onClick={handleClickFolder(folder)}
+              selectedFolder={selectedFolder}
+            >
+              {editingFolder === folder.id ? (
+                <FolderEditInput
+                  value={editingFolderTitle}
+                  onChange={(e) => setEditingFolderTitle(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      editFolder();
+                    }
+                  }}
+                />
+              ) : (
+                <ButtonSpan>{folder.title}</ButtonSpan>
+              )}
+              <ButtonSpan
+                onClick={handleClickMore(folder.id)}
+                className="pe-7s-more"
+              ></ButtonSpan>
+              <FolderMore
+                className="dropdown"
+                value={folder.id}
+                moreView={moreView}
+              >
+                <li onClick={handleClickFolderEdit(folder.id)}>수정</li>
+                <li onClick={handleClickFolderDelete(folder.id)}>삭제</li>
               </FolderMore>
-            </Folder>
+            </FolderContainer>
           ))}
         </FoldersContainer>
       </Section>
@@ -171,17 +290,18 @@ const Section = styled.section`
   position: sticky;
   top: 0;
   background: white;
-  .team-sidebar-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 3px;
-    border-bottom: 1px solid black;
-  }
-  div {
+  = div {
     text-align: center;
   }
+`;
+
+const SeparateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px;
+  border-bottom: 1px solid black;
 `;
 
 const ButtonContainer = styled.div`
@@ -192,21 +312,61 @@ const ButtonContainer = styled.div`
   padding: 2px;
   display: flex;
   flex-direction: row;
-
+  justify-content: center;
   align-items: center;
   border: none;
-  color: white;
+  color: black;
   font-size: 30px;
   font-weight: bold;
   border-radius: 10px;
   cursor: pointer;
   .icon {
     flex: 0.1 1 0;
+    margin-right: 10px;
   }
   :hover {
     background: black;
     span {
       color: white;
+    }
+  }
+  .dropdown {
+    font-size: 1rem;
+  }
+`;
+
+const FolderContainer = styled.div<FolderContainerStyleProps>`
+  width: 234px;
+  height: 40px;
+  margin: 5px;
+  margin-bottom: 0;
+  padding: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: black;
+  font-size: 30px;
+  font-weight: bold;
+  border: 3px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  background-image: ${(props) =>
+    props.selectedFolder?.id === props.value
+      ? `linear-gradient(white, white), ${props.theme.profileBackground}`
+      : "none"};
+  background-clip: content-box, border-box;
+  background-origin: border-box;
+
+  .pe-7s-more {
+    margin-left: auto;
+    transform: rotate(90deg);
+  }
+  :hover {
+    background: ${(props) =>
+      props.editingFolder !== props.value ? "black" : "white"};
+    span {
+      color: ${(props) =>
+        props.editingFolder !== props.value ? "white" : "black"};
     }
   }
 `;
@@ -220,10 +380,19 @@ const ButtonSpan = styled.span`
   cursor: pointer;
 `;
 
+const FolderEditInput = styled.input`
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+  padding: 5px;
+  margin: 2px;
+  cursor: pointer;
+`;
+
 const FoldersContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  // justify-content: center;
   align-items: center;
   padding: 3px;
   border-bottom: 1px solid black;
@@ -232,44 +401,49 @@ const FoldersContainer = styled.div`
   width: 234px;
 `;
 
-const Folder = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 3px;
-  border-radius: 10px;
-  border: 1px solid black;
-  cursor: pointer;
-  :hover {
-    background: black;
-    color: white;
-  }
-`;
+// const Folder = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   width: 234px;
+//   height: 60px;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 3px;
+//   margin: 5px 0px;
+//   border-radius: 10px;
+//   border: 1px solid black;
+//   cursor: pointer;
+//   .pe-7s-more {
+//     flex: 0.1 1 0;
+//     cursor: pointer;
+//     align-self: flex-start;
+//     padding: 1.5px 4px;
+//   }
+// `;
 
-const FolderMore = styled.div<FolderStyleProps>`
+const FolderMore = styled.div<FolderMoreStyleProps>`
    {
-     {
-      display: ${({ view }) => (view ? "block" : "none")};
-      position: absolute;
-      margin-left: 12.5%;
-      background-color: #f9f9f9;
-      min-width: 60px;
-      padding: 8px;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-      list-style-type: none;
+    display: ${({ value, moreView }) =>
+      value === moreView ? "block" : "none"};
+    position: absolute;
+    margin-left: 85%;
+    background-color: #f9f9f9;
+    min-width: 60px;
+    padding: 8px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    list-style-type: none;
 
-      li {
-        font-weight: normal;
-        text-align: center;
-      }
-      li:hover {
-        background: black;
-        color: white;
-        border-radius: 2px;
-        font-weight: bold;
-        cursor: pointer;
-      }
+    li {
+      font-weight: normal;
+      font-size: 16px;
+      text-align: center;
+    }
+    li:hover {
+      background: black;
+      color: white;
+      border-radius: 2px;
+      font-weight: bold;
+      cursor: pointer;
     }
   }
 `;
