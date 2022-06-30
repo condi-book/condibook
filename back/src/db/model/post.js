@@ -278,7 +278,7 @@ class Post {
             return { mes: "삭제 완료!" };
         } catch (e) {
             await t.rollback();
-            return { errorMessage: e };
+            return { errorMessage: "삭제 실패!" };
         }
     }
 }
