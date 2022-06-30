@@ -94,6 +94,7 @@ class websiteSerivce {
         if (!newWebsite) {
             return { errorMessage: "서버에러" };
         }
+        const newWebsite_id = newWebsite_id;
         // AI 요청
         let keyword = null;
         let category = null;
@@ -109,7 +110,7 @@ class websiteSerivce {
             // 키워드 생성
             if (keyword) {
                 this.createKeyword({
-                    website_id: newWebsite.id,
+                    website_id: newWebsite_id,
                     keyword: keyword,
                 });
             }
@@ -119,7 +120,7 @@ class websiteSerivce {
                     category: aiResponse.category,
                 });
                 await websiteSerivce.updateWebsite({
-                    id: newWebsite.id,
+                    id: newWebsite_id,
                     toUpdate: { category_id: category.id },
                 });
             }
@@ -127,14 +128,14 @@ class websiteSerivce {
             keyword = "etc";
             category = "etc";
             this.createKeyword({
-                website_id: newWebsite.id,
+                website_id: newWebsite_id,
                 keyword: keyword,
             });
             category = await Category.findOneByCategory({
                 category: category,
             });
             await websiteSerivce.updateWebsite({
-                id: newWebsite.id,
+                id: newWebsite_id,
                 toUpdate: { category_id: category.id },
             });
         }

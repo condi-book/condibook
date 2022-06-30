@@ -71,7 +71,7 @@ class Post {
             const result = PostModel.findAll({
                 attributes: excludes,
                 where: Sequelize.literal(
-                    "MATCH (`title`, `content`) AGAINST (:search)",
+                    "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
                 ),
                 replacements: {
                     search: content,
@@ -101,7 +101,7 @@ class Post {
             const result = PostModel.findAll({
                 attributes: excludes,
                 where: Sequelize.literal(
-                    "MATCH (`title`, `content`) AGAINST (:search)",
+                    "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
                 ),
                 replacements: {
                     search: content,
@@ -129,7 +129,7 @@ class Post {
             const result = PostModel.findAll({
                 attributes: excludes,
                 where: Sequelize.literal(
-                    "MATCH (`title`, `content`) AGAINST (:search)",
+                    "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
                 ),
                 replacements: {
                     search: content,
