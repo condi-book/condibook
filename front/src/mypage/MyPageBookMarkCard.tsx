@@ -154,7 +154,7 @@ const MypageBookmarkCard = ({
         <div className="bottom part">
           <div>
             <span className="pe-7s-link"></span>
-            <span>{item.bookmark_count}</span>
+            <span id="number">{item.bookmark_count}</span>
           </div>
           <div>
             <span
@@ -240,6 +240,7 @@ const Div = styled.div<StyleProps>`
     transform: rotate(90deg);
     padding: 0px 5px 5px 5px;
     margin: 5px 0 0 0;
+    font-size: 1.5vw;
 
     &:hover {
       cursor: pointer;
@@ -289,6 +290,10 @@ const Div = styled.div<StyleProps>`
   }
   .pe-7s-link {
     margin-right: 3px;
+    font-size: 1.3vw;
+  }
+  #number {
+    font-size: 1.1vw;
   }
 `;
 
