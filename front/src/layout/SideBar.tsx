@@ -1,3 +1,4 @@
+import Config from "config/Config";
 import GlobalAddBookmarkButton from "GlobalAddBookMarkButton";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,7 @@ const SideBar = () => {
   }, []);
 
   const [show, setShow] = useState(false);
+  const [configShow, setConfigShow] = useState(false);
   const [data, setData] = useState<any>({});
   const navigate = useNavigate();
 
@@ -51,7 +53,7 @@ const SideBar = () => {
       navigate("/search");
     }
     if (e.currentTarget.id === "pe-7s-config") {
-      navigate("/config");
+      setConfigShow((prev: boolean) => !prev);
     }
     if (e.currentTarget.id === "pe-7s-users") {
       navigate("/team");
@@ -82,6 +84,7 @@ const SideBar = () => {
           handleChange={handleChange}
         />
       )}
+      {configShow && <Config />}
     </>
   );
 };

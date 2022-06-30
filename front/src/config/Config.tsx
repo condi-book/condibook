@@ -1,32 +1,45 @@
-import SideBar from "../layout/SideBar";
-import React, { useContext } from "react";
+import Logout from "auth/Logout";
+import React from "react";
 import styled from "styled-components";
-import { KeyboardContext } from "App";
-import ConfigNavbar from "./ConfigNavBar";
+import UserDelete from "user/UserDelete";
 
 const Config = () => {
-  const keyboardContext: any = useContext(KeyboardContext);
   return (
     <Div>
-      {keyboardContext.sidebar === true && <SideBar />}
       <div className="config-container">
-        <ConfigNavbar />
+        <div className="config-btn">
+          <Logout />
+        </div>
+        <div className="config-btn">
+          <UserDelete />
+        </div>
       </div>
     </Div>
   );
 };
 
 const Div = styled.div`
-  display: flex;
-  flex-direction: row;
-  background: #f8f9fc;
-  height: 100vh;
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  background: ${({ theme }) => theme.reverseMainColor};
+  border-radius: 10px;
+  bottom: 5%;
+  left: 77px;
+  padding: 5px;
 
   .config-container {
-    margin: auto;
-    width: 90vw;
-    border: 2px solid red;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
     height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+  }
+  .config-btn {
+    border-bottom: 1px solid black;
   }
 `;
 

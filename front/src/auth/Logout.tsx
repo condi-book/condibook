@@ -3,7 +3,7 @@ import { DispatchContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { removeCookie } from "./util/cookie";
 import { Alert } from "layout/Alert";
-
+import { Button } from "../user/UserDelete";
 const Logout = () => {
   const navigate = useNavigate();
   const dispatch: any = useContext(DispatchContext);
@@ -14,7 +14,7 @@ const Logout = () => {
     await dispatch({ type: "LOGOUT" });
     await removeCookie("userToken", {
       path: "/",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
     });
     await Alert.fire({
       icon: "success",
@@ -22,7 +22,7 @@ const Logout = () => {
     });
     await navigate("/", { replace: true });
   };
-  return <button onClick={handleLogout}>로그아웃</button>;
+  return <Button onClick={handleLogout}>로그아웃</Button>;
 };
 
 export default Logout;
