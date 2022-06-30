@@ -15,9 +15,19 @@ export interface Team {
   explanation: string;
 }
 
+export interface Folder {
+  bookmark_count: number;
+  id: number;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  favorites: boolean;
+  first_bookmark_url: string;
+}
 const TeamPage = () => {
   const keyboardContext: any = React.useContext(KeyboardContext);
   const [team, setTeam] = React.useState<Team>(null);
+  const [selectedFolder, setSelectedFolder] = React.useState<Folder>(null);
   // 이후에 Modal 종류를 string으로 받아 switch case 문으로 컴포넌트를 분류하도록 리팩토링
   const [createModalShow, setCreateModalShow] = React.useState(false);
   const [userModalShow, setUserModalShow] = React.useState(false);
@@ -36,6 +46,8 @@ const TeamPage = () => {
         setFolderModalShow={setFolderModalShow}
         team={team}
         setTeam={setTeam}
+        selectedFolder={selectedFolder}
+        setSelectedFolder={setSelectedFolder}
       />
       <div className="team-container">
         <Outlet />

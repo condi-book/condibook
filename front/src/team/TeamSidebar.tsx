@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
-import { Team } from "./TeamPage";
+import { Team, Folder } from "./TeamPage";
 
 type StyleProps = {
   show: boolean;
 };
 
-type FolderStyleProps = {
+type FolderMoreStyleProps = {
   value: number;
   moreView: number;
 };
@@ -15,6 +15,7 @@ type FolderStyleProps = {
 type FolderContainerStyleProps = {
   value: number;
   editingFolder: number;
+  selectedFolder: Folder;
 };
 
 interface Props {
@@ -25,6 +26,8 @@ interface Props {
   setFolderModalShow: (show: boolean) => void;
   team: Team;
   setTeam: (team: Team) => void;
+  selectedFolder: Folder;
+  setSelectedFolder: (folder: Folder) => void;
 }
 
 const TeamSidebar = ({
@@ -35,6 +38,8 @@ const TeamSidebar = ({
   setIsBanish,
   setIsEdit,
   setFolderModalShow,
+  selectedFolder,
+  setSelectedFolder,
 }: Props) => {
   const [teams, setTeams] = React.useState([]); // 사용자 팀목록
   const [teamFolders, setTeamFolders] = React.useState([]); // 팀 폴더
@@ -226,6 +231,8 @@ const TeamSidebar = ({
               value={folder.id}
               className="TeamFolder"
               editingFolder={editingFolder}
+              onClick={() => setSelectedFolder(folder)}
+              selectedFolder={selectedFolder}
             >
               {editingFolder === folder.id ? (
                 <FolderEditInput
@@ -327,12 +334,19 @@ const FolderContainer = styled.div<FolderContainerStyleProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border: none;
   color: black;
   font-size: 30px;
   font-weight: bold;
+  border: 3px solid transparent;
   border-radius: 10px;
   cursor: pointer;
+  background-image: ${(props) =>
+    props.selectedFolder?.id === props.value
+      ? `linear-gradient(white, white), ${props.theme.profileBackground}`
+      : "none"};
+  background-clip: content-box, border-box;
+  background-origin: border-box;
+
   .pe-7s-more {
     margin-left: auto;
     transform: rotate(90deg);
@@ -397,7 +411,7 @@ const FoldersContainer = styled.div`
 //   }
 // `;
 
-const FolderMore = styled.div<FolderStyleProps>`
+const FolderMore = styled.div<FolderMoreStyleProps>`
    {
     display: ${({ value, moreView }) =>
       value === moreView ? "block" : "none"};
