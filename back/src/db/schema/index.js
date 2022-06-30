@@ -278,4 +278,5 @@ export {
     FolderModel,
     FDFavoriteModel,
     BMFavoriteModel,
+    Sequelize,
 };

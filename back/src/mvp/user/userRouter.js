@@ -4,6 +4,7 @@ import { teamService } from "../team/teamService";
 import { loginRequired } from "../../middlewares/loginRequired";
 import { checkErrorMessage } from "../../middlewares/errorMiddleware";
 import { folderService } from "../folder/folderService";
+import { postService } from "../post/postService";
 
 const userRouter = Router();
 
@@ -112,6 +113,9 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
         });
         checkErrorMessage(result);
 
+        const setPost = await postService.setNickname({ user_id, nickname });
+        checkErrorMessage(setPost);
+
         res.status(201).send(result);
     } catch (e) {
         next(e);
@@ -141,6 +145,9 @@ userRouter.delete("", loginRequired, async (req, res, next) => {
 
         const result = await userService.deleteUser({ requester_id: user_id });
         checkErrorMessage(result);
+
+        const deletePosts = await postService.deletePosts({ user_id });
+        checkErrorMessage(deletePosts);
 
         res.status(204).send(result);
     } catch (e) {
