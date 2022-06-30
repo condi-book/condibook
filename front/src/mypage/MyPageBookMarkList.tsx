@@ -150,6 +150,7 @@ const Div = styled.div`
     }
   }
   .create-card {
+    box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
     border-radius: 7px;
     background: ${({ theme }) => theme.middleMainColor};
     margin: 0.833%;
