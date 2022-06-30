@@ -38,7 +38,7 @@ const CallBackGoogleLogin = () => {
       // 쿠키 경로, 유효기간 설정 필수
       await setCookie("userToken", user.token, {
         path: "/",
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       });
       console.log(user);
       dispatch({
