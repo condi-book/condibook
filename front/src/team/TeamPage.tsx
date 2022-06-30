@@ -16,6 +16,7 @@ type ContextType = {
   folders: Folder[];
   selectedFolder?: Folder;
   setTeam: (team: Team) => void;
+  setFolders: (folders: Folder[]) => void;
   fetchTeamData: () => Promise<Team[]>;
   fetchTeamFolderData: (id?: number) => Promise<void>;
   setFolderModalShow: (show: boolean) => void;
@@ -65,7 +66,6 @@ const TeamPage = () => {
       const url = id ? `teams/${id}/folders` : `teams/${team.team_id}/folders`;
 
       const res = await Api.get(url);
-      console.log(res.data);
       setFolders(res.data);
     } catch (err) {
       console.log(err);
@@ -99,6 +99,7 @@ const TeamPage = () => {
             folders,
             selectedFolder,
             setTeam,
+            setFolders,
             fetchTeamData,
             fetchTeamFolderData,
             setFolderModalShow,

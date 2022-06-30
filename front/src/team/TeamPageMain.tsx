@@ -1,20 +1,38 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useOutletContextProps } from "./TeamPage";
 import TeamPageFolderCard from "./TeamPageFolderCard";
 
 const TeamPageMain = () => {
+  const params = useParams();
   const navigate = useNavigate();
-  const { team, folders, fetchTeamFolderData, setFolderModalShow } =
-    useOutletContextProps();
+  const {
+    team,
+    folders,
+    fetchTeamData,
+    setTeam,
+    fetchTeamFolderData,
+    setFolderModalShow,
+  } = useOutletContextProps();
   const handleClickCreate = async () => {
     setFolderModalShow(true);
     await fetchTeamFolderData();
   };
 
+  const fetchUpdateData = async () => {
+    const res = await fetchTeamData();
+    await fetchTeamFolderData();
+    const result = res.find((team) => team.team_id === parseInt(params.teamid));
+    setTeam(result);
+  };
+
   React.useEffect(() => {
-    fetchTeamFolderData();
+    if (params.teamid) {
+      fetchUpdateData();
+    } else {
+      fetchTeamFolderData();
+    }
   }, []);
 
   return (
