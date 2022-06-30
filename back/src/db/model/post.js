@@ -70,19 +70,11 @@ class Post {
         if (type == 1) {
             const result = PostModel.findAll({
                 attributes: excludes,
-                where: {
-                    [Op.or]: [
-                        {
-                            title: {
-                                [Op.like]: `%${content}%`,
-                            },
-                        },
-                        {
-                            content: {
-                                [Op.like]: `%${content}%`,
-                            },
-                        },
-                    ],
+                where: Sequelize.literal(
+                    "MATCH (`title`, `content`) AGAINST (:search)",
+                ),
+                replacements: {
+                    search: content,
                 },
                 order: [["views", "DESC"]],
                 offset: offset,
@@ -108,19 +100,11 @@ class Post {
         if (type == 1) {
             const result = PostModel.findAll({
                 attributes: excludes,
-                where: {
-                    [Op.or]: [
-                        {
-                            title: {
-                                [Op.like]: `%${content}%`,
-                            },
-                        },
-                        {
-                            content: {
-                                [Op.like]: `%${content}%`,
-                            },
-                        },
-                    ],
+                where: Sequelize.literal(
+                    "MATCH (`title`, `content`) AGAINST (:search)",
+                ),
+                replacements: {
+                    search: content,
                 },
                 order: [["views", "DESC"]],
                 offset: offset,
