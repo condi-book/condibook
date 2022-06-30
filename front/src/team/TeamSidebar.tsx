@@ -32,7 +32,7 @@ interface Props {
   teams: Team[];
   selectedFolder: Folder;
   setSelectedFolder: (folder: Folder) => void;
-  fetchTeamFolderData: (team: Team[], tab: string) => Promise<void>;
+  fetchTeamFolderData: () => Promise<void>;
   fetchTeamData: () => Promise<void>;
 }
 
@@ -74,21 +74,22 @@ const TeamSidebar = ({
   // 폴더 선택
   const handleTab = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      const findTeam = teams.find(
+        (team) => team.name === (e.target as HTMLElement).textContent,
+      );
       setTab((e.target as HTMLElement).textContent);
       setTabShow((prev) => !prev);
-      setTeam(
-        teams.find(
-          (team) => team.name === (e.target as HTMLElement).textContent,
-        ),
-      );
-      navigate(`${team.team_id}`);
+      setTeam(findTeam);
+      navigate(`${findTeam.team_id}`);
     },
     [teams, team, tab],
   );
 
   const handleClickFolder = (folder: Folder) => () => {
     setSelectedFolder(folder);
-    navigate(`${team.team_id}?folder=${folder.id}`);
+    navigate({
+      pathname: `${team.team_id}/${folder.id}`,
+    });
   };
 
   const handleCreateTeam = () => {
@@ -156,7 +157,7 @@ const TeamSidebar = ({
         title: editingFolderTitle,
       });
       console.log(res.data);
-      await fetchTeamFolderData(teams, tab);
+      await fetchTeamFolderData();
       setEditingFolder(null);
       setEditingFolderTitle("");
     } catch (err) {
@@ -170,10 +171,10 @@ const TeamSidebar = ({
 
   React.useEffect(() => {
     if (tab !== "팀을 선택하세요") {
-      fetchTeamFolderData(teams, tab);
+      fetchTeamFolderData();
     }
     fetchTeamData();
-    fetchTeamFolderData(teams, tab);
+    fetchTeamFolderData();
     setTab(team?.name);
   }, [tab, team]);
 

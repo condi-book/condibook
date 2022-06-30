@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 
 import * as Api from "../api";
 import SideBar from "../layout/SideBar";
@@ -10,6 +10,13 @@ import TeamUserModal from "./TeamUserModal";
 import { KeyboardContext } from "../App";
 import TeamFolderModal from "./TeamFolderModal";
 
+type ContextType = {
+  team: Team;
+  folders: Folder[];
+  selectedFolder?: Folder;
+  fetchTeamFolderData: () => Promise<void>;
+  setFolderModalShow: (show: boolean) => void;
+};
 export interface Team {
   team_id: number;
   name: string;
@@ -25,13 +32,14 @@ export interface Folder {
   favorites: boolean;
   first_bookmark_url: string;
 }
+
 const TeamPage = () => {
   const keyboardContext: any = React.useContext(KeyboardContext);
   const [team, setTeam] = React.useState<Team>(null);
   const [teams, setTeams] = React.useState<Team[]>(null); // 사용자 팀목록
   const [folders, setFolders] = React.useState<Folder[]>(null);
   const [selectedFolder, setSelectedFolder] = React.useState<Folder>(null);
-  // 이후에 Modal 종류를 string으로 받아 switch case 문으로 컴포넌트를 분류하도록 리팩토링
+  // Modal들 state 리팩토링 필요
   const [createModalShow, setCreateModalShow] = React.useState(false);
   const [userModalShow, setUserModalShow] = React.useState(false);
   const [folderModalShow, setFolderModalShow] = React.useState(false);
@@ -48,13 +56,9 @@ const TeamPage = () => {
     }
   };
 
-  const fetchTeamFolderData = async (teams: Team[], tab: string) => {
+  const fetchTeamFolderData = async () => {
     try {
-      const teamId = teams.find((team) => team.name === tab)?.team_id;
-      if (!teamId) {
-        return;
-      }
-      const res = await Api.get(`teams/${teamId}/folders`);
+      const res = await Api.get(`teams/${team.team_id}/folders`);
       console.log(res.data);
       setFolders(res.data);
     } catch (err) {
@@ -82,7 +86,15 @@ const TeamPage = () => {
         fetchTeamData={fetchTeamData}
       />
       <div className="team-container">
-        <Outlet />
+        <Outlet
+          context={{
+            team,
+            folders,
+            selectedFolder,
+            fetchTeamFolderData,
+            setFolderModalShow,
+          }}
+        />
         <TeamCreateModal
           createModalShow={createModalShow}
           setCreateModalShow={setCreateModalShow}
@@ -100,7 +112,6 @@ const TeamPage = () => {
           folderModalShow={folderModalShow}
           setFolderModalShow={setFolderModalShow}
           team={team}
-          teams={teams}
           fetchTeamFolderData={fetchTeamFolderData}
         />
       </div>
@@ -116,12 +127,16 @@ const Div = styled.div`
   position: relative;
   background: #f8f9fc;
   height: 100vh;
-  height: auto;
 
   .team-container {
-    display: flex;
     margin: auto;
-    width: 90vw;
+    width: 100%;
     height: 100%;
+    flex-basis: 0;
+    flex-grow: 1;
   }
 `;
+
+export const useOutletContextProps = () => {
+  return useOutletContext<ContextType>();
+};

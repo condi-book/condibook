@@ -84,7 +84,10 @@ const App: React.FC = () => {
                 <Route path="/search" element={<Search />} />
                 <Route path="/team" element={<TeamPage />}>
                   <Route path=":teamid" element={<TeamPageMain />} />
-                  <Route path=":teamid?folder" element={<TeamPageDetail />} />
+                  <Route
+                    path=":teamid/:folderId"
+                    element={<TeamPageDetail />}
+                  />
                 </Route>
               </Routes>
             </Router>
