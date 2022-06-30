@@ -19,19 +19,24 @@ const TeamPageMain = () => {
 
   return (
     <Div>
-      <div>
+      <Row>
         <h3>{team?.name}</h3>
-      </div>
-      <div className="create-card" onClick={handleClickCreate}>
-        <span className="pe-7s-plus" />
-      </div>
-      {folders?.map((folder, index) => (
-        <TeamPageFolderCard
-          folder={folder}
-          key={`folder-${index}`}
-          onClick={() => navigate(`/team/${team.team_id}/${folder.id}`)}
-        />
-      ))}
+        <h4>{team?.explanation}</h4>
+        {/* <h4>{team?.manager}</h4> */}
+      </Row>
+      <FolderContainer>
+        <div className="create-card" onClick={handleClickCreate}>
+          <span className="pe-7s-plus" />
+        </div>
+        {folders?.map((folder, index) => (
+          <TeamPageFolderCard
+            folder={folder}
+            key={`folder-${index}`}
+            onClick={() => navigate(`/team/${team.team_id}/${folder.id}`)}
+            fetchTeamFolderData={fetchTeamFolderData}
+          />
+        ))}
+      </FolderContainer>
     </Div>
   );
 };
@@ -72,4 +77,30 @@ const Div = styled.div`
       font-size: 3rem;
     }
   }
+`;
+
+// const Col = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+// `;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+const FolderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0.833%;
+  padding: 10px;
+  background: white;
 `;

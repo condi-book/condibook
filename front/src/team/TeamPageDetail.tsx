@@ -25,7 +25,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const TeamPageDetail = () => {
   const params = useParams();
-  const { setTeam, fetchTeamData, fetchTeamFolderData } =
+  const { selectedFolder, setTeam, fetchTeamData, fetchTeamFolderData } =
     useOutletContextProps();
   const [list, setList] = React.useState([]);
   const [link, setLink] = React.useState("");
@@ -95,17 +95,22 @@ const TeamPageDetail = () => {
     await fetchTeamFolderData(parseInt(params.teamid));
   };
 
+  const fetchBookmarks = async () => {
+    const res = await Api.get(`folders/${params.folderId}/bookmarks`);
+    setList(res.data);
+  };
+
   React.useEffect(() => {
-    Api.get(`folders/${params.folderId}/bookmarks`).then((res) => {
-      // setList(res.data);
-      console.log("폴더 상세 데이터", res.data);
-      setList(res.data);
-    });
+    fetchBookmarks();
   }, []);
 
   React.useEffect(() => {
     fetchUpdateTeam();
   }, []);
+
+  React.useEffect(() => {
+    fetchBookmarks();
+  }, [selectedFolder]);
   return (
     <Div>
       <div className="detail-container">
