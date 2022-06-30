@@ -26,6 +26,7 @@ const TeamPage = () => {
       <TeamSidebar
         setCreateModalShow={setCreateModalShow}
         setInviteModalShow={setInviteModalShow}
+        team={team}
         setTeam={setTeam}
       />
       <div className="team-container">

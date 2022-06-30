@@ -14,12 +14,14 @@ type FolderStyleProps = {
 interface Props {
   setCreateModalShow: (show: boolean) => void;
   setInviteModalShow: (show: boolean) => void;
+  team: Team;
   setTeam: (team: Team) => void;
 }
 
 const TeamSidebar = ({
   setCreateModalShow,
   setInviteModalShow,
+  team,
   setTeam,
 }: Props) => {
   const [teams, setTeams] = React.useState([]); // 사용자 팀목록
@@ -106,7 +108,9 @@ const TeamSidebar = ({
     if (tab !== "팀을 선택하세요") {
       fetchTeamFolderData();
     }
-  }, [tab]);
+    fetchTeamData();
+    setTab(team?.name);
+  }, [tab, team]);
 
   React.useEffect(() => {
     document.addEventListener("mousedown", clickOutside);

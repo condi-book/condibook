@@ -18,6 +18,8 @@ import Login from "./auth/Login";
 import Config from "config/Config";
 import Search from "search/Search";
 import TeamPage from "./team/TeamPage";
+import TeamPageMain from "./team/TeamPageMain";
+import TeamPageDetail from "./team/TeamPageDetail";
 
 export const UserStateContext: any = createContext(null);
 export const DispatchContext: any = createContext(null);
@@ -80,7 +82,10 @@ const App: React.FC = () => {
                 />
                 <Route path="/config" element={<Config />} />
                 <Route path="/search" element={<Search />} />
-                <Route path="/team" element={<TeamPage />} />
+                <Route path="/team" element={<TeamPage />}>
+                  <Route path="" element={<TeamPageMain />} />
+                  <Route path=":teamid" element={<TeamPageDetail />} />
+                </Route>
               </Routes>
             </Router>
           </ThemeProvider>

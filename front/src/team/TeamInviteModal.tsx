@@ -13,7 +13,10 @@ interface Props {
   team: Team;
 }
 
-type StyleProps = {};
+type StyleProps = {
+  styleID: number;
+  selectedUserID: number;
+};
 
 const TeamInviteModal = ({
   inviteModalShow,
@@ -23,42 +26,43 @@ const TeamInviteModal = ({
   const [nickname, setNickname] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [searchedUsers, setSearchedUsers] = React.useState<any[]>([]);
+  const [selectedUserID, setSelectedUserID] = React.useState(null);
 
   const makeHiddenEmail = (email: string, index: number) => {
     return email.substring(0, index - 6) + "*******" + email.substring(index);
   };
 
-  const handleSelectUser = (e: React.MouseEvent<Element>): void => {
-    e.preventDefault();
-    const user = searchedUsers.find(
-      (user) => user.nickname === (e.target as HTMLElement).textContent,
-    );
-    setEmail(user.email);
-  };
-
-  const handleInvite = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const template = {
-      teamName: team.name,
-      userEmail: email,
-      contact: `www.condibook.com/team/invite=${team.team_id}`,
+  const handleSelectUser =
+    (id: number) =>
+    (e: React.MouseEvent<Element>): void => {
+      e.preventDefault();
+      const user = searchedUsers.find((user) => user.id === id);
+      setEmail(user?.email);
+      setSelectedUserID(user?.id);
     };
-    emailjs
-      .send("service_v7ltb16", "template_92v5kp9", template)
-      .then((res) => {
-        console.log(res);
-        Alert.fire({
-          icon: "success",
-          title: "초대 성공",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        Alert.fire({
-          icon: "error",
-          title: "초대 실패",
-        });
+
+  const handleInvite = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await Api.post(`teams/${team.team_id}/members`, {
+        invitee_id: selectedUserID,
       });
+      const template = {
+        teamName: team.name,
+        userEmail: email,
+      };
+      await emailjs.send("service_v7ltb16", "template_92v5kp9", template);
+      await Alert.fire({
+        icon: "success",
+        title: "초대 성공",
+      });
+    } catch (err) {
+      console.log(err);
+      Alert.fire({
+        icon: "error",
+        title: "초대 실패",
+      });
+    }
   };
 
   const handleUserSearch = async () => {
@@ -74,7 +78,12 @@ const TeamInviteModal = ({
   const userSearchList = searchedUsers.map((user) => {
     const hiddenEmail = makeHiddenEmail(user.email, user.email.indexOf("@"));
     return (
-      <UserCard key={`user-${user.id}`} onClick={handleSelectUser}>
+      <UserCard
+        key={`user-${user.id}`}
+        styleID={user.id}
+        onClick={handleSelectUser(user.id)}
+        selectedUserID={selectedUserID}
+      >
         <span className="userNickname">{user.nickname}</span>
         <span className="separator">|</span>
         <span>{hiddenEmail}</span>
@@ -217,7 +226,8 @@ const UserCard = styled.div<StyleProps>`
   align-items: center;
   padding: 0.5rem;
   border-radius: 0.25rem;
-  background-color: #fff;
+  background: ${(props) =>
+    props.styleID === props.selectedUserID ? "#ffeecb" : "white"};
   border: 1px solid #ced4da;
   margin-bottom: 0.5rem;
   cursor: pointer;
