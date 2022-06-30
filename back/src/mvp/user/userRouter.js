@@ -113,8 +113,11 @@ userRouter.put("/nickname", loginRequired, async (req, res, next) => {
         });
         checkErrorMessage(result);
 
-        const setPost = await postService.setNickname({ user_id, nickname });
-        checkErrorMessage(setPost);
+        const setNickname = await postService.setNickname({
+            user_id,
+            nickname,
+        });
+        checkErrorMessage(setNickname);
 
         res.status(201).send(result);
     } catch (e) {
@@ -146,8 +149,8 @@ userRouter.delete("", loginRequired, async (req, res, next) => {
         const result = await userService.deleteUser({ requester_id: user_id });
         checkErrorMessage(result);
 
-        const deletePosts = await postService.deletePosts({ user_id });
-        checkErrorMessage(deletePosts);
+        const setDelete = await postService.deletePosts({ user_id });
+        checkErrorMessage(setDelete);
 
         res.status(204).send(result);
     } catch (e) {

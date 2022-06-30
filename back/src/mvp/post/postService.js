@@ -115,6 +115,7 @@ class postService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
+        return result;
     }
 
     static async deletePosts({ user_id }) {
@@ -130,6 +131,7 @@ class postService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
+        return result;
     }
 }
 export { postService };
