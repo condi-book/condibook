@@ -106,8 +106,8 @@ const Div = styled.div`
     width: 22%;
   }
   .top {
-    position: fixed;
-    top: 26.5%;
+    position: absolute;
+    top: 156px;
     display: flex;
     // width: 100%;
     // height: 30%;
