@@ -29,30 +29,37 @@ const MypageScrapedBookmark = () => {
   return (
     <Div styleSize={styleSize}>
       <div className="like-container">
-        <div className="like-wrap">
-          {likesData.map((v) => {
-            const createdTime = CalcData(new Date(v.createdAt));
-            return (
-              <LikeCard
-                className="like-item"
-                key={`likes-${v.id}`}
-                onClick={() => navigate(`/community/${v.post.id}`)}
-              >
-                <div className="like-middle">
-                  <div className="like-title like">{v.post.title}</div>
-                  <div className="like fonts">{createdTime}</div>
-                </div>
-                <div className="like-footer">
-                  <div className="fonts author">{v.post.author_name}</div>
-                  <div className="likes-box">
-                    <span className="pe-7s-like fonts"></span>
-                    <p className="fonts">{v.post.like_counts}</p>
+        {likesData?.length > 0 ? (
+          <div className="like-wrap">
+            {likesData.map((v) => {
+              const createdTime = CalcData(new Date(v.createdAt));
+              return (
+                <LikeCard
+                  className="like-item"
+                  key={`likes-${v.id}`}
+                  onClick={() => navigate(`/community/${v.post.id}`)}
+                >
+                  <div className="like-middle">
+                    <div className="like-title like">{v.post.title}</div>
+                    <div className="like fonts">{createdTime}</div>
                   </div>
-                </div>
-              </LikeCard>
-            );
-          })}
-        </div>
+                  <div className="like-footer">
+                    <div className="fonts author">{v.post.author_name}</div>
+                    <div className="likes-box">
+                      <span className="pe-7s-like fonts"></span>
+                      <p className="fonts">{v.post.like_counts}</p>
+                    </div>
+                  </div>
+                </LikeCard>
+              );
+            })}
+          </div>
+        ) : (
+          <Null>
+            <img src="/static/img/preference.svg" />
+            <div>좋아요한 게시글을 한눈에 확인하세요</div>
+          </Null>
+        )}
       </div>
     </Div>
   );
@@ -61,7 +68,6 @@ const MypageScrapedBookmark = () => {
 const Div = styled.div<StyleSize>`
   width: 100%;
   padding: 10px;
-  border: 1px solid red;
   height: 90%;
 
   .pe-7s-like {
@@ -71,7 +77,6 @@ const Div = styled.div<StyleSize>`
   .like-container {
     width: 100%;
     height: 100%;
-    border: 1px solid blue;
     background: ${({ theme }) => theme.subGrayColor};
     border-radius: 10px;
     margin-bottom: ${(props) => props.styleSize}px;
@@ -150,6 +155,21 @@ const LikeCard = styled.div`
         margin-left: 5px;
       }
     }
+  }
+`;
+
+const Null = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  img {
+    width: 20%;
+  }
+  div {
+    margin-top: 10px;
   }
 `;
 export default MypageScrapedBookmark;
