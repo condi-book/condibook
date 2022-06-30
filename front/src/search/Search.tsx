@@ -1,78 +1,39 @@
 import SideBar from "layout/SideBar";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { KeyboardContext } from "../App";
 import * as Api from "../api";
+import SearchList from "./SearchList";
 
 type StyleProps = {
-  show: boolean;
   category: string;
 };
 
 const Search = () => {
   const keyboardContext: any = useContext(KeyboardContext);
-  const [show, setShow] = useState(false);
-  const [tab, setTab] = useState("전체 검색");
+
   const [word, setWord] = useState("");
   const [category, setCategory] = useState("global-link");
   // 데이터
-  const [data, setData] = useState([]);
+  const [searchData, setSearchData]: any = useState([]);
 
   // 카테고리 핸들러
-  const handleCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCategory: (e: any) => void = (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     setCategory((e.currentTarget as HTMLElement).id);
     console.log(category);
   };
 
-  // 검색 리스트(링크별)
-  const SearchList = () => {
-    const filtered = data?.filter((item) =>
-      item.title.toUpperCase().includes(word.toUpperCase()),
-    );
-    return (
-      <div className="search-main">
-        <div className="search-category">
-          <div className="category-wrap">
-            <div className="category-container">
-              <button onClick={handleCategory} id="global-link">
-                <div>북마크(링크별)</div>
-                <p>{filtered.length}</p>
-              </button>
-              <button onClick={handleCategory} id="global-folder">
-                <div>폴더별</div>
-                <p>{filtered.length}</p>
-              </button>
-              <button onClick={handleCategory} id="global-tag">
-                <div>태그별</div>
-                <p>{filtered.length}</p>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="search-list">
-          {filtered?.map((item) => (
-            <div className="card-wrap" key={`search-${item.id}`}>
-              <div className="card"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  useEffect(() => {
-    Api.get(`user/folders`).then((res) => setData(res.data));
-  }, []);
-
   // 검색어 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(e.target.value);
-  };
-
-  // 검색 조건 핸들러
-  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTab((e.target as HTMLElement).textContent);
-    setShow((prev) => !prev);
+    Api.get(`search/unified?content=${e.target.value}`)
+      .then((res) => {
+        setSearchData(res.data);
+        console.log(res.data);
+      })
+      .catch(() => setSearchData({ postinfo: [], folderinfo: [] }));
   };
 
   // 검색창 초기화 함수
@@ -80,25 +41,12 @@ const Search = () => {
     setWord("");
   };
   return (
-    <Div show={show} category={category}>
+    <Div category={category}>
       {keyboardContext.sidebar === true && <SideBar />}
       <div className="search-border">
         <div className="search-section">
           <div className="search-container">
             <div className="search-box">
-              <div className="search-dropdown">
-                <div
-                  className="search-dropdown-header"
-                  onClick={() => setShow((prev) => !prev)}
-                >
-                  <p>{tab}</p>
-                  <span className="pe-7s-angle-down" />
-                </div>
-                <div className="search-select">
-                  <div onClick={handleTab}>전체 검색</div>
-                  <div onClick={handleTab}>나의 콘텐츠 검색</div>
-                </div>
-              </div>
               <div className="search-input">
                 <div className="search-input-box">
                   {word && (
@@ -127,7 +75,11 @@ const Search = () => {
             </div>
           </div>
           {word ? (
-            <SearchList />
+            <SearchList
+              handleCategory={handleCategory}
+              searchData={searchData}
+              category={category}
+            />
           ) : (
             <div className="search-image">
               <img
@@ -171,14 +123,13 @@ const Div = styled.div<StyleProps>`
     padding-top: 20px;
   }
   .search-box {
-    position: relative;
+    display: flex;
     width: 70%;
     height: 40px;
-    -webkit-box-pack: justify;
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     -webkit-box-align: center;
     align-items: center;
+    -webkit-box-pack: justify;
 
     .search-dropdown {
       position: relative;
@@ -203,8 +154,6 @@ const Div = styled.div<StyleProps>`
         border-radius: 8px;
         background-color: rgb(235, 235, 235);
         z-index: 3;
-        height: ${({ show }) => (show ? "168px" : "50px")};
-        visibility: ${({ show }) => (show ? "visible" : "hidden")};
         transition: height 0.3s ease-out;
 
         div {
@@ -360,6 +309,11 @@ const Div = styled.div<StyleProps>`
       box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
       border-radius: 8px;
       cursor: pointer;
+      transition: box-shadow 0.1s linear;
+
+      &:hover {
+        box-shadow: ${({ theme }) => theme.boxShadow};
+      }
     }
   }
 
@@ -402,8 +356,8 @@ const Div = styled.div<StyleProps>`
         margin-right: 10px;
         padding: 6px 6px 6px 20px;
         border-radius: 20px;
-        background-color: rgb(50, 46, 255);
-        cursor: inherit;
+        background: ${({ theme }) => theme.middleMainColor};
+        cursor: pointer;
 
         div {
           color: white;
@@ -418,23 +372,25 @@ const Div = styled.div<StyleProps>`
           font-weight: 700;
           color: rgb(50, 46, 255);
           background-color: white;
-          padding: 4px 8px;
           margin: auto;
+          width: 16px;
+          height: 16px;
         }
       }
     }
   }
   #global-link {
-    background-color: ${({ category }) => category === "global-link" && "red"};
+    background: ${({ category, theme }) =>
+      category === "global-link" && theme.profileBackground};
+    box-shadow: ${({ category, theme }) =>
+      category === "global-link" && theme.boxShadow};
   }
 
   #global-folder {
-    background-color: ${({ category }) =>
-      category === "global-folder" && "red"};
-  }
-
-  #global-tag {
-    background-color: ${({ category }) => category === "global-tag" && "red"};
+    background: ${({ category, theme }) =>
+      category === "global-folder" && theme.profileBackground};
+    box-shadow: ${({ category, theme }) =>
+      category === "global-folder" && theme.boxShadow};
   }
 `;
 export default Search;
