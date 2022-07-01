@@ -5,8 +5,9 @@ import { Modal } from "react-bootstrap";
 import emailjs from "@emailjs/browser";
 import { Team } from "./TeamPage";
 import * as Api from "../api";
-import { Alert } from "../layout/Alert";
 import { getCookie } from "auth/util/cookie";
+import { Alert } from "../layout/Alert";
+import { AxiosError } from "axios";
 
 interface Props {
   userModalShow: boolean;
@@ -31,7 +32,7 @@ const TeamUserModal = ({
   const [searchedUsers, setSearchedUsers] = React.useState<any[]>([]);
   const [selectedUserID, setSelectedUserID] = React.useState(null);
 
-  const userID = getCookie("user");
+  const userID = getCookie("user")?.id;
 
   const makeHiddenEmail = (email: string, index: number) => {
     return email.substring(0, index - 6) + "*******" + email.substring(index);
@@ -68,10 +69,10 @@ const TeamUserModal = ({
         title: "초대 성공",
       });
     } catch (err) {
-      console.log(err);
+      const error = err as AxiosError;
       Alert.fire({
         icon: "error",
-        title: "초대 실패",
+        title: "추방 실패 " + error.response?.data,
       });
     }
   };
@@ -85,10 +86,10 @@ const TeamUserModal = ({
         title: "추방 성공",
       });
     } catch (err) {
-      console.log(err);
+      const error = err as AxiosError;
       Alert.fire({
         icon: "error",
-        title: "추방 실패",
+        title: "추방 실패 " + error.response?.data,
       });
     }
   };
@@ -133,8 +134,6 @@ const TeamUserModal = ({
     }
   };
 
-  React.useEffect(() => {}, []);
-
   const userSearchList = searchedUsers.map((user) => {
     const hiddenEmail = makeHiddenEmail(user.email, user.email.indexOf("@"));
     return (
@@ -157,7 +156,6 @@ const TeamUserModal = ({
 
   React.useEffect(() => {
     emailjs.init("rCd7LLcggPr8C3K0N");
-    console.log(userID);
   }, []);
 
   return (

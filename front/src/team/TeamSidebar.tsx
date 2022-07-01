@@ -143,15 +143,15 @@ const TeamSidebar = ({
   const handleClickFolderEdit = (id: number) => () => {
     setEditingFolder(id);
     setEditingFolderTitle(folders.find((folder) => folder.id === id)!.title);
-    setMoreView(null);
+    // setMoreView(null);
   };
 
   const handleClickFolderDelete = (id: number) => async () => {
     try {
-      setMoreView(null);
-      if (window.confirm("Are you sure you want to delete this folder?")) {
+      if (window.confirm("정말 폴더를 지우시겠습니까?")) {
         await Api.delete(`folders/${id}`);
         setFolders(folders.filter((folder) => folder.id !== id));
+        setMoreView(null);
       }
     } catch (e) {
       alert("삭제에 실패했습니다.");
@@ -181,10 +181,10 @@ const TeamSidebar = ({
   }, [tab, team]);
 
   React.useEffect(() => {
-    document.addEventListener("mousedown", clickOutside);
+    document.addEventListener("mouseout", clickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", clickOutside);
+      document.removeEventListener("mouseout", clickOutside);
     };
   });
 

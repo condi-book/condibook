@@ -25,12 +25,16 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const TeamPageDetail = () => {
   const params = useParams();
-  const { selectedFolder, teams, setTeam, fetchTeamFolderData } =
+  const { fetchTeamData, selectedFolder, teams, setTeam, fetchTeamFolderData } =
     useOutletContextProps();
+  const iframeRef = React.useRef<HTMLIFrameElement>(null); // iframe ref
   const [list, setList] = React.useState([]);
   const [link, setLink] = React.useState("");
   const [show, setShow] = React.useState(false);
   const [newLink, setNewLink] = React.useState("");
+  const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
+  const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
+  const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -88,6 +92,9 @@ const TeamPageDetail = () => {
   };
 
   const fetchUpdateTeam = async () => {
+    if (!teams) {
+      await fetchTeamData();
+    }
     const team = teams.find((v) => v.team_id === parseInt(params.teamid));
     await setTeam(team);
 
@@ -101,20 +108,40 @@ const TeamPageDetail = () => {
 
   React.useEffect(() => {
     fetchBookmarks();
-  }, []);
-
-  React.useEffect(() => {
-    fetchUpdateTeam();
-  }, []);
+  }, [selectedFolder]);
 
   React.useEffect(() => {
     fetchBookmarks();
-  }, [selectedFolder]);
+    fetchUpdateTeam();
+    if (iframeRef.current !== null) {
+      iframeRef.current.onload = () => {
+        try {
+          console.log(iframeRef.current.contentWindow["0"]);
+          setIsBlocked(false);
+        } catch (e) {
+          setIsBlocked(true);
+        }
+      };
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (newWindowOpen) {
+      window.open(link, "_blank");
+      setNewWindowOpen(false);
+    }
+  }, [newWindowOpen]);
+
+  React.useEffect(() => {
+    if (link?.includes(window.location.origin)) {
+      setIsCondiBook(true);
+    }
+  }, [link]);
   return (
     <Div>
       <div className="detail-container">
         <div className="list box">
-          <div>{params.title}</div>
+          <Title>{params.title}</Title>
           <div className="add dnd-item" onClick={handleClick}>
             <span className="pe-7s-plus"></span>
           </div>
@@ -157,17 +184,29 @@ const TeamPageDetail = () => {
                             >
                               <div className="dnd-item-element">
                                 <div>
-                                  <span className="pe-7s-menu" />
+                                  <span
+                                    title="순서 이동"
+                                    className="pe-7s-menu"
+                                  />
                                 </div>
                                 <Img>
                                   <img src={website.img} alt="이미지" />
                                 </Img>
-                                <div>
-                                  <div>{website.meta_title}</div>
-                                  <div>{`${website.url.substr(0, 20)}...`}</div>
+                                <div className="content">
+                                  <div>
+                                    {website.meta_title?.length >= 30
+                                      ? `${website.meta_title.substr(0, 30)}...`
+                                      : website.meta_title}
+                                  </div>
+                                  <div className="sub">
+                                    {website.url?.length >= 50
+                                      ? `${website.url.substr(0, 50)}...`
+                                      : website.url}
+                                  </div>
                                 </div>
                                 <div>
                                   <span
+                                    title="링크 삭제"
                                     className="pe-7s-trash icon"
                                     onClick={(e) => handleDelete(e, item)}
                                   />
@@ -185,7 +224,40 @@ const TeamPageDetail = () => {
           </DragDropContext>
         </div>
         <div className="content box">
-          <iframe src={link} width="100%" height="100%"></iframe>
+          {list.length === 0 && (
+            <Empty className="empty">
+              <img src="/static/img/bookmark.svg" alt="preview"></img>
+              <div>북마크를 추가하여</div>
+              <div>미리보기(preview) 기능을 사용해보세요</div>
+            </Empty>
+          )}
+          {isBlocked && (
+            <Warning>
+              <img src="/static/img/notify.svg" alt="blocked" />
+              <div>미리보기가 거부된 북마크 입니다</div>
+              <div>새 탭으로 여시겠습니까?</div>
+              <button
+                onClick={() => {
+                  setNewWindowOpen(true);
+                }}
+              >
+                새 탭으로 열기
+              </button>
+            </Warning>
+          )}
+          {isCondiBook && (
+            <Warning>
+              <img src="/static/img/warning.svg" alt="warning" />
+              <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
+            </Warning>
+          )}
+          <iframe
+            src={link}
+            width="100%"
+            height={!link || isBlocked ? "0%" : "100%"}
+            ref={iframeRef}
+            loading="lazy"
+          ></iframe>
         </div>
       </div>
     </Div>
@@ -195,20 +267,25 @@ const TeamPageDetail = () => {
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
+  height: 100%;
+  background: ${({ theme }) => theme.background};
 
   .detail-container {
     display: flex;
-    // justify-content: center;
     width: 100%;
-    border: 2px solid green;
+    height: 100%;
     margin: 10px;
-    height: 100vh;
+    margin-left: 0;
+    background: white;
+    border-radius: 10px;
   }
 
   .box {
     width: 50%;
     padding: 1%;
+    margin: 10px;
+    background: #f5f5f5;
+    border-radius: 10px;
   }
 
   .add {
@@ -216,28 +293,66 @@ const Div = styled.div`
     margin: auto;
     font-size: 30px;
     border: 1px solid rgba(76, 76, 76, 0.1);
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8%;
+
+    .pe-7s-plus {
+      font-weight: bold;
+      // color: white;
+      font-size: 1.5vw;
+    }
 
     &:hover {
       cursor: pointer;
+      box-shadow: 0 0 10px rgba(76, 76, 76, 0.1);
+    }
+  }
+
+  .content {
+    width: 60%;
+    padding: 5px;
+
+    div {
+      font-size: 1vw;
+    }
+    .sub {
+      font-size: 0.8vw;
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 2px 5px;
     }
   }
 
   .dnd-item {
     margin: 3% 0;
+    border-radius: 10px;
 
     .dnd-item-element {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       background: white;
       border-radius: 10px;
+      width: 100%;
 
       span {
-        font-size: 30px;
+        font-size: 1.5vw;
+        width: 20%;
       }
 
       .pe-7s-menu {
         font-weight: bold;
         cursor: all-scroll;
+      }
+
+      .pe-7s-trash {
+        color: ${({ theme }) => theme.subRedColor};
+        &:hover {
+          font-weight: bold;
+        }
       }
 
       .icon {
@@ -258,12 +373,52 @@ const DnDiv = styled.div`
 `;
 
 const Img = styled.div`
-  width: 20%;
-  height: 10%;
+  padding: 5px;
+  width: 10%;
+  height: 5%;
 
   img {
-    width: 100%;
-    height: 100%;
+    width: 3vw;
+    font-size: 0.5vw;
+  }
+`;
+
+const Empty = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 15%;
+    margin-bottom: 20px;
+  }
+`;
+
+const Title = styled.div`
+  font-weight: bold;
+  font-size: 1.4vw;
+`;
+
+const Warning = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-height: 768px;
+  width: 100%;
+  img {
+    width: 20%;
+    margin-bottom: 20px;
+  }
+  div {
+    width: 50%;
+    font-size: 1.2vw;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
   }
 `;
 

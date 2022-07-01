@@ -44,7 +44,6 @@ const TeamCreateModal = ({
       });
       navigate(`/team/${res.data.id}`);
     } catch (err) {
-      alert(err);
       await Alert.fire({
         icon: "error",
         title: "팀 생성 실패",
@@ -71,7 +70,6 @@ const TeamCreateModal = ({
       });
       navigate(`/team/${team.team_id}`);
     } catch (err: any) {
-      alert(err);
       await Alert.fire({
         icon: "error",
         title: `팀 수정 실패 : ${err?.response.data}`,

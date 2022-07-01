@@ -91,6 +91,8 @@ const Section = styled.section`
   flex-direction: column;
   justify-content: space-around;
   border-radius: 15px;
+  position: sticky;
+  top: 0;
   background: ${({ theme }) => theme.profileBackground};
   div {
     text-align: center;

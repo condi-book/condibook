@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { Team } from "./TeamPage";
 import * as Api from "../api";
@@ -19,7 +19,7 @@ const TeamFolderModal = ({
   team,
   fetchTeamFolderData,
 }: Props) => {
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
 
   const handleCreateFolder = async () => {
@@ -27,10 +27,11 @@ const TeamFolderModal = ({
       team_id: team.team_id,
       title,
     });
-    alert(res);
+    console.log(res.data);
+
     setFolderModalShow(false);
     fetchTeamFolderData();
-    // navigate("team/" + folder_id);
+    navigate(res.data.id);
   };
   return (
     <>

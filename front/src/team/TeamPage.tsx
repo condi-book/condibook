@@ -77,6 +77,10 @@ const TeamPage = () => {
     fetchTeamData();
   }, []);
 
+  React.useEffect(() => {
+    fetchTeamData();
+  }, [createModalShow]);
+
   return (
     <Div>
       {keyboardContext.sidebar === true && <SideBar />}

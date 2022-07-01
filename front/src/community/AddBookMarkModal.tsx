@@ -31,7 +31,7 @@ const AddBookMarkModal = ({
   postBookmarks,
   setPostBookmarks,
 }: props) => {
-  const [newLink, setNewLink] = React.useState("");
+  // const [newLink, setNewLink] = React.useState("");
   const [show, setShow] = React.useState(false);
   const [tab, setTab] = React.useState("폴더를 선택하세요");
   const [folders, setFolders] = React.useState<Folder[]>([]);
@@ -56,10 +56,10 @@ const AddBookMarkModal = ({
     window.open(`${e.currentTarget.innerText}`);
   };
 
-  // url 입력시 이벤트
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewLink(e.target.value);
-  };
+  // // url 입력시 이벤트
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setNewLink(e.target.value);
+  // };
 
   // 폴더 선택
   const handleTab = React.useCallback(
@@ -99,49 +99,49 @@ const AddBookMarkModal = ({
   );
 
   // 북마크 입력
-  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const selectedFolderID = folders.find((folder) => folder.title === tab).id;
+  // const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   const selectedFolderID = folders.find((folder) => folder.title === tab).id;
 
-    if (e.key === "Enter") {
-      try {
-        const res = await Api.post("websites", {
-          url: newLink,
-        });
-        await Api.post(`bookmarks`, {
-          folder_id: selectedFolderID,
-          website_id: res.data.website.id,
-        });
-      } catch (e) {
-        alert(`err: ${e}`);
-      }
+  //   if (e.key === "Enter") {
+  //     try {
+  //       const res = await Api.post("websites", {
+  //         url: newLink,
+  //       });
+  //       await Api.post(`bookmarks`, {
+  //         folder_id: selectedFolderID,
+  //         website_id: res.data.website.id,
+  //       });
+  //     } catch (e) {
+  //       alert(`err: ${e}`);
+  //     }
 
-      fetchFolderBookmarkData(selectedFolderID);
-      setNewLink("");
-    }
-  };
+  //     fetchFolderBookmarkData(selectedFolderID);
+  //     setNewLink("");
+  //   }
+  // };
 
-  // 북마크 입력
-  const handleClickAdd = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    const selectedFolderID = folders.find((folder) => folder.title === tab).id;
-    try {
-      const res = await Api.post("websites", {
-        url: newLink,
-      });
-      await Api.post(`bookmarks`, {
-        folder_id: selectedFolderID,
-        website_id: res.data.website.id,
-      });
-    } catch (e) {
-      alert(`err: ${e}`);
-    }
+  // // 북마크 입력
+  // const handleClickAdd = async (
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  // ) => {
+  //   e.preventDefault();
+  //   const selectedFolderID = folders.find((folder) => folder.title === tab).id;
+  //   try {
+  //     const res = await Api.post("websites", {
+  //       url: newLink,
+  //     });
+  //     await Api.post(`bookmarks`, {
+  //       folder_id: selectedFolderID,
+  //       website_id: res.data.website.id,
+  //     });
+  //   } catch (e) {
+  //     alert(`err: ${e}`);
+  //   }
 
-    fetchFolderBookmarkData(selectedFolderID);
+  //   fetchFolderBookmarkData(selectedFolderID);
 
-    setNewLink("");
-  };
+  //   setNewLink("");
+  // };
 
   // 완료버튼을 누르면 모달을 닫기
   const handleComplete = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -164,16 +164,10 @@ const AddBookMarkModal = ({
     try {
       const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
       const handledData = data.bookmarks.map((data: any) => {
-        const checkedBookmarkURL = postBookmarks
-          ?.filter((bookmark) => bookmark.checked === true)
-          .map((bookmark) => bookmark.url);
-
         return {
           id: data.bookmark_id,
           url: data.website.url,
-          checked: checkedBookmarkURL?.includes(data.website.url)
-            ? true
-            : false,
+          checked: false,
         };
       });
       setSelectedFolderBookmarks(handledData);
@@ -245,25 +239,29 @@ const AddBookMarkModal = ({
           <Col>
             <Row>
               <Col>
-                {selectedFolderBookmarks.map((bookmark, idx) => (
-                  <Row key={`postBookmark-${idx}`}>
-                    <Checkbox
-                      type="checkbox"
-                      value={bookmark.id}
-                      onChange={(e) => {
-                        onCheckedElement(
-                          e.target.checked,
-                          parseInt(e.target.value),
-                        );
-                      }}
-                      checked={bookmark.checked}
-                    />
-                    <Link onClick={handleClickLink}>{bookmark.url}</Link>
-                  </Row>
-                ))}
+                {selectedFolderBookmarks?.length === 0 ? (
+                  <span>폴더에 북마크가 없습니다 북마크를 추가해보세요!</span>
+                ) : (
+                  selectedFolderBookmarks.map((bookmark, idx) => (
+                    <Row key={`postBookmark-${idx}`}>
+                      <Checkbox
+                        type="checkbox"
+                        value={bookmark.id}
+                        onChange={(e) => {
+                          onCheckedElement(
+                            e.target.checked,
+                            parseInt(e.target.value),
+                          );
+                        }}
+                        checked={bookmark.checked}
+                      />
+                      <Link onClick={handleClickLink}>{bookmark.url}</Link>
+                    </Row>
+                  ))
+                )}
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               <Input
                 value={newLink}
                 onChange={handleChange}
@@ -271,7 +269,7 @@ const AddBookMarkModal = ({
                 onKeyPress={handleKeyPress}
               ></Input>
               <Button onClick={handleClickAdd}>등록</Button>
-            </Row>
+            </Row> */}
           </Col>
         </Modal.Body>
         <Modal.Footer>
@@ -300,37 +298,37 @@ const Row = styled.div`
   width: 100%;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  height: 30px;
+// const Input = styled.input`
+//   width: 100%;
+//   height: 30px;
 
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: 10px;
-  font-size: 14px;
-  color: #000;
-  &:focus {
-    outline: none;
-  }
-`;
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+//   padding: 10px;
+//   margin-top: 5px;
+//   margin-bottom: 5px;
+//   margin-right: 10px;
+//   font-size: 14px;
+//   color: #000;
+//   &:focus {
+//     outline: none;
+//   }
+// `;
 
-const Button = styled.button`
-  width: 10%;
-  height: 30px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// const Button = styled.button`
+//   width: 10%;
+//   height: 30px;
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+//   padding: 10px;
+//   margin-top: 5px;
+//   margin-bottom: 5px;
+//   font-size: 14px;
+//   color: #000;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
 
 const Checkbox = styled.input`
   width: 20px;

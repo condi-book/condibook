@@ -64,6 +64,8 @@ const CommunityPostDetail = () => {
   const [comment, setComment] = React.useState(""); // 쓰고있는 댓글 내용
   const [comments, setComments] = React.useState<Comment[]>([]); // 댓글 리스트
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
+  const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
+  const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
 
   // 시간 계산하여 문자열 리턴해주는 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
@@ -102,7 +104,7 @@ const CommunityPostDetail = () => {
   };
 
   const checkAuthor = (author: string) => {
-    const userId = JSON.parse(user).id;
+    const userId = user.id;
     if (userId === author) {
       return true;
     }
@@ -231,7 +233,7 @@ const CommunityPostDetail = () => {
         const likedIDList = res.data.likesInfo.map(
           (likeData: any) => likeData.user_id,
         );
-        const userID = JSON.parse(user).id;
+        const userID = user.id;
 
         if (likedIDList.includes(userID)) {
           setLiked(true);
@@ -245,17 +247,16 @@ const CommunityPostDetail = () => {
   }, []);
 
   React.useEffect(() => {
-    iframeRef.current.onload = () => {
-      try {
-        console.log(iframeRef.current.contentWindow["0"]);
-      } catch (e) {
-        if (window.confirm("열지 못하는 페이지입니다. 새탭에서 여시겠습니까")) {
-          setNewWindowOpen(!newWindowOpen);
-        } else {
-          setLink("");
+    if (iframeRef.current !== null) {
+      iframeRef.current.onload = () => {
+        try {
+          console.log(iframeRef.current.contentWindow["0"]);
+          setIsBlocked(false);
+        } catch (e) {
+          setIsBlocked(true);
         }
-      }
-    };
+      };
+    }
   }, []);
 
   React.useEffect(() => {
@@ -264,6 +265,12 @@ const CommunityPostDetail = () => {
       setNewWindowOpen(false);
     }
   }, [newWindowOpen]);
+
+  React.useEffect(() => {
+    if (link?.includes(window.location.origin)) {
+      setIsCondiBook(true);
+    }
+  }, [link]);
 
   return (
     <Div>
@@ -297,7 +304,7 @@ const CommunityPostDetail = () => {
               </ButtonContainer>
             </SubTitle>
           </HeaderContainer>
-          {!list ? (
+          {list?.length === 0 ? (
             <></>
           ) : (
             <BookmarkContainer>
@@ -353,18 +360,38 @@ const CommunityPostDetail = () => {
         </div>
         <div className="contentWrapper">
           {!link && (
-            <NotFound>
+            <Warning>
               <img src="/static/img/communitybookmark.svg" alt="preview" />
               <div>
                 해당 게시글에 공유된 북마크를 클릭하여 미리보기(preview) 기능을
                 사용해보세요
               </div>
-            </NotFound>
+            </Warning>
+          )}
+          {isBlocked && (
+            <Warning>
+              <img src="/static/img/notify.svg" alt="blocked" />
+              <div>미리보기가 거부된 북마크 입니다</div>
+              <div>새 탭으로 여시겠습니까?</div>
+              <button
+                onClick={() => {
+                  setNewWindowOpen(true);
+                }}
+              >
+                새 탭으로 열기
+              </button>
+            </Warning>
+          )}
+          {isCondiBook && (
+            <Warning>
+              <img src="/static/img/warning.svg" alt="warning" />
+              <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
+            </Warning>
           )}
           <iframe
             src={link}
             width="100%"
-            height="100%"
+            height={!link || isBlocked ? "0%" : "100%"}
             ref={iframeRef}
             loading="lazy"
           ></iframe>
@@ -458,6 +485,7 @@ const LikeButton = styled.span<{ like: boolean }>`
 
 const H1 = styled.h1`
   font-size: 2.3vw;
+  max-width: 650px;
   letter-spacing: -0.004em;
   margin-top: 0px;
   font-weight: 800;
@@ -473,6 +501,9 @@ const ButtonContainer = styled.div`
   position: relative;
   font-size: 1.2vw;
 
+  .comment-button {
+    margin-top: -0.5rem;
+  }
   .hoverButton {
     height: 100%;
     weight: 100%;
@@ -497,9 +528,10 @@ const ButtonContainer = styled.div`
 
 const InfoContainer = styled.div`
   align-items: center;
-  font-size: 1.2vw;
+  font-size: 0.9vw;
   display: flex;
   justify-content: space-between;
+  width: 80%;
 
   .username {
     font-weight: bold;
@@ -567,12 +599,13 @@ const CommentWrapper = styled.div`
   padding: 10px;
   border-radius: 10px;
 `;
-const NotFound = styled.div`
+const Warning = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
+  max-height: 768px;
   width: 100%;
   img {
     width: 20%;
@@ -581,5 +614,8 @@ const NotFound = styled.div`
   div {
     width: 50%;
     font-size: 1.2vw;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
   }
 `;

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import { getCookie } from "auth/util/cookie";
+import { Alert } from "../layout/Alert";
 
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -31,7 +32,7 @@ const CommunityPostWrite = () => {
   const postId = params.get("id"); // 변환된 게시글 아이디 값
   const editorRef = React.useRef<ToastEditor>(null);
   const user = getCookie("user");
-  const userId = JSON.parse(user).id;
+  const userId = user.id;
 
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<string | undefined>();
@@ -139,7 +140,10 @@ const CommunityPostWrite = () => {
       const fetchedItem = res.data.postInfo;
 
       if (userId !== fetchedItem.author) {
-        alert("권한이 없습니다.");
+        Alert.fire({
+          icon: "error",
+          title: "권한이 없습니다.",
+        });
         navigate("/community");
       }
 
@@ -148,7 +152,10 @@ const CommunityPostWrite = () => {
       editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
     } catch (error) {
       const err = error as AxiosError;
-      alert(`${err.response?.data}`);
+      Alert.fire({
+        icon: "error",
+        title: "추방 실패 " + err.response?.data,
+      });
       navigate("/community");
     }
   };

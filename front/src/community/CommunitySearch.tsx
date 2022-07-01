@@ -19,30 +19,6 @@ const CommunitySearch = () => {
 
   // 검색 리스트
   const SearchList = () => {
-    const searchTitleContent = React.useCallback(
-      (item: { title: string; value: string }) => {
-        item.title.includes(word) || item.value.includes(word);
-      },
-      [tab],
-    );
-    const searchTitle = React.useCallback(
-      (item: { title: string; value: string }) => {
-        item.title.includes(word);
-      },
-      [tab],
-    );
-    let filtered = data?.filter(searchTitle); // 검색결과 기본값
-    switch (tab) {
-      case "제목":
-        filtered = data?.filter(searchTitle);
-        break;
-      case "제목 + 내용":
-        filtered = data?.filter(searchTitleContent);
-        break;
-      default:
-        filtered = data?.filter(searchTitle);
-        break;
-    }
     const handlePostClick =
       (id: string) => (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -51,9 +27,14 @@ const CommunitySearch = () => {
     return (
       <div className="search-main">
         <div className="search-list">
-          {filtered?.map((item) => (
+          {data?.map((item) => (
             <div className="card-wrap" key={`search-${item.id}`}>
-              <div className="card" onClick={handlePostClick(item.id)}></div>
+              <div className="card" onClick={handlePostClick(item.id)}>
+                <div className="card-header">
+                  <div className="card-title">제목 : {item.title}</div>
+                  <div className="card-author">글쓴이 : {item.author_name}</div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -68,6 +49,17 @@ const CommunitySearch = () => {
   // 검색어 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(e.target.value);
+  };
+
+  const handelSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    ///search/community?order=likes&pageNumber=1&content=g&type=1
+    const url =
+      tab === "제목"
+        ? `search/community?order=likes&pageNumber=1&content=${word}&type=0`
+        : `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
+    const res = await Api.get(url);
+    setData(res.data);
   };
 
   // 검색 조건 핸들러
@@ -113,7 +105,7 @@ const CommunitySearch = () => {
                     />
                   </button>
                 )}
-                <button>
+                <button onClick={handelSearch}>
                   <span className="pe-7s-search"></span>
                 </button>
                 <input
@@ -126,7 +118,7 @@ const CommunitySearch = () => {
             </div>
           </div>
         </div>
-        {word ? (
+        {data ? (
           <SearchList />
         ) : (
           <div className="search-image">
@@ -195,6 +187,7 @@ const Div = styled.div<StyleProps>`
         height: ${({ show }) => (show ? "168px" : "50px")};
         visibility: ${({ show }) => (show ? "visible" : "hidden")};
         transition: height 0.3s ease-out;
+        position:relative
 
         div {
           display: flex;
@@ -319,6 +312,9 @@ const Div = styled.div<StyleProps>`
   .search-main {
     width: 64%;
     margin: 0 auto;
+    margin-top: 8%;
+    z-index:1;
+    
 
     .search-list {
       display: flex;
@@ -327,6 +323,8 @@ const Div = styled.div<StyleProps>`
       align-items: flex-start;
       flex-wrap: wrap;
       width: 100%;
+      z-index: 1;
+      
     }
     .card-wrap {
       width: 50%;
@@ -337,8 +335,8 @@ const Div = styled.div<StyleProps>`
       flex-direction: column;
       -webkit-box-pack: justify;
       justify-content: space-between;
-      align-items: flex-start;
-      width: 95%;
+      align-items: center;
+      width: 100%;
       height: 140px;
       padding: 20px;
       margin: 0px 10px 20px 10px;
@@ -347,6 +345,18 @@ const Div = styled.div<StyleProps>`
       box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
       border-radius: 8px;
       cursor: pointer;
+      .card-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(96, 96, 96);
+        letter-spacing: -0.05em;
+      }
+      .card-author {
+        font-size: 14px;
+        font-weight: 300;
+        color: rgb(96, 96, 96);
+        letter-spacing: -0.05em;
+
     }
   }
 

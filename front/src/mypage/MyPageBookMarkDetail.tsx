@@ -25,11 +25,15 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const MypageBookmarkDetail = () => {
   const params = useParams();
+  const iframeRef = React.useRef<HTMLIFrameElement>(null); // iframe ref
   const [list, setList] = useState([]);
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
   const [newLink, setNewLink] = useState("");
   const [folderTitle, setFolderTitle] = useState("");
+  const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
+  const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
+  const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -101,6 +105,32 @@ const MypageBookmarkDetail = () => {
       });
     });
   };
+
+  React.useEffect(() => {
+    if (iframeRef.current !== null) {
+      iframeRef.current.onload = () => {
+        try {
+          console.log(iframeRef.current.contentWindow["0"]);
+          setIsBlocked(false);
+        } catch (e) {
+          setIsBlocked(true);
+        }
+      };
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (newWindowOpen) {
+      window.open(link, "_blank");
+      setNewWindowOpen(false);
+    }
+  }, [newWindowOpen]);
+
+  React.useEffect(() => {
+    if (link?.includes(window.location.origin)) {
+      setIsCondiBook(true);
+    }
+  }, [link]);
 
   return (
     <Div>
@@ -191,15 +221,40 @@ const MypageBookmarkDetail = () => {
           </DragDropContext>
         </div>
         <div className="content box">
-          {list.length === 0 ? (
+          {list.length === 0 && (
             <Empty className="empty">
               <img src="/static/img/bookmark.svg" alt="preview"></img>
               <div>북마크를 추가하여</div>
               <div>미리보기(preview) 기능을 사용해보세요</div>
             </Empty>
-          ) : (
-            <iframe src={link} width="100%" height="100%"></iframe>
           )}
+          {isBlocked && (
+            <Warning>
+              <img src="/static/img/notify.svg" alt="blocked" />
+              <div>미리보기가 거부된 북마크 입니다</div>
+              <div>새 탭으로 여시겠습니까?</div>
+              <button
+                onClick={() => {
+                  setNewWindowOpen(true);
+                }}
+              >
+                새 탭으로 열기
+              </button>
+            </Warning>
+          )}
+          {isCondiBook && (
+            <Warning>
+              <img src="/static/img/warning.svg" alt="warning" />
+              <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
+            </Warning>
+          )}
+          <iframe
+            src={link}
+            width="100%"
+            height={!link || isBlocked ? "0%" : "100%"}
+            ref={iframeRef}
+            loading="lazy"
+          ></iframe>
         </div>
       </div>
     </Div>
@@ -339,6 +394,27 @@ const Empty = styled.div`
 const Title = styled.div`
   font-weight: bold;
   font-size: 1.4vw;
+`;
+
+const Warning = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-height: 768px;
+  width: 100%;
+  img {
+    width: 20%;
+    margin-bottom: 20px;
+  }
+  div {
+    width: 50%;
+    font-size: 1.2vw;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 `;
 
 export default MypageBookmarkDetail;

@@ -82,7 +82,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
             {!isAuthor(comment.author) ? (
               <></>
             ) : (
-              <ButtonContainer>
+              <ButtonContainer className="comment-button">
                 <button
                   className="hoverButton"
                   onClick={() => {
@@ -143,6 +143,9 @@ const Row = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  .comment-button {
+    margin-top: -0.5rem;
+  }
 `;
 
 const ContentContainer = styled.div`
