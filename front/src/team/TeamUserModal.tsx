@@ -19,6 +19,7 @@ interface Props {
 type StyleProps = {
   styleID: number;
   selectedUserID: number;
+  isManager: boolean;
 };
 
 const TeamUserModal = ({
@@ -33,6 +34,7 @@ const TeamUserModal = ({
   const [selectedUserID, setSelectedUserID] = React.useState(null);
 
   const userID = getCookie("user")?.id;
+  const managerID = team?.manager_id;
 
   const makeHiddenEmail = (email: string, index: number) => {
     return email.substring(0, index - 6) + "*******" + email.substring(index);
@@ -68,11 +70,12 @@ const TeamUserModal = ({
         icon: "success",
         title: "초대 성공",
       });
+      setUserModalShow(false);
     } catch (err) {
       const error = err as AxiosError;
       Alert.fire({
         icon: "error",
-        title: "추방 실패 " + error.response?.data,
+        title: "초대 실패 " + error.response?.data,
       });
     }
   };
@@ -80,11 +83,18 @@ const TeamUserModal = ({
   const handleBanish = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
+      if (selectedUserID === managerID) {
+        return await Alert.fire({
+          icon: "error",
+          title: "매니저는 추방 할 수 없습니다.",
+        });
+      }
       await Api.delete(`teams/${team.team_id}/members/${selectedUserID}`);
       await Alert.fire({
         icon: "success",
         title: "추방 성공",
       });
+      setUserModalShow(false);
     } catch (err) {
       const error = err as AxiosError;
       Alert.fire({
@@ -96,18 +106,20 @@ const TeamUserModal = ({
 
   const handleUserSearch = async () => {
     try {
+      const teamMembers = await Api.get(`teams/${team.team_id}/members`);
       if (isBanish) {
-        const res = await Api.get(`teams/${team.team_id}/members`);
-        const searchTeamUsersExceptMe = res.data.filter(
-          (user: any) => user.user_id !== userID,
-        );
-        setSearchedUsers(searchTeamUsersExceptMe);
+        setSearchedUsers(teamMembers.data);
       } else {
         const res = await Api.get(`user?nickname=${nickname}`);
-        const searchUsersExceptMe = res.data.filter(
-          (user: any) => user.id !== userID,
+        const allUser = res.data;
+        const searchUsersExceptTeamMembersAndMe = allUser.filter(
+          (user: any) =>
+            teamMembers.data.find(
+              (teamUser: any) => teamUser.user_id === user.id,
+            ) === undefined && user.id !== userID,
         );
-        setSearchedUsers(searchUsersExceptMe);
+
+        setSearchedUsers(searchUsersExceptTeamMembersAndMe);
       }
     } catch (err) {
       console.log(err);
@@ -116,18 +128,20 @@ const TeamUserModal = ({
 
   const fetchUserData = async () => {
     try {
+      const teamMembers = await Api.get(`teams/${team.team_id}/members`);
       if (isBanish) {
-        const res = await Api.get(`teams/${team.team_id}/members`);
-        const searchTeamUsersExceptMe = res.data.filter(
-          (user: any) => user.user_id !== userID,
-        );
-        setSearchedUsers(searchTeamUsersExceptMe);
+        setSearchedUsers(teamMembers.data);
       } else {
         const res = await Api.get(`user?nickname=${nickname}`);
-        const searchUsersExceptMe = res.data.filter(
-          (user: any) => user.id !== userID,
+        const allUser = res.data;
+        const searchUsersExceptTeamMembersAndMe = allUser.filter(
+          (user: any) =>
+            teamMembers.data.find(
+              (teamUser: any) => teamUser.user_id === user.id,
+            ) === undefined && user.id !== userID,
         );
-        setSearchedUsers(searchUsersExceptMe);
+
+        setSearchedUsers(searchUsersExceptTeamMembersAndMe);
       }
     } catch (err) {
       console.log(err);
@@ -142,10 +156,17 @@ const TeamUserModal = ({
         styleID={user.id ?? user.user_id}
         onClick={handleSelectUser(user.id ?? user.user_id)}
         selectedUserID={selectedUserID}
+        isManager={(user.id ?? user.user_id) === managerID}
       >
         <span className="userNickname">{user.nickname}</span>
         <span className="separator">|</span>
-        <span>{hiddenEmail}</span>
+        <span className="email">{hiddenEmail}</span>
+        <span className="separator">|</span>
+        {(user.id ?? user.user_id) === managerID ? (
+          <span className="manager">매니저</span>
+        ) : (
+          <span className="member">회원</span>
+        )}
       </UserCard>
     );
   });
@@ -169,7 +190,7 @@ const TeamUserModal = ({
           size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>{isBanish ? "팀 추방" : "팀 초대"}</Modal.Title>
+            <Modal.Title>{isBanish ? "팀 유저 정보" : "팀 초대"}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {!isBanish && (
@@ -208,12 +229,12 @@ const TeamUserModal = ({
           size="lg"
         >
           <Modal.Header closeButton>
-            <Modal.Title>{isBanish ? "팀 추방" : "팀 초대"}</Modal.Title>
+            <Modal.Title>{isBanish ? "팀 유저 정보" : "팀 초대"}</Modal.Title>
           </Modal.Header>
           <Modal.Body style={{ textAlign: "center" }}>
             <span>
               {isBanish
-                ? "추방하기 위해 우선 팀을 선택해주세요"
+                ? "정보를 보기 위해 우선 팀을 선택해주세요"
                 : "초대하기 위해 우선 팀을 선택해주세요"}
             </span>
           </Modal.Body>
@@ -284,12 +305,20 @@ const UserListContainer = styled.div`
     background-color: #555;
   }
   .userNickname {
-    margin-right: 0.5rem;
+    margin-right: 1rem;
     font-weight: bold;
     font-size: 1rem;
   }
+  .email {
+    font-size: 0.8rem;
+    margin-right: 1rem;
+  }
+  .manager {
+    font-size: 1rem;
+    font-weight: bold;
+  }
   .separator {
-    margin-right: 2rem;
+    margin-right: 1rem;
   }
 `;
 
@@ -297,15 +326,28 @@ const UserCard = styled.div<StyleProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+
   padding: 0.5rem;
   border-radius: 0.25rem;
-  background: ${(props) =>
-    props.styleID === props.selectedUserID ? "#ffeecb" : "white"};
+  background: ${({ styleID, selectedUserID, isManager, theme }) =>
+    isManager
+      ? theme.profileBackground
+      : styleID === selectedUserID && !isManager
+      ? "black"
+      : "white"};
+  color: ${({ isManager, styleID, selectedUserID }) =>
+    isManager
+      ? "#fff"
+      : styleID === selectedUserID && !isManager
+      ? "white"
+      : "black"};
   border: 1px solid #ced4da;
   margin-bottom: 0.5rem;
-  cursor: pointer;
+  cursor: ${({ isManager }) => (isManager ? "default" : "pointer")};
 
   :hover {
-    background-color: #ffeecb;
+    background-color: ${(props) => (props.isManager ? "white" : "black")};
+    color: white;
   }
 `;

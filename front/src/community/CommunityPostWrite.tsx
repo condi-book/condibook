@@ -59,7 +59,10 @@ const CommunityPostWrite = () => {
 
   const validateTitleContent = () => {
     if (title === "") {
-      alert("제목을 입력해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "제목을 입력해주세요.",
+      });
       return false;
     }
     if (
@@ -68,7 +71,24 @@ const CommunityPostWrite = () => {
       content === null ||
       content === " "
     ) {
-      alert("내용을 입력해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "내용을 입력해주세요.",
+      });
+      return false;
+    }
+    if (title.length > 20) {
+      Alert.fire({
+        icon: "error",
+        title: "제목은 20자 이내로 작성해주세요.",
+      });
+      return false;
+    }
+    if (content.length > 1000) {
+      Alert.fire({
+        icon: "error",
+        title: "내용은 1000자 이내로 작성해주세요.",
+      });
       return false;
     }
     return true;

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import * as Api from "../api";
+// import * as Api from "../api";
 import { Team, Folder } from "./TeamPage";
 import { useNavigate } from "react-router-dom";
 
@@ -8,14 +8,8 @@ type StyleProps = {
   show: boolean;
 };
 
-type FolderMoreStyleProps = {
-  value: number;
-  moreView: number;
-};
-
 type FolderContainerStyleProps = {
   value: number;
-  editingFolder: number;
   selectedFolder: Folder;
 };
 
@@ -39,7 +33,6 @@ const TeamSidebar = ({
   setCreateModalShow,
   setUserModalShow,
   folders,
-  setFolders,
   team,
   setTeam,
   teams,
@@ -54,9 +47,6 @@ const TeamSidebar = ({
 
   const [tab, setTab] = React.useState("팀을 선택하세요"); // 팀 선택
   const [tabShow, setTabShow] = React.useState(false); // 팀 드랍메뉴
-  const [moreView, setMoreView] = React.useState(null); // 더보기 할 폴더 아이디 값
-  const [editingFolder, setEditingFolder] = React.useState(null); // 수정 중인 폴더 아이디값
-  const [editingFolderTitle, setEditingFolderTitle] = React.useState(""); // 수정 중인 폴더 이름
 
   // 드랍메뉴에 보여줄 폴더리스트
   const teamsList = (
@@ -69,7 +59,7 @@ const TeamSidebar = ({
     ));
   };
 
-  // 폴더 선택
+  // 팀 선택
   const handleTab = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       const findTeam = teams.find(
@@ -126,52 +116,6 @@ const TeamSidebar = ({
     setFolderModalShow(true);
   };
 
-  const handleClickMore = (id: number) => (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setMoreView((prev: number) => {
-      if (prev === id) {
-        return null;
-      }
-      return id;
-    });
-  };
-
-  const clickOutside = () => {
-    setMoreView(null);
-  };
-
-  const handleClickFolderEdit = (id: number) => () => {
-    setEditingFolder(id);
-    setEditingFolderTitle(folders.find((folder) => folder.id === id)!.title);
-    // setMoreView(null);
-  };
-
-  const handleClickFolderDelete = (id: number) => async () => {
-    try {
-      if (window.confirm("정말 폴더를 지우시겠습니까?")) {
-        await Api.delete(`folders/${id}`);
-        setFolders(folders.filter((folder) => folder.id !== id));
-        setMoreView(null);
-      }
-    } catch (e) {
-      alert("삭제에 실패했습니다.");
-    }
-  };
-
-  const editFolder = async () => {
-    try {
-      const res = await Api.put(`folders/${editingFolder}`, {
-        title: editingFolderTitle,
-      });
-      console.log(res.data);
-      await fetchTeamFolderData();
-      setEditingFolder(null);
-      setEditingFolderTitle("");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   React.useEffect(() => {
     if (tab !== "팀을 선택하세요") {
       fetchTeamFolderData();
@@ -179,14 +123,6 @@ const TeamSidebar = ({
     fetchTeamFolderData();
     setTab(team?.name);
   }, [tab, team]);
-
-  React.useEffect(() => {
-    document.addEventListener("mouseout", clickOutside);
-
-    return () => {
-      document.removeEventListener("mouseout", clickOutside);
-    };
-  });
 
   return (
     <>
@@ -214,8 +150,8 @@ const TeamSidebar = ({
             <ButtonSpan className="word">초대</ButtonSpan>
           </ButtonContainer>
           <ButtonContainer onClick={handleBanish}>
-            <ButtonSpan className="icon pe-7s-delete-user"></ButtonSpan>
-            <ButtonSpan className="word">추방</ButtonSpan>
+            <ButtonSpan className="icon pe-7s-users"></ButtonSpan>
+            <ButtonSpan className="word">유저 정보</ButtonSpan>
           </ButtonContainer>
           <ButtonContainer onClick={handleEditTeam}>
             <ButtonSpan className="icon pe-7s-note"></ButtonSpan>
@@ -234,35 +170,10 @@ const TeamSidebar = ({
                 key={folder.id}
                 value={folder.id}
                 className="TeamFolder"
-                editingFolder={editingFolder}
                 onClick={handleClickFolder(folder)}
                 selectedFolder={selectedFolder}
               >
-                {editingFolder === folder.id ? (
-                  <FolderEditInput
-                    value={editingFolderTitle}
-                    onChange={(e) => setEditingFolderTitle(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        editFolder();
-                      }
-                    }}
-                  />
-                ) : (
-                  <ButtonSpan>{folder.title}</ButtonSpan>
-                )}
-                <ButtonSpan
-                  onClick={handleClickMore(folder.id)}
-                  className="pe-7s-more"
-                ></ButtonSpan>
-                <FolderMore
-                  className="dropdown"
-                  value={folder.id}
-                  moreView={moreView}
-                >
-                  <li onClick={handleClickFolderEdit(folder.id)}>수정</li>
-                  <li onClick={handleClickFolderDelete(folder.id)}>삭제</li>
-                </FolderMore>
+                <ButtonSpan>{folder.title}</ButtonSpan>
               </FolderContainer>
             ))}
           </div>
@@ -360,27 +271,13 @@ const FolderContainer = styled.div<FolderContainerStyleProps>`
     transform: rotate(90deg);
   }
   :hover {
-    background: ${(props) =>
-      props.editingFolder !== props.value
-        ? props.theme.profileBackground
-        : "white"};
-    span {
-      color: ${(props) =>
-        props.editingFolder !== props.value ? "white" : "black"};
+    background: ${({ theme }) => theme.profileBackground};
+    span {color: white;}
     }
   }
 `;
 
 const ButtonSpan = styled.span`
-  font-size: 1rem;
-  font-weight: bold;
-  color: black;
-  padding: 5px;
-  margin: 2px;
-  cursor: pointer;
-`;
-
-const FolderEditInput = styled.input`
   font-size: 1rem;
   font-weight: bold;
   color: black;
@@ -431,33 +328,6 @@ const FoldersContainer = styled.div`
 //     padding: 1.5px 4px;
 //   }
 // `;
-
-const FolderMore = styled.div<FolderMoreStyleProps>`
-   {
-    display: ${({ value, moreView }) =>
-      value === moreView ? "block" : "none"};
-    position: absolute;
-    margin-left: 85%;
-    background-color: #f9f9f9;
-    min-width: 60px;
-    padding: 8px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    list-style-type: none;
-
-    li {
-      font-weight: normal;
-      font-size: 16px;
-      text-align: center;
-    }
-    li:hover {
-      background: black;
-      color: white;
-      border-radius: 2px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  }
-`;
 
 const DropDown = styled.div<StyleProps>`
   position: relative;
