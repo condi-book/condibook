@@ -48,7 +48,7 @@ const Div = styled.div`
 
     img {
       width: 10%;
-      height: 60%;
+
       margin-left: 10%;
     }
   }

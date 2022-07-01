@@ -106,9 +106,9 @@ const Main = () => {
         </section>
         <section className="side">
           <h3>나만의 북마크, 정리부터 공유까지</h3>
-          <button onClick={handleNavigate}>
+          <Button onClick={handleNavigate}>
             <span>무료로 시작하기</span>
-          </button>
+          </Button>
         </section>
       </Container>
       <Footer />
@@ -314,6 +314,21 @@ const Container = styled.div`
         border: 1px solid white;
       }
     }
+  }
+`;
+
+const Button = styled.div`
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.3);
+  color: black;
+  font-weight: bold;
+  padding: 1%;
+  border-radius: 30px;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5);
+
+  &:hover {
+    background: ${({ theme }) => theme.subBlackColor};
+    color: white;
   }
 `;
 

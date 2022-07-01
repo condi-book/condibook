@@ -233,7 +233,7 @@ const TeamSidebar = ({
             <ButtonSpan className="word">폴더 추가</ButtonSpan>
           </ButtonContainer>
         </SeparateContainer>
-        <FoldersContainer>
+        <FoldersContainer style={{ borderBottom: "none" }}>
           <span className="folders-title">폴더 리스트</span>
           <div className="folders-wrap">
             {folders?.map((folder) => (
@@ -404,7 +404,7 @@ const FoldersContainer = styled.div`
   padding: 5px;
   border-bottom: 1px ridge black;
   overflow-y: scroll;
-  height: 100%
+  height: 100%;
   width: 234px;
   .folders-title {
     margin: 10px 0;

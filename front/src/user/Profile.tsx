@@ -36,7 +36,7 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
             <Button onClick={() => setShow((prev) => !prev)}>수정</Button>
           </div>
           <div className="top">
-            <div className="box">
+            <div className="profile-box">
               {/* <span className="pe-7s-user"></span> */}
               <img src={data.image_url} alt="profile-image" />
               <div className="top-detail">
@@ -113,7 +113,7 @@ const Div = styled.div`
     // height: 30%;
     justify-content: center;
     align-items: center;
-    .box {
+    .profile-box {
       width: 80%;
       display: flex;
       align-items: center;
