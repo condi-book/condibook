@@ -166,15 +166,15 @@ const ButtonWrapper = styled.div`
   }
 
   .side-btn {
-    background: ${({ theme }) => theme.subGrayColor};
+    color: white;
+    background: ${({ theme }) => theme.mainColor};
     border-radius: 50%;
     font-size: 1.2vw;
     padding: 5px;
 
     &:hover {
       font-weight: bold;
-      color: white;
-      background: ${({ theme }) => theme.mainColor};
+      background: black;
     }
   }
 
