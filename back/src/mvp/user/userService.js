@@ -29,7 +29,7 @@ class userService {
             const result = {
                 id: user.id,
                 email: user.email,
-                nickname: user.nickname,
+                nickname: user.nickname ?? user.email.split("@")[0],
                 image_url: user.image_url,
                 intro: user.intro ?? null,
                 token: token,
