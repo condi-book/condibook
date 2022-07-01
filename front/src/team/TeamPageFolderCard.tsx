@@ -7,6 +7,7 @@ import * as Api from "../api";
 
 interface StyleProps {
   view: boolean;
+  folder: Folder;
 }
 
 const TeamPageFolderCard = ({
@@ -102,7 +103,7 @@ const TeamPageFolderCard = ({
 
   return (
     <>
-      <Div view={view} onClick={onClick}>
+      <Div view={view} onClick={onClick} folder={folder}>
         <div className="top part">
           <div className="top-container">
             <LinkPreview
@@ -140,7 +141,11 @@ const TeamPageFolderCard = ({
           </ul>
         </div>
         <div className="middle part">
-          <span>{folder.title}</span>
+          <span>
+            {folder.title.length >= 10
+              ? `${folder.title.substr(0, 10)}...`
+              : folder.title}
+          </span>
         </div>
         <div className="bottom part">
           <div>
@@ -181,92 +186,113 @@ const TeamPageFolderCard = ({
 export default TeamPageFolderCard;
 
 const Div = styled.div<StyleProps>`
-  background-color: white;
-  margin: 0.833%;
-  padding: 10px;
-  width: 15%;
+background-color: white;
+margin: 0.833%;
+padding: 10px;
+width: 15%;
+box-sizing: border-box;
+height: 25vh;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+border-radius: 7px;
+transition: box-shadow 0.1s linear;
+border: ${({ theme }) => theme.border};
+box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
+&:hover {
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
+  
+}
+
+.top-container {
+  width: 100%;
+  height: 100%;
+}
+
+.top {
+  height: 40%;
+}
+.middle {
+  height: 20%;
+  span {
+    font-size: 1.1vw;
+  }
+}
+.part {
   box-sizing: border-box;
-  height: 25vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
+
+  .Container {
+    border: none;
+  }
+  .LowerContainer {
+    display: none;
+  }
+}
+.Image {
+  border-radius: 7px;
+}
+.pe-7s-more {
+  transform: rotate(90deg);
+  padding: 0px 5px 5px 5px;
+  margin: 5px 0 0 0;
+  font-size: 1.5vw;
+
   &:hover {
     cursor: pointer;
-  }
-
-  .top-container {
-    width: 100%;
-    height: 100%;
-  }
-
-  .top {
-    height: 50%;
-  }
-  .middle {
-    height: 20%;
-  }
-  .part {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    .Container {
-      border: none;
-    }
-    .LowerContainer {
-      display: none;
-    }
-  }
-  .Image {
-    border-radius: 7px;
-  }
-  .pe-7s-more {
-    transform: rotate(90deg);
-  }
-
-  .material-symbols-outlined {
-    color: black;
-
-    &:hover {
-      font-size: 1.5em;
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
-
-  .dropdown {
-    display: ${({ view }) => (view ? "block" : "none")};
-    position: absolute;
-    margin-left: 12.5%;
-    background-color: #f9f9f9;
-    min-width: 60px;
-    padding: 8px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    list-style-type: none;
-
-    li {
-      font-weight: normal;
-      text-align: center;
-    }
-    li:hover {
-      background: black;
-      color: white;
-      border-radius: 2px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  }
-  .pe-7s-folder {
-    margin; auto;
-    font-size: 3vw;
-    background: ${({ theme }) => theme.mainColor};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     font-weight: bold;
-    
   }
-  .pe-7s-link {
-    margin-right: 3px;
+}
+
+.material-symbols-outlined {
+  color: ${({ folder }) =>
+    folder.favorites === true ? "#FEE500" : "#c0c0c0"}; 
+  font-size: 1.7vw;
+
+  &:hover {
+    cursor: pointer;
+    font-weight: bold;
   }
+}
+
+.dropdown {
+  display: ${({ view }) => (view ? "block" : "none")};
+  position: absolute;
+  margin-left: 7%;
+  background-color: #f9f9f9;
+  min-width: 60px;
+  padding: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  list-style-type: none;
+
+  li {
+    font-weight: normal;
+    text-align: center;
+  }
+  li:hover {
+    background: ${({ theme }) => theme.profileBackground};
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.pe-7s-folder {
+  margin; auto;
+  font-size: 3vw;
+  background: ${({ theme }) => theme.mainColor};
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  
+}
+.pe-7s-link {
+  margin-right: 3px;
+  font-size: 1.3vw;
+}
+#number {
+  font-size: 1.1vw;
+}
 `;

@@ -13,12 +13,12 @@ const TeamPageMain = () => {
     fetchTeamData,
     setTeam,
     fetchTeamFolderData,
-    setFolderModalShow,
+    // setFolderModalShow,
   } = useOutletContextProps();
-  const handleClickCreate = async () => {
-    setFolderModalShow(true);
-    await fetchTeamFolderData();
-  };
+  // const handleClickCreate = async () => {
+  //   setFolderModalShow(true);
+  //   await fetchTeamFolderData();
+  // };
 
   const fetchUpdateData = async () => {
     const res = await fetchTeamData();
@@ -38,14 +38,14 @@ const TeamPageMain = () => {
   return (
     <Div>
       <Row>
-        <h3>{team?.name}</h3>
-        <h4>{team?.explanation}</h4>
+        <h4>{team?.name}</h4>
+        <h6>{team?.explanation}</h6>
         {/* <h4>{team?.manager}</h4> */}
       </Row>
       <FolderContainer>
-        <div className="create-card" onClick={handleClickCreate}>
+        {/* <div className="create-card" onClick={handleClickCreate}>
           <span className="pe-7s-plus" />
-        </div>
+        </div> */}
         {folders?.map((folder, index) => (
           <TeamPageFolderCard
             folder={folder}
@@ -62,6 +62,9 @@ const TeamPageMain = () => {
 export default TeamPageMain;
 
 const Div = styled.div`
+  border-radius: 10px;
+  background: #f5f5f5;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -105,20 +108,22 @@ const Div = styled.div`
 // `;
 
 const Row = styled.div`
+  padding: 10px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
+  width: 100%;
 `;
 
 const FolderContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  align-items: center;
-  justify-content: center;
+  height: 100%;
   flex-wrap: wrap;
   margin: 0.833%;
   padding: 10px;
-  background: white;
+  background: rgb(235, 235, 235);
+  border-radius: 10px;
+  align-content: flex-start;
 `;
