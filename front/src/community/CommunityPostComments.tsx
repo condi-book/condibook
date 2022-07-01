@@ -23,7 +23,7 @@ const CommunityPostComments = ({ comments }: props) => {
             </InfoContainer>
           </Row>
           <ContentContainer>
-            <p>{comment.content}</p>
+            <p style={{ marginBottom: "0" }}>{comment.content}</p>
           </ContentContainer>
         </Col>
       ))}
@@ -38,6 +38,9 @@ const Col = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-top: 10px;
+  background-color: white;
+  padding: 10px 5px;
+  border-radius: 5px;
 `;
 
 const Row = styled.div`
@@ -47,7 +50,7 @@ const Row = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  font-size: 1.125rem;
+  font-size: 1.1vw;
   line-height: 1.7;
   letter-spacing: -0.004em;
   word-break: keep-all;
@@ -56,16 +59,17 @@ const ContentContainer = styled.div`
 
 const InfoContainer = styled.div`
   align-items: center;
-  font-size: 1rem;
+  font-size: 1.1vw;
   display: flex;
   justify-content: space-between;
 
   .username {
     font-weight: bold;
+    font-size: 1.2vw;
   }
 
   .date {
-    font-size: 0.875rem;
+    font-size: 1vw;
     color: #8f9bb3;
   }
 
