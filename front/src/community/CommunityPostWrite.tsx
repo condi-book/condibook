@@ -145,6 +145,7 @@ const CommunityPostWrite = () => {
       "linear-gradient(135deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)";
     button.style.color = "transparent";
     button.style.webkitBackgroundClip = "text";
+    button.style.fontWeight = "bold";
 
     return button;
   };
@@ -239,6 +240,7 @@ const CommunityPostWrite = () => {
       <ItemContainer>
         <ButtonContainer>
           <button className="hoverButton" onClick={handleExitButtonClick}>
+            <span className="pe-7s-back"></span>
             <span>나가기</span>
           </button>
           <div className="postBox">
@@ -268,13 +270,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  border: 1px solid red;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
 `;
 
 const TitleInput = styled.input`
   background: transparent;
   display: block;
   padding: 0px;
-  font-size: 2.75rem;
+  font-size: 2vw;
   width: 100%;
   resize: none;
   line-height: 1.5;
@@ -296,28 +302,33 @@ const ItemContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  padding-left: 1rem;
-  padding-right: 1rem;
   height: 4rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 20px;
 
   .hoverButton {
     height: 2.5rem;
     padding: 0.5rem 1rem;
     align-items: center;
-    background: none;
-    border-radius: 4px;
+    background: ${({ theme }) => theme.profileBackground};
+    border-radius: 5px;
     border: none;
     display: flex;
     outline: none;
+    color: white;
+    font-weight: bold;
 
     &:hover {
-      background-color: black;
+      background: black;
       color: white;
     }
+  }
+
+  .pe-7s-back {
+    margin-right: 5px;
   }
 
   .postBox {
