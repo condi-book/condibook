@@ -1,4 +1,10 @@
-import { FolderModel, sequelize, TeamModel, Op } from "../schema";
+import {
+    FolderModel,
+    sequelize,
+    TeamModel,
+    Op,
+    MembershipModel,
+} from "../schema";
 
 class Team {
     static create({ manager_id, name, explanation }) {
@@ -23,7 +29,26 @@ class Team {
             { type: sequelize.QueryTypes.SELECT },
         );
     }
-
+    static searchTeam({ user_id, offset, content }) {
+        return FolderModel.findAll({
+            attributes: ["id", "name", "explanation"],
+            where: {
+                [Op.and]: [
+                    {
+                        user_id: user_id,
+                    },
+                    {
+                        name: {
+                            [Op.like]: `%${content}%`,
+                        },
+                    },
+                ],
+            },
+            order: [["createdAt", "DESC"]],
+            offset: offset,
+            limit: 20,
+        });
+    }
     static findAllByNameExplanation({ keyword }) {
         return TeamModel.findAll({
             where: {
@@ -40,6 +65,34 @@ class Team {
                     },
                 ],
             },
+        });
+    }
+    static searchTeamByQuery({ user_id, content }) {
+        return TeamModel.findAll({
+            attributes: ["id", "name", "explanation"],
+            where: {
+                [Op.or]: [
+                    {
+                        name: {
+                            [Op.like]: `%${content}%`,
+                        },
+                    },
+                    {
+                        explanation: {
+                            [Op.like]: `%${content}%`,
+                        },
+                    },
+                ],
+            },
+            include: [
+                {
+                    attributes: ["team_id"],
+                    model: MembershipModel,
+                    where: { member_id: user_id },
+                },
+            ],
+            raw: true,
+            nest: true,
         });
     }
 

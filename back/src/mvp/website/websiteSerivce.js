@@ -94,7 +94,7 @@ class websiteSerivce {
         if (!newWebsite) {
             return { errorMessage: "서버에러" };
         }
-        const newWebsite_id = newWebsite_id;
+        const newWebsite_id = newWebsite.id;
         // AI 요청
         let keyword = null;
         let category = null;
