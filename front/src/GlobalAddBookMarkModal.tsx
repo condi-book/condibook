@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as Api from "./api";
 import { Alert, errorAlert } from "layout/Alert";
@@ -15,9 +15,13 @@ type FolderProps = {
   };
 };
 
+type StyleProps = {
+  click: boolean;
+};
+
 const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
   const [link, setLink] = useState("");
-  // const [inputShow, setInputShow] = useState(false);
+  const [inputShow, setInputShow] = useState(false);
   const [data, setData] = useState<any>({});
   const [folder, setFolder] = useState("");
   const [detailShow, setDetailShow] = useState(false);
@@ -29,7 +33,10 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
 
   const handleInfo = () => {
     if (link === "") alert("링크를 입력해주세요");
-    Api.post("websites", { url: link })
+    // https:// 붙여주기 처리
+    const modifiedLink = link.startsWith("www") ? `https://${link}` : link;
+    setLink(modifiedLink);
+    Api.post("websites", { url: modifiedLink })
       .then((res) => {
         console.log(res.data);
         const copied = res.data;
@@ -113,22 +120,22 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
     }
   };
 
-  // useEffect(() => {
-  //   navigator.clipboard
-  //     .readText()
-  //     .then((text) => {
-  //       console.log("Pasted content: ", text);
-  //       if (text.startsWith("http")) {
-  //         setLink(text);
-  //       } else {
-  //         setInputShow(true);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       setInputShow(true);
-  //     });
-  // }, []);
+  useEffect(() => {
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        console.log("Pasted content: ", text);
+        if (text.startsWith("http")) {
+          setLink(text);
+        } else {
+          setInputShow(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setInputShow(true);
+      });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setLink(e.target.value);
@@ -140,7 +147,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
   };
 
   return (
-    <Div>
+    <Div click={click}>
       <div className={open ? "bg" : ""}></div>
       <div className={open ? "modal active" : "modal"}>
         {open && (
@@ -156,7 +163,26 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
             </div>
             <div className="link-box">
               <div className="copy-link">
-                {!click ? (
+                {link && !inputShow ? (
+                  <div
+                    className="copy-link-auto"
+                    onClick={() => {
+                      setClick(true);
+                      handleInfo();
+                    }}
+                  >
+                    <span className="pe-7s-link"></span>
+                    <div>
+                      <div>복사한 링크 붙여넣기</div>
+                      <div>
+                        {link.length >= 20
+                          ? `${link.substring(0, 20)}...`
+                          : link}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+                {inputShow && !click && (
                   <InputBox
                     className={click && " animate__animated animate__fadeOut"}
                   >
@@ -175,7 +201,8 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
                       확인
                     </button>
                   </InputBox>
-                ) : (
+                )}
+                {click && (
                   <div
                     className={click && " animate__animated animate__fadeIn"}
                   >
@@ -214,17 +241,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
                   </div>
                 )}
               </div>
-              {/* // ) : (
-              //   <div className="copy-link" onClick={handleInfo}>
-              //     <span className="pe-7s-link"></span>
-              //     <div>
-              //       <div>복사한 링크 붙여넣기</div>
-              //       <div>
-              //         {link.length >= 20 ? `${link.substring(0, 20)}...` : link}
-              //       </div>
-              //     </div>
-              //   </div>
-              // )} */}
+
               {detailShow && (
                 <Folder>
                   <div style={{ fontWeight: "bold" }}>저장 폴더 *</div>
@@ -262,7 +279,11 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
   );
 };
 
-const Div = styled.div`
+const Div = styled.div<StyleProps>`
+
+  .copy-link-auto {
+    display: ${({ click }) => (click ? "none" : "block")};
+  }
   .bg {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
