@@ -60,12 +60,10 @@ const Main = () => {
             </div>
             <div className="content">
               <h6>서비스 소개 1</h6>
-              <h2>Lorem ipsum dolor sit amet</h2>
+              <h2>크롬 익스텐션 기능</h2>
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt ab, eius perspiciatis quae velit minima. Officiis magni
-                minus labore, totam, neque a non temporibus in consequuntur
-                sapiente obcaecati quasi provident.
+                저희 CondiBook 서비스는 Chrome Extension을 통하여, 쉽고 빠르게
+                사용자가 북마크를 관리 할 수 있는 환경을 제공합니다.
               </p>
             </div>
           </div>
@@ -74,12 +72,10 @@ const Main = () => {
           <div className="container">
             <div className="content">
               <h6>서비스 소개 2</h6>
-              <h2>Lorem ipsum dolor sit amet</h2>
+              <h2>북마크 공유 기능</h2>
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt ab, eius perspiciatis quae velit minima. Officiis magni
-                minus labore, totam, neque a non temporibus in consequuntur
-                sapiente obcaecati quasi provident.
+                커뮤니티 게시판은 여러 사람들과 북마크를 공유하며 다양한 정보를
+                얻을 수 있는 환경을 제공합니다.
               </p>
             </div>
             <div>
@@ -94,12 +90,10 @@ const Main = () => {
             </div>
             <div className="content">
               <h6>서비스 소개 3</h6>
-              <h2>Lorem ipsum dolor sit amet</h2>
+              <h2>AI 북마크 폴더 추천</h2>
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt ab, eius perspiciatis quae velit minima. Officiis magni
-                minus labore, totam, neque a non temporibus in consequuntur
-                sapiente obcaecati quasi provident.
+                간단한 클릭 한번으로 AI가 제공하는 키워드에 맞춰 북마크를 쉽게
+                분류할 수 있습니다.
               </p>
             </div>
           </div>
