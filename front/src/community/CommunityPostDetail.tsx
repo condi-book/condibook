@@ -362,6 +362,15 @@ const CommunityPostDetail = () => {
           </CommentWrapper>
         </div>
         <div className="contentWrapper">
+          {!link && (
+            <NotFound>
+              <img src="/static/img/communitybookmark.svg" alt="preview" />
+              <div>
+                해당 게시글에 공유된 북마크를 클릭하여 미리보기(preview) 기능을
+                사용해보세요
+              </div>
+            </NotFound>
+          )}
           <iframe
             src={link}
             width="100%"
@@ -380,9 +389,10 @@ export default CommunityPostDetail;
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
+  background: white;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
 
   .change-btn {
     button {
@@ -397,7 +407,6 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: row;
-    border: 2px solid black;
     padding: 10px;
     border-radius: 10px;
   }
@@ -563,4 +572,20 @@ const CommentWrapper = styled.div`
   background: #f5f5f5;
   padding: 10px;
   border-radius: 10px;
+`;
+const NotFound = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  img {
+    width: 20%;
+    margin-bottom: 20px;
+  }
+  div {
+    width: 50%;
+    font-size: 1.2vw;
+  }
 `;
