@@ -47,8 +47,9 @@ const Main = () => {
             </div> */}
           </div>
         </header>
+
         <div className="part even review">
-          <div className="title"> OUR TEAM</div>
+          <div className="title">OUR TEAM</div>
           <div className="carousel-wrap">
             <Carousel />
           </div>
@@ -58,29 +59,26 @@ const Main = () => {
             <div>
               <img alt="소개이미지" />
             </div>
+
             <div className="content">
-              <h6>서비스 소개 1</h6>
-              <h2>Lorem ipsum dolor sit amet</h2>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt ab, eius perspiciatis quae velit minima. Officiis magni
-                minus labore, totam, neque a non temporibus in consequuntur
-                sapiente obcaecati quasi provident.
-              </p>
+              <H6>서비스 소개 1</H6>
+              <H2>크롬 익스텐션 기능</H2>
+              <P>
+                저희 CondiBook 서비스는 Chrome Extension을 통해서 사용자들이 좀
+                더 쉽고 빠르게 북마크를 관리할 수 있는 환경을 제공합니다
+              </P>
             </div>
           </div>
         </section>
         <section className="part even">
           <div className="container">
             <div className="content">
-              <h6>서비스 소개 2</h6>
-              <h2>Lorem ipsum dolor sit amet</h2>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt ab, eius perspiciatis quae velit minima. Officiis magni
-                minus labore, totam, neque a non temporibus in consequuntur
-                sapiente obcaecati quasi provident.
-              </p>
+              <H6>서비스 소개 2</H6>
+              <H2>북마크 공유 기능</H2>
+              <P>
+                그룹 북마크 및 커뮤니티 게시판을 통해 다양한 사용자와 지식 및
+                북마크를 공유할 수 있습니다
+              </P>
             </div>
             <div>
               <img alt="소개이미지" />
@@ -93,14 +91,12 @@ const Main = () => {
               <img alt="소개이미지" />
             </div>
             <div className="content">
-              <h6>서비스 소개 3</h6>
-              <h2>Lorem ipsum dolor sit amet</h2>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt ab, eius perspiciatis quae velit minima. Officiis magni
-                minus labore, totam, neque a non temporibus in consequuntur
-                sapiente obcaecati quasi provident.
-              </p>
+              <H6>서비스 소개 3</H6>
+              <H2>AI 추천 북마크 자동 저장 기능</H2>
+              <P>
+                간단한 클릭 한 번으로, AI가 제공하는 키워드에 맟춰 북마크를 저장
+                할 수 있습니다
+              </P>
             </div>
           </div>
         </section>
@@ -115,6 +111,25 @@ const Main = () => {
     </Wrap>
   );
 };
+
+const P = styled.p`
+  font-size: 1.1vw;
+`;
+
+const H6 = styled.h6`
+  font-size: 1vw;
+  background: ${({ theme }) => theme.profileBackground};
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  width: fit-content;
+  border-radius: 5px;
+`;
+
+const H2 = styled.h2`
+  font-size: 1.5vw;
+  font-weight: bold;
+`;
 
 const Wrap = styled.div`
   width: 100vw;
@@ -132,6 +147,7 @@ const Container = styled.div`
   .review {
     display: flex;
     flex-direction: column;
+    }
     .title {
       margin: 5% 0;
     }
@@ -287,7 +303,7 @@ const Container = styled.div`
       font-weight: 700;
       font-size: 2vw;
       text-align: center;
-      padding: 2% 0;
+      padding: 1% 0;
     }
   }
 
@@ -302,6 +318,7 @@ const Container = styled.div`
 
     h3 {
       margin-bottom: 30px;
+      font-size: 1.8vw;
     }
 
     button {

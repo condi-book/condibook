@@ -40,12 +40,23 @@ const App: React.FC = () => {
     sidebar: true,
   });
 
+  window.addEventListener(
+    "keydown",
+    function (e) {
+      // space and arrow keys
+      if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+      }
+    },
+    false,
+  );
+
   // keyboard 단축키로 사이드바 숨기기 기능
   document.onkeyup = function (e) {
     let ctrl = e.ctrlKey;
-    let shift = e.shiftKey;
-    let key = 72;
-    if (ctrl && shift && key) {
+    // let shift = e.shiftKey;
+    // let key = 95;
+    if (ctrl) {
       console.log("단축키 눌렀습니다!");
       dispatcher({ type: "PUSH_SIDEBAR" });
     }
