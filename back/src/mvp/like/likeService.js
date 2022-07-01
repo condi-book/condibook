@@ -18,7 +18,7 @@ class likeService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        Post.updateLike({ id: post_id });
+        await Post.updateLike({ id: post_id });
         return result;
     }
     static async getMyLike({ user_id }) {
@@ -48,7 +48,7 @@ class likeService {
             const errorMessage = "해당 데이터가 없습니다.";
             return { errorMessage };
         }
-        Post.decreaseLike({ id: post_id });
+        await Post.decreaseLike({ id: post_id });
         return result;
     }
 }

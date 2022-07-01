@@ -45,7 +45,7 @@ class postService {
             offset = 20 * (pageNumber - 1);
         }
         if (query == "views") {
-            const result = Post.findAllByViews({ offset });
+            const result = await Post.findAllByViews({ offset });
             if (!result) {
                 const errorMessage = "해당 게시글이 없습니다.";
                 return { errorMessage };
@@ -53,14 +53,14 @@ class postService {
             return result;
         }
         if (query == "likes") {
-            const result = Post.findAllByLikes({ offset });
+            const result = await Post.findAllByLikes({ offset });
             if (!result) {
                 const errorMessage = "해당 게시글이 없습니다.";
                 return { errorMessage };
             }
             return result;
         }
-        const result = Post.findAllList({ offset });
+        const result = await Post.findAllList({ offset });
 
         if (!result) {
             const errorMessage = "해당 게시글이 없습니다.";
@@ -92,12 +92,12 @@ class postService {
             const errorMessage = "글 작성자가 아닙니다.";
             return { errorMessage };
         }
-        const result = Post.deleteOne({ id });
+        const result = await Post.deleteOne({ id });
 
         return result;
     }
     static async updateViews({ id }) {
-        const result = Post.updateView({ id });
+        const result = await Post.updateView({ id });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
@@ -109,7 +109,7 @@ class postService {
 
         const nickname = userInfo.nickname;
 
-        const result = Post.updateNickname({ user_id, nickname });
+        const result = await Post.updateNickname({ user_id, nickname });
 
         if (!result) {
             const errorMessage = "해당 데이터가 없습니다.";
