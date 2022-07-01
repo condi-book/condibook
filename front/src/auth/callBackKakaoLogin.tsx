@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SERVER_URL } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
@@ -15,7 +14,7 @@ const CallBackKakaoLogin = () => {
     const code = new URL(window.location.href).searchParams.get("code");
 
     async function sendCode() {
-      const url = SERVER_URL + "/user/login/kakao";
+      const url = `${window.location.origin}/api/user/login/kakao`;
       const res = await axios.post(url, { code });
       const user = res.data;
 

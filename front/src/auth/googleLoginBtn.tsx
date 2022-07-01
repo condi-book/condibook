@@ -1,9 +1,9 @@
 import React from "react";
-import { CLIENT_URL, GOOGLE_CLIENT_ID, GOOGLE_LOGIN_STATE } from "../config";
+import { GOOGLE_CLIENT_ID, GOOGLE_LOGIN_STATE } from "../config";
 import styled from "styled-components";
 
 const GoogleLoginBtn = () => {
-  const GOOGLE_REDIRECT_URI = CLIENT_URL + "/callback/login/google";
+  const GOOGLE_REDIRECT_URI = `${window.location.origin}/callback/login/google`;
 
   const params = new URLSearchParams({
     scope: "https://www.googleapis.com/auth/userinfo.email",
