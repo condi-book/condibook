@@ -5,6 +5,7 @@ import {
     Op,
     BookmarkModel,
     Sequelize,
+    Transaction,
 } from "../schema";
 
 class Post {
@@ -153,49 +154,55 @@ class Post {
     }
 
     static async updateOne({ id, toUpdate, bookmark_id }) {
-        const t = await sequelize.transaction();
         try {
-            const result = await PostModel.update(toUpdate, {
-                where: { id },
-                raw: true,
-                nest: true,
-                transaction: t,
-            });
+            await sequelize.transaction(
+                {
+                    isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+                },
+                // eslint-disable-next-line no-unused-vars
+                async (t) => {
+                    const result = await PostModel.update(toUpdate, {
+                        where: { id },
+                        raw: true,
+                        nest: true,
+                    });
 
-            if (bookmark_id) {
-                const check = await AttachedModel.findAll({
-                    where: { post_id: id },
-                    transaction: t,
-                });
-                if (check) {
-                    await AttachedModel.destroy({
-                        where: {
-                            [Op.or]: [{ post_id: null }, { post_id: id }],
-                        },
-                        transaction: t,
-                    });
-                }
-                const bookmarkInfo = await BookmarkModel.findAll({
-                    where: {
-                        id: {
-                            [Op.in]: bookmark_id,
-                        },
-                    },
-                    raw: true,
-                    nest: true,
-                    transaction: t,
-                });
-                bookmarkInfo.map(async (v) => {
-                    await AttachedModel.create({
-                        bookmark_id: v.id,
-                        post_id: id,
-                    });
-                });
-                await t.commit();
-                return result;
-            }
+                    if (bookmark_id) {
+                        const check = await AttachedModel.findAll({
+                            where: { post_id: id },
+                        });
+                        if (check) {
+                            await AttachedModel.destroy({
+                                where: {
+                                    [Op.or]: [
+                                        { post_id: null },
+                                        { post_id: id },
+                                    ],
+                                },
+                            });
+                        }
+                        const bookmarkInfo = await BookmarkModel.findAll({
+                            where: {
+                                id: {
+                                    [Op.in]: bookmark_id,
+                                },
+                            },
+                            raw: true,
+                            nest: true,
+                        });
+                        await Promise.all(
+                            bookmarkInfo.map(async (v) => {
+                                AttachedModel.create({
+                                    bookmark_id: v.id,
+                                    post_id: id,
+                                });
+                            }),
+                        );
+                        return result;
+                    }
+                },
+            );
         } catch (e) {
-            t.rollback();
             return { errorMessage: e };
         }
     }

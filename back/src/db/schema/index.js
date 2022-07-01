@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Op } from "sequelize";
+import { Sequelize, DataTypes, Op, Transaction } from "sequelize";
 import { DB_DATABASE, DB_USER, DB_HOST, DB_PW, DB_DIALECT } from "../../config";
 
 // sequelize 인스턴스 생성
@@ -279,4 +279,5 @@ export {
     FDFavoriteModel,
     BMFavoriteModel,
     Sequelize,
+    Transaction,
 };
