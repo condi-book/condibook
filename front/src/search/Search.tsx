@@ -11,7 +11,6 @@ type StyleProps = {
 
 const Search = () => {
   const keyboardContext: any = useContext(KeyboardContext);
-
   const [word, setWord] = useState("");
   const [category, setCategory] = useState("global-link");
   // 데이터
@@ -33,13 +32,19 @@ const Search = () => {
         setSearchData(res.data);
         console.log(res.data);
       })
-      .catch(() => setSearchData({ postinfo: [], folderinfo: [] }));
+      .catch(() =>
+        setSearchData({
+          postInfo: [],
+          folderInfo: { myFolder: [], teamFolders: [] },
+        }),
+      );
   };
 
   // 검색창 초기화 함수
   const handleDelete = () => {
     setWord("");
   };
+
   return (
     <Div category={category}>
       {keyboardContext.sidebar === true && <SideBar />}
@@ -318,7 +323,7 @@ const Div = styled.div<StyleProps>`
   }
 
   .search-category {
-    position: sticky;
+    // position: sticky;
     top: 110px;
     display: flex;
     -webkit-box-pack: center;
@@ -391,6 +396,13 @@ const Div = styled.div<StyleProps>`
       category === "global-folder" && theme.profileBackground};
     box-shadow: ${({ category, theme }) =>
       category === "global-folder" && theme.boxShadow};
+  }
+
+  #global-team {
+    background: ${({ category, theme }) =>
+      category === "global-team" && theme.profileBackground};
+    box-shadow: ${({ category, theme }) =>
+      category === "global-team" && theme.boxShadow};
   }
 `;
 export default Search;

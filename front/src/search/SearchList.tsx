@@ -20,32 +20,25 @@ const SearchList = ({ handleCategory, searchData, category }: SearchProps) => {
               <button onClick={handleCategory} id="global-link">
                 <div>전체</div>
                 <p>
-                  {searchData?.postinfo?.length +
-                    searchData?.folderinfo?.length}
+                  {searchData?.postInfo?.length +
+                    searchData?.folderInfo?.teamFolders?.length +
+                    searchData?.folderInfo?.myFolder?.length}
                 </p>
               </button>
               <button onClick={handleCategory} id="global-folder">
                 <div>내 폴더</div>
-                <p>{searchData?.folderinfo?.length}</p>
+                <p>{searchData?.folderInfo?.myFolder?.length}</p>
+              </button>
+              <button onClick={handleCategory} id="global-team">
+                <div>팀 폴더</div>
+                <p>{searchData?.folderInfo?.teamFolders?.length}</p>
               </button>
             </div>
           </div>
         </div>
         <div className="search-list">
-          {searchData?.folderinfo?.map((item: any) => (
-            <div className="card-wrap" key={`search-${item.id}`}>
-              <div
-                className="card"
-                onClick={() => navigate(`/bookmark/${item.id}`)}
-              >
-                <div className="folder-title">{item.title}</div>
-                <span className="pe-7s-folder"></span>
-              </div>
-            </div>
-          ))}
-
-          {category !== "global-folder" &&
-            searchData?.postinfo?.map((item: any) => {
+          {category == "global-link" &&
+            searchData?.postInfo?.map((item: any) => {
               const createdTime = CalcData(new Date(item.createdAt));
               return (
                 <div className="card-wrap" key={`search-${item.id}`}>
@@ -68,6 +61,31 @@ const SearchList = ({ handleCategory, searchData, category }: SearchProps) => {
                 </div>
               );
             })}
+          {category !== "global-team" &&
+            searchData?.folderInfo?.myFolder.map((item: any) => (
+              <div className="card-wrap" key={`search-${item.id}`}>
+                <div
+                  className="card"
+                  onClick={() => navigate(`/bookmark/${item.id}`)}
+                >
+                  <div className="folder-title">{item.title}</div>
+                  <span className="pe-7s-folder"></span>
+                </div>
+              </div>
+            ))}
+          {category !== "global-folder" &&
+            searchData?.folderInfo?.teamFolders.map((item: any) => (
+              <div className="card-wrap" key={`search-${item.id}`}>
+                <div
+                  className="card"
+                  onClick={() => navigate(`/team/${item.id}`)}
+                >
+                  <div className="folder-title">{item.name}</div>
+                  <div className="folder-title">{item.explanation}</div>
+                  <span className="pe-7s-folder"></span>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </Div>
