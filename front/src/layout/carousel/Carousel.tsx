@@ -8,7 +8,7 @@ import { NextArrow, PrevArrow } from "./Arrow";
 
 const Carousel = () => {
   const settings = {
-    dots: true,
+    // dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
@@ -60,7 +60,9 @@ const Carousel = () => {
         {data.map((value: reviewer, index: number) => (
           <div className="item" key={`carousel-${index}`}>
             <img src="static/img/review.png" alt="말풍선" />
-            <div>{value.review}</div>
+            <Content>
+              <div>{value.review}</div>
+            </Content>
 
             <div className="info">
               <span className="color-font pe-7s-user"></span>
@@ -93,7 +95,7 @@ const Section = styled.section`
     background: white;
 
     div:first-of-type {
-      width: 70%;
+      width: 90%;
       font-size: 1vw;
     }
 
@@ -117,12 +119,12 @@ const Section = styled.section`
       background: ${({ theme }) => theme.mainColor};
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-size: 4vw;
+      font-size: 3vw;
     }
 
     img {
       width: 16%;
-      margin-top: 5%;
+      margin-top: 10%;
       margin-bottom: 15%;
     }
   }
@@ -179,6 +181,17 @@ const Section = styled.section`
     opacity: 1;
     color: ${({ theme }) => theme.subRedColor};
     content: "o";
+  }
+`;
+
+const Content = styled.div`
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  div {
+    width: 80px;
   }
 `;
 
