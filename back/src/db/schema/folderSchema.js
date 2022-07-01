@@ -23,6 +23,12 @@ export default function FolderSchema(sequelize, DataTypes) {
                     unique: true,
                     fields: ["id"],
                 },
+                {
+                    type: "FULLTEXT",
+                    name: "folder_idx",
+                    fields: ["title"],
+                    parser: "ngram",
+                },
             ],
         },
     );
