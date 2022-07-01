@@ -120,17 +120,19 @@ const CommunityPostWrite = () => {
       return;
     }
 
-    const bookmark_id = postBookmarks?.map((bookmark) => bookmark.id);
+    const bookmark_idArr = postBookmarks
+      ?.map((bookmark) => bookmark.id)
+      .filter((id) => id !== null);
 
     console.log(
-      `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
+      `title:${title}, content:${content}, bookmark_id:${bookmark_idArr}`,
     );
 
     try {
       const body = {
         title,
         content,
-        bookmark_id,
+        bookmark_idArr,
       };
       const res = await Api.put(`posts/${postId}`, body);
       navigate(`/community/${res.data.id}`);
@@ -154,16 +156,17 @@ const CommunityPostWrite = () => {
       setContent(fetchedItem?.content);
       editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
 
-      const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
+      const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websitesInfo;
       setPostBookmarks(
         bookmarkData?.map((bookmark) => {
           return {
-            id: bookmark.id,
+            id: null,
             url: bookmark.url,
             checked: true,
           };
         }),
       );
+      console.log(postBookmarks);
     } catch (error) {
       const err = error as AxiosError;
       alert(`${err.response?.data}`);

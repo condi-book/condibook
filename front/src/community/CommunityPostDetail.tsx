@@ -223,15 +223,12 @@ const CommunityPostDetail = () => {
         setIsfetched(true);
         setLikeCount(like_counts);
 
-        const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websiteInfo;
-        setList(() => {
-          if (bookmarkData === undefined) {
-            return;
-          }
-          return bookmarkData.map((bookmark) => {
+        const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websitesInfo;
+        setList(
+          bookmarkData?.map((bookmark) => {
             return { ...bookmark, checked: true };
-          });
-        });
+          }),
+        );
 
         const likedIDList = res.data.likesInfo.map(
           (likeData: any) => likeData.user_id,
@@ -307,7 +304,7 @@ const CommunityPostDetail = () => {
               </div>
             </InfoContainer>
           </HeaderContainer>
-          {list ?? true ? (
+          {!list ? (
             <></>
           ) : (
             <BookmarkContainer>
