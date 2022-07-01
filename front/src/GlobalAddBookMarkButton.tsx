@@ -27,6 +27,7 @@ const Div = styled.div`
   width: 50px;
   height: 50px;
   background: none;
+  z-index: 999;
 
   button {
     background: ${({ theme }) => theme.profileBackground};
