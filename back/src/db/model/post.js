@@ -159,6 +159,7 @@ class Post {
                 {
                     isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
                 },
+                // eslint-disable-next-line no-unused-vars
                 async (t) => {
                     const result = await PostModel.update(toUpdate, {
                         where: { id },

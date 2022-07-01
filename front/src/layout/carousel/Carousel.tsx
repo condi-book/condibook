@@ -28,34 +28,30 @@ const Carousel = () => {
 
   const data = [
     {
-      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-      dolorum odit,`,
-      name: `username`,
-      job: `freelancer`,
+      review: `유저의 입장에서 한번 더 생각하는, 디테일한 부분까지 놓치고 싶지 않은 프론트엔드 개발자 강주희입니다`,
+      name: `강주희`,
+      job: `프론트엔드`,
     },
     {
-      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-      dolorum odit,`,
-      name: `username`,
-      job: `freelancer`,
+      review: `화면속으로 들어갈듯한 집중과 한번 잡기 시작한 버그는 끝을 봐야하는 끈기를 가진 프론트엔드 개발자 김하영입니다`,
+      name: `김하영`,
+      job: `프론트엔드`,
     },
     {
-      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-      dolorum odit,`,
-      name: `username`,
-      job: `freelancer`,
+      review: `호기심 많은 개발자입니다`,
+      name: `서형준`,
+      job: `인공지능`,
     },
     {
-      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-      dolorum odit,`,
-      name: `username`,
-      job: `freelancer`,
+      review: `같이 일하고 싶은 개발자가 되고 싶은 엄혜진입니다. 이 서비스가 정보홍수 속 여러분의 치트키가 되길 바랍니다!`,
+      name: `엄혜진`,
+      job: `백엔드`,
     },
     {
-      review: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero
-dolorum odit, `,
-      name: `username`,
-      job: `freelancer`,
+      review: `친해지고 싶은 개발자를 목표로 공부하고있습니다.
+      함께 협업하면 재미있고 유익한 사람으로 보여질 수 있도록 노력하겠습니다!!`,
+      name: `한우성`,
+      job: `백엔드`,
     },
   ];
   return (

@@ -2,7 +2,6 @@ import { getCookie } from "auth/util/cookie";
 import React from "react";
 import styled from "styled-components";
 import { ContextProps } from "./Main";
-
 const Header = ({ handleNavigate }: ContextProps) => {
   const cookie = getCookie("userToken");
   return (
@@ -12,6 +11,17 @@ const Header = ({ handleNavigate }: ContextProps) => {
         <div className="button-group">
           <button className="info-button">
             <a href="#service-info">서비스 소개</a>
+          </button>
+          <button
+            className="info-button"
+            onClick={() =>
+              window.open(
+                "https://local-ironclad-650.notion.site/CondiBook-chrome-extension-dd75ea3564da4b378739e748bf6baf33",
+                "_blank",
+              )
+            }
+          >
+            크롬 확장 프로그램
           </button>
           <button className="login-button" onClick={handleNavigate}>
             {cookie ? "마이페이지로 이동" : "로그인 / 회원가입"}
@@ -57,7 +67,7 @@ const Div = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    width: 20%;
+    width: 40%;
     height: 80%;
     margin-right: 10%;
 

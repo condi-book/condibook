@@ -48,7 +48,7 @@ const Main = () => {
           </div>
         </header>
         <div className="part even review">
-          <div className="title">사용자 후기</div>
+          <div className="title"> OUR TEAM</div>
           <div className="carousel-wrap">
             <Carousel />
           </div>

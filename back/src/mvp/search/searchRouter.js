@@ -31,24 +31,25 @@ searchRouter.get("/unified", loginRequired, async (req, res, next) => {
         const pageNumber = req.query.pageNumber;
         const content = req.query.content;
         const type = 1;
-        const postinfo = await searchSerivce.getPostByQuery({
+        const postInfo = await searchSerivce.getPostByQuery({
             query,
             pageNumber,
             content,
             type,
         });
-        if (postinfo.errorMessage) {
-            throw new Error(postinfo.errorMessage);
+        if (postInfo.errorMessage) {
+            throw new Error(postInfo.errorMessage);
         }
-        const folderinfo = await searchSerivce.getFolderByQuery({
+        const folderInfo = await searchSerivce.getFolderByQuery({
             user_id,
             pageNumber,
             content,
+            type,
         });
-        if (folderinfo.errorMessage) {
-            throw new Error(folderinfo.errorMessage);
+        if (folderInfo.errorMessage) {
+            throw new Error(folderInfo.errorMessage);
         }
-        res.status(200).send({ postinfo, folderinfo });
+        res.status(200).send({ postInfo, folderInfo });
     } catch (error) {
         next(error);
     }

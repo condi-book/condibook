@@ -1,4 +1,4 @@
-import { Folder, Post } from "../../db";
+import { Folder, Post, Team } from "../../db";
 
 class searchSerivce {
     static async getPostByQuery({ query, pageNumber, content, type }) {
@@ -48,13 +48,21 @@ class searchSerivce {
         if (pageNumber > 1) {
             offset = 20 * (pageNumber - 1);
         }
-        const result = Folder.searchFolderByTitle({ user_id, offset, content });
-
-        if (!result) {
+        const myFolder = await Folder.searchFolderByTitle({
+            user_id,
+            offset,
+            content,
+        });
+        if (!myFolder) {
             const errorMessage = "해당 게시글이 없습니다.";
             return { errorMessage };
         }
-        return result;
+        const teamFolders = await Team.searchTeamByQuery({
+            user_id,
+            content,
+        });
+        teamFolders.map((v) => delete v.memberships);
+        return { myFolder, teamFolders };
     }
 }
 
