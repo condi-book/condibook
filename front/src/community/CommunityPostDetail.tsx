@@ -7,6 +7,7 @@ import { Viewer } from "@toast-ui/react-editor";
 import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
 // import { UserStateContext } from "../App";
+import { getCookie } from "auth/util/cookie";
 
 import * as Api from "../api";
 
@@ -48,7 +49,7 @@ type postDetailRouteParams = {
 };
 const CommunityPostDetail = () => {
   const navigate = useNavigate();
-  const user = sessionStorage.getItem("user");
+  const user = getCookie("user");
   const { postId } = useParams<
     keyof postDetailRouteParams
   >() as postDetailRouteParams; // 이렇게 하면 postId를 쿼리로 받을 수 있다.
@@ -269,30 +270,13 @@ const CommunityPostDetail = () => {
       <div className="postWrapper">
         <div className="detailWrapper">
           <HeaderContainer>
-            <SubTitle>
-              <TitleContainer>
-                <H1>{fetchData?.title}</H1>
-                <div className="likeWrapper" onClick={handleLikeClick}>
-                  <LikeButton className="pe-7s-like" like={liked} />
-                  <p className="likeCount">{likeCount}</p>
-                </div>
-              </TitleContainer>
-              <ButtonContainer>
-                <button className="hoverButton" onClick={handleEditClick}>
-                  수정
-                </button>
-                <button className="hoverButton" onClick={handleDeleteClick}>
-                  삭제
-                </button>
-              </ButtonContainer>
-              <InfoContainer>
-                <div>
-                  <span className="username">{fetchData?.author_name}</span>
-                  <span className="separator">·</span>
-                  <span>{createdTime(new Date(fetchData?.createdAt))}</span>
-                  <span className="separator">·</span>
-                  <span>조회수 {fetchData?.views}</span>
-                  {/* <span className="separator">·</span>
+            <TitleContainer>
+              <H1>{fetchData?.title}</H1>
+              <div className="likeWrapper" onClick={handleLikeClick}>
+                <LikeButton className="pe-7s-like" like={liked} />
+                <p className="likeCount">{likeCount}</p>
+              </div>
+            </TitleContainer>
             <SubTitle>
               <InfoContainer>
                 <div>
@@ -301,13 +285,6 @@ const CommunityPostDetail = () => {
                   <span>{createdTime(new Date(fetchData?.createdAt))}</span>
                   <span className="separator">·</span>
                   <span>조회수 {fetchData?.views}</span>
-                  {/* <span className="separator">·</span>
-                <span>
-                  {updatedTime(
-                    new Date(fetchData?.createdAt),
-                    new Date(fetchData?.updatedAt),
-                  )}
-                </span> */}
                 </div>
               </InfoContainer>
               <ButtonContainer className="change-btn">

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Comment } from "./CommunityPostDetail";
 import CalcDate from "./tools/CalcDate";
 import * as Api from "../api";
+import { getCookie } from "auth/util/cookie";
 
 interface props {
   comments: Comment[];
@@ -15,7 +16,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
   const [isEditing, setIsEditing] = React.useState(false);
 
   const isAuthor = (author: string) => {
-    const user = JSON.parse(sessionStorage.getItem("user"));
+    const user = getCookie("user");
     return author === user?.id;
   };
 

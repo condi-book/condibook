@@ -4,6 +4,7 @@ import S3 from "react-aws-s3-typescript";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 import { AxiosError } from "axios";
+import { getCookie } from "auth/util/cookie";
 
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -29,7 +30,7 @@ const CommunityPostWrite = () => {
   const params = new URLSearchParams(location.search); // 쿼리 스트링 변환
   const postId = params.get("id"); // 변환된 게시글 아이디 값
   const editorRef = React.useRef<ToastEditor>(null);
-  const user = sessionStorage.getItem("user");
+  const user = getCookie("user");
   const userId = JSON.parse(user).id;
 
   const [title, setTitle] = React.useState("");
@@ -145,17 +146,6 @@ const CommunityPostWrite = () => {
       setTitle(fetchedItem?.title);
       setContent(fetchedItem?.content);
       editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
-
-      const bookmarkData: Omit<Bookmark[], "checked"> = res.data.websitesInfo;
-      setPostBookmarks(
-        bookmarkData?.map((bookmark) => {
-          return {
-            id: null,
-            url: bookmark.url,
-            checked: true,
-          };
-        }),
-      );
     } catch (error) {
       const err = error as AxiosError;
       alert(`${err.response?.data}`);

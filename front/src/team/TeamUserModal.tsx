@@ -6,6 +6,7 @@ import emailjs from "@emailjs/browser";
 import { Team } from "./TeamPage";
 import * as Api from "../api";
 import { Alert } from "../layout/Alert";
+import { getCookie } from "auth/util/cookie";
 
 interface Props {
   userModalShow: boolean;
@@ -30,7 +31,7 @@ const TeamUserModal = ({
   const [searchedUsers, setSearchedUsers] = React.useState<any[]>([]);
   const [selectedUserID, setSelectedUserID] = React.useState(null);
 
-  const userID = JSON.parse(sessionStorage.getItem("user")).id;
+  const userID = getCookie("user");
 
   const makeHiddenEmail = (email: string, index: number) => {
     return email.substring(0, index - 6) + "*******" + email.substring(index);
@@ -103,7 +104,7 @@ const TeamUserModal = ({
       } else {
         const res = await Api.get(`user?nickname=${nickname}`);
         const searchUsersExceptMe = res.data.filter(
-          (user: any) => user.user_id !== userID,
+          (user: any) => user.id !== userID,
         );
         setSearchedUsers(searchUsersExceptMe);
       }
@@ -116,10 +117,16 @@ const TeamUserModal = ({
     try {
       if (isBanish) {
         const res = await Api.get(`teams/${team.team_id}/members`);
-        setSearchedUsers(res.data);
+        const searchTeamUsersExceptMe = res.data.filter(
+          (user: any) => user.user_id !== userID,
+        );
+        setSearchedUsers(searchTeamUsersExceptMe);
       } else {
         const res = await Api.get(`user?nickname=${nickname}`);
-        setSearchedUsers(res.data);
+        const searchUsersExceptMe = res.data.filter(
+          (user: any) => user.id !== userID,
+        );
+        setSearchedUsers(searchUsersExceptMe);
       }
     } catch (err) {
       console.log(err);
@@ -150,6 +157,7 @@ const TeamUserModal = ({
 
   React.useEffect(() => {
     emailjs.init("rCd7LLcggPr8C3K0N");
+    console.log(userID);
   }, []);
 
   return (
