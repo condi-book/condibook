@@ -15,7 +15,7 @@ const Carousel = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
-    dotsClass: "custom-dots",
+    // dotsClass: "custom-dots",
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
   };
