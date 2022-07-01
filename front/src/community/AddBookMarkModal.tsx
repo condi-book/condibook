@@ -150,7 +150,7 @@ const AddBookMarkModal = ({
   const fetchFolderBookmarkData = async (selectedFolderID: string) => {
     try {
       const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
-      const handledData = data.map((data: any) => {
+      const handledData = data.bookmarks.map((data: any) => {
         const checkedBookmark = postBookmarks.find(
           (bookmark) => bookmark.id === data.bookmark_id,
         );

@@ -52,11 +52,31 @@ const CommunityPostWrite = () => {
     navigate("/community");
   };
 
+  const validateTitleContent = () => {
+    if (title === "") {
+      alert("제목을 입력해주세요");
+      return false;
+    }
+    if (
+      content === undefined ||
+      content === "" ||
+      content === null ||
+      content === " "
+    ) {
+      alert("내용을 입력해주세요");
+      return false;
+    }
+    return true;
+  };
+
   // 글쓰기
   const handlePostButtonClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
+    if (!validateTitleContent()) {
+      return;
+    }
 
     const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
 
@@ -69,9 +89,11 @@ const CommunityPostWrite = () => {
         const body = {
           title,
           content,
+          bookmark_id,
         };
         const res = await Api.put(`posts/${postId}`, body);
         console.log(res);
+        navigate(`/community/${res.data.id}`);
       } else {
         const body = {
           title,
@@ -91,8 +113,11 @@ const CommunityPostWrite = () => {
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
+    if (!validateTitleContent()) {
+      return;
+    }
 
-    const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
+    const bookmark_id = postBookmarks?.map((bookmark) => bookmark.id);
 
     console.log(
       `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
@@ -105,7 +130,7 @@ const CommunityPostWrite = () => {
         bookmark_id,
       };
       const res = await Api.put(`posts/${postId}`, body);
-      console.log(res);
+      navigate(`/community/${res.data.id}`);
     } catch (err) {
       console.error(err);
     }

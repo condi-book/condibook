@@ -247,7 +247,6 @@ const CommunityPostDetail = () => {
     };
     fetchPostDetail();
     fetchComments();
-    console.log(list);
   }, []);
 
   React.useEffect(() => {
@@ -283,7 +282,6 @@ const CommunityPostDetail = () => {
                 <p className="likeCount">{likeCount}</p>
               </div>
             </TitleContainer>
-
             <ButtonContainer>
               <button className="hoverButton" onClick={handleEditClick}>
                 수정
@@ -341,12 +339,15 @@ const CommunityPostDetail = () => {
             value={comment}
             onChange={handleCommentChange}
           ></CommentInput>
-          <ButtonContainer>
+          <ButtonContainer className="commentButton">
             <button className="hoverButton" onClick={handleCommentPostClick}>
               댓글 등록
             </button>
           </ButtonContainer>
-          <CommunityPostComments comments={comments} />
+          <CommunityPostComments
+            comments={comments}
+            setComments={setComments}
+          />
         </div>
         <div className="contentWrapper">
           <iframe
@@ -442,7 +443,7 @@ const H1 = styled.h1`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: -2rem;
+  margin-bottom: 0.75rem;
   z-index: 5;
   width: 100%;
   position: relative;
@@ -520,7 +521,7 @@ const CommentInput = styled.textarea`
   padding: 1rem 1rem 1.5rem;
   outline: none;
   border: 1px solid black;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   width: 100%;
   border-radius: 4px;
   min-height: 6.125rem;
