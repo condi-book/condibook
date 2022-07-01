@@ -30,6 +30,8 @@ const TeamUserModal = ({
   const [searchedUsers, setSearchedUsers] = React.useState<any[]>([]);
   const [selectedUserID, setSelectedUserID] = React.useState(null);
 
+  const userID = JSON.parse(sessionStorage.getItem("user")).id;
+
   const makeHiddenEmail = (email: string, index: number) => {
     return email.substring(0, index - 6) + "*******" + email.substring(index);
   };
@@ -94,12 +96,16 @@ const TeamUserModal = ({
     try {
       if (isBanish) {
         const res = await Api.get(`teams/${team.team_id}/members`);
-        console.log(res);
-        setSearchedUsers(res.data);
+        const searchTeamUsersExceptMe = res.data.filter(
+          (user: any) => user.user_id !== userID,
+        );
+        setSearchedUsers(searchTeamUsersExceptMe);
       } else {
         const res = await Api.get(`user?nickname=${nickname}`);
-        console.log(res);
-        setSearchedUsers(res.data);
+        const searchUsersExceptMe = res.data.filter(
+          (user: any) => user.user_id !== userID,
+        );
+        setSearchedUsers(searchUsersExceptMe);
       }
     } catch (err) {
       console.log(err);
@@ -110,11 +116,9 @@ const TeamUserModal = ({
     try {
       if (isBanish) {
         const res = await Api.get(`teams/${team.team_id}/members`);
-        console.log(res);
         setSearchedUsers(res.data);
       } else {
         const res = await Api.get(`user?nickname=${nickname}`);
-        console.log(res);
         setSearchedUsers(res.data);
       }
     } catch (err) {

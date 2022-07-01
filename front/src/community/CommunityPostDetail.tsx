@@ -87,18 +87,16 @@ const CommunityPostDetail = () => {
     try {
       const body = {};
       if (liked) {
-        const res = await Api.delete(`likes`, postId);
-        console.log(res);
+        await Api.delete(`likes`, postId);
         setLiked(false);
         setLikeCount(likeCount - 1);
       } else {
-        const res = await Api.post(`likes/${postId}`, body);
+        await Api.post(`likes/${postId}`, body);
         setLiked(true);
         setLikeCount(likeCount + 1);
-        console.log(res);
       }
     } catch (e) {
-      console.log(e);
+      alert(e);
     }
   };
 
@@ -132,7 +130,7 @@ const CommunityPostDetail = () => {
         return;
       }
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   };
 
@@ -160,11 +158,10 @@ const CommunityPostDetail = () => {
         content: comment,
       };
       const res = await Api.post(`comments/${postId}`, body);
-      console.log(res);
       setComments((prev) => [...prev, res.data]);
       setComment("");
     } catch (e) {
-      console.log(e);
+      alert(e);
     }
   };
 
@@ -239,7 +236,7 @@ const CommunityPostDetail = () => {
           setLiked(true);
         }
       } catch (err) {
-        console.log(err);
+        alert(err);
       }
     };
     fetchPostDetail();

@@ -32,7 +32,6 @@ const TeamCreateModal = ({
         name,
         explanation,
       });
-      console.log(res);
       setCreateModalShow(false);
       setTeam({
         team_id: res.data.id,
@@ -45,7 +44,7 @@ const TeamCreateModal = ({
       });
       navigate(`/team/${res.data.id}`);
     } catch (err) {
-      console.log(err);
+      alert(err);
       await Alert.fire({
         icon: "error",
         title: "팀 생성 실패",
@@ -72,7 +71,7 @@ const TeamCreateModal = ({
       });
       navigate(`/team/${team.team_id}`);
     } catch (err: any) {
-      console.log(err);
+      alert(err);
       await Alert.fire({
         icon: "error",
         title: `팀 수정 실패 : ${err?.response.data}`,

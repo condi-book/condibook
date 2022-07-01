@@ -107,7 +107,6 @@ const AddBookMarkModal = ({
         const res = await Api.post("websites", {
           url: newLink,
         });
-        console.log(res.data);
         await Api.post(`bookmarks`, {
           folder_id: selectedFolderID,
           website_id: res.data.website.id,
@@ -131,7 +130,6 @@ const AddBookMarkModal = ({
       const res = await Api.post("websites", {
         url: newLink,
       });
-      console.log(res.data);
       await Api.post(`bookmarks`, {
         folder_id: selectedFolderID,
         website_id: res.data.website.id,
@@ -157,7 +155,7 @@ const AddBookMarkModal = ({
       const { data } = await Api.get("user/folders");
       setFolders(data);
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   };
 
@@ -165,7 +163,6 @@ const AddBookMarkModal = ({
   const fetchFolderBookmarkData = async (selectedFolderID: string) => {
     try {
       const { data } = await Api.get(`folders/${selectedFolderID}/bookmarks`);
-      console.log(data);
       const handledData = data.bookmarks.map((data: any) => {
         const checkedBookmarkURL = postBookmarks
           ?.filter((bookmark) => bookmark.checked === true)
@@ -192,7 +189,6 @@ const AddBookMarkModal = ({
 
   // 유저가 선택한 북마크 데이터 세팅 (warning 방지용)
   React.useEffect(() => {
-    console.log(bookmarkModifiedID);
     if (bookmarkModifiedID) {
       const checkedBookmark = postBookmarks.find(
         (postBookmark) => postBookmark.id === bookmarkModifiedID,
@@ -213,11 +209,6 @@ const AddBookMarkModal = ({
       }
     }
   }, [bookmarkModifiedID, selectedFolderBookmarks, postBookmarks]);
-
-  React.useEffect(() => {
-    console.log(postBookmarks);
-    console.log(selectedFolderBookmarks);
-  }, [postBookmarks, selectedFolderBookmarks]);
 
   React.useEffect(() => {
     if (tab !== "폴더를 선택하세요") {

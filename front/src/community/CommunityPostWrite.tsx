@@ -83,10 +83,6 @@ const CommunityPostWrite = () => {
 
     const bookmark_id = postBookmarks.map((bookmark) => bookmark.id);
 
-    console.log(
-      `title:${title}, content:${content}, bookmark_id:${bookmark_id}`,
-    );
-
     try {
       if (isModifying) {
         const body = {
@@ -95,7 +91,6 @@ const CommunityPostWrite = () => {
           bookmark_id,
         };
         const res = await Api.put(`posts/${postId}`, body);
-        console.log(res);
         navigate(`/community/${res.data.id}`);
       } else {
         const body = {
@@ -124,10 +119,6 @@ const CommunityPostWrite = () => {
       ?.map((bookmark) => bookmark.id)
       .filter((id) => id !== null);
 
-    console.log(
-      `title:${title}, content:${content}, bookmark_id:${bookmark_idArr}`,
-    );
-
     try {
       const body = {
         title,
@@ -144,7 +135,6 @@ const CommunityPostWrite = () => {
   const fetchPostContent = async () => {
     try {
       const res = await Api.get(`posts/${postId}`);
-      console.log(res);
       const fetchedItem = res.data.postInfo;
 
       if (userId !== fetchedItem.author) {
@@ -166,7 +156,6 @@ const CommunityPostWrite = () => {
           };
         }),
       );
-      console.log(postBookmarks);
     } catch (error) {
       const err = error as AxiosError;
       alert(`${err.response?.data}`);
@@ -216,7 +205,7 @@ const CommunityPostWrite = () => {
           const ReactS3Client = new S3(s3config);
           ReactS3Client.uploadFile(blob, uuidv4())
             .then((data) => callback(data.location, "imageURL"))
-            .catch((err) => console.log(err));
+            .catch((err) => alert(err));
         });
     }
   }, []);

@@ -27,7 +27,7 @@ const TeamFolderModal = ({
       team_id: team.team_id,
       title,
     });
-    console.log(res);
+    alert(res);
     setFolderModalShow(false);
     fetchTeamFolderData();
     // navigate("team/" + folder_id);

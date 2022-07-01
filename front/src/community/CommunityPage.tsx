@@ -37,7 +37,6 @@ const CommunityPage = () => {
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       const { value } = event.currentTarget;
-      console.log(value);
       setSortState(value);
     },
     [],

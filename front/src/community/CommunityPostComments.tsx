@@ -16,8 +16,6 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
 
   const isAuthor = (author: string) => {
     const user = JSON.parse(sessionStorage.getItem("user"));
-    console.log(user?.id);
-    console.log(author);
     return author === user?.id;
   };
 
@@ -32,7 +30,6 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
         const res = await Api.put(`comments/${id}`, {
           content: commentContent,
         });
-        console.log(res);
 
         setComments(
           comments.map((comment) => {
@@ -47,7 +44,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
         );
         setIsEditing(false);
       } catch (e) {
-        console.log(e);
+        alert(e);
       }
     };
 
@@ -56,8 +53,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
       try {
         e.preventDefault();
         if (window.confirm("삭제하시겠습니까?")) {
-          const res = await Api.delete(`comments/${id}`);
-          console.log(res);
+          await Api.delete(`comments/${id}`);
           setComments(
             comments.filter((comment) => {
               return comment.id !== id;
@@ -67,7 +63,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
           return;
         }
       } catch (e) {
-        console.log(e);
+        alert(e);
       }
     };
   return (

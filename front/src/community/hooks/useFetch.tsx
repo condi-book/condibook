@@ -23,7 +23,6 @@ const useFetch = (
 
       if (sortState === "new") {
         const res = await Api.get(`posts/list?order=new&pageNumber=${page}`);
-        console.log(res);
         const { data } = res;
         if (data.length < 20) {
           setHasMore(false);
@@ -34,7 +33,6 @@ const useFetch = (
         setPosts((current: any) => [...current, ...data]);
       } else if (sortState === "like") {
         const res = await Api.get(`posts/list?order=likes&pageNumber=${page}`);
-        console.log(res);
         const { data } = res;
         if (data.length < 20) {
           setHasMore(false);
@@ -44,7 +42,6 @@ const useFetch = (
         setPosts((current: any) => [...current, ...data]);
       } else if (sortState === "view") {
         const res = await Api.get(`posts/list?order=views&pageNumber=${page}`);
-        console.log(res);
         const { data } = res;
         if (data.length < 20) {
           setHasMore(false);
@@ -53,11 +50,10 @@ const useFetch = (
         }
         setPosts((current: any) => [...current, ...data]);
       }
-      console.log("sortState", sortState);
 
       setIsLoading(false);
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   }, [page, sortState]);
 

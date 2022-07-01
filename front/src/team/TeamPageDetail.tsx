@@ -96,7 +96,6 @@ const TeamPageDetail = () => {
 
   const fetchBookmarks = async () => {
     const res = await Api.get(`folders/${params.folderId}/bookmarks`);
-    console.log(res);
     setList(res.data.bookmarks);
   };
 
