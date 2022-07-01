@@ -218,59 +218,61 @@ const TeamSidebar = ({
           </DropDown>
           <ButtonContainer onClick={handleInvite}>
             <ButtonSpan className="icon pe-7s-add-user"></ButtonSpan>
-            <ButtonSpan>초대</ButtonSpan>
+            <ButtonSpan className="word">초대</ButtonSpan>
           </ButtonContainer>
           <ButtonContainer onClick={handleBanish}>
             <ButtonSpan className="icon pe-7s-delete-user"></ButtonSpan>
-            <ButtonSpan>추방</ButtonSpan>
+            <ButtonSpan className="word">추방</ButtonSpan>
           </ButtonContainer>
           <ButtonContainer onClick={handleEditTeam}>
             <ButtonSpan className="icon pe-7s-note"></ButtonSpan>
-            <ButtonSpan>수정</ButtonSpan>
+            <ButtonSpan className="word">수정</ButtonSpan>
           </ButtonContainer>
           <ButtonContainer onClick={handleAddTeamFolder}>
             <ButtonSpan className="icon pe-7s-folder"></ButtonSpan>
-            <ButtonSpan>폴더 추가</ButtonSpan>
+            <ButtonSpan className="word">폴더 추가</ButtonSpan>
           </ButtonContainer>
         </SeparateContainer>
         <FoldersContainer>
-          <span>폴더 리스트</span>
-          {folders?.map((folder) => (
-            <FolderContainer
-              key={folder.id}
-              value={folder.id}
-              className="TeamFolder"
-              editingFolder={editingFolder}
-              onClick={handleClickFolder(folder)}
-              selectedFolder={selectedFolder}
-            >
-              {editingFolder === folder.id ? (
-                <FolderEditInput
-                  value={editingFolderTitle}
-                  onChange={(e) => setEditingFolderTitle(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      editFolder();
-                    }
-                  }}
-                />
-              ) : (
-                <ButtonSpan>{folder.title}</ButtonSpan>
-              )}
-              <ButtonSpan
-                onClick={handleClickMore(folder.id)}
-                className="pe-7s-more"
-              ></ButtonSpan>
-              <FolderMore
-                className="dropdown"
+          <span className="folders-title">폴더 리스트</span>
+          <div className="folders-wrap">
+            {folders?.map((folder) => (
+              <FolderContainer
+                key={folder.id}
                 value={folder.id}
-                moreView={moreView}
+                className="TeamFolder"
+                editingFolder={editingFolder}
+                onClick={handleClickFolder(folder)}
+                selectedFolder={selectedFolder}
               >
-                <li onClick={handleClickFolderEdit(folder.id)}>수정</li>
-                <li onClick={handleClickFolderDelete(folder.id)}>삭제</li>
-              </FolderMore>
-            </FolderContainer>
-          ))}
+                {editingFolder === folder.id ? (
+                  <FolderEditInput
+                    value={editingFolderTitle}
+                    onChange={(e) => setEditingFolderTitle(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        editFolder();
+                      }
+                    }}
+                  />
+                ) : (
+                  <ButtonSpan>{folder.title}</ButtonSpan>
+                )}
+                <ButtonSpan
+                  onClick={handleClickMore(folder.id)}
+                  className="pe-7s-more"
+                ></ButtonSpan>
+                <FolderMore
+                  className="dropdown"
+                  value={folder.id}
+                  moreView={moreView}
+                >
+                  <li onClick={handleClickFolderEdit(folder.id)}>수정</li>
+                  <li onClick={handleClickFolderDelete(folder.id)}>삭제</li>
+                </FolderMore>
+              </FolderContainer>
+            ))}
+          </div>
         </FoldersContainer>
       </Section>
     </>
@@ -280,16 +282,15 @@ const TeamSidebar = ({
 export default TeamSidebar;
 
 const Section = styled.section`
-  height: 100vh;
   width: 255px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   // justify-content: space-around;
-  border-right: 1px solid black;
   position: sticky;
   top: 0;
-  background: white;
+  background: ${({ theme }) => theme.subGrayColor};
+  border-radius: 10px;
   = div {
     text-align: center;
   }
@@ -301,7 +302,7 @@ const SeparateContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 3px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px ridge black;
 `;
 
 const ButtonContainer = styled.div`
@@ -312,20 +313,20 @@ const ButtonContainer = styled.div`
   padding: 2px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   border: none;
   color: black;
   font-size: 30px;
   font-weight: bold;
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
   .icon {
     flex: 0.1 1 0;
     margin-right: 10px;
   }
   :hover {
-    background: black;
+    background: ${({ theme }) => theme.profileBackground};
     span {
       color: white;
     }
@@ -333,10 +334,14 @@ const ButtonContainer = styled.div`
   .dropdown {
     font-size: 1rem;
   }
+
+  .word {
+    width: 72px;
+    text-align: center;
+  }
 `;
 
 const FolderContainer = styled.div<FolderContainerStyleProps>`
-  width: 234px;
   height: 40px;
   margin: 5px;
   margin-bottom: 0;
@@ -347,8 +352,8 @@ const FolderContainer = styled.div<FolderContainerStyleProps>`
   color: black;
   font-size: 30px;
   font-weight: bold;
-  border: 3px solid transparent;
-  border-radius: 10px;
+  // border: 3px solid transparent;
+  border-radius: 5px;
   cursor: pointer;
   background-image: ${(props) =>
     props.selectedFolder?.id === props.value
@@ -363,7 +368,9 @@ const FolderContainer = styled.div<FolderContainerStyleProps>`
   }
   :hover {
     background: ${(props) =>
-      props.editingFolder !== props.value ? "black" : "white"};
+      props.editingFolder !== props.value
+        ? props.theme.profileBackground
+        : "white"};
     span {
       color: ${(props) =>
         props.editingFolder !== props.value ? "white" : "black"};
@@ -394,11 +401,22 @@ const FoldersContainer = styled.div`
   flex-direction: column;
   // justify-content: center;
   align-items: center;
-  padding: 3px;
-  border-bottom: 1px solid black;
+  padding: 5px;
+  border-bottom: 1px ridge black;
   overflow-y: scroll;
-  height: calc(100vh - 200px);
+  height: 100%
   width: 234px;
+  .folders-title {
+    margin: 10px 0;
+    font-weight: bold;
+  }
+
+  .folders-wrap {
+    width: 100%;
+    background: white;
+    height: 100%;
+    border-radius: 5px;
+  }
 `;
 
 // const Folder = styled.div`
@@ -480,7 +498,7 @@ const DropDown = styled.div<StyleProps>`
     justify-content: center;
     width: 234px;
     padding: 50px 20px 0px;
-    border-radius: 8px;
+    border-radius: 5px;
     background-color: rgb(235, 235, 235);
     z-index: 3;
     height: ${({ show }) => (show ? "168px" : "50px")};

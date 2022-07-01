@@ -75,55 +75,65 @@ const TeamPage = () => {
   return (
     <Div>
       {keyboardContext.sidebar === true && <SideBar />}
-      <TeamSidebar
-        setCreateModalShow={setCreateModalShow}
-        setUserModalShow={setUserModalShow}
-        setIsEdit={setIsEdit}
-        setIsBanish={setIsBanish}
-        setFolderModalShow={setFolderModalShow}
-        team={team}
-        setTeam={setTeam}
-        teams={teams}
-        folders={folders}
-        setFolders={setFolders}
-        selectedFolder={selectedFolder}
-        setSelectedFolder={setSelectedFolder}
-        fetchTeamFolderData={fetchTeamFolderData}
-        fetchTeamData={fetchTeamData}
-      />
-      <div className="team-container">
-        <Outlet
-          context={{
-            team,
-            teams,
-            folders,
-            selectedFolder,
-            setTeam,
-            setFolders,
-            fetchTeamData,
-            fetchTeamFolderData,
-            setFolderModalShow,
-          }}
-        />
-        <TeamCreateModal
-          createModalShow={createModalShow}
-          setCreateModalShow={setCreateModalShow}
-          team={team}
-          setTeam={setTeam}
-          isEdit={isEdit}
-        />
-        <TeamUserModal
-          userModalShow={userModalShow}
-          setUserModalShow={setUserModalShow}
-          team={team}
-          isBanish={isBanish}
-        />
-        <TeamFolderModal
-          folderModalShow={folderModalShow}
-          setFolderModalShow={setFolderModalShow}
-          team={team}
-          fetchTeamFolderData={fetchTeamFolderData}
-        />
+      <div className="team-section">
+        <div className="team-wrap">
+          <TeamSidebar
+            setCreateModalShow={setCreateModalShow}
+            setUserModalShow={setUserModalShow}
+            setIsEdit={setIsEdit}
+            setIsBanish={setIsBanish}
+            setFolderModalShow={setFolderModalShow}
+            team={team}
+            setTeam={setTeam}
+            teams={teams}
+            folders={folders}
+            setFolders={setFolders}
+            selectedFolder={selectedFolder}
+            setSelectedFolder={setSelectedFolder}
+            fetchTeamFolderData={fetchTeamFolderData}
+            fetchTeamData={fetchTeamData}
+          />
+          <div className="team-container">
+            {!team && (
+              <NotFound>
+                <img src="/static/img/team.svg"></img>
+                <div>팀을 생성하여 그룹 북마크를 공유하세요</div>
+              </NotFound>
+            )}
+            <Outlet
+              context={{
+                team,
+                teams,
+                folders,
+                selectedFolder,
+                setTeam,
+                setFolders,
+                fetchTeamData,
+                fetchTeamFolderData,
+                setFolderModalShow,
+              }}
+            />
+            <TeamCreateModal
+              createModalShow={createModalShow}
+              setCreateModalShow={setCreateModalShow}
+              team={team}
+              setTeam={setTeam}
+              isEdit={isEdit}
+            />
+            <TeamUserModal
+              userModalShow={userModalShow}
+              setUserModalShow={setUserModalShow}
+              team={team}
+              isBanish={isBanish}
+            />
+            <TeamFolderModal
+              folderModalShow={folderModalShow}
+              setFolderModalShow={setFolderModalShow}
+              team={team}
+              fetchTeamFolderData={fetchTeamFolderData}
+            />
+          </div>
+        </div>
       </div>
     </Div>
   );
@@ -135,15 +145,41 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   position: relative;
-  background: #f8f9fc;
-  height: 100vh;
+  background: #eff6fc;
+
+  .team-section {
+    width: 100%;
+    padding: 10px 10px 10px 0;
+    display: flex;
+  }
+  .team-wrap {
+    width: 100%;
+
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    padding: 10px;
+  }
 
   .team-container {
     margin: auto;
     width: 100%;
     height: 100%;
-    flex-basis: 0;
-    flex-grow: 1;
+    margin-left: 10px;
+    background: #f5f5f5;
+    border-radius: 10px;
+  }
+`;
+
+const NotFound = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 20%;
+    margin-bottom: 20px;
   }
 `;
 

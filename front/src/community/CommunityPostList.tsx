@@ -97,6 +97,7 @@ const Div = styled.div`
 const Col = styled.div`
   width: 15rem;
   border: ${({ theme }) => theme.border};
+  box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
   border-radius: 5px;
   background: white;
   margin: 1rem;

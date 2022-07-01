@@ -191,10 +191,10 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
                           </div>
                           <div className="link-box2">
                             <div id="link-title">
-                              {data?.website?.meta_title?.length >= 30
+                              {data?.website?.meta_title?.length >= 25
                                 ? `${data?.website?.meta_title?.substring(
                                     0,
-                                    30,
+                                    25,
                                   )}...`
                                 : data?.website?.meta_title}
                             </div>

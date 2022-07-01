@@ -101,6 +101,8 @@ const Div = styled.div<StyleSize>`
       border-radius: 7px;
       transition: box-shadow 0.1s linear;
       border: ${({ theme }) => theme.border};
+      box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
+      transition: box-shadow 0.1s linear;
       &:hover {
         cursor: pointer;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
