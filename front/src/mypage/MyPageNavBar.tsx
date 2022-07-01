@@ -25,7 +25,7 @@ const Div = styled.div<MypageProps>`
   .nav-bar-wrap {
     width: 100%;
     padding: 10px 20px;
-    padding-top: 20px;
+    padding-top: 30px;
     
   }
 
