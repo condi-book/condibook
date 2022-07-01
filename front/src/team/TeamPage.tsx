@@ -17,7 +17,7 @@ type ContextType = {
   selectedFolder?: Folder;
   setTeam: (team: Team) => void;
   setFolders: (folders: Folder[]) => void;
-  fetchTeamData: () => Promise<Team[]>;
+  fetchTeamData: () => Promise<void>;
   fetchTeamFolderData: (id?: number) => Promise<void>;
   setFolderModalShow: (show: boolean) => void;
 };
@@ -53,9 +53,7 @@ const TeamPage = () => {
   const fetchTeamData = async () => {
     try {
       const res = await Api.get("user/teams");
-      console.log(res.data);
       setTeams(res.data);
-      return res.data;
     } catch (err) {
       console.log(err);
     }
@@ -63,7 +61,10 @@ const TeamPage = () => {
 
   const fetchTeamFolderData = async (id?: number) => {
     try {
-      const url = id ? `teams/${id}/folders` : `teams/${team.team_id}/folders`;
+      if (team?.team_id === null || team?.team_id === undefined) {
+        return;
+      }
+      const url = id ? `teams/${id}/folders` : `teams/${team?.team_id}/folders`;
 
       const res = await Api.get(url);
       setFolders(res.data);
@@ -71,6 +72,10 @@ const TeamPage = () => {
       console.log(err);
     }
   };
+
+  React.useEffect(() => {
+    fetchTeamData();
+  }, []);
 
   return (
     <Div>
@@ -91,7 +96,6 @@ const TeamPage = () => {
             selectedFolder={selectedFolder}
             setSelectedFolder={setSelectedFolder}
             fetchTeamFolderData={fetchTeamFolderData}
-            fetchTeamData={fetchTeamData}
           />
           <div className="team-container">
             {!team && (

@@ -9,8 +9,9 @@ const TeamPageMain = () => {
   const navigate = useNavigate();
   const {
     team,
+    teams,
     folders,
-    fetchTeamData,
+
     setTeam,
     fetchTeamFolderData,
     // setFolderModalShow,
@@ -21,9 +22,10 @@ const TeamPageMain = () => {
   // };
 
   const fetchUpdateData = async () => {
-    const res = await fetchTeamData();
     await fetchTeamFolderData();
-    const result = res.find((team) => team.team_id === parseInt(params.teamid));
+    const result = teams.find(
+      (team) => team.team_id === parseInt(params.teamid),
+    );
     setTeam(result);
   };
 

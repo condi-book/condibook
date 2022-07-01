@@ -39,11 +39,14 @@ const TeamUserModal = ({
     (e: React.MouseEvent<Element>): void => {
       e.preventDefault();
 
-      const user = searchedUsers.find(
-        (user) => user?.id ?? user?.user_id === id,
-      );
+      const user = searchedUsers.find((user) => {
+        if (isBanish) {
+          return user.user_id === id;
+        }
+        return user.id === id;
+      });
       setEmail(user?.email);
-      setSelectedUserID(user?.id ?? user?.user_id);
+      setSelectedUserID(user.id ?? user.user_id);
     };
 
   const handleInvite = async (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -25,7 +25,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const TeamPageDetail = () => {
   const params = useParams();
-  const { selectedFolder, setTeam, fetchTeamData, fetchTeamFolderData } =
+  const { selectedFolder, teams, setTeam, fetchTeamFolderData } =
     useOutletContextProps();
   const [list, setList] = React.useState([]);
   const [link, setLink] = React.useState("");
@@ -88,7 +88,6 @@ const TeamPageDetail = () => {
   };
 
   const fetchUpdateTeam = async () => {
-    const teams = await fetchTeamData();
     const team = teams.find((v) => v.team_id === parseInt(params.teamid));
     await setTeam(team);
 
@@ -97,7 +96,8 @@ const TeamPageDetail = () => {
 
   const fetchBookmarks = async () => {
     const res = await Api.get(`folders/${params.folderId}/bookmarks`);
-    setList(res.data);
+    console.log(res);
+    setList(res.data.bookmarks);
   };
 
   React.useEffect(() => {

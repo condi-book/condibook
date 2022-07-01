@@ -33,7 +33,6 @@ interface Props {
   selectedFolder: Folder;
   setSelectedFolder: (folder: Folder) => void;
   fetchTeamFolderData: () => Promise<void>;
-  fetchTeamData: () => Promise<void>;
 }
 
 const TeamSidebar = ({
@@ -50,7 +49,6 @@ const TeamSidebar = ({
   selectedFolder,
   setSelectedFolder,
   fetchTeamFolderData,
-  fetchTeamData,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -175,14 +173,9 @@ const TeamSidebar = ({
   };
 
   React.useEffect(() => {
-    fetchTeamData();
-  }, []);
-
-  React.useEffect(() => {
     if (tab !== "팀을 선택하세요") {
       fetchTeamFolderData();
     }
-    fetchTeamData();
     fetchTeamFolderData();
     setTab(team?.name);
   }, [tab, team]);
