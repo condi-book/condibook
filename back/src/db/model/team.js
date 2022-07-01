@@ -4,6 +4,7 @@ import {
     TeamModel,
     Op,
     MembershipModel,
+    Sequelize,
 } from "../schema";
 
 class Team {
@@ -70,19 +71,11 @@ class Team {
     static searchTeamByQuery({ user_id, content }) {
         return TeamModel.findAll({
             attributes: ["id", "name", "explanation"],
-            where: {
-                [Op.or]: [
-                    {
-                        name: {
-                            [Op.like]: `%${content}%`,
-                        },
-                    },
-                    {
-                        explanation: {
-                            [Op.like]: `%${content}%`,
-                        },
-                    },
-                ],
+            where: Sequelize.literal(
+                "MATCH (`name`, `explanation`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
+            ),
+            replacements: {
+                search: content,
             },
             include: [
                 {

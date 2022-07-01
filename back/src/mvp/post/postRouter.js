@@ -53,6 +53,11 @@ postRouter.get("/list", async (req, res, next) => {
 postRouter.get("/:id", async (req, res, next) => {
     try {
         const id = req.params.id;
+
+        const result = await postService.getPost({ id, req });
+        if (result.errorMessage) {
+            throw new Error(result.errorMessage);
+        }
         if (req.cookies[id] == undefined) {
             // key, value, 옵션을 설정해준다.
             res.cookie(id, getUserIP(req), {
@@ -61,10 +66,6 @@ postRouter.get("/:id", async (req, res, next) => {
             });
             // 조회수 증가 쿼리
             await postService.updateViews({ id });
-        }
-        const result = await postService.getPost({ id, req });
-        if (result.errorMessage) {
-            throw new Error(result.errorMessage);
         }
 
         res.status(200).send(result);

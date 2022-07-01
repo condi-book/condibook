@@ -3,6 +3,7 @@ import {
     sequelize,
     BookmarkModel,
     FDFavoriteModel,
+    Sequelize,
     Op,
 } from "../schema";
 
@@ -37,7 +38,7 @@ class Folder {
             order: ["createdAt"],
         });
     }
-    static searchFolderByTitle({ user_id, offset, content }) {
+    static searchFolderByTitle({ offset, content, user_id }) {
         return FolderModel.findAll({
             attributes: ["id", "title"],
             where: {
@@ -45,12 +46,14 @@ class Folder {
                     {
                         user_id: user_id,
                     },
-                    {
-                        title: {
-                            [Op.like]: `%${content}%`,
-                        },
-                    },
+                    Sequelize.literal(
+                        "MATCH (`title`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
+                    ),
                 ],
+            },
+
+            replacements: {
+                search: content,
             },
             order: [["createdAt", "DESC"]],
             offset: offset,
