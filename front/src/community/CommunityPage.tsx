@@ -73,12 +73,15 @@ const CommunityPage = () => {
                     </SortButton>
                   ))}
                 </ButtonWrapper>
-                <ButtonWrapper>
-                  <button className="side-btn" onClick={handleSearchClick}>
+                <ButtonWrapper style={{ background: "none" }}>
+                  <button
+                    className="side-btn side-btn-1"
+                    onClick={handleSearchClick}
+                  >
                     <span className="pe-7s-search"></span>
                   </button>
                   <button className="side-btn" onClick={handlePostClick}>
-                    새 글 작성
+                    <span className="pe-7s-note"></span>
                   </button>
                 </ButtonWrapper>
               </ButtonGroup>
@@ -163,15 +166,20 @@ const ButtonWrapper = styled.div`
   }
 
   .side-btn {
-    background: none;
-    border-radius: 5px;
+    background: ${({ theme }) => theme.subGrayColor};
+    border-radius: 50%;
     font-size: 1.2vw;
+    padding: 5px;
 
     &:hover {
       font-weight: bold;
       color: white;
       background: ${({ theme }) => theme.mainColor};
     }
+  }
+
+  .side-btn-1 {
+    margin-right: 5px;
   }
 `;
 
