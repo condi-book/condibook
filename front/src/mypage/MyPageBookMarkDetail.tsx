@@ -330,7 +330,6 @@ const Empty = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid green;
   img {
     width: 15%;
     margin-bottom: 20px;

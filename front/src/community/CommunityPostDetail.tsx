@@ -272,37 +272,56 @@ const CommunityPostDetail = () => {
       <div className="postWrapper">
         <div className="detailWrapper">
           <HeaderContainer>
-            <TitleContainer>
-              <H1>{fetchData?.title}</H1>
-              <div className="likeWrapper" onClick={handleLikeClick}>
-                <LikeButton className="pe-7s-like" like={liked} />
-                <p className="likeCount">{likeCount}</p>
-              </div>
-            </TitleContainer>
-            <ButtonContainer>
-              <button className="hoverButton" onClick={handleEditClick}>
-                수정
-              </button>
-              <button className="hoverButton" onClick={handleDeleteClick}>
-                삭제
-              </button>
-            </ButtonContainer>
-            <InfoContainer>
-              <div>
-                <span className="username">{fetchData?.author_name}</span>
-                <span className="separator">·</span>
-                <span>{createdTime(new Date(fetchData?.createdAt))}</span>
-                <span className="separator">·</span>
-                <span>조회수 {fetchData?.views}</span>
-                {/* <span className="separator">·</span>
+            <SubTitle>
+              <TitleContainer>
+                <H1>{fetchData?.title}</H1>
+                <div className="likeWrapper" onClick={handleLikeClick}>
+                  <LikeButton className="pe-7s-like" like={liked} />
+                  <p className="likeCount">{likeCount}</p>
+                </div>
+              </TitleContainer>
+              <ButtonContainer>
+                <button className="hoverButton" onClick={handleEditClick}>
+                  수정
+                </button>
+                <button className="hoverButton" onClick={handleDeleteClick}>
+                  삭제
+                </button>
+              </ButtonContainer>
+              <InfoContainer>
+                <div>
+                  <span className="username">{fetchData?.author_name}</span>
+                  <span className="separator">·</span>
+                  <span>{createdTime(new Date(fetchData?.createdAt))}</span>
+                  <span className="separator">·</span>
+                  <span>조회수 {fetchData?.views}</span>
+                  {/* <span className="separator">·</span>
+            <SubTitle>
+              <InfoContainer>
+                <div>
+                  <span className="username">{fetchData?.author_name}</span>
+                  <span className="separator">·</span>
+                  <span>{createdTime(new Date(fetchData?.createdAt))}</span>
+                  <span className="separator">·</span>
+                  <span>조회수 {fetchData?.views}</span>
+                  {/* <span className="separator">·</span>
                 <span>
                   {updatedTime(
                     new Date(fetchData?.createdAt),
                     new Date(fetchData?.updatedAt),
                   )}
                 </span> */}
-              </div>
-            </InfoContainer>
+                </div>
+              </InfoContainer>
+              <ButtonContainer className="change-btn">
+                <button className="hoverButton" onClick={handleEditClick}>
+                  수정
+                </button>
+                <button className="hoverButton" onClick={handleDeleteClick}>
+                  삭제
+                </button>
+              </ButtonContainer>
+            </SubTitle>
           </HeaderContainer>
           {!list ? (
             <></>
@@ -326,27 +345,48 @@ const CommunityPostDetail = () => {
             </BookmarkContainer>
           )}
           {isfetched ? (
-            <Viewer initialValue={fetchData.content} />
+            <div style={{ paddingBottom: "20px" }}>
+              <Viewer initialValue={fetchData.content} />
+            </div>
           ) : (
             <div>로딩중...</div>
           )}
-          <CommentCount>{`${comments.length}개의 댓글`}</CommentCount>
-          <CommentInput
-            placeholder="댓글을 입력하세요"
-            value={comment}
-            onChange={handleCommentChange}
-          ></CommentInput>
-          <ButtonContainer className="commentButton">
-            <button className="hoverButton" onClick={handleCommentPostClick}>
-              댓글 등록
-            </button>
-          </ButtonContainer>
-          <CommunityPostComments
-            comments={comments}
-            setComments={setComments}
-          />
+          <CommentWrapper>
+            <CommentCount>{`${comments.length}개의 댓글`}</CommentCount>
+            <div>
+              <CommentInput
+                placeholder="댓글을 입력하세요"
+                value={comment}
+                onChange={handleCommentChange}
+              ></CommentInput>
+              <ButtonContainer>
+                <button
+                  className="hoverButton"
+                  onClick={handleCommentPostClick}
+                  style={{ padding: "5px 10px" }}
+                >
+                  댓글 등록
+                </button>
+              </ButtonContainer>
+            </div>
+            <div>
+              <CommunityPostComments
+                comments={comments}
+                setComments={setComments}
+              />
+            </div>
+          </CommentWrapper>
         </div>
         <div className="contentWrapper">
+          {!link && (
+            <NotFound>
+              <img src="/static/img/communitybookmark.svg" alt="preview" />
+              <div>
+                해당 게시글에 공유된 북마크를 클릭하여 미리보기(preview) 기능을
+                사용해보세요
+              </div>
+            </NotFound>
+          )}
           <iframe
             src={link}
             width="100%"
@@ -365,9 +405,16 @@ export default CommunityPostDetail;
 const Div = styled.div`
   display: flex;
   flex-direction: row;
-  background: #f8f9fc;
+  background: white;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
+
+  .change-btn {
+    button {
+      padding: 5px 10px;
+    }
+  }
 
   .sidebarWrapper {
     position: fixed;
@@ -376,7 +423,8 @@ const Div = styled.div`
     width: 100%;
     display: flex;
     flex-direction: row;
-    border: 2px solid black;
+    padding: 10px;
+    border-radius: 10px;
   }
   .detailWrapper {
     min-width: 0px;
@@ -386,7 +434,7 @@ const Div = styled.div`
     display: flex;
     flex-direction: column;
     // justify-content: center;
-    border: 2px solid blue;
+    margin: 10px;
   }
   .contentWrapper {
     min-width: 0px;
@@ -394,7 +442,9 @@ const Div = styled.div`
     padding: 1%;
     display: block;
     position: relative;
-    border: 2px solid green;
+    background: #f5f5f5;
+    border-radius: 10px;
+    margin: 10px;
   }
 `;
 
@@ -409,6 +459,7 @@ const TitleContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 
   .likeWrapper {
     display: flex;
@@ -417,20 +468,22 @@ const TitleContainer = styled.div`
     justify-content: space-between;
   }
   .likeCount {
-    font-size: 1.5rem;
+    font-size: 1.5vw;
     font-weight: bold;
+    margin: 0;
   }
 `;
 
 const LikeButton = styled.span<{ like: boolean }>`
-  font-size: 3rem;
+  font-size: 2.3vw;
   font-weight: bold;
-  color: ${(props) => (props.like ? "pink" : "black")};
+  color: ${(props) => (props.like ? props.theme.subRedColor : "black")};
+  cursor: pointer;
+  background: none;
 `;
 
 const H1 = styled.h1`
-  font-size: 3rem;
-  line-height: 1.5;
+  font-size: 2.3vw;
   letter-spacing: -0.004em;
   margin-top: 0px;
   font-weight: 800;
@@ -444,20 +497,22 @@ const ButtonContainer = styled.div`
   z-index: 5;
   width: 100%;
   position: relative;
+  font-size: 1.2vw;
 
   .hoverButton {
     height: 100%;
     weight: 100%;
-    padding: 0.5rem 1rem;
+    padding: 10px;
     align-items: center;
     background: none;
-    border-radius: 4px;
+    border-radius: 5px;
     border: none;
     display: flex;
     outline: none;
+    cursor: pointer;
 
     &:hover {
-      background-color: black;
+      background: ${({ theme }) => theme.profileBackground};
       color: white;
     }
   }
@@ -468,7 +523,7 @@ const ButtonContainer = styled.div`
 
 const InfoContainer = styled.div`
   align-items: center;
-  font-size: 1rem;
+  font-size: 1.2vw;
   display: flex;
   justify-content: space-between;
 
@@ -486,6 +541,7 @@ const BookmarkContainer = styled.div`
   margin: 2rem;
   padding: 2rem 1.5rem;
   border: 2px solid black;
+
   border-radius: 8px;
   position: relative;
   .title {
@@ -507,7 +563,7 @@ const Ol = styled.ol`
 `;
 
 const CommentCount = styled.h4`
-  font-size: 1.125rem;
+  font-size: 1.2vw;
   line-height: 1.5;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -518,10 +574,38 @@ const CommentInput = styled.textarea`
   padding: 1rem 1rem 1.5rem;
   outline: none;
   border: 1px solid black;
-  margin-bottom: 0.5rem;
   width: 100%;
   border-radius: 4px;
   min-height: 6.125rem;
-  font-size: 1rem;
+  font-size: 1.1vw;
   line-height: 1.75;
+`;
+
+const SubTitle = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const CommentWrapper = styled.div`
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 10px;
+`;
+const NotFound = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  img {
+    width: 20%;
+    margin-bottom: 20px;
+  }
+  div {
+    width: 50%;
+    font-size: 1.2vw;
+  }
 `;
