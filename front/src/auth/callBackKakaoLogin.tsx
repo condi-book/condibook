@@ -19,10 +19,12 @@ const CallBackKakaoLogin = () => {
       const res = await axios.post(url, { code });
       const user = res.data;
 
-      await sessionStorage.setItem("userToken", user.token);
-      await sessionStorage.setItem("user", JSON.stringify(user));
       // 쿠키 경로, 유효기간 설정 필수
       await setCookie("userToken", user.token, {
+        path: "/",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
+      });
+      await setCookie("user", JSON.stringify(user), {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       });
