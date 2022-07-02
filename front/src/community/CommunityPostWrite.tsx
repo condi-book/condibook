@@ -145,7 +145,7 @@ const CommunityPostWrite = () => {
       const body = {
         title,
         content,
-        bookmark_idArr,
+        bookmark_id: bookmark_idArr,
       };
       const res = await Api.put(`posts/${postId}`, body);
       navigate(`/community/${res.data.id}`);
