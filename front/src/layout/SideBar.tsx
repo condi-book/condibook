@@ -80,7 +80,7 @@ const SideBar = () => {
 
 const Div = styled.div`
   height: 100vh;
-  width: 6%;
+  width: 6vw;
   padding: 10px;
   position: sticky;
   top: 0;
@@ -99,13 +99,12 @@ const Section = styled.section`
     text-align: center;
   }
   .sub-icon {
-    font-size: 2vw;
+    font-size: 2.5vw;
     font-weight: bold;
     color: ${({ theme }) => theme.subBlackColor};
     padding: 5px;
     border-radius: 50%;
     background: white;
-    width: 70%;
 
     &:hover {
       cursor: pointer;
@@ -117,7 +116,8 @@ const Section = styled.section`
   }
 
   .sub-title {
-    font-size: 0.3vw;
+    margin-top: 5px;
+    font-size: 0.8vw;
     color: white;
     font-weight: bold;
   }
@@ -127,5 +127,6 @@ const Icon = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 export default SideBar;
