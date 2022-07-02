@@ -86,13 +86,13 @@ const TeamPageDetail = () => {
     e.stopPropagation();
     try {
       await Api.delete(`bookmarks/${item.bookmark_id}`);
-      const copied = Array.from(list);
-      copied.splice(copied.indexOf(item), 1);
-      setList(copied);
       await Alert.fire({
         icon: "success",
         title: "삭제 성공",
       });
+      const copied = Array.from(list);
+      copied.splice(copied.indexOf(item), 1);
+      setList(copied);
     } catch (err) {
       const error = err as AxiosError;
       await Alert.fire({
