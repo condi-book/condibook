@@ -93,9 +93,9 @@ class Folder {
         return FolderModel.update({ title }, { where: { id: folder_id } });
     }
 
-    static destroyOne({ folder_id, user_id }) {
+    static destroyOne({ folder_id }) {
         return FolderModel.destroy({
-            where: { id: folder_id, user_id: user_id },
+            where: { id: folder_id },
         });
     }
 }
