@@ -41,7 +41,7 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
               <img src={data.image_url} alt="profile-image" />
               <div className="top-detail">
                 <Font>{data.nickname}</Font>
-                <div>{data.email}</div>
+                <div style={{ fontSize: "0.9vw" }}>{data.email}</div>
               </div>
             </div>
           </div>

@@ -67,7 +67,7 @@ const ProfileModal = ({ open, close, handleApply }: ProfileProps) => {
                     onChange={handleChange}
                   />
                 </div>
-                <p>10자 이하로 작성해주세요</p>
+                <p style={{ fontSize: "0.8vw" }}>10자 이하로 작성해주세요</p>
               </div>
               <div className="link-box">
                 <div className="title">소개</div>
@@ -100,9 +100,12 @@ const ProfileModal = ({ open, close, handleApply }: ProfileProps) => {
 };
 
 const Div = styled.div`
+  * {
+    font-size: 1vw;
+  }
   .btn-box {
     width: 100%;
-    margin: 10% 0;
+    margin-top: 10%;
     height: 50px;
     button {
       width: 100%;
@@ -139,8 +142,8 @@ const Div = styled.div`
 
     .area {
       // background: ${({ theme }) => theme.middleMainColor};
-      width: 30%;
-      height: 70%;
+      width: 20vw;
+      height: 60vh;
       border-radius: 10px;
       // padding: 10px;
     }
@@ -150,12 +153,18 @@ const Div = styled.div`
       background: white;
       border-radius: 10px;
       padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .close {
       text-align: right;
-      font-size: 50px;
       font-weight: bold;
       height: 20%;
+
+      span {
+        font-size: 3vw;
+      }
 
       span:hover {
         color: gray;
@@ -171,7 +180,7 @@ const Div = styled.div`
   .profile-input {
     padding-bottom: 10px;
     width: 100%;
-    font-size: 14px;
+    font-size: 1vw;
     font-weight: 400;
     line-height: 24px;
     border: none;
@@ -186,7 +195,7 @@ const Div = styled.div`
   .profile-textarea {
     width: 100%;
     height: 100px;
-    font-size: 14px;
+    font-size: 1vw;
     font-weight: 400;
     line-height: 24px;
     border: none;
@@ -200,13 +209,19 @@ const Div = styled.div`
   }
 
   .profile-textlimit {
+    // position: absolute;
+    // left: 57%;
+    // top: 59%;
+    // color: rgb(196, 196, 196);
+    // font-size: 0.8vw;
+    // font-weight: 400;
+    // line-height: 24px;
     position: absolute;
-    left: 60%;
-    top: 62%;
+    right: 42%;
+    top: 60%;
     color: rgb(196, 196, 196);
-    font-size: 12px;
+    font-size: 0.8vw;
     font-weight: 400;
-    line-height: 24px;
   }
 `;
 
