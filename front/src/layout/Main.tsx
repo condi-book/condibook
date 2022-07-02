@@ -29,17 +29,22 @@ const Main = () => {
             <div>
               <div>
                 <div className="caption animate__animated animate__fadeInDown">
-                  <h1>
-                    <strong>북마크 관리가 쉬워진다</strong>
-                  </h1>
-                  <p>
-                    북마크,
-                    <br />
-                    이제 스마트하게 저장하세요
-                  </p>
-                  <button className="custom-btn btn-3" onClick={handleNavigate}>
-                    <span>무료로 시작하기</span>
-                  </button>
+                  <AnimationOnScroll animateIn="animate__fadeIn">
+                    <h1>
+                      <strong>북마크 관리가 쉬워진다</strong>
+                    </h1>
+                    <p>
+                      북마크,
+                      <br />
+                      이제 스마트하게 저장하세요
+                    </p>
+                    <button
+                      className="custom-btn btn-3"
+                      onClick={handleNavigate}
+                    >
+                      <span>무료로 시작하기</span>
+                    </button>
+                  </AnimationOnScroll>
                 </div>
               </div>
             </div>
@@ -56,8 +61,9 @@ const Main = () => {
             </div>
           </div>
         </AnimationOnScroll>
-        <AnimationOnScroll animateIn="animate__fadeIn">
-          <section className="part" id="service-info">
+
+        <section className="part" id="service-info">
+          <AnimationOnScroll animateIn="animate__fadeIn" className="animation">
             <div className="container">
               <div>
                 <img alt="소개이미지" />
@@ -72,10 +78,11 @@ const Main = () => {
                 </P>
               </div>
             </div>
-          </section>
-        </AnimationOnScroll>
-        <AnimationOnScroll animateIn="animate__fadeIn">
-          <section className="part even">
+          </AnimationOnScroll>
+        </section>
+
+        <section className="part even">
+          <AnimationOnScroll animateIn="animate__fadeIn" className="animation">
             <div className="container">
               <div className="content">
                 <H6>서비스 소개 2</H6>
@@ -89,10 +96,11 @@ const Main = () => {
                 <img alt="소개이미지" />
               </div>
             </div>
-          </section>
-        </AnimationOnScroll>
-        <AnimationOnScroll animateIn="animate__fadeIn">
-          <section className="part">
+          </AnimationOnScroll>
+        </section>
+
+        <section className="part">
+          <AnimationOnScroll animateIn="animate__fadeIn" className="animation">
             <div className="container">
               <div>
                 <img alt="소개이미지" />
@@ -106,8 +114,9 @@ const Main = () => {
                 </P>
               </div>
             </div>
-          </section>
-        </AnimationOnScroll>
+          </AnimationOnScroll>
+        </section>
+
         <AnimationOnScroll animateIn="animate__fadeIn">
           <section className="side">
             <h3>나만의 북마크, 정리부터 공유까지</h3>
@@ -293,6 +302,9 @@ const Container = styled.div`
   }
   .part {
     height: 100vh;
+    .animation {
+      height: 100%;
+    }
 
     .container {
       height: 100%;
