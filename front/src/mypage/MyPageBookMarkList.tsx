@@ -108,6 +108,7 @@ const MypageBookmarkList = ({
 };
 
 const Div = styled.div`
+  margin-top: 2vw;
   .favorites {
     width: 100%;
     display: flex;

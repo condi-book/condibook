@@ -149,7 +149,7 @@ const Row = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  font-size: 1.1vw;
+  font-size: 1vw;
   line-height: 1.7;
   letter-spacing: -0.004em;
   word-break: keep-all;
@@ -158,17 +158,17 @@ const ContentContainer = styled.div`
 
 const InfoContainer = styled.div`
   align-items: center;
-  font-size: 1.1vw;
+  font-size: 1vw;
   display: flex;
   justify-content: space-between;
 
   .username {
     font-weight: bold;
-    font-size: 1.2vw;
+    font-size: 1vw;
   }
 
   .date {
-    font-size: 1vw;
+    font-size: 0.8vw;
     color: #8f9bb3;
   }
 

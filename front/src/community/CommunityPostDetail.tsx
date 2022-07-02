@@ -308,25 +308,27 @@ const CommunityPostDetail = () => {
             <></>
           ) : (
             <BookmarkContainer>
-              <h4 className="title">북마크</h4>
-              <Ol>
-                {list?.map((item) => {
-                  return (
-                    <li key={`bookmark-${item.id}`}>
-                      <span
-                        className="pointer"
+              <h4 className="title">공유 북마크</h4>
+              <div className="bookmark-wrap">
+                <Ol>
+                  {list?.map((item) => {
+                    return (
+                      <li
+                        key={`bookmark-${item.id}`}
                         onClick={() => handleClickBookmark(item.url)}
                       >
-                        {item.meta_title ?? item.meta_description ?? item.url}
-                      </span>
-                    </li>
-                  );
-                })}
-              </Ol>
+                        <span className="pointer">
+                          {item.meta_title ?? item.meta_description ?? item.url}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </Ol>
+              </div>
             </BookmarkContainer>
           )}
           {isfetched ? (
-            <div style={{ paddingBottom: "20px" }}>
+            <div style={{ paddingBottom: "2vw", height: "60%" }}>
               <Viewer initialValue={fetchData.content} />
             </div>
           ) : (
@@ -431,7 +433,7 @@ const Div = styled.div`
     min-width: 0px;
     width: 50%;
     position: relative;
-    padding: 1%;
+    padding: 1% 1% 0 1%;
     display: flex;
     flex-direction: column;
     // justify-content: center;
@@ -495,11 +497,10 @@ const H1 = styled.h1`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 0.75rem;
   z-index: 5;
   width: 100%;
   position: relative;
-  font-size: 1.2vw;
+  font-size: 1vw;
 
   .comment-button {
     margin-top: -0.5rem;
@@ -528,7 +529,7 @@ const ButtonContainer = styled.div`
 
 const InfoContainer = styled.div`
   align-items: center;
-  font-size: 0.9vw;
+  font-size: 1vw;
   display: flex;
   justify-content: space-between;
   width: 80%;
@@ -544,9 +545,9 @@ const InfoContainer = styled.div`
 `;
 
 const BookmarkContainer = styled.div`
-  margin: 2rem;
-  padding: 2rem 1.5rem;
-  border: 2px solid black;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: ${({ theme }) => theme.profileBackground};
 
   border-radius: 8px;
   position: relative;
@@ -555,15 +556,33 @@ const BookmarkContainer = styled.div`
     font-weight: bold;
     padding-right: 2rem;
     font-size: 1.5rem;
+    color: white;
+  }
+
+  .bookmark-wrap {
+    border-radius: 5px;
+    background: white;
+    padding: 1vw;
   }
 `;
 
 const Ol = styled.ol`
+  padding: 0 3vw;
   padding-left: 1rem;
   line-height: 1.8;
   font-size: 1rem;
   counter-reset: item 0;
+
+  list-style-type: disc;
   .pointer {
+    cursor: pointer;
+  }
+  li {
+    width: 100%;
+  }
+
+  li:hover {
+    font-weight: bold;
     cursor: pointer;
   }
 `;
@@ -617,5 +636,18 @@ const Warning = styled.div`
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
+  }
+
+  button {
+    font-size: 1.2vw;
+    background: ${({ theme }) => theme.profileBackground};
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+
+    &:hover {
+      background: ${({ theme }) => theme.subBlackColor};
+    }
   }
 `;

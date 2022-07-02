@@ -26,6 +26,6 @@ const Div = styled.div`
 
   .community-container {
     width: 100%;
-    padding: 10px 10px 10px 0;
+    padding: 1vw 1vw 1vw 0;
   }
 `;
