@@ -73,7 +73,7 @@ const Div = styled.div`
   border: ${({ theme }) => theme.border};
   border-radius: 10px;
   background-color: #f8f9fc;
-  margin-left: 77px;
+  margin-left: 6vw;
   margin-top: 10px;
   z-index: 5;
   box-shadow: ${({ theme }) => theme.boxShadow};
@@ -106,8 +106,9 @@ const Div = styled.div`
     width: 22%;
   }
   .top {
+    width: 100%;
     position: absolute;
-    top: 156px;
+    top: 36%;
     display: flex;
     // width: 100%;
     // height: 30%;
@@ -121,7 +122,7 @@ const Div = styled.div`
     }
 
     .top-detail {
-      font-size: 15px;
+      font-size: 1.3vw;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -138,7 +139,8 @@ const Div = styled.div`
       width: 80%;
       margin: 35px 0;
       height: 80px;
-      font-size: 12px;
+      font-size: 1vw;
+      padding: 10px 0;
     }
   }
   .bottom {
@@ -161,7 +163,7 @@ const Div = styled.div`
 
       span {
         margin: 0 10px;
-        font-size: 15px;
+        font-size: 1.5vw;
       }
       .pe-7s-folder,
       .pe-7s-link {
@@ -184,6 +186,7 @@ const Button = styled.button`
   font-weight: bold;
   background: none;
   color: white;
+  font-size: 1.3vw;
   &:hover {
     background: rgba(255, 255, 255, 0.7);
     color: black;
