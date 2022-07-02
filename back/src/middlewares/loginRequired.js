@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { JWT_SECRET_KEY } from "../config";
 
 const loginRequired = (req, res, next) => {
     // request 헤더로부터 authorization bearer 토큰을 받음.
@@ -16,10 +17,9 @@ const loginRequired = (req, res, next) => {
 
     // 해당 token 이 정상적인 token인지 확인 -> 토큰에 담긴 user_id 정보 추출
     try {
-        const secretKey = process.env.JWT_SECRET_KEY || "secret-key";
-        const jwtDecoded = jwt.verify(userToken, secretKey);
+        const jwtDecoded = jwt.verify(userToken, JWT_SECRET_KEY);
 
-        req.currentUserId = jwtDecoded.user_id;
+        req.current = jwtDecoded;
         next();
     } catch (error) {
         res.status(400).json({ errorMessage: error.message }); // 토큰 만료시, { "jwt expired" } 객체 반환

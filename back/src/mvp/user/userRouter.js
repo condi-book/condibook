@@ -1,142 +1,179 @@
-import is from "@sindresorhus/is";
 import { Router } from "express";
-import { loginRequired } from "../../middlewares/loginRequired";
 import { userService } from "./userService";
+import { teamService } from "../team/teamService";
+import { loginRequired } from "../../middlewares/loginRequired";
+import { checkErrorMessage } from "../../middlewares/errorMiddleware";
+import { folderService } from "../folder/folderService";
+import { postService } from "../post/postService";
 
 const userRouter = Router();
 
-userRouter.post("/signup", async (req, res, next) => {
+userRouter.post("/login/kakao", async (req, res, next) => {
     try {
-        if (is.emptyObject(req.body)) {
-            throw new Error(
-                "headers의 Content-Type을 application/json으로 설정해주세요",
-            );
-        }
+        const { code } = req.body; // authorization code
 
-        const name = req.body.name;
-        const email = req.body.email;
-        const password = req.body.password;
+        const token = await userService.getKakaoToken(code);
+        checkErrorMessage(token);
 
-        const newUser = await userService.createUser({
-            name,
-            email,
-            password,
+        const account = await userService.getKakaoAccount(token);
+        checkErrorMessage(account);
+
+        // 로그인 또는 사용자 생성
+        const result = await userService.login(account);
+        checkErrorMessage(result);
+
+        // 사용자 정보 + JWT 반환
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.post("/login/google", async (req, res, next) => {
+    try {
+        const { code } = req.body; // authorization code
+
+        const token = await userService.getGoogleToken(code);
+        checkErrorMessage(token);
+
+        const account = await userService.getGoogleAccount(token);
+        checkErrorMessage(account);
+
+        // 로그인 또는 사용자 생성
+        const result = await userService.login(account);
+        checkErrorMessage(result);
+
+        // 사용자 정보 + JWT 반환
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.get("/info", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+
+        const result = await userService.getUserInfo({ user_id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.get("", loginRequired, async (req, res, next) => {
+    try {
+        const { nickname } = req.query;
+
+        const result = await userService.getUsersInfo({ nickname });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.get("/teams", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+
+        const result = await teamService.getTeamInfoUserJoined({ user_id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.get("/folders", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+
+        const result = await folderService.getUserFolders({ user_id });
+        checkErrorMessage(result);
+
+        res.status(200).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+userRouter.put("/nickname", loginRequired, async (req, res, next) => {
+    try {
+        const { nickname } = req.body;
+        const { user_id } = req.current;
+
+        const result = await userService.setNickname({
+            nickname,
+            requester_id: user_id,
         });
+        checkErrorMessage(result);
 
-        if (newUser.errorMessage) {
-            throw new Error(newUser.errorMessage);
-        }
-
-        res.status(201).json(newUser);
-    } catch (error) {
-        next(error);
-    }
-});
-
-userRouter.post("/login", async (req, res, next) => {
-    try {
-        const email = req.body.email;
-        const password = req.body.password;
-
-        const user = await userService.getUser({ email, password });
-
-        if (user.errorMessage) {
-            throw new Error(user.errorMessage);
-        }
-
-        res.status(200).json(user);
-    } catch (error) {
-        next(error);
-    }
-});
-
-userRouter.get("/list", loginRequired, async (req, res, next) => {
-    try {
-        const users = await userService.getAllUsers();
-        res.status(200).json(users);
-    } catch (error) {
-        next(error);
-    }
-});
-
-userRouter.get("/current", loginRequired, async (req, res, next) => {
-    try {
-        const user_id = req.currentUserId;
-        const currentUserInfo = await userService.getUserInfo({
+        const setNickname = await postService.setNickname({
             user_id,
+            nickname,
         });
+        checkErrorMessage(setNickname);
 
-        if (currentUserInfo.errorMessage) {
-            throw new Error(currentUserInfo.errorMessage);
-        }
-
-        res.status(200).json(currentUserInfo);
-    } catch (error) {
-        next(error);
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.put("/:id", loginRequired, async (req, res, next) => {
+userRouter.put("/intro", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.params.id;
-        const name = req.body.name ?? null;
-        const password = req.body.password ?? null;
-        const description = req.body.description ?? null;
+        const { intro } = req.body;
+        const { user_id } = req.current;
 
-        if (req.currentUserId !== user_id) {
-            throw new Error("접근권한이 없습니다.");
-        }
-
-        const toUpdate = { name, password, description };
-        const updatedUser = await userService.updateUser({
-            user_id,
-            toUpdate,
+        const result = await userService.setIntro({
+            intro,
+            requester_id: user_id,
         });
+        checkErrorMessage(result);
 
-        if (updatedUser.errorMessage) {
-            throw new Error(updatedUser.errorMessage);
-        }
-
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        next(error);
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.get("/:id", loginRequired, async (req, res, next) => {
+userRouter.delete("", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.params.id;
-        const currentUserInfo = await userService.getUserInfo({
-            user_id,
-        });
+        const { user_id } = req.current;
 
-        if (currentUserInfo.errorMessage) {
-            throw new Error(currentUserInfo.errorMessage);
-        }
+        const result = await userService.deleteUser({ requester_id: user_id });
+        checkErrorMessage(result);
 
-        res.status(200).json(currentUserInfo);
-    } catch (error) {
-        next(error);
+        const setDelete = await postService.deletePosts({ user_id });
+        checkErrorMessage(setDelete);
+
+        res.status(204).send(result);
+    } catch (e) {
+        next(e);
     }
 });
 
-userRouter.delete("/:id", loginRequired, async (req, res, next) => {
+userRouter.get("/validation", loginRequired, async (req, res, next) => {
     try {
-        const user_id = req.params.id;
-
-        if (req.currentUserId !== user_id) {
-            throw new Error("접근권한이 없습니다.");
+        const userInfo = req.current;
+        if (!userInfo) {
+            if (validation.errorMessage) {
+                res.status(401).json({ mes: "검증실패", redirect: "주소~~" });
+            }
         }
-
-        const deletdUser = await userService.deleteUser({ user_id });
-
-        if (deletdUser.errorMessage) {
-            throw new Error(deletdUser.errorMessage);
+        const validation = await userService.validationUser({ userInfo });
+        if (validation.errorMessage) {
+            res.status(401).json({ mes: "검증실패", redirect: "주소~~" });
         }
-
-        res.status(200).json(deletdUser);
-    } catch (err) {
-        next(err);
+        checkErrorMessage(validation);
+        res.status(200).json(validation);
+    } catch (e) {
+        next(e);
     }
 });
 

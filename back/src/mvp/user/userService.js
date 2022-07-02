@@ -1,137 +1,247 @@
 import { User } from "../../db";
-import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
-
+import axios from "axios";
+import {
+    CLIENT_URL,
+    KAKAO_CLIENT_ID,
+    JWT_SECRET_KEY,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+} from "../../config";
+import { getSuccessMsg, getFailMsg } from "../../util/message";
+import { folderService } from "../folder/folderService";
+import { bookmarkService } from "../bookmark/bookmarkService";
 class userService {
-    static async createUser({ name, email, password }) {
-        // 이메일 중복 확인
-        const user = await User.findByEmail({ email });
-        if (user) {
-            const errorMessage =
-                "이 이메일은 현재 사용중입니다. 다른 이메일을 입력해 주세요.";
-            return { errorMessage };
+    static async login({ nickname, email, image_url }) {
+        try {
+            // 사용자 조회
+            let user = await User.findOneByEmail({ email });
+            // 존재하지 않은 사용자 -> 계정 생성
+            if (!user) {
+                user = await User.create({ nickname, email, image_url });
+            }
+            // JWT 생성
+            const payload = { user_id: user.id, email: user.email };
+            const options = { expiresIn: "5d" };
+
+            const token = jwt.sign(payload, JWT_SECRET_KEY, options);
+            // 사용자 정보 + JWT 반환
+            const result = {
+                id: user.id,
+                email: user.email,
+                nickname: user.nickname ?? user.email.split("@")[0],
+                image_url: user.image_url,
+                intro: user.intro ?? null,
+                token: token,
+            };
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
         }
-
-        // 비밀번호 해쉬화
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // id 는 유니크 값 부여
-        const id = uuidv4();
-        const newUser = { id, name, email, password: hashedPassword };
-
-        // db에 저장
-        const createdNewUser = await User.create({ newUser });
-        createdNewUser.errorMessage = null; // 문제 없이 db 저장 완료되었으므로 에러가 없음.
-
-        return createdNewUser;
     }
 
-    static async getUser({ email, password }) {
-        // 이메일 db에 존재 여부 확인
-        const user = await User.findByEmail({ email });
-        if (!user) {
-            const errorMessage =
-                "해당 이메일은 가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
-            return { errorMessage };
+    static async getKakaoToken(code) {
+        try {
+            // 코드로 토큰 발급
+            const res = await axios.post(
+                "https://kauth.kakao.com/oauth/token",
+                new URLSearchParams({
+                    grant_type: "authorization_code",
+                    client_id: KAKAO_CLIENT_ID,
+                    redirect_uri: CLIENT_URL + "/callback/login/kakao",
+                    code: code,
+                }),
+            );
+            const token = res.data.access_token;
+            return token;
+        } catch (e) {
+            return { errorMessage: e };
         }
-
-        // 비밀번호 일치 여부 확인
-        const correctPasswordHash = user.password;
-        const isPasswordCorrect = await bcrypt.compare(
-            password,
-            correctPasswordHash,
-        );
-        if (!isPasswordCorrect) {
-            const errorMessage =
-                "비밀번호가 일치하지 않습니다. 다시 한 번 확인해 주세요.";
-            return { errorMessage };
-        }
-
-        // 로그인 성공 -> JWT 웹 토큰 생성
-        const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
-        const token = jwt.sign({ user_id: user.id }, secretKey, {
-            expiresIn: "6h",
-        });
-
-        // 반환할 loginuser 객체를 위한 변수 설정
-        const id = user.id;
-        const name = user.name;
-        const description = user.description;
-
-        const loginUser = {
-            token,
-            id,
-            email,
-            name,
-            description,
-            errorMessage: null,
-        };
-
-        return loginUser;
     }
 
-    static async getAllUsers() {
-        const users = await User.findAll();
-        return users;
+    static async getKakaoAccount(token) {
+        try {
+            // 토큰으로 사용자 정보 조회
+            const res = await axios.get("https://kapi.kakao.com/v2/user/me", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const account = {
+                nickname: res.data.properties.nickname,
+                email: res.data.kakao_account.email,
+                image_url: res.data.properties.profile_image,
+            };
+            return account;
+        } catch (e) {
+            return { errorMessage: e };
+        }
     }
 
-    static async updateUser({ user_id, toUpdate }) {
-        // 우선 해당 id 의 유저가 db에 존재하는지 여부 확인
-        let user = await User.findById({ user_id });
-
-        // db에서 찾지 못한 경우, 에러 메시지 반환
-        if (!user) {
-            const errorMessage =
-                "가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
-            return { errorMessage };
+    static async getGoogleToken(code) {
+        try {
+            // 코드로 토큰 발급
+            const res = await axios.post(
+                "https://oauth2.googleapis.com/token",
+                new URLSearchParams({
+                    code: code,
+                    client_id: GOOGLE_CLIENT_ID,
+                    client_secret: GOOGLE_CLIENT_SECRET,
+                    redirect_uri: CLIENT_URL + "/callback/login/google",
+                    grant_type: "authorization_code",
+                }),
+            );
+            const token = res.data.access_token;
+            return token;
+        } catch (e) {
+            return { errorMessage: e };
         }
-
-        // 업데이트 대상에 name이 있다면, 즉 name 값이 null 이 아니라면 업데이트 진행
-        if (toUpdate.name) {
-            const fieldToUpdate = "name";
-            const newValue = toUpdate.name;
-            user = await User.update({ user_id, fieldToUpdate, newValue });
-        }
-
-        if (toUpdate.password) {
-            const fieldToUpdate = "password";
-            const newValue = toUpdate.password;
-            user = await User.update({ user_id, fieldToUpdate, newValue });
-        }
-
-        if (toUpdate.description) {
-            const fieldToUpdate = "description";
-            const newValue = toUpdate.description;
-            user = await User.update({ user_id, fieldToUpdate, newValue });
-        }
-
-        return user;
     }
 
+    static async getGoogleAccount(token) {
+        try {
+            const res = await axios.get(
+                `https://www.googleapis.com/oauth2/v2/userinfo?${token}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            if (res.data.verified_email === false) {
+                return {
+                    errorMessage: "인증된 구글계정으로만 가입할 수 있습니다.",
+                };
+            }
+            const account = {
+                nickname: res.data.name,
+                email: res.data.email,
+                image_url: res.data.picture,
+            };
+            return account;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
     static async getUserInfo({ user_id }) {
-        const user = await User.findById({ user_id });
-
-        // db에서 찾지 못한 경우, 에러 메시지 반환
-        if (!user) {
-            const errorMessage =
-                "해당 이메일은 가입 내역이 없습니다. 다시 한 번 확인해 주세요.";
-            return { errorMessage };
+        try {
+            const user = await User.findOne({ user_id });
+            if (!user) {
+                return getFailMsg({ entity: "사용자 계정", action: "조회" });
+            }
+            const myFolderIds = await folderService.getUserFolderIds({
+                user_id: user.id,
+            });
+            let bookmarkCount = 0;
+            if (myFolderIds.length > 0) {
+                bookmarkCount = await bookmarkService.getBookmarkCountInFolders(
+                    {
+                        folder_ids: myFolderIds,
+                    },
+                );
+            }
+            const result = {
+                id: user.id,
+                email: user.email,
+                nickname: user.nickname,
+                image_url: user.image_url,
+                intro: user.intro ?? null,
+                folderCount: myFolderIds.length,
+                bookmarkCount,
+            };
+            return result;
+        } catch (e) {
+            return { errorMessage: e };
         }
-
-        return user;
+    }
+    static async getUsersInfo({ nickname }) {
+        try {
+            const user = await User.findAllByNickname({ nickname });
+            if (!user) {
+                return getFailMsg({ entity: "사용자 계정", action: "조회" });
+            }
+            return user;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+    static async setNickname({ nickname, requester_id }) {
+        try {
+            // 사용자 존재 여부 확인
+            const user = await User.findOne({ user_id: requester_id });
+            if (!user) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 닉네임 수정
+            const affectedRows = await User.updateNickname({
+                user_id: user.id,
+                nickname,
+            });
+            if (affectedRows === 0) {
+                return { errorMessage: "서버에러" };
+            }
+            return getSuccessMsg({ entity: "사용자 이름", action: "수정" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
     }
 
-    static async deleteUser({ user_id }) {
-        const deletedUser = await User.deleteById({ user_id });
-        await Checker.deleteChild({ user_id }); //* user가 아닌 각각의 mvp별로 user_id를 가진 모든 게시글을 삭제하는 기능.
-
-        if (!deletedUser) {
-            const errorMessage = "일치하는 유저가 없습니다.";
-            return { errorMessage };
+    static async setIntro({ intro, requester_id }) {
+        try {
+            // 사용자 존재 여부 확인
+            const requester = await User.findOne({ user_id: requester_id });
+            if (!requester) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 짧은 소개글 수정
+            const affectedRows = await User.updateIntro({
+                user_id: requester.id,
+                intro,
+            });
+            if (affectedRows === 0) {
+                return { errorMessage: "서버에러" };
+            }
+            return getSuccessMsg({
+                entity: "사용자 자기소개글",
+                action: "수정",
+            });
+        } catch (e) {
+            return { errorMessage: e };
         }
+    }
 
-        return deletedUser;
+    static async deleteUser({ requester_id }) {
+        try {
+            // 사용자 존재 여부 확인
+            const requester = await User.findOne({ user_id: requester_id });
+            if (!requester) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 사용자 삭제
+            const deletedRow = await User.destroyOne({ user_id: requester.id });
+            if (deletedRow !== 1) {
+                return { errorMessage: "서버에러" };
+            }
+            return getSuccessMsg({ entity: "사용자 계정", action: "삭제" });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+    static async validationUser({ userInfo }) {
+        try {
+            const id = userInfo.user_id;
+            const email = userInfo.email;
+            const checkUser = await User.findOneByUserIdEmail({
+                user_id: id,
+                email,
+            });
+            if (!checkUser) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            return checkUser;
+        } catch (e) {
+            return { errorMessage: e };
+        }
     }
 }
 
