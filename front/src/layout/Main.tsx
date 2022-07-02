@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Carousel from "./carousel/Carousel";
 import Footer from "./Footer";
 import Header from "./Header";
+import { AnimationOnScroll } from "react-animation-on-scroll";
 import { getCookie } from "auth/util/cookie";
 
 export interface ContextProps {
@@ -47,65 +48,74 @@ const Main = () => {
             </div> */}
           </div>
         </header>
+        <AnimationOnScroll animateIn="animate__fadeIn">
+          <div className="part even review">
+            <div className="title">OUR TEAM</div>
+            <div className="carousel-wrap">
+              <Carousel />
+            </div>
+          </div>
+        </AnimationOnScroll>
+        <AnimationOnScroll animateIn="animate__fadeIn">
+          <section className="part" id="service-info">
+            <div className="container">
+              <div>
+                <img alt="소개이미지" />
+              </div>
 
-        <div className="part even review">
-          <div className="title">OUR TEAM</div>
-          <div className="carousel-wrap">
-            <Carousel />
-          </div>
-        </div>
-        <section className="part" id="service-info">
-          <div className="container">
-            <div>
-              <img alt="소개이미지" />
+              <div className="content">
+                <H6>서비스 소개 1</H6>
+                <H2>크롬 익스텐션 기능</H2>
+                <P>
+                  저희 CondiBook 서비스는 Chrome Extension을 통해서 사용자들이
+                  좀 더 쉽고 빠르게 북마크를 관리할 수 있는 환경을 제공합니다
+                </P>
+              </div>
             </div>
-
-            <div className="content">
-              <H6>서비스 소개 1</H6>
-              <H2>크롬 익스텐션 기능</H2>
-              <P>
-                저희 CondiBook 서비스는 Chrome Extension을 통해서 사용자들이 좀
-                더 쉽고 빠르게 북마크를 관리할 수 있는 환경을 제공합니다
-              </P>
+          </section>
+        </AnimationOnScroll>
+        <AnimationOnScroll animateIn="animate__fadeIn">
+          <section className="part even">
+            <div className="container">
+              <div className="content">
+                <H6>서비스 소개 2</H6>
+                <H2>북마크 공유 기능</H2>
+                <P>
+                  그룹 북마크 및 커뮤니티 게시판을 통해 다양한 사용자와 지식 및
+                  북마크를 공유할 수 있습니다
+                </P>
+              </div>
+              <div>
+                <img alt="소개이미지" />
+              </div>
             </div>
-          </div>
-        </section>
-        <section className="part even">
-          <div className="container">
-            <div className="content">
-              <H6>서비스 소개 2</H6>
-              <H2>북마크 공유 기능</H2>
-              <P>
-                그룹 북마크 및 커뮤니티 게시판을 통해 다양한 사용자와 지식 및
-                북마크를 공유할 수 있습니다
-              </P>
+          </section>
+        </AnimationOnScroll>
+        <AnimationOnScroll animateIn="animate__fadeIn">
+          <section className="part">
+            <div className="container">
+              <div>
+                <img alt="소개이미지" />
+              </div>
+              <div className="content">
+                <H6>서비스 소개 3</H6>
+                <H2>AI 추천 북마크 자동 저장 기능</H2>
+                <P>
+                  간단한 클릭 한 번으로, AI가 제공하는 키워드에 맟춰 북마크를
+                  저장 할 수 있습니다
+                </P>
+              </div>
             </div>
-            <div>
-              <img alt="소개이미지" />
-            </div>
-          </div>
-        </section>
-        <section className="part">
-          <div className="container">
-            <div>
-              <img alt="소개이미지" />
-            </div>
-            <div className="content">
-              <H6>서비스 소개 3</H6>
-              <H2>AI 추천 북마크 자동 저장 기능</H2>
-              <P>
-                간단한 클릭 한 번으로, AI가 제공하는 키워드에 맟춰 북마크를 저장
-                할 수 있습니다
-              </P>
-            </div>
-          </div>
-        </section>
-        <section className="side">
-          <h3>나만의 북마크, 정리부터 공유까지</h3>
-          <Button onClick={handleNavigate}>
-            <span>무료로 시작하기</span>
-          </Button>
-        </section>
+          </section>
+        </AnimationOnScroll>
+        <AnimationOnScroll animateIn="animate__fadeIn">
+          <section className="side">
+            <h3>나만의 북마크, 정리부터 공유까지</h3>
+            <Button onClick={handleNavigate}>
+              <span>무료로 시작하기</span>
+            </Button>
+          </section>
+        </AnimationOnScroll>
       </Container>
       <Footer />
     </Wrap>

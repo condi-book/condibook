@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getCookie } from "./auth/util/cookie";
-// const backendPortNumber = "5001";
-const serverUrl = window.location.origin + "/api" + "/";
+const backendPortNumber = "5001";
+const serverUrl =
+  "http://" + window.location.hostname + ":" + backendPortNumber + "/";
 
 // async function get(endpoint: any, params = "") {
 //   console.log(

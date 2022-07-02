@@ -12,6 +12,7 @@ interface Props {
   team: Team;
   setTeam: (team: Team) => void;
   isEdit: boolean;
+  fetchTeamData: () => void;
 }
 
 const TeamCreateModal = ({
@@ -20,6 +21,7 @@ const TeamCreateModal = ({
   team,
   setTeam,
   isEdit,
+  fetchTeamData,
 }: Props) => {
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
@@ -27,6 +29,18 @@ const TeamCreateModal = ({
 
   const handleCreateTeam = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (name === "" || explanation === "") {
+      return Alert.fire({
+        icon: "error",
+        title: "입력되지 않은 항목이 있습니다.",
+      });
+    }
+    if (name.length > 20 || explanation.length > 50) {
+      return Alert.fire({
+        icon: "error",
+        title: "제목은 20자 내외 \n 설명은 50자 내외입니다.",
+      });
+    }
     try {
       const res = await Api.post("teams", {
         name,
@@ -37,11 +51,13 @@ const TeamCreateModal = ({
         team_id: res.data.id,
         name: res.data.name,
         explanation: res.data.explanation,
+        manager_id: res.data.manager_id,
       });
       await Alert.fire({
         icon: "success",
         title: "팀 생성 성공",
       });
+      fetchTeamData();
       navigate(`/team/${res.data.id}`);
     } catch (err) {
       await Alert.fire({
@@ -53,6 +69,18 @@ const TeamCreateModal = ({
 
   const handleEditTeam = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (name === "" || explanation === "") {
+      return Alert.fire({
+        icon: "error",
+        title: "입력되지 않은 항목이 있습니다.",
+      });
+    }
+    if (name.length > 20 || explanation.length > 50) {
+      return Alert.fire({
+        icon: "error",
+        title: "제목은 20자 내외 \n 설명은 50자 내외입니다.",
+      });
+    }
     try {
       await Api.put(`teams/${team.team_id}/info`, {
         name,
@@ -63,6 +91,7 @@ const TeamCreateModal = ({
         team_id: team.team_id,
         name,
         explanation,
+        manager_id: team.manager_id,
       });
       await Alert.fire({
         icon: "success",
@@ -90,6 +119,12 @@ const TeamCreateModal = ({
       setExplanation("");
     }
   }, [isEdit, team]);
+
+  React.useEffect(() => {
+    if (createModalShow) {
+      setTeamData();
+    }
+  }, [createModalShow, team]);
   return (
     <>
       <Modal

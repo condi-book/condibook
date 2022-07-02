@@ -13,7 +13,7 @@ interface props {
 
 const CommunityPostComments = ({ comments, setComments }: props) => {
   const [commentContent, setCommentContent] = React.useState("");
-  const [isEditing, setIsEditing] = React.useState(false);
+  const [isEditingComment, setIsEditingComment] = React.useState(null);
 
   const isAuthor = (author: string) => {
     const user = getCookie("user");
@@ -43,7 +43,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
             return comment;
           }),
         );
-        setIsEditing(false);
+        setIsEditingComment(null);
       } catch (e) {
         alert(e);
       }
@@ -86,7 +86,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
                 <button
                   className="hoverButton"
                   onClick={() => {
-                    setIsEditing(true);
+                    setIsEditingComment(comment.id);
                     setCommentContent(comment.content);
                   }}
                 >
@@ -102,7 +102,7 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
             )}
           </Row>
           <ContentContainer>
-            {isEditing ? (
+            {isEditingComment === comment.id ? (
               <Row>
                 <EditInput
                   value={commentContent}
