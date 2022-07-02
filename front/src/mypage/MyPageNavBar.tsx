@@ -25,7 +25,7 @@ const Div = styled.div<MypageProps>`
   .nav-bar-wrap {
     width: 100%;
     padding: 10px 20px;
-    padding-top: 30px;
+    padding-top: 2vw;
     
   }
 
@@ -44,16 +44,16 @@ const Div = styled.div<MypageProps>`
 
     span:first-of-type {
       background: white;
-      padding-bottom: ${({ tab }) => (tab ? "0" : "5px")};
-      margin-bottom: ${({ tab }) => (tab ? "5px" : "0")};
+      padding-bottom: ${({ tab }) => (tab ? "0" : "0.5vw")};
+      margin-bottom: ${({ tab }) => (tab ? "0.5vw" : "0")};
       color: ${({ tab, theme }) => (tab ? theme.subBlackColor : "#dcdcdc")};
 
 
   }
     span:last-of-type {
       background: white;
-      padding-bottom: ${({ tab }) => (!tab ? "0" : "5px")};
-      margin-bottom: ${({ tab }) => (!tab ? "5px" : "0")};
+      padding-bottom: ${({ tab }) => (!tab ? "0" : "0.5vw")};
+      margin-bottom: ${({ tab }) => (!tab ? "0.5vw" : "0")};
       color: ${({ tab, theme }) => (!tab ? theme.subBlackColor : "#dcdcdc")};
       
     }

@@ -125,7 +125,7 @@ const Div = styled.div<StyleProps>`
     justify-content: center;
     width: 100%;
     height: 15%;
-    padding-top: 20px;
+    padding-top: 3vw;
   }
   .search-box {
     display: flex;

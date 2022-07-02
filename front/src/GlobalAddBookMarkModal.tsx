@@ -37,17 +37,17 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
     const modifiedLink = link.startsWith("www") ? `https://${link}` : link;
     setLink(modifiedLink);
     Api.post("websites", { url: modifiedLink })
-      .then((res) => {
+      .then(async (res) => {
         console.log(res.data);
         const copied = res.data;
         copied.folders.push({ title: "직접입력", id: 0 });
         const copiedList = copied.folders.map((item: any) => item.title);
         console.log("copiedlist", copiedList);
         if (copiedList.includes(copied.category.category)) {
-          setFolder(copied.category.category);
-          setData(copied);
-          setClick(true);
-          setDetailShow(true);
+          await setFolder(copied.category.category);
+          await setData(copied);
+          await setClick(true);
+          await setDetailShow(true);
         } else {
           copied.folders.unshift({
             title: res.data.category.category,
@@ -60,8 +60,11 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
         }
       })
       .catch((err) => {
-        if (err.response.data === "url is not valid") {
+        if (err.response?.data === "url is not valid") {
           errorAlert("잘못된 URL입니다.");
+        } else {
+          errorAlert("해당 링크는 저장이 불가능합니다.");
+          close();
         }
       });
   };
@@ -172,7 +175,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
                     }}
                   >
                     <span className="pe-7s-link"></span>
-                    <div>
+                    <div className="copy-paste">
                       <div>복사한 링크 붙여넣기</div>
                       <div>
                         {link.length >= 20
@@ -184,7 +187,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
                 ) : null}
                 {inputShow && !click && (
                   <InputBox
-                    className={click && " animate__animated animate__fadeOut"}
+                    className={click && "animate__animated animate__fadeOut"}
                   >
                     <input
                       className="link-input"
@@ -204,6 +207,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
                 )}
                 {click && (
                   <div
+                    style={{ width: "100%" }}
                     className={click && " animate__animated animate__fadeIn"}
                   >
                     <LinkConfirm>
@@ -281,8 +285,49 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
 
 const Div = styled.div<StyleProps>`
 
+* {
+  font-size: 1vw;
+}
+
   .copy-link-auto {
-    display: ${({ click }) => (click ? "none" : "block")};
+    display: ${({ click }) => (click ? "none" : "flex")};
+    background: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background: black;
+      .pe-7s-link {
+        background: white;
+        color:black;   
+      }
+
+      div {
+        color: white; 
+      }
+    }
+
+    .pe-7s-link {
+      font-size: 2vw;
+      font-weight: bold;
+      border-radius: 50%;
+      background: black;
+      color:white;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .copy-paste {
+      div {
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+
   }
   .bg {
     align-items: center;
@@ -305,8 +350,8 @@ const Div = styled.div<StyleProps>`
 
     .area {
       background: white;
-      width: 300px;
-      height: 400px;
+      width: 20vw;
+      height: 60vh;
       border-radius: 10px;
     }
     .close {
@@ -314,6 +359,10 @@ const Div = styled.div<StyleProps>`
       font-size: 50px;
       font-weight: bold;
       height: 15%;
+
+      span {
+        font-size: 3vw;
+      }
 
       span:hover {
         color: gray;
@@ -381,7 +430,7 @@ const Div = styled.div<StyleProps>`
 
     #category {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 1.5vw;
       text-align: center;
 
       color: white;
@@ -439,12 +488,13 @@ const LinkConfirm = styled.div`
 
         #link-title {
           font-weight: 600;
+          font-size: 1.2vw;
         }
       }
     }
   }
   #link-url {
-    font-size: 12px;
+    font-size: 0.7vw;
   }
 `;
 

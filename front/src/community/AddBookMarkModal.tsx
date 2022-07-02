@@ -273,8 +273,8 @@ const AddBookMarkModal = ({
           </Col>
         </Modal.Body>
         <Modal.Footer>
-          <button onClick={() => setIsModalShow(false)}>취소</button>
-          <button onClick={handleComplete}>완료</button>
+          <Button onClick={() => setIsModalShow(false)}>취소</Button>
+          <Button onClick={handleComplete}>완료</Button>
         </Modal.Footer>
       </Modal>
     </>
@@ -454,5 +454,17 @@ const DropdownHeader = styled.div`
   span {
     font-size: 20px;
     font-weight: bolder;
+  }
+`;
+
+const Button = styled.button`
+  font-size: 1vw;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: bold;
+
+  &:hover {
+    background: ${({ theme }) => theme.profileBackground};
+    color: white;
   }
 `;
