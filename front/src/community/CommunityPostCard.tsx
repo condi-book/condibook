@@ -51,6 +51,7 @@ const Card = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  max-width: 14rem;
   .imgWrapper {
     display: block;
     color: inherit;

@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { GOOGLE_LOGIN_STATE } from "../config";
+import { SERVER_URL, GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
@@ -29,7 +29,7 @@ const CallBackGoogleLogin = () => {
     const code = params.get("code");
 
     async function sendCode() {
-      const url = `${window.location.origin}/api/user/login/google`;
+      const url = SERVER_URL + "/user/login/google";
       const res = await axios.post(url, { code });
       const user = res.data;
 

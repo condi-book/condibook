@@ -5,6 +5,9 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import Modal from "layout/Modal";
 import * as Api from "../api";
 
+import { Alert } from "../layout/Alert";
+import { AxiosError } from "axios";
+
 interface StyleProps {
   view: boolean;
   folder: Folder;
@@ -63,9 +66,17 @@ const TeamPageFolderCard = ({
   // 폴더 삭제 함수
   const handleRemove = (e: React.MouseEvent, value: any) => {
     e.stopPropagation();
-    Api.delete(`folders`, `${value.id}`).then(() => {
-      fetchTeamFolderData();
-    });
+    Api.delete(`folders`, `${value.id}`)
+      .then(() => {
+        fetchTeamFolderData();
+      })
+      .catch((err) => {
+        const error = err as AxiosError;
+        Alert.fire({
+          icon: "error",
+          title: "삭제 실패 " + error.response?.data,
+        });
+      });
   };
 
   // 즐겨찾기 상태 변경 함수
@@ -173,10 +184,18 @@ const TeamPageFolderCard = ({
         handleFolderEdit={() => {
           Api.put(`folders/${folder.id}`, {
             title: title,
-          }).then((res) => {
-            fetchTeamFolderData();
-            console.log(res.data);
-          });
+          })
+            .then((res) => {
+              fetchTeamFolderData();
+              console.log(res.data);
+            })
+            .catch((error) => {
+              const err = error as AxiosError;
+              Alert.fire({
+                icon: "error",
+                title: "수정 실패 " + err.response?.data,
+              });
+            });
         }}
       />
     </>

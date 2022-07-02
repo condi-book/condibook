@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { Team } from "./TeamPage";
 import * as Api from "../api";
-// import { Alert } from "../layout/Alert";
+import { Alert } from "../layout/Alert";
+import { AxiosError } from "axios";
 
 interface Props {
   folderModalShow: boolean;
@@ -19,18 +20,48 @@ const TeamFolderModal = ({
   team,
   fetchTeamFolderData,
 }: Props) => {
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
 
+  const validateTitle = () => {
+    if (title === "") {
+      return "제목을 입력해주세요.";
+    }
+    if (title.length > 20) {
+      return "제목은 20자 이내로 입력해주세요.";
+    }
+  };
+
   const handleCreateFolder = async () => {
-    const res = await Api.post(`folders?owner=team`, {
-      team_id: team.team_id,
-      title,
-    });
-    alert(res);
-    setFolderModalShow(false);
-    fetchTeamFolderData();
-    // navigate("team/" + folder_id);
+    const validateMessage = validateTitle();
+    if (validateMessage) {
+      return Alert.fire({
+        icon: "error",
+        title: validateMessage,
+      });
+    }
+
+    try {
+      const res = await Api.post(`folders?owner=team`, {
+        team_id: team.team_id,
+        title,
+      });
+      console.log(res.data);
+
+      setFolderModalShow(false);
+      fetchTeamFolderData();
+      navigate(res.data.id);
+      Alert.fire({
+        icon: "success",
+        title: "폴더 생성 성공",
+      });
+    } catch (err) {
+      const error = err as AxiosError;
+      await Alert.fire({
+        icon: "error",
+        title: "폴더 생성 실패" + error.response?.data,
+      });
+    }
   };
   return (
     <>

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import { getCookie } from "auth/util/cookie";
+import { Alert } from "../layout/Alert";
 
 import { Editor as ToastEditor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -19,6 +20,15 @@ export interface Bookmark {
   checked: boolean;
 }
 
+interface imageBlob {
+  lastModified: number;
+  lastModifiedDate: Date;
+  name: string;
+  size: number;
+  type: string;
+  webkitRelativePath: string;
+}
+
 // eslint-disable-next-line no-undef
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
@@ -31,7 +41,7 @@ const CommunityPostWrite = () => {
   const postId = params.get("id"); // 변환된 게시글 아이디 값
   const editorRef = React.useRef<ToastEditor>(null);
   const user = getCookie("user");
-  const userId = JSON.parse(user).id;
+  const userId = user.id;
 
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<string | undefined>();
@@ -58,7 +68,10 @@ const CommunityPostWrite = () => {
 
   const validateTitleContent = () => {
     if (title === "") {
-      alert("제목을 입력해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "제목을 입력해주세요.",
+      });
       return false;
     }
     if (
@@ -67,7 +80,24 @@ const CommunityPostWrite = () => {
       content === null ||
       content === " "
     ) {
-      alert("내용을 입력해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "내용을 입력해주세요.",
+      });
+      return false;
+    }
+    if (title.length > 20) {
+      Alert.fire({
+        icon: "error",
+        title: "제목은 20자 이내로 작성해주세요.",
+      });
+      return false;
+    }
+    if (content.length > 1000) {
+      Alert.fire({
+        icon: "error",
+        title: "내용은 1000자 이내로 작성해주세요.",
+      });
       return false;
     }
     return true;
@@ -124,7 +154,7 @@ const CommunityPostWrite = () => {
       const body = {
         title,
         content,
-        bookmark_idArr,
+        bookmark_id: bookmark_idArr,
       };
       const res = await Api.put(`posts/${postId}`, body);
       navigate(`/community/${res.data.id}`);
@@ -139,7 +169,10 @@ const CommunityPostWrite = () => {
       const fetchedItem = res.data.postInfo;
 
       if (userId !== fetchedItem.author) {
-        alert("권한이 없습니다.");
+        Alert.fire({
+          icon: "error",
+          title: "권한이 없습니다.",
+        });
         navigate("/community");
       }
 
@@ -148,7 +181,10 @@ const CommunityPostWrite = () => {
       editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
     } catch (error) {
       const err = error as AxiosError;
-      alert(`${err.response?.data}`);
+      Alert.fire({
+        icon: "error",
+        title: "추방 실패 " + err.response?.data,
+      });
       navigate("/community");
     }
   };
@@ -171,6 +207,28 @@ const CommunityPostWrite = () => {
     setIsModalShow(true);
   };
 
+  const validateImage = (blob: imageBlob) => {
+    if (blob.size > 5000000) {
+      Alert.fire({
+        icon: "error",
+        title: "이미지 크기는 5MB 이하로 선택해주세요.",
+      });
+      return false;
+    }
+    if (
+      blob.type !== "image/jpeg" &&
+      blob.type !== "image/png" &&
+      blob.type !== "image/jpg"
+    ) {
+      Alert.fire({
+        icon: "error",
+        title: "이미지 파일은 jpeg, png, jpg만 선택해주세요.",
+      });
+      return false;
+    }
+    return true;
+  };
+
   React.useEffect(() => {
     if (postId !== null) {
       setIsModifying(true);
@@ -186,6 +244,9 @@ const CommunityPostWrite = () => {
       editorRef.current
         .getInstance()
         .addHook("addImageBlobHook", (blob, callback) => {
+          if (!validateImage(blob)) {
+            return;
+          }
           const s3config = {
             bucketName: process.env.REACT_APP_BUCKET_NAME as string,
             region: process.env.REACT_APP_REGION as string,

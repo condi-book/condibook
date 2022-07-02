@@ -25,6 +25,7 @@ export interface Team {
   team_id: number;
   name: string;
   explanation: string;
+  manager_id: number;
 }
 
 export interface Folder {
@@ -77,6 +78,22 @@ const TeamPage = () => {
     fetchTeamData();
   }, []);
 
+  React.useEffect(() => {
+    fetchTeamData();
+    fetchTeamFolderData();
+  }, [team]);
+
+  React.useEffect(() => {
+    if (team?.team_id === null || team?.team_id === undefined) {
+      return;
+    }
+    fetchTeamFolderData();
+
+    return () => {
+      setFolders(null);
+    };
+  }, [team?.team_id]);
+
   return (
     <Div>
       {keyboardContext.sidebar === true && <SideBar />}
@@ -123,6 +140,7 @@ const TeamPage = () => {
               team={team}
               setTeam={setTeam}
               isEdit={isEdit}
+              fetchTeamData={fetchTeamData}
             />
             <TeamUserModal
               userModalShow={userModalShow}

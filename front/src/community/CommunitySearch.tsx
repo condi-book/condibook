@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as Api from "../api";
+import CalcDate from "./tools/CalcDate";
+import { PostPreview } from "./CommunityPage";
 
 type StyleProps = {
   show: boolean;
@@ -19,30 +21,6 @@ const CommunitySearch = () => {
 
   // 검색 리스트
   const SearchList = () => {
-    const searchTitleContent = React.useCallback(
-      (item: { title: string; value: string }) => {
-        item.title.includes(word) || item.value.includes(word);
-      },
-      [tab],
-    );
-    const searchTitle = React.useCallback(
-      (item: { title: string; value: string }) => {
-        item.title.includes(word);
-      },
-      [tab],
-    );
-    let filtered = data?.filter(searchTitle); // 검색결과 기본값
-    switch (tab) {
-      case "제목":
-        filtered = data?.filter(searchTitle);
-        break;
-      case "제목 + 내용":
-        filtered = data?.filter(searchTitleContent);
-        break;
-      default:
-        filtered = data?.filter(searchTitle);
-        break;
-    }
     const handlePostClick =
       (id: string) => (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -51,23 +29,47 @@ const CommunitySearch = () => {
     return (
       <div className="search-main">
         <div className="search-list">
-          {filtered?.map((item) => (
-            <div className="card-wrap" key={`search-${item.id}`}>
-              <div className="card" onClick={handlePostClick(item.id)}></div>
-            </div>
+          {data?.map((item: PostPreview) => (
+            <Col key={`search-${item.id}`}>
+              <Card onClick={handlePostClick(item.id)}>
+                <CardBody>
+                  <CardTitle>{item.title}</CardTitle>
+                  <CardinfoText>
+                    <span>{CalcDate(new Date(item.createdAt))}</span>
+                  </CardinfoText>
+                </CardBody>
+                <CardFooter>
+                  <div className="userInfo">
+                    <b>{item.author_name}</b>
+                  </div>
+                  <div className="likes">
+                    <span className="pe-7s-like like"></span>
+                    <p>{item.like_counts}</p>
+                  </div>
+                </CardFooter>
+              </Card>
+            </Col>
           ))}
         </div>
       </div>
     );
   };
 
-  React.useEffect(() => {
-    Api.get(`post/list`).then((res) => setData(res.data));
-  }, []);
-
   // 검색어 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(e.target.value);
+  };
+
+  const handelSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    ///search/community?order=likes&pageNumber=1&content=g&type=1
+    const url =
+      tab === "제목"
+        ? `search/community?order=likes&pageNumber=1&content=${word}&type=0`
+        : `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
+    const res = await Api.get(url);
+    setData(res.data);
+    console.log(res.data);
   };
 
   // 검색 조건 핸들러
@@ -113,7 +115,7 @@ const CommunitySearch = () => {
                     />
                   </button>
                 )}
-                <button>
+                <button onClick={handelSearch}>
                   <span className="pe-7s-search"></span>
                 </button>
                 <input
@@ -126,7 +128,7 @@ const CommunitySearch = () => {
             </div>
           </div>
         </div>
-        {word ? (
+        {data ? (
           <SearchList />
         ) : (
           <div className="search-image">
@@ -138,6 +140,25 @@ const CommunitySearch = () => {
     </Div>
   );
 };
+
+const Col = styled.div`
+  width: 15rem;
+  border: ${({ theme }) => theme.border};
+  box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
+  border-radius: 5px;
+  background: white;
+  margin: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  transition: box-shadow 0.1s linear;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
+  }
+`;
 
 const Div = styled.div<StyleProps>`
   display: flex;
@@ -170,6 +191,7 @@ const Div = styled.div<StyleProps>`
     align-items: center;
 
     .search-dropdown {
+
       position: relative;
       display: flex;
       flex-direction: column;
@@ -179,9 +201,8 @@ const Div = styled.div<StyleProps>`
       height: 100%;
       margin-right: 10px;
 
+
       .search-select {
-        top: 0px;
-        position: absolute;
         display: flex;
         flex-direction: column;
         -webkit-box-pack: center;
@@ -195,6 +216,8 @@ const Div = styled.div<StyleProps>`
         height: ${({ show }) => (show ? "168px" : "50px")};
         visibility: ${({ show }) => (show ? "visible" : "hidden")};
         transition: height 0.3s ease-out;
+        position: absolute;
+        top: 0;
 
         div {
           display: flex;
@@ -317,8 +340,11 @@ const Div = styled.div<StyleProps>`
     }
   }
   .search-main {
-    width: 64%;
+    width: 70rem;
     margin: 0 auto;
+    margin-top: 8%;
+    z-index:1;
+    
 
     .search-list {
       display: flex;
@@ -327,6 +353,8 @@ const Div = styled.div<StyleProps>`
       align-items: flex-start;
       flex-wrap: wrap;
       width: 100%;
+      z-index: 1;
+      
     }
     .card-wrap {
       width: 50%;
@@ -337,8 +365,8 @@ const Div = styled.div<StyleProps>`
       flex-direction: column;
       -webkit-box-pack: justify;
       justify-content: space-between;
-      align-items: flex-start;
-      width: 95%;
+      align-items: center;
+      width: 100%;
       height: 140px;
       padding: 20px;
       margin: 0px 10px 20px 10px;
@@ -347,6 +375,18 @@ const Div = styled.div<StyleProps>`
       box-shadow: rgb(0 0 0 / 10%) 2px 2px 4px;
       border-radius: 8px;
       cursor: pointer;
+      .card-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(96, 96, 96);
+        letter-spacing: -0.05em;
+      }
+      .card-author {
+        font-size: 14px;
+        font-weight: 300;
+        color: rgb(96, 96, 96);
+        letter-spacing: -0.05em;
+
     }
   }
 
@@ -413,3 +453,77 @@ const Div = styled.div<StyleProps>`
   }
 `;
 export default CommunitySearch;
+
+const Card = styled.div`
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 4%) 0px 4px 16px 0px;
+  transition: box-shadow 0.25s ease-in 0s, transform 0.25s ease-in 0s;
+  margin: 0.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 14rem;
+  .imgWrapper {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+`;
+
+const CardBody = styled.div`
+  padding: 1rem;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+`;
+const CardTitle = styled.h4`
+  font-size: 1rem;
+  margin: 0px 0px 0.25rem;
+  line-height: 1.5;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: bold;
+`;
+// const CardText = styled.p`
+//   display: block;
+//   margin: 0px 0px 1.5rem;
+//   word-break: break-word;
+//   overflow-wrap: break-word;
+//   font-size: 0.875rem;
+//   line-height: 1.5;
+//   height: 3.9375rem;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// `;
+const CardinfoText = styled.div`
+  font-size: 0.75rem;
+  line-height: 1.5;
+`;
+const CardFooter = styled.div`
+  padding: 0.2rem 1rem;
+  display: flex;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  justify-content: space-between;
+
+  .userInfo {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    // align-items: center;
+  }
+  .likes {
+    display: flex;
+    flex-direction: row;
+  }
+  .like {
+    width: 100%;
+    height: 100%;
+    margin-right: 0.5rem;
+    font-size: 20px;
+    color: ${({ theme }) => theme.subRedColor};
+    font-weight: bold;
+  }
+`;

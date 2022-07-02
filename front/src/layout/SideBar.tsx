@@ -59,14 +59,15 @@ const SideBar = () => {
       <Div>
         <Section>
           {iconList.map((item: any, index: number) => (
-            <div
+            <Icon
               title={item.title}
               key={`icon-${index}`}
               id={item.className}
               onClick={handleClick}
             >
-              <span className={item.className}></span>
-            </div>
+              <span className={`${item.className} sub-icon`}></span>
+              <span className="sub-title">{item.title}</span>
+            </Icon>
           ))}
         </Section>
       </Div>
@@ -79,7 +80,7 @@ const SideBar = () => {
 
 const Div = styled.div`
   height: 100vh;
-  width: 80px;
+  width: 6%;
   padding: 10px;
   position: sticky;
   top: 0;
@@ -91,17 +92,20 @@ const Section = styled.section`
   flex-direction: column;
   justify-content: space-around;
   border-radius: 15px;
+  position: sticky;
+  top: 0;
   background: ${({ theme }) => theme.profileBackground};
   div {
     text-align: center;
   }
-  span {
-    font-size: 1.4em;
+  .sub-icon {
+    font-size: 2vw;
     font-weight: bold;
     color: ${({ theme }) => theme.subBlackColor};
     padding: 5px;
     border-radius: 50%;
     background: white;
+    width: 70%;
 
     &:hover {
       cursor: pointer;
@@ -111,6 +115,17 @@ const Section = styled.section`
       color: white;
     }
   }
+
+  .sub-title {
+    font-size: 0.3vw;
+    color: white;
+    font-weight: bold;
+  }
 `;
 
+const Icon = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 export default SideBar;
