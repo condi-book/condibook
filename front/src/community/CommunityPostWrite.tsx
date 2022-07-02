@@ -20,6 +20,15 @@ export interface Bookmark {
   checked: boolean;
 }
 
+interface imageBlob {
+  lastModified: number;
+  lastModifiedDate: Date;
+  name: string;
+  size: number;
+  type: string;
+  webkitRelativePath: string;
+}
+
 // eslint-disable-next-line no-undef
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
@@ -198,6 +207,28 @@ const CommunityPostWrite = () => {
     setIsModalShow(true);
   };
 
+  const validateImage = (blob: imageBlob) => {
+    if (blob.size > 5000000) {
+      Alert.fire({
+        icon: "error",
+        title: "이미지 크기는 5MB 이하로 선택해주세요.",
+      });
+      return false;
+    }
+    if (
+      blob.type !== "image/jpeg" &&
+      blob.type !== "image/png" &&
+      blob.type !== "image/jpg"
+    ) {
+      Alert.fire({
+        icon: "error",
+        title: "이미지 파일은 jpeg, png, jpg만 선택해주세요.",
+      });
+      return false;
+    }
+    return true;
+  };
+
   React.useEffect(() => {
     if (postId !== null) {
       setIsModifying(true);
@@ -213,6 +244,9 @@ const CommunityPostWrite = () => {
       editorRef.current
         .getInstance()
         .addHook("addImageBlobHook", (blob, callback) => {
+          if (!validateImage(blob)) {
+            return;
+          }
           const s3config = {
             bucketName: process.env.REACT_APP_BUCKET_NAME as string,
             region: process.env.REACT_APP_REGION as string,
