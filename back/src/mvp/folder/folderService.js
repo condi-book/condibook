@@ -169,11 +169,8 @@ class folderService {
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
-            // 사용자의 폴더 소유 여부 확인
-            const folder = await Folder.findOneByFolderIdUserId({
-                folder_id,
-                user_id: requester.id,
-            });
+            // 폴더 존재 확인
+            const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({
                     entity: "사용자의 폴더",
@@ -181,10 +178,7 @@ class folderService {
                 });
             }
             // 폴더 삭제
-            const result = await Folder.destroyOne({
-                folder_id: folder.id,
-                user_id: requester.id,
-            });
+            const result = await Folder.destroyOne({ folder_id: folder.id });
             if (result === 0) {
                 return { errorMessage: "서버에러" };
             }

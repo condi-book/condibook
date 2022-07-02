@@ -20,11 +20,6 @@ class Folder {
         return FolderModel.findOne({ where: { id: folder_id } });
     }
 
-    static findOneByFolderIdUserId({ folder_id, user_id }) {
-        return FolderModel.findOne({
-            where: { id: folder_id, user_id: user_id },
-        });
-    }
     static findOneOnlyIdTitle({ folder_id }) {
         return FolderModel.findOne({
             where: { id: folder_id },
