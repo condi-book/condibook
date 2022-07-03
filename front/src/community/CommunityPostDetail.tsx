@@ -8,6 +8,7 @@ import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
 // import { UserStateContext } from "../App";
 import { getCookie } from "auth/util/cookie";
+import { Alert } from "../layout/Alert";
 
 import * as Api from "../api";
 
@@ -147,6 +148,16 @@ const CommunityPostDetail = () => {
   const handleClickBookmark = async (url: string) => {
     setLink(url);
   };
+
+  const handleClickCopy =
+    (url: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      navigator.clipboard.writeText(url);
+      Alert.fire({
+        icon: "success",
+        title: "클립보드에 복사되었습니다.",
+      });
+    };
 
   const handleCommentPostClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -313,14 +324,21 @@ const CommunityPostDetail = () => {
                 <Ol>
                   {list?.map((item) => {
                     return (
-                      <li
-                        key={`bookmark-${item.id}`}
-                        onClick={() => handleClickBookmark(item.url)}
-                      >
-                        <span className="pointer">
-                          {item.meta_title ?? item.meta_description ?? item.url}
-                        </span>
-                      </li>
+                      <Row key={`bookmark-${item.id}`}>
+                        <li onClick={() => handleClickBookmark(item.url)}>
+                          <span className="pointer">
+                            {item.meta_title ??
+                              item.meta_description ??
+                              item.url}
+                          </span>
+                        </li>
+                        <button
+                          className="copy-button"
+                          onClick={handleClickCopy(item.url)}
+                        >
+                          <span className="pe-7s-copy-file"></span>
+                        </button>
+                      </Row>
                     );
                   })}
                 </Ol>
@@ -494,6 +512,14 @@ const H1 = styled.h1`
   word-break: keep-all; // 콘텐츠 오버플로 줄바꿈 옵션 keep-all: 줄을 바꿀 때 단어끊김 없음
 `;
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -567,7 +593,7 @@ const BookmarkContainer = styled.div`
 `;
 
 const Ol = styled.ol`
-  padding: 0 3vw;
+  padding: 5px;
   padding-left: 1rem;
   line-height: 1.8;
   font-size: 1rem;
@@ -583,6 +609,14 @@ const Ol = styled.ol`
 
   li:hover {
     font-weight: bold;
+    cursor: pointer;
+  }
+  button {
+    width: 30px;
+    margin-left: 2rem;
+    border-radius: 5px;
+    border: none;
+    outline: none;
     cursor: pointer;
   }
 `;
