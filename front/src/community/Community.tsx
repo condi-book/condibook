@@ -3,13 +3,14 @@ import SideBar from "../layout/SideBar";
 import styled from "styled-components";
 
 import { Outlet } from "react-router-dom";
-import { KeyboardContext } from "../App";
+// import { KeyboardContext } from "../App";
 
 const Community = () => {
-  const keyboardContext: any = React.useContext(KeyboardContext);
+  // const keyboardContext: any = React.useContext(KeyboardContext);
   return (
     <Div>
-      {keyboardContext.sidebar === true && <SideBar />}
+      {/* {keyboardContext.sidebar === true && <SideBar />} */}
+      <SideBar />
       <div className="community-container">
         <Outlet />
       </div>
