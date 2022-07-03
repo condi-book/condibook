@@ -1,4 +1,4 @@
-import { Bookmark, Website, Folder, User } from "../../db";
+import { Bookmark, Website, Folder, User, Team } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
@@ -165,10 +165,24 @@ class bookmarkService {
             const folder = await Folder.findOne({
                 folder_id: bookmark.folder_id,
             });
-            if (!folder || folder.user_id !== requester.id) {
+            if (!folder) {
                 return {
                     errorMessage: "사용자는 북마크를 삭제할 권한이 없습니다.",
                 };
+            }
+            if (folder.user_id && folder.user_id !== requester.id) {
+                return {
+                    errorMessage: "사용자는 북마크를 삭제할 권한이 없습니다.",
+                };
+            }
+            if (folder.team_id) {
+                const team = await Team.findOne({ team_id: folder.team_id });
+                if (team.manager !== requester.id) {
+                    return {
+                        errorMessage:
+                            "사용자는 북마크를 삭제할 권한이 없습니다.",
+                    };
+                }
             }
             // 북마크 삭제
             const result = await Bookmark.destroyOne({
