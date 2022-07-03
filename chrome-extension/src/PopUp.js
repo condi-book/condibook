@@ -24,7 +24,13 @@ const PopUp = ({
       <div className="container">
         <div className="top">
           <div className="top-box">
-            <img src="/logo.png" alt="logo" width="30" />
+            <img
+              src="/logo.png"
+              alt="logo"
+              width="30"
+              onClick={handleNavigate}
+              style={{ cursor: "pointer" }}
+            />
             <Button id="navigate-page" onClick={handleNavigate}>
               나의 북마크로 이동
             </Button>
