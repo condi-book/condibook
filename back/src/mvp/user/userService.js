@@ -18,7 +18,11 @@ class userService {
             let user = await User.findOneByEmail({ email });
             // 존재하지 않은 사용자 -> 계정 생성
             if (!user) {
-                user = await User.create({ nickname, email, image_url });
+                user = await User.create({
+                    nickname: nickname ?? email.split("@")[0],
+                    email,
+                    image_url,
+                });
             }
             // JWT 생성
             const payload = { user_id: user.id, email: user.email };
