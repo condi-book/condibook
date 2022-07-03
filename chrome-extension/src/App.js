@@ -131,7 +131,7 @@ const App = () => {
           await setStatus("SUCCESS");
         })
         .catch((err) => setStatus("FAIL"));
-    }, 1500);
+    }, 2000);
   }, []);
 
   if (status === "SUCCESS") {

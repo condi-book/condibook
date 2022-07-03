@@ -1,7 +1,7 @@
 import SideBar from "layout/SideBar";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { KeyboardContext } from "../App";
+// import { KeyboardContext } from "../App";
 import * as Api from "../api";
 import SearchList from "./SearchList";
 
@@ -10,7 +10,7 @@ type StyleProps = {
 };
 
 const Search = () => {
-  const keyboardContext: any = useContext(KeyboardContext);
+  // const keyboardContext: any = useContext(KeyboardContext);
   const [word, setWord] = useState("");
   const [category, setCategory] = useState("global-link");
   // 데이터
@@ -47,7 +47,8 @@ const Search = () => {
 
   return (
     <Div category={category}>
-      {keyboardContext.sidebar === true && <SideBar />}
+      {/* {keyboardContext.sidebar === true && <SideBar />} */}
+      <SideBar />
       <div className="search-border">
         <div className="search-section">
           <div className="search-container">

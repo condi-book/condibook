@@ -7,7 +7,7 @@ import SideBar from "../layout/SideBar";
 import TeamSidebar from "./TeamSidebar";
 import TeamCreateModal from "./TeamCreateModal";
 import TeamUserModal from "./TeamUserModal";
-import { KeyboardContext } from "../App";
+// import { KeyboardContext } from "../App";
 import TeamFolderModal from "./TeamFolderModal";
 
 type ContextType = {
@@ -39,7 +39,7 @@ export interface Folder {
 }
 
 const TeamPage = () => {
-  const keyboardContext: any = React.useContext(KeyboardContext);
+  // const keyboardContext: any = React.useContext(KeyboardContext);
   const [team, setTeam] = React.useState<Team>(null);
   const [teams, setTeams] = React.useState<Team[]>(null); // 사용자 팀목록
   const [folders, setFolders] = React.useState<Folder[]>(null);
@@ -96,7 +96,8 @@ const TeamPage = () => {
 
   return (
     <Div>
-      {keyboardContext.sidebar === true && <SideBar />}
+      {/* {keyboardContext.sidebar === true && <SideBar />} */}
+      <SideBar />
       <div className="team-section">
         <div className="team-wrap">
           <TeamSidebar

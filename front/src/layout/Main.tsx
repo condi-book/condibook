@@ -66,7 +66,7 @@ const Main = () => {
           <AnimationOnScroll animateIn="animate__fadeIn" className="animation">
             <div className="container">
               <div>
-                <img alt="소개이미지" />
+                <Img src="/static/img/extension.jpg" alt="소개이미지" />
               </div>
 
               <div className="content">
@@ -93,7 +93,7 @@ const Main = () => {
                 </P>
               </div>
               <div>
-                <img alt="소개이미지" />
+                <Img src="/static/img/share_bookmark.jpg" alt="소개이미지" />
               </div>
             </div>
           </AnimationOnScroll>
@@ -103,7 +103,7 @@ const Main = () => {
           <AnimationOnScroll animateIn="animate__fadeIn" className="animation">
             <div className="container">
               <div>
-                <img alt="소개이미지" />
+                <Img src="/static/img/keyword_ai.jpg" alt="소개이미지" />
               </div>
               <div className="content">
                 <H6>서비스 소개 3</H6>
@@ -369,6 +369,11 @@ const Button = styled.div`
     background: ${({ theme }) => theme.subBlackColor};
     color: white;
   }
+`;
+
+const Img = styled.img`
+  width: 35vw;
+  padding: 0 2vw;
 `;
 
 export default Main;
