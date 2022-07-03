@@ -11,16 +11,11 @@
   "manifest_version": 3,
   "version": "0.0.1",
   "host_permissions": [
-    "http://localhost:5001/",
-    "http://localhost:3000/",
     "http://kdt-ai4-team14.elicecoding.com/",
     "http://kdt-ai4-team14.elicecoding.com:5001/"
   ],
   "externally_connectable": {
-    "matches": [
-      "http://localhost:3000/*",
-      "http://kdt-ai4-team14.elicecoding.com/*"
-    ]
+    "matches": ["http://kdt-ai4-team14.elicecoding.com/*"]
   },
 
   "action": {
