@@ -109,6 +109,13 @@ class Bookmark {
         });
     }
 
+    static updateFolderId({ bookmark_id, folder_id }) {
+        return BookmarkModel.update(
+            { folder_id },
+            { where: { id: bookmark_id } },
+        );
+    }
+
     static destroyOne({ bookmark_id }) {
         return BookmarkModel.destroy({
             where: { id: bookmark_id },

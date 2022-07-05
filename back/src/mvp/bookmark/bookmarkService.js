@@ -149,6 +149,47 @@ class bookmarkService {
         }
     }
 
+    static async changeFolder({ bookmark_id, folder_id, requester_id }) {
+        try {
+            // 사용자 존재 확인
+            const requester = await User.findOne({ user_id: requester_id });
+            if (!requester) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            // 북마크 존재 확인
+            const bookmark = await Bookmark.findOne({ bookmark_id });
+            if (!bookmark) {
+                return getFailMsg({ entity: "북마크", action: "조회" });
+            } else if (bookmark.folder_id === folder_id) {
+                return { errorMessage: "변경 사항이 없습니다." };
+            }
+            // 폴더 존재 확인
+            const folder = await Folder.findOne({ folder_id: folder_id });
+            if (!folder) {
+                return getFailMsg({ entity: "폴더", action: "조회" });
+            } else if (folder.user_id !== requester.id) {
+                return {
+                    errorMessage:
+                        "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                };
+            }
+            // 폴더 변경
+            const [affectedRows] = await Bookmark.updateFolderId({
+                bookmark_id: bookmark.id,
+                folder_id: folder.id,
+            });
+            if (affectedRows === 0) {
+                return { errorMessage: "서버에러" };
+            }
+            return getSuccessMsg({
+                entity: "북마크의 폴더 이동",
+                action: "성공",
+            });
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
     static async deleteBookmark({ bookmark_id, requester_id }) {
         try {
             // 북마크 존재 확인
