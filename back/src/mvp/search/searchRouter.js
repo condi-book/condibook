@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { searchSerivce } from "./searchService";
 import { loginRequired } from "../../middlewares/loginRequired";
+import { teamService } from "../team/teamService";
 const searchRouter = Router();
 
 searchRouter.get("/community", async (req, res, next) => {
@@ -40,11 +41,16 @@ searchRouter.get("/unified", loginRequired, async (req, res, next) => {
         if (postInfo.errorMessage) {
             throw new Error(postInfo.errorMessage);
         }
+        const teamInfo = await teamService.getTeamInfoUserJoined({ user_id });
+        const team_ids = teamInfo.map((v) => {
+            return v.team_id;
+        });
         const folderInfo = await searchSerivce.getFolderByQuery({
             user_id,
             pageNumber,
             content,
             type,
+            team_ids,
         });
         if (folderInfo.errorMessage) {
             throw new Error(folderInfo.errorMessage);
