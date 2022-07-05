@@ -16,6 +16,8 @@ const Search = () => {
   // 데이터
   const [searchData, setSearchData]: any = useState([]);
 
+  const [timer, setTimer] = useState(0); // 디바운싱 타이머
+
   // 카테고리 핸들러
   const handleCategory: (e: any) => void = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -27,17 +29,23 @@ const Search = () => {
   // 검색어 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(e.target.value);
-    Api.get(`search/unified?content=${e.target.value}`)
-      .then((res) => {
-        setSearchData(res.data);
-        console.log(res.data);
-      })
-      .catch(() =>
-        setSearchData({
-          postInfo: [],
-          folderInfo: { myFolder: [], teamFolders: [] },
-        }),
-      );
+
+    // 디바운싱 이용
+    if (timer) clearTimeout(timer);
+    const newTimer: any = setTimeout(async () => {
+      await Api.get(`search/unified?content=${e.target.value}`)
+        .then((res) => {
+          setSearchData(res.data);
+          console.log(res.data);
+        })
+        .catch(() =>
+          setSearchData({
+            postInfo: [],
+            folderInfo: { myFolder: [], teamFolders: [] },
+          }),
+        );
+    }, 100);
+    setTimer(newTimer);
   };
 
   // 검색창 초기화 함수
