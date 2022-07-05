@@ -4,7 +4,9 @@ import {
     CategoryModel,
     KeywordModel,
     WebsiteModel,
+    AttachedModel,
     sequelize,
+    Transaction,
 } from "../schema";
 import { Op } from "../../db";
 
@@ -116,11 +118,6 @@ class Bookmark {
         );
     }
 
-    static destroyOne({ bookmark_id }) {
-        return BookmarkModel.destroy({
-            where: { id: bookmark_id },
-        });
-    }
     static findWithBookmarkId({ bookmark_id }) {
         return BookmarkModel.findAll({
             where: {
@@ -131,6 +128,36 @@ class Bookmark {
             raw: true,
             nest: true,
         });
+    }
+
+    static async destroyOne({ bookmark_id }) {
+        try {
+            await sequelize.transaction(
+                {
+                    isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+                },
+                // eslint-disable-next-line no-unused-vars
+                async (t) => {
+                    if (bookmark_id) {
+                        const check = await AttachedModel.findAll({
+                            where: { bookmark_id: bookmark_id },
+                        });
+                        if (check) {
+                            await AttachedModel.destroy({
+                                where: {
+                                    bookmark_id: bookmark_id,
+                                },
+                            });
+                        }
+                        return await BookmarkModel.destroy({
+                            where: { id: bookmark_id },
+                        });
+                    }
+                },
+            );
+        } catch (e) {
+            return { errorMessage: e };
+        }
     }
 }
 
