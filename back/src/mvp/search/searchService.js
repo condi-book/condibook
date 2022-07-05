@@ -47,7 +47,7 @@ class searchSerivce {
         return result;
     }
 
-    static async getFolderByQuery({ user_id, pageNumber, content }) {
+    static async getFolderByQuery({ user_id, pageNumber, content, team_ids }) {
         if (!content) {
             const errorMessage = "검색할 내용이 없습니다";
             return { errorMessage };
@@ -66,10 +66,10 @@ class searchSerivce {
             return { errorMessage };
         }
         const teamFolders = await Team.searchTeamByQuery({
-            user_id,
             content,
+            team_ids,
         });
-        teamFolders.map((v) => delete v.memberships);
+
         return { myFolder, teamFolders };
     }
 }
