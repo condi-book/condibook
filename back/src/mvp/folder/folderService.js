@@ -146,13 +146,18 @@ class folderService {
                     entity: "해당 사용자의 폴더",
                     action: "조회",
                 });
+            } else if (folder.user_id !== requester.id) {
+                return {
+                    errorMessage:
+                        "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                };
             }
             // 폴더 상세 정보 수정
-            const affectedRows = await Folder.updateTitle({
+            const [affectedRows] = await Folder.updateTitle({
                 folder_id: folder.id,
                 title,
             });
-            if (affectedRows[0] === 0) {
+            if (affectedRows === 0) {
                 // 서버 에러
                 return { errorMessage: "서버에러" };
             }
@@ -176,6 +181,11 @@ class folderService {
                     entity: "사용자의 폴더",
                     action: "조회",
                 });
+            } else if (folder.user_id !== requester.id) {
+                return {
+                    errorMessage:
+                        "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                };
             }
             // 폴더 삭제
             const result = await Folder.destroyOne({ folder_id: folder.id });

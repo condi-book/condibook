@@ -83,15 +83,20 @@ class bookmarkService {
 
     static async getBookmarksInFolder({ folder_id, requester_id }) {
         try {
-            // 폴더 존재 확인
-            const folder = await Folder.findOne({ folder_id });
-            if (!folder) {
-                return getFailMsg({ entity: "폴더", action: "조회" });
-            }
             // 요청자 존재 확인
             const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
+            }
+            // 폴더 존재 확인
+            const folder = await Folder.findOne({ folder_id });
+            if (!folder) {
+                return getFailMsg({ entity: "폴더", action: "조회" });
+            } else if (folder.user_id !== requester.id) {
+                return {
+                    errorMessage:
+                        "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                };
             }
             // 북마크 조회
             let bookmarks = await Bookmark.findAllWithWebsite({
@@ -132,6 +137,11 @@ class bookmarkService {
             const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
+            } else if (folder.user_id !== requester.id) {
+                return {
+                    errorMessage:
+                        "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                };
             }
             // 폴더 내 북마크의 순서 변경
             bookmarks = bookmarks.map((bookmark) => {
@@ -210,13 +220,11 @@ class bookmarkService {
                 return {
                     errorMessage: "사용자는 북마크를 삭제할 권한이 없습니다.",
                 };
-            }
-            if (folder.user_id && folder.user_id !== requester.id) {
+            } else if (folder.user_id && folder.user_id !== requester.id) {
                 return {
                     errorMessage: "사용자는 북마크를 삭제할 권한이 없습니다.",
                 };
-            }
-            if (folder.team_id) {
+            } else if (folder.team_id) {
                 const team = await Team.findOne({ team_id: folder.team_id });
                 if (team.manager !== requester.id) {
                     return {
