@@ -49,7 +49,7 @@ const Modal = ({
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = React.useCallback(() => {
     const modifiedLink = newLink.startsWith("www")
       ? `https://${newLink}`
       : newLink;
@@ -73,7 +73,7 @@ const Modal = ({
         });
       })
       .catch((err) => alert(err.response.data));
-  };
+  }, [newLink]);
 
   return (
     <Div newLink={newLink}>
