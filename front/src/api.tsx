@@ -1,10 +1,14 @@
 import axios from "axios";
 import { getCookie } from "./auth/util/cookie";
-const serverUrl = window.location.origin + "/api" + "/";
 
-// const backendPortNumber = "5001";
-// const serverUrl =
-//   "http://" + window.location.hostname + ":" + backendPortNumber + "/";
+export const serverUrl = (() => {
+  if (process.env.NODE_ENV === "development") {
+    const localServerPort = 5001;
+    const { protocol, hostname } = window.location;
+    return `${protocol}//${hostname}:${localServerPort}/`;
+  }
+  return window.location.origin + "/api/";
+})();
 
 async function get(endpoint: any) {
   console.log(`%cGET 요청 ${serverUrl + endpoint}`, "color: #a25cd1;");

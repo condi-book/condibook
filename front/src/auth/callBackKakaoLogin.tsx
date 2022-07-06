@@ -5,6 +5,7 @@ import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
+import { serverUrl } from "api";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -14,7 +15,7 @@ const CallBackKakaoLogin = () => {
     const code = new URL(window.location.href).searchParams.get("code");
 
     async function sendCode() {
-      const url = `${window.location.origin}/api/user/login/kakao`;
+      const url = `${serverUrl}user/login/kakao`;
       const res = await axios.post(url, { code });
       const user = res.data;
 
