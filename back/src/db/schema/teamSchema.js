@@ -28,12 +28,6 @@ export default function TeamSchema(sequelize, DataTypes) {
                     unique: true,
                     fields: ["id"],
                 },
-                {
-                    type: "FULLTEXT",
-                    name: "team_idx",
-                    fields: ["name", "explanation"],
-                    parser: "ngram",
-                },
             ],
         },
     );

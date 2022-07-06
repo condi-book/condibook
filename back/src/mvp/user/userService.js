@@ -35,7 +35,7 @@ class userService {
                 email: user.email,
                 nickname: user.nickname ?? user.email.split("@")[0],
                 image_url: user.image_url,
-                intro: user.intro ?? null,
+                intro: user.intro ?? "",
                 token: token,
             };
             return result;
@@ -149,7 +149,7 @@ class userService {
                 email: user.email,
                 nickname: user.nickname,
                 image_url: user.image_url,
-                intro: user.intro ?? null,
+                intro: user.intro ?? "",
                 folderCount: myFolderIds.length,
                 bookmarkCount,
             };
@@ -177,7 +177,7 @@ class userService {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 닉네임 수정
-            const affectedRows = await User.updateNickname({
+            const [affectedRows] = await User.updateNickname({
                 user_id: user.id,
                 nickname,
             });
@@ -198,7 +198,7 @@ class userService {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 짧은 소개글 수정
-            const affectedRows = await User.updateIntro({
+            const [affectedRows] = await User.updateIntro({
                 user_id: requester.id,
                 intro,
             });
