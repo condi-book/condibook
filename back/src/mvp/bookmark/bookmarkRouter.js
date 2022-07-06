@@ -50,6 +50,25 @@ bookmarkRouter.get("/:id", loginRequired, async (req, res, next) => {
     }
 });
 
+bookmarkRouter.put("/:id", loginRequired, async (req, res, next) => {
+    try {
+        const bookmark_id = req.params.id;
+        const folder_id = req.body.folder_id;
+        const requester_id = req.current.user_id;
+
+        const result = await bookmarkService.changeFolder({
+            bookmark_id,
+            folder_id,
+            requester_id,
+        });
+        checkErrorMessage(result);
+
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
 bookmarkRouter.delete("/:id", loginRequired, async (req, res, next) => {
     try {
         const { id } = req.params;

@@ -157,7 +157,7 @@ LikeModel.belongsTo(PostModel, { foreignKey: like_fk_post });
 const membership_fk_user = {
     name: "member_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "사용자 ID",
 };
 UserModel.hasMany(MembershipModel, { foreignKey: membership_fk_user });
@@ -217,7 +217,7 @@ TeamModel.belongsTo(UserModel, { foreignKey: team_fk_user });
 const fdfavorite_fk_folder = {
     name: "folder_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "폴더 ID",
 };
 FolderModel.hasMany(FDFavoriteModel, { foreignKey: fdfavorite_fk_folder });
@@ -227,7 +227,7 @@ FDFavoriteModel.belongsTo(FolderModel, { foreignKey: fdfavorite_fk_folder });
 const fdfavorite_fk_user = {
     name: "user_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "사용자 ID",
 };
 UserModel.hasMany(FDFavoriteModel, { foreignKey: fdfavorite_fk_user });
@@ -237,7 +237,7 @@ FDFavoriteModel.belongsTo(UserModel, { foreignKey: fdfavorite_fk_user });
 const bmfavorite_fk_bookmark = {
     name: "bookmark_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "북마크 ID",
 };
 BookmarkModel.hasMany(BMFavoriteModel, { foreignKey: bmfavorite_fk_bookmark });
@@ -249,7 +249,7 @@ BMFavoriteModel.belongsTo(BookmarkModel, {
 const bmfavorite_fk_user = {
     name: "user_id",
     type: DataTypes.INTEGER,
-    onDelete: "setNull",
+    onDelete: "cascade",
     comment: "사용자 ID",
 };
 UserModel.hasMany(BMFavoriteModel, { foreignKey: bmfavorite_fk_user });
