@@ -53,6 +53,21 @@ const App: React.FC = () => {
   //   }
   // };
 
+  React.useEffect(() => {
+    const callback = (e: any) => {
+      const { ctrlKey, keyCode } = e;
+      const k_keyCode = 75;
+      if (ctrlKey && keyCode === k_keyCode) {
+        console.log("ctrl + k");
+      }
+    };
+    window.addEventListener("keydown", callback);
+
+    return () => {
+      window.removeEventListener("keydown", callback);
+    };
+  }, []);
+
   return (
     <DispatchContext.Provider value={dispatch}>
       <UserStateContext.Provider value={userState}>
