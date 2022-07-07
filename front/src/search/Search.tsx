@@ -1,7 +1,7 @@
+import useDebounce from "hooks/useDebounce";
 import SideBar from "layout/SideBar";
 import React, { useState } from "react";
 import styled from "styled-components";
-// import { KeyboardContext } from "../App";
 import * as Api from "../api";
 import SearchList from "./SearchList";
 
@@ -10,13 +10,12 @@ type StyleProps = {
 };
 
 const Search = () => {
-  // const keyboardContext: any = useContext(KeyboardContext);
   const [word, setWord] = useState("");
   const [category, setCategory] = useState("global-link");
   // 데이터
   const [searchData, setSearchData]: any = useState([]);
 
-  const [timer, setTimer] = useState(0); // 디바운싱 타이머
+  const debouncedWord = useDebounce(word, 500);
 
   // 카테고리 핸들러
   const handleCategory: (e: any) => void = (
@@ -27,13 +26,21 @@ const Search = () => {
   };
 
   // 검색어 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWord(e.target.value);
+  const handleChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setWord(e.target.value);
+    },
+    [],
+  );
 
-    // 디바운싱 이용
-    if (timer) clearTimeout(timer);
-    const newTimer: any = setTimeout(async () => {
-      await Api.get(`search/unified?content=${e.target.value}`)
+  // 검색창 초기화 함수
+  const handleDelete = React.useCallback(() => {
+    setWord("");
+  }, []);
+
+  React.useEffect(() => {
+    if (debouncedWord !== "") {
+      Api.get(`search/unified?content=${debouncedWord}`)
         .then((res) => {
           setSearchData(res.data);
           console.log(res.data);
@@ -44,14 +51,8 @@ const Search = () => {
             folderInfo: { myFolder: [], teamFolders: [] },
           }),
         );
-    }, 100);
-    setTimer(newTimer);
-  };
-
-  // 검색창 초기화 함수
-  const handleDelete = () => {
-    setWord("");
-  };
+    }
+  }, [debouncedWord]);
 
   return (
     <Div category={category}>
