@@ -46,6 +46,9 @@ class userService {
 
     static async getKakaoToken(code) {
         try {
+            if (!KAKAO_CLIENT_ID || !CLIENT_URL) {
+                throw new Error("env를 확인해주십시오.");
+            }
             // 코드로 토큰 발급
             const res = await axios.post(
                 "https://kauth.kakao.com/oauth/token",
@@ -84,6 +87,9 @@ class userService {
 
     static async getGoogleToken(code) {
         try {
+            if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !CLIENT_URL) {
+                throw new Error("env를 확인해주십시오.");
+            }
             // 코드로 토큰 발급
             const res = await axios.post(
                 "https://oauth2.googleapis.com/token",
