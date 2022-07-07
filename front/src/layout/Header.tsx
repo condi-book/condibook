@@ -16,7 +16,7 @@ const Header = ({ handleNavigate }: ContextProps) => {
             className="info-button"
             onClick={() =>
               window.open(
-                "https://local-ironclad-650.notion.site/CondiBook-chrome-extension-dd75ea3564da4b378739e748bf6baf33",
+                "https://chrome.google.com/webstore/search/CondiBook?hl=ko",
                 "_blank",
               )
             }
