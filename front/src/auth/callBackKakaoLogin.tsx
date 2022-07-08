@@ -6,6 +6,7 @@ import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
 import { serverUrl } from "api";
+import styled from "styled-components";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -44,7 +45,16 @@ const CallBackKakaoLogin = () => {
     sendCode();
   }, []);
 
-  return <Loading />;
+  return (
+    <Div>
+      <Loading />
+    </Div>
+  );
 };
 
 export default CallBackKakaoLogin;
+
+const Div = styled.div`
+  width: 100%;
+  height: 100vh;
+`;

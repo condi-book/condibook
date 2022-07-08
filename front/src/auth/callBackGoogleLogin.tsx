@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import axios from "axios";
 import { GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
@@ -58,7 +59,16 @@ const CallBackGoogleLogin = () => {
     sendCode();
   }, []);
 
-  return <Loading />;
+  return (
+    <Div>
+      <Loading />
+    </Div>
+  );
 };
 
 export default CallBackGoogleLogin;
+
+const Div = styled.div`
+  width: 100%;
+  height: 100vh;
+`;

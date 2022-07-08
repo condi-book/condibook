@@ -9,6 +9,7 @@ import CommunityPostComments from "./CommunityPostComments";
 // import { UserStateContext } from "../App";
 import { getCookie } from "auth/util/cookie";
 import { Alert } from "../layout/Alert";
+import Loading from "layout/Loading";
 
 import * as Api from "../api";
 
@@ -67,6 +68,7 @@ const CommunityPostDetail = () => {
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
   const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
+  const [isLoading, setIsLoading] = React.useState<boolean>(false); // 로딩중인지
 
   // 시간 계산하여 문자열 리턴해주는 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
@@ -260,11 +262,12 @@ const CommunityPostDetail = () => {
   React.useEffect(() => {
     if (iframeRef.current !== null) {
       iframeRef.current.onload = () => {
-        try {
-          console.log(iframeRef.current.contentWindow["0"]);
-          setIsBlocked(false);
-        } catch (e) {
+        setIsLoading(false);
+        if (iframeRef.current.contentWindow.length === 0) {
           setIsBlocked(true);
+        }
+        if (iframeRef.current.contentWindow.length > 0) {
+          setIsBlocked(false);
         }
       };
     }
@@ -281,6 +284,8 @@ const CommunityPostDetail = () => {
     if (link?.includes(window.location.origin)) {
       setIsCondiBook(true);
     }
+    setIsBlocked(false);
+    setIsLoading(true);
   }, [link]);
 
   return (
@@ -400,6 +405,10 @@ const CommunityPostDetail = () => {
               >
                 새 탭으로 열기
               </button>
+              <div>
+                CondiBook 크롬 확장 프로그램을 설치하시면 미리보기로 보실 수
+                있습니다.
+              </div>
             </Warning>
           )}
           {isCondiBook && (
@@ -408,12 +417,14 @@ const CommunityPostDetail = () => {
               <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
             </Warning>
           )}
+          {isLoading && <Loading />}
           <iframe
             src={link}
             width="100%"
-            height={!link || isBlocked ? "0%" : "100%"}
+            height={!link || isBlocked || isLoading ? "0%" : "100%"}
             ref={iframeRef}
             loading="lazy"
+            allow="autoplay; encrypted-media"
           ></iframe>
         </div>
       </div>
@@ -466,6 +477,7 @@ const Div = styled.div`
     background: #f5f5f5;
     border-radius: 10px;
     margin: 10px;
+    max-height: 100%;
   }
 `;
 
@@ -679,6 +691,7 @@ const Warning = styled.div`
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
+    margin-bottom: 20px;
 
     &:hover {
       background: ${({ theme }) => theme.subBlackColor};
