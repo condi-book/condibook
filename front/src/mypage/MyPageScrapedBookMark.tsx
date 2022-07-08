@@ -14,7 +14,7 @@ const MypageScrapedBookmark = () => {
 
   // 스타일 디자인 px 계산 변수
   const styleSize = () => {
-    if (likesData?.length > 12) return 0 + (likesData.length / 6) * 10;
+    if (likesData?.length > 12) return 0 + (likesData.length / 6) * 40;
     else return 0;
   };
 
@@ -67,8 +67,9 @@ const MypageScrapedBookmark = () => {
 
 const Div = styled.div<StyleSize>`
   width: 100%;
-  padding: 10px;
-  height: 90%;
+  padding: 2vw 10px;
+  height: 80%;
+  margin-top: 4vw;
 
   .pe-7s-like {
     font-weight: bold;

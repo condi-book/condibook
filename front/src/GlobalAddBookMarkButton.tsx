@@ -24,8 +24,6 @@ const Div = styled.div`
   position: fixed;
   bottom: 5%;
   right: 3%;
-  width: 50px;
-  height: 50px;
   background: none;
   z-index: 999;
 
@@ -38,7 +36,7 @@ const Div = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 0.7vw;
     width: 100%;
     height: 100%;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 4px rgba(0, 0, 0, 0.2);
@@ -48,7 +46,7 @@ const Div = styled.div`
     }
     .pe-7s-plus {
       font-weight: bold;
-      font-size: 30px;
+      font-size: 2.5vw;
     }
   }
 `;

@@ -108,6 +108,7 @@ const MypageBookmarkList = ({
 };
 
 const Div = styled.div`
+  margin-top: 2vw;
   .favorites {
     width: 100%;
     display: flex;
@@ -133,8 +134,7 @@ const Div = styled.div`
       color: white;
       border-radius: 50%;
       padding: 0px;
-      height: 25px;
-      width: 25px;
+      width: 1.5vwx;
       display: flex;
       justify-content: center;
       align-items: center;

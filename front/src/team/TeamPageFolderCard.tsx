@@ -68,6 +68,10 @@ const TeamPageFolderCard = ({
     e.stopPropagation();
     Api.delete(`folders`, `${value.id}`)
       .then(() => {
+        Alert.fire({
+          icon: "success",
+          title: "폴더 삭제 성공",
+        });
         fetchTeamFolderData();
       })
       .catch((err) => {

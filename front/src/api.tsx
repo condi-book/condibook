@@ -1,22 +1,14 @@
 import axios from "axios";
 import { getCookie } from "./auth/util/cookie";
-const backendPortNumber = "5001";
-const serverUrl =
-  "http://" + window.location.hostname + ":" + backendPortNumber + "/";
 
-// async function get(endpoint: any, params = "") {
-//   console.log(
-//     `%cGET 요청 ${serverUrl + endpoint + "/" + params}`,
-//     "color: #a25cd1;",
-//   );
-
-//   return axios.get(serverUrl + endpoint + "/" + params, {
-//     // JWT 토큰을 헤더에 담아 백엔드 서버에 보냄.
-//     headers: {
-//       Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-//     },
-//   });
-// }
+export const serverUrl = (() => {
+  if (process.env.NODE_ENV === "development") {
+    const localServerPort = 5001;
+    const { protocol, hostname } = window.location;
+    return `${protocol}//${hostname}:${localServerPort}/`;
+  }
+  return window.location.origin + "/api/";
+})();
 
 async function get(endpoint: any) {
   console.log(`%cGET 요청 ${serverUrl + endpoint}`, "color: #a25cd1;");

@@ -1,11 +1,13 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import axios from "axios";
-import { SERVER_URL, GOOGLE_LOGIN_STATE } from "../config";
+import { GOOGLE_LOGIN_STATE } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
+import { serverUrl } from "api";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
@@ -29,7 +31,8 @@ const CallBackGoogleLogin = () => {
     const code = params.get("code");
 
     async function sendCode() {
-      const url = SERVER_URL + "/user/login/google";
+      const url = `${serverUrl}user/login/google`;
+
       const res = await axios.post(url, { code });
       const user = res.data;
 
@@ -56,7 +59,16 @@ const CallBackGoogleLogin = () => {
     sendCode();
   }, []);
 
-  return <Loading />;
+  return (
+    <Div>
+      <Loading />
+    </Div>
+  );
 };
 
 export default CallBackGoogleLogin;
+
+const Div = styled.div`
+  width: 100%;
+  height: 100vh;
+`;

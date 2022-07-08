@@ -7,20 +7,19 @@
     "64": "logo.png",
     "128": "logo.png"
   },
-  "permissions": ["activeTab", "tabs", "storage", "cookies"],
+  "permissions": ["activeTab", "tabs", "storage", "cookies", "webRequest", "webRequestBlocking", "<all_urls>"],
   "manifest_version": 3,
   "version": "0.0.1",
   "host_permissions": [
-    "http://localhost:5001/",
-    "http://localhost:3000/",
     "http://kdt-ai4-team14.elicecoding.com/",
     "http://kdt-ai4-team14.elicecoding.com:5001/"
   ],
   "externally_connectable": {
-    "matches": [
-      "http://localhost:3000/*",
-      "http://kdt-ai4-team14.elicecoding.com/*"
-    ]
+    "matches": ["http://kdt-ai4-team14.elicecoding.com/*"]
+  },
+
+  "background": {
+    "scripts": ["background.js"]
   },
 
   "action": {

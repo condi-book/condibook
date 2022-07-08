@@ -16,10 +16,9 @@ import { Alert } from "../layout/Alert";
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   color: "black",
-  border: isDragging && "2px solid rgba(76, 76, 76, 0.1)",
-  fontSize: 20,
+  // border: isDragging && "1px solid rgba(76, 76, 76, 0.1)",
   background:
-    "linear-gradient(90deg, #12C2E9 19.08%, #C471ED 49.78%, #F64F59 78.71%)",
+    "linear-gradient(135deg, rgba(18, 194, 233, 0.5) 0.61%, rgba(196, 113, 237, 0.5) 51.86%, rgba(246, 79, 89, 0.5) 100%)",
   borderRadius: 10,
   cursor: "pointer",
   ...draggableStyle,
@@ -87,13 +86,13 @@ const TeamPageDetail = () => {
     e.stopPropagation();
     try {
       await Api.delete(`bookmarks/${item.bookmark_id}`);
-      const copied = Array.from(list);
-      copied.splice(copied.indexOf(item), 1);
-      setList(copied);
       await Alert.fire({
         icon: "success",
         title: "삭제 성공",
       });
+      const copied = Array.from(list);
+      copied.splice(copied.indexOf(item), 1);
+      setList(copied);
     } catch (err) {
       const error = err as AxiosError;
       await Alert.fire({
@@ -280,22 +279,19 @@ const Div = styled.div`
   display: flex;
   flex-direction: row;
   height: 100%;
-  background: ${({ theme }) => theme.background};
 
   .detail-container {
     display: flex;
     width: 100%;
-    height: 100%;
-    margin: 10px;
-    margin-left: 0;
     background: white;
     border-radius: 10px;
+    height: 100%;
   }
 
   .box {
     width: 50%;
     padding: 1%;
-    margin: 10px;
+    margin: 0 10px;
     background: #f5f5f5;
     border-radius: 10px;
   }
@@ -432,6 +428,18 @@ const Warning = styled.div`
     margin-bottom: 20px;
     text-align: center;
   }
-`;
 
+  button {
+    font-size: 1.2vw;
+    background: ${({ theme }) => theme.profileBackground};
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+
+    &:hover {
+      background: ${({ theme }) => theme.subBlackColor};
+    }
+  }
+`;
 export default TeamPageDetail;

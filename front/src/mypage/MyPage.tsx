@@ -1,10 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import SideBar from "../layout/SideBar";
 import styled from "styled-components";
 import MypageNavbar from "./MyPageNavBar";
 import MypageBookmark from "./MyPageBookMark";
 import MypageScrapedBookmark from "./MyPageScrapedBookMark";
-import { KeyboardContext } from "../App";
+// import { KeyboardContext } from "../App";
 
 export interface MypageProps {
   handleClick?: (value: boolean) => void;
@@ -14,7 +14,7 @@ export interface MypageProps {
 
 export const Mypage = () => {
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
-  const keyboardContext: any = useContext(KeyboardContext);
+  // const keyboardContext: any = useContext(KeyboardContext);
 
   const handleClick = (value: boolean) => {
     if (value !== tab) setTab((prev) => !prev);
@@ -22,7 +22,8 @@ export const Mypage = () => {
 
   return (
     <Div>
-      {keyboardContext.sidebar === true && <SideBar />}
+      {/* {keyboardContext.sidebar === true && <SideBar />} */}
+      <SideBar />
       <div className="mypage-container">
         <div className="mypage-main">
           <MypageNavbar tab={tab} handleClick={handleClick} />

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
+import { Alert } from "./Alert";
 
 interface props {
   open: boolean;
@@ -12,6 +13,10 @@ interface props {
   handlePushData?: (data: any) => void;
   handleFolderEdit?: () => void;
 }
+
+type NewLink = {
+  newLink: string;
+};
 const Modal = ({
   open,
   close,
@@ -27,8 +32,16 @@ const Modal = ({
     if (title === "폴더 이름 변경") {
       handleFolderEdit();
       close();
+      Alert.fire({
+        icon: "success",
+        title: "폴더명 변경 완료",
+      });
     } else {
       Api.post(`folders?owner=user`, { title: newLink }).then((res) => {
+        Alert.fire({
+          icon: "success",
+          title: "폴더 추가 완료",
+        });
         close();
         console.log(res.data);
         handlePushData(res.data);
@@ -36,8 +49,11 @@ const Modal = ({
     }
   };
 
-  const handleCreate = () => {
-    Api.post(`folders/${params.folderId}/bookmarks`, { url: newLink })
+  const handleCreate = React.useCallback(() => {
+    const modifiedLink = newLink.startsWith("www")
+      ? `https://${newLink}`
+      : newLink;
+    Api.post(`folders/${params.folderId}/bookmarks`, { url: modifiedLink })
       .then((res) => {
         console.log("링크 추가", res.data);
         const needs = res.data;
@@ -50,10 +66,14 @@ const Modal = ({
             website: res.data,
           });
           close();
+          Alert.fire({
+            icon: "success",
+            title: "링크 추가 완료",
+          });
         });
       })
       .catch((err) => alert(err.response.data));
-  };
+  }, [newLink]);
 
   return (
     <Div newLink={newLink}>
@@ -86,7 +106,7 @@ const Modal = ({
   );
 };
 
-const Div = styled.div`
+const Div = styled.div<NewLink>`
   .bg {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -95,7 +115,7 @@ const Div = styled.div`
     justify-content: center;
     left: 0;
     overflow: hidden;
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100vw;
     z-index: 100;
@@ -114,7 +134,7 @@ const Div = styled.div`
     }
     .close {
       text-align: right;
-      font-size: 50px;
+      font-size: 3vw;
       font-weight: bold;
       height: 20%;
 
@@ -125,6 +145,7 @@ const Div = styled.div`
     }
 
     .link-box {
+      font-size: 1.2vw;
       height: 60%;
       display: flex;
       justify-content: center;
@@ -132,6 +153,7 @@ const Div = styled.div`
     }
 
     button {
+      font-size: 1.2vw;
       box-sizing: border-box;
       height: 20%;
       border-radius: 0;
@@ -139,10 +161,12 @@ const Div = styled.div`
       border-bottom-right-radius: inherit;
       border: none;
       width: 100%;
-      background: ${({ newLink }: { newLink: string }) =>
-        newLink !== "" && "purple"};
-      color: ${({ newLink }: { newLink: string }) => newLink !== "" && "white"};
+      background: ${({ newLink, theme }) =>
+        newLink ? theme.profileBackground : theme.subGrayColor};
+      color: ${({ newLink }) => (!newLink ? "rgba(0, 0, 0, 0.2)" : "white")};
+      font-weight: bold;
     }
   }
 `;
+
 export default Modal;

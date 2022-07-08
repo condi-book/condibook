@@ -272,6 +272,7 @@ const Div = styled.div<StyleProps>`
     li {
       font-weight: normal;
       text-align: center;
+      font-size: 1vw;
     }
     li:hover {
       background: ${({ theme }) => theme.profileBackground};

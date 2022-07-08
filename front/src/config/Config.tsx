@@ -20,12 +20,12 @@ const Config = () => {
 
 const Div = styled.div`
   position: fixed;
-  width: 100px;
+  width: 6vw;
   height: 100px;
   background: ${({ theme }) => theme.reverseMainColor};
   border-radius: 10px;
-  bottom: 5%;
-  left: 77px;
+  bottom: 7%;
+  left: 6vw;
   padding: 5px;
   box-shadow: ${({ theme }) => theme.boxShadow};
   z-index: 999;
@@ -42,6 +42,7 @@ const Div = styled.div`
   }
   .config-btn {
     border-bottom: 1px solid black;
+    font-size: 1vw;
   }
 `;
 

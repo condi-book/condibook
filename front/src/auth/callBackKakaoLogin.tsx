@@ -1,11 +1,12 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SERVER_URL } from "../config";
 import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
+import { serverUrl } from "api";
+import styled from "styled-components";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
@@ -15,7 +16,7 @@ const CallBackKakaoLogin = () => {
     const code = new URL(window.location.href).searchParams.get("code");
 
     async function sendCode() {
-      const url = SERVER_URL + "/user/login/kakao";
+      const url = `${serverUrl}user/login/kakao`;
       const res = await axios.post(url, { code });
       const user = res.data;
 
@@ -44,7 +45,16 @@ const CallBackKakaoLogin = () => {
     sendCode();
   }, []);
 
-  return <Loading />;
+  return (
+    <Div>
+      <Loading />
+    </Div>
+  );
 };
 
 export default CallBackKakaoLogin;
+
+const Div = styled.div`
+  width: 100%;
+  height: 100vh;
+`;

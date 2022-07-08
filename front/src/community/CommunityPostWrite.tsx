@@ -347,7 +347,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  border: 1px solid red;
   background: white;
   border-radius: 10px;
   padding: 10px;
@@ -369,7 +368,7 @@ const TitleInput = styled.input`
 const ItemContainer = styled.div`
   max-height: 733.5px;
   opacity: 1;
-  padding-top: 2rem;
+  padding-top: 3vw;
   padding-left: 3rem;
   padding-right: 3rem;
   .placeholder {

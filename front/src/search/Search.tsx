@@ -1,7 +1,7 @@
+import useDebounce from "hooks/useDebounce";
 import SideBar from "layout/SideBar";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { KeyboardContext } from "../App";
 import * as Api from "../api";
 import SearchList from "./SearchList";
 
@@ -10,11 +10,12 @@ type StyleProps = {
 };
 
 const Search = () => {
-  const keyboardContext: any = useContext(KeyboardContext);
   const [word, setWord] = useState("");
   const [category, setCategory] = useState("global-link");
   // 데이터
   const [searchData, setSearchData]: any = useState([]);
+
+  const debouncedWord = useDebounce(word, 500);
 
   // 카테고리 핸들러
   const handleCategory: (e: any) => void = (
@@ -25,29 +26,38 @@ const Search = () => {
   };
 
   // 검색어 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWord(e.target.value);
-    Api.get(`search/unified?content=${e.target.value}`)
-      .then((res) => {
-        setSearchData(res.data);
-        console.log(res.data);
-      })
-      .catch(() =>
-        setSearchData({
-          postInfo: [],
-          folderInfo: { myFolder: [], teamFolders: [] },
-        }),
-      );
-  };
+  const handleChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setWord(e.target.value);
+    },
+    [],
+  );
 
   // 검색창 초기화 함수
-  const handleDelete = () => {
+  const handleDelete = React.useCallback(() => {
     setWord("");
-  };
+  }, []);
+
+  React.useEffect(() => {
+    if (debouncedWord !== "") {
+      Api.get(`search/unified?content=${debouncedWord}`)
+        .then((res) => {
+          setSearchData(res.data);
+          console.log(res.data);
+        })
+        .catch(() =>
+          setSearchData({
+            postInfo: [],
+            folderInfo: { myFolder: [], teamFolders: [] },
+          }),
+        );
+    }
+  }, [debouncedWord]);
 
   return (
     <Div category={category}>
-      {keyboardContext.sidebar === true && <SideBar />}
+      {/* {keyboardContext.sidebar === true && <SideBar />} */}
+      <SideBar />
       <div className="search-border">
         <div className="search-section">
           <div className="search-container">
@@ -125,7 +135,7 @@ const Div = styled.div<StyleProps>`
     justify-content: center;
     width: 100%;
     height: 15%;
-    padding-top: 20px;
+    padding-top: 3vw;
   }
   .search-box {
     display: flex;

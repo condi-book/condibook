@@ -415,6 +415,19 @@ const Warning = styled.div`
     margin-bottom: 20px;
     text-align: center;
   }
+
+  button {
+    font-size: 1.2vw;
+    background: ${({ theme }) => theme.profileBackground};
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+
+    &:hover {
+      background: ${({ theme }) => theme.subBlackColor};
+    }
+  }
 `;
 
 export default MypageBookmarkDetail;

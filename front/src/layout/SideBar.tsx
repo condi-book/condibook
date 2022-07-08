@@ -80,8 +80,8 @@ const SideBar = () => {
 
 const Div = styled.div`
   height: 100vh;
-  width: 6%;
-  padding: 10px;
+  width: 6vw;
+  padding: 1vw;
   position: sticky;
   top: 0;
 `;
@@ -105,7 +105,6 @@ const Section = styled.section`
     padding: 5px;
     border-radius: 50%;
     background: white;
-    width: 70%;
 
     &:hover {
       cursor: pointer;
@@ -117,7 +116,8 @@ const Section = styled.section`
   }
 
   .sub-title {
-    font-size: 0.3vw;
+    margin-top: 5px;
+    font-size: 0.7vw;
     color: white;
     font-weight: bold;
   }
@@ -127,5 +127,6 @@ const Icon = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 export default SideBar;

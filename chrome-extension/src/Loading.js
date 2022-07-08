@@ -1,10 +1,15 @@
 import styled from "styled-components";
+import HashLoader from "react-spinners/HashLoader";
+const override = {
+  background: "linear-gradient(135deg, #12c2e9, #c471ed, #f64f59)",
+  borderRadius: `50%`,
+  padding: `20px`,
+};
 
 const Loading = () => {
   return (
     <Div>
-      {/* <div className="loader10"></div> */}
-      <div>loading</div>
+      <HashLoader size={40} cssOverride={override} color={"white"} />
     </Div>
   );
 };

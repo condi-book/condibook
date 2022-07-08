@@ -8,6 +8,8 @@ import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
 // import { UserStateContext } from "../App";
 import { getCookie } from "auth/util/cookie";
+import { Alert } from "../layout/Alert";
+import Loading from "layout/Loading";
 
 import * as Api from "../api";
 
@@ -66,6 +68,7 @@ const CommunityPostDetail = () => {
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
   const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
+  const [isLoading, setIsLoading] = React.useState<boolean>(false); // 로딩중인지
 
   // 시간 계산하여 문자열 리턴해주는 함수
   const createdTime = React.useCallback(CalcDate, [fetchData]);
@@ -147,6 +150,16 @@ const CommunityPostDetail = () => {
   const handleClickBookmark = async (url: string) => {
     setLink(url);
   };
+
+  const handleClickCopy =
+    (url: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      navigator.clipboard.writeText(url);
+      Alert.fire({
+        icon: "success",
+        title: "클립보드에 복사되었습니다.",
+      });
+    };
 
   const handleCommentPostClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -249,11 +262,12 @@ const CommunityPostDetail = () => {
   React.useEffect(() => {
     if (iframeRef.current !== null) {
       iframeRef.current.onload = () => {
-        try {
-          console.log(iframeRef.current.contentWindow["0"]);
-          setIsBlocked(false);
-        } catch (e) {
+        setIsLoading(false);
+        if (iframeRef.current.contentWindow.length === 0) {
           setIsBlocked(true);
+        }
+        if (iframeRef.current.contentWindow.length > 0) {
+          setIsBlocked(false);
         }
       };
     }
@@ -270,6 +284,8 @@ const CommunityPostDetail = () => {
     if (link?.includes(window.location.origin)) {
       setIsCondiBook(true);
     }
+    setIsBlocked(false);
+    setIsLoading(true);
   }, [link]);
 
   return (
@@ -308,25 +324,34 @@ const CommunityPostDetail = () => {
             <></>
           ) : (
             <BookmarkContainer>
-              <h4 className="title">북마크</h4>
-              <Ol>
-                {list?.map((item) => {
-                  return (
-                    <li key={`bookmark-${item.id}`}>
-                      <span
-                        className="pointer"
-                        onClick={() => handleClickBookmark(item.url)}
-                      >
-                        {item.meta_title ?? item.meta_description ?? item.url}
-                      </span>
-                    </li>
-                  );
-                })}
-              </Ol>
+              <h4 className="title">공유 북마크</h4>
+              <div className="bookmark-wrap">
+                <Ol>
+                  {list?.map((item) => {
+                    return (
+                      <Row key={`bookmark-${item.id}`}>
+                        <li onClick={() => handleClickBookmark(item.url)}>
+                          <span className="pointer">
+                            {item.meta_title ??
+                              item.meta_description ??
+                              item.url}
+                          </span>
+                        </li>
+                        <button
+                          className="copy-button"
+                          onClick={handleClickCopy(item.url)}
+                        >
+                          <span className="pe-7s-copy-file"></span>
+                        </button>
+                      </Row>
+                    );
+                  })}
+                </Ol>
+              </div>
             </BookmarkContainer>
           )}
           {isfetched ? (
-            <div style={{ paddingBottom: "20px" }}>
+            <div style={{ paddingBottom: "2vw", height: "60%" }}>
               <Viewer initialValue={fetchData.content} />
             </div>
           ) : (
@@ -380,6 +405,10 @@ const CommunityPostDetail = () => {
               >
                 새 탭으로 열기
               </button>
+              <div>
+                CondiBook 크롬 확장 프로그램을 설치하시면 미리보기로 보실 수
+                있습니다.
+              </div>
             </Warning>
           )}
           {isCondiBook && (
@@ -388,12 +417,14 @@ const CommunityPostDetail = () => {
               <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
             </Warning>
           )}
+          {isLoading && <Loading />}
           <iframe
             src={link}
             width="100%"
-            height={!link || isBlocked ? "0%" : "100%"}
+            height={!link || isBlocked || isLoading ? "0%" : "100%"}
             ref={iframeRef}
             loading="lazy"
+            allow="autoplay; encrypted-media"
           ></iframe>
         </div>
       </div>
@@ -431,7 +462,7 @@ const Div = styled.div`
     min-width: 0px;
     width: 50%;
     position: relative;
-    padding: 1%;
+    padding: 1% 1% 0 1%;
     display: flex;
     flex-direction: column;
     // justify-content: center;
@@ -446,6 +477,7 @@ const Div = styled.div`
     background: #f5f5f5;
     border-radius: 10px;
     margin: 10px;
+    max-height: 100%;
   }
 `;
 
@@ -492,14 +524,21 @@ const H1 = styled.h1`
   word-break: keep-all; // 콘텐츠 오버플로 줄바꿈 옵션 keep-all: 줄을 바꿀 때 단어끊김 없음
 `;
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 0.75rem;
   z-index: 5;
   width: 100%;
   position: relative;
-  font-size: 1.2vw;
+  font-size: 1vw;
 
   .comment-button {
     margin-top: -0.5rem;
@@ -528,7 +567,7 @@ const ButtonContainer = styled.div`
 
 const InfoContainer = styled.div`
   align-items: center;
-  font-size: 0.9vw;
+  font-size: 1vw;
   display: flex;
   justify-content: space-between;
   width: 80%;
@@ -544,9 +583,9 @@ const InfoContainer = styled.div`
 `;
 
 const BookmarkContainer = styled.div`
-  margin: 2rem;
-  padding: 2rem 1.5rem;
-  border: 2px solid black;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: ${({ theme }) => theme.profileBackground};
 
   border-radius: 8px;
   position: relative;
@@ -555,15 +594,41 @@ const BookmarkContainer = styled.div`
     font-weight: bold;
     padding-right: 2rem;
     font-size: 1.5rem;
+    color: white;
+  }
+
+  .bookmark-wrap {
+    border-radius: 5px;
+    background: white;
+    padding: 1vw;
   }
 `;
 
 const Ol = styled.ol`
+  padding: 5px;
   padding-left: 1rem;
   line-height: 1.8;
   font-size: 1rem;
   counter-reset: item 0;
+
+  list-style-type: disc;
   .pointer {
+    cursor: pointer;
+  }
+  li {
+    width: 100%;
+  }
+
+  li:hover {
+    font-weight: bold;
+    cursor: pointer;
+  }
+  button {
+    width: 30px;
+    margin-left: 2rem;
+    border-radius: 5px;
+    border: none;
+    outline: none;
     cursor: pointer;
   }
 `;
@@ -617,5 +682,19 @@ const Warning = styled.div`
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
+  }
+
+  button {
+    font-size: 1.2vw;
+    background: ${({ theme }) => theme.profileBackground};
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+
+    &:hover {
+      background: ${({ theme }) => theme.subBlackColor};
+    }
   }
 `;
