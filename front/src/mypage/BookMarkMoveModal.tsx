@@ -78,7 +78,7 @@ const BookMarkMoveModal = ({
             </div>
             <div className="link-box">
               <Folder>
-                <div style={{ fontWeight: "bold" }}>폴더 *</div>
+                <div style={{ fontWeight: "bold" }}>폴더 위치 *</div>
                 <select
                   defaultValue={selectedFolder}
                   onChange={handleFolderChange}
@@ -199,9 +199,12 @@ const Div = styled.div`
 
 const Folder = styled.div`
   margin: 0 20px 10px 20px;
+  display: flex;
+  justify-content: center;
 
   select {
     width: 40%;
+    margin-left: 1.5vw;
   }
   input {
     width: 60%;
