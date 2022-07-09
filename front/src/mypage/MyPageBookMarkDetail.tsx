@@ -33,6 +33,7 @@ const MypageBookmarkDetail = () => {
   const [showMoveModal, setShowMoveModal] = useState(false);
   const [newLink, setNewLink] = useState("");
   const [folderTitle, setFolderTitle] = useState("");
+  const [bookmarkId, setBookmarkId] = useState(0);
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
   const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
@@ -163,6 +164,13 @@ const MypageBookmarkDetail = () => {
             newLink={newLink}
             handlePushData={handlePushData}
           />
+          <BookMarkMoveModal
+            open={showMoveModal}
+            close={handleMoveModal}
+            bookmarkId={Number(bookmarkId)}
+            currentFolderTitle={folderTitle}
+            handleBookMarkChange={handleBookMarkChange}
+          />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">
               {(provided) => (
@@ -174,82 +182,71 @@ const MypageBookmarkDetail = () => {
                   {list.map((item, index) => {
                     const { website } = item;
                     return (
-                      <>
-                        <BookMarkMoveModal
-                          open={showMoveModal}
-                          close={handleMoveModal}
-                          bookmarkId={item.bookmark_id}
-                          currentFolderTitle={folderTitle}
-                          handleBookMarkChange={handleBookMarkChange}
-                        />
-                        <div
-                          key={`mybookmark-${item.bookmark_id}`}
-                          className="dnd-item"
-                          onClick={() => setLink(website.url)}
+                      <div
+                        key={`mybookmark-${item.bookmark_id}`}
+                        className="dnd-item"
+                        onClick={() => setLink(website.url)}
+                      >
+                        <Draggable
+                          draggableId={`mybookmark-${item.bookmark_id}`}
+                          index={index}
                         >
-                          <Draggable
-                            draggableId={`mybookmark-${item.bookmark_id}`}
-                            index={index}
-                          >
-                            {(provided, snapshot) => (
-                              <DnDiv
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={getItemStyle(
-                                  snapshot.isDragging,
-                                  provided.draggableProps.style,
-                                )}
-                              >
-                                <div className="dnd-item-element">
+                          {(provided, snapshot) => (
+                            <DnDiv
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style,
+                              )}
+                            >
+                              <div className="dnd-item-element">
+                                <div>
+                                  <span
+                                    title="순서 이동"
+                                    className="pe-7s-menu"
+                                  />
+                                </div>
+                                <Img>
+                                  <img src={website.img} alt="이미지" />
+                                </Img>
+                                <div className="content">
                                   <div>
-                                    <span
-                                      title="순서 이동"
-                                      className="pe-7s-menu"
-                                    />
+                                    {website.meta_title?.length >= 30
+                                      ? `${website.meta_title.substr(0, 30)}...`
+                                      : website.meta_title}
                                   </div>
-                                  <Img>
-                                    <img src={website.img} alt="이미지" />
-                                  </Img>
-                                  <div className="content">
-                                    <div>
-                                      {website.meta_title?.length >= 30
-                                        ? `${website.meta_title.substr(
-                                            0,
-                                            30,
-                                          )}...`
-                                        : website.meta_title}
-                                    </div>
-                                    <div className="sub">
-                                      {website.url?.length >= 50
-                                        ? `${website.url.substr(0, 50)}...`
-                                        : website.url}
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <span
-                                      title="링크 이동"
-                                      className="pe-7s-back-2 icon"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        console.log(item);
-                                        handleMoveModal();
-                                      }}
-                                    ></span>
-                                  </div>
-                                  <div>
-                                    <span
-                                      title="링크 삭제"
-                                      className="pe-7s-trash icon"
-                                      onClick={(e) => linkDelete(e, item)}
-                                    />
+                                  <div className="sub">
+                                    {website.url?.length >= 50
+                                      ? `${website.url.substr(0, 50)}...`
+                                      : website.url}
                                   </div>
                                 </div>
-                              </DnDiv>
-                            )}
-                          </Draggable>
-                        </div>
-                      </>
+                                <div>
+                                  <span
+                                    title="링크 이동"
+                                    className="pe-7s-back-2 icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      console.log(item);
+                                      handleMoveModal();
+                                      setBookmarkId(item.bookmark_id);
+                                    }}
+                                  ></span>
+                                </div>
+                                <div>
+                                  <span
+                                    title="링크 삭제"
+                                    className="pe-7s-trash icon"
+                                    onClick={(e) => linkDelete(e, item)}
+                                  />
+                                </div>
+                              </div>
+                            </DnDiv>
+                          )}
+                        </Draggable>
+                      </div>
                     );
                   })}
                 </div>

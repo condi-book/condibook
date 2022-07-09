@@ -83,7 +83,7 @@ const BookMarkMoveModal = ({
                   setSelectedFolder(
                     folders.find(
                       (item: any) => item.title === currentFolderTitle,
-                    ).id,
+                    )?.id,
                   );
                 }}
                 className="pe-7s-close"
@@ -97,7 +97,7 @@ const BookMarkMoveModal = ({
                   onChange={handleFolderChange}
                 >
                   {folders?.map((folder: FolderProps["folder"]) => (
-                    <option key={`folder-${folder.id}`} value={folder.id}>
+                    <option key={`folder-${folder?.id}`} value={folder?.id}>
                       {folder.title}
                     </option>
                   ))}
@@ -151,7 +151,7 @@ const Div = styled.div`
 
       .move-title {
         margin-left: 1vw;
-        font-size: 2vw;
+        font-size: 1.5vw;
       }
 
       span:hover {
