@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import * as Api from "../api";
+import { Alert } from "layout/Alert";
 
 interface GlobalAddProps {
   open: boolean;
@@ -36,12 +37,19 @@ const BookMarkMoveModal = ({
   const handleSubmit = () => {
     console.log(selectedFolder);
     Api.put(`bookmarks/${bookmarkId}`, { folder_id: selectedFolder })
-      .then(() => {
-        alert("북마크 이동 성공");
-        handleBookMarkChange(bookmarkId);
+      .then(async () => {
+        await Alert.fire({
+          icon: "success",
+          title: "북마크 이동 성공",
+        });
+        await close();
+        await handleBookMarkChange(bookmarkId);
       })
       .catch((err) => {
-        alert(err.response.data);
+        Alert.fire({
+          title: err.response.data,
+          icon: "error",
+        });
       });
   };
 
@@ -72,6 +80,11 @@ const BookMarkMoveModal = ({
               <span
                 onClick={() => {
                   close();
+                  setSelectedFolder(
+                    folders.find(
+                      (item: any) => item.title === currentFolderTitle,
+                    ).id,
+                  );
                 }}
                 className="pe-7s-close"
               ></span>
