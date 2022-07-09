@@ -203,6 +203,16 @@ const MypageBookmarkDetail = () => {
                                 </div>
                                 <div>
                                   <span
+                                    title="링크 이동"
+                                    className="pe-7s-back-2 icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      alert("hi");
+                                    }}
+                                  ></span>
+                                </div>
+                                <div>
+                                  <span
                                     title="링크 삭제"
                                     className="pe-7s-trash icon"
                                     onClick={(e) => linkDelete(e, item)}
@@ -345,6 +355,13 @@ const Div = styled.div`
 
       .pe-7s-trash {
         color: ${({ theme }) => theme.subRedColor};
+        &:hover {
+          font-weight: bold;
+        }
+      }
+
+      .pe-7s-back-2 {
+        color: #12c2e9;
         &:hover {
           font-weight: bold;
         }
