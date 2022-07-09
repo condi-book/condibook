@@ -169,7 +169,6 @@ const Div = styled.div<StyleProps>`
   .search-section {
     margin: auto;
     width: 90vw;
-    border: 2px solid red;
     height: 100%;
   }
   .search-container {
