@@ -57,7 +57,7 @@ const BookMarkMoveModal = ({
     Api.get(`user/folders`).then((res) => {
       console.log(res.data);
       setSelectedFolder(
-        res.data.find((item: any) => item.title === currentFolderTitle).id,
+        res.data.find((item: any) => item.title === currentFolderTitle)?.id,
       );
       setFolders(
         res.data.map((folder: FolderProps["folder"]) => ({
