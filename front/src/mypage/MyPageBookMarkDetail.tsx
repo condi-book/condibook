@@ -8,6 +8,7 @@ import {
 import styled from "styled-components";
 import Modal from "../layout/Modal";
 import SideBar from "../layout/SideBar";
+import BookMarkMoveModal from "./BookMarkMoveModal";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
 import { warningAlert, Alert } from "layout/Alert";
@@ -29,6 +30,7 @@ const MypageBookmarkDetail = () => {
   const [list, setList] = useState([]);
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
+  const [showMoveModal, setShowMoveModal] = useState(false);
   const [newLink, setNewLink] = useState("");
   const [folderTitle, setFolderTitle] = useState("");
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
@@ -62,6 +64,18 @@ const MypageBookmarkDetail = () => {
 
   const handleClick = () => {
     setShow((prev) => !prev);
+  };
+
+  const handleMoveModal = () => {
+    setShowMoveModal((prev) => !prev);
+  };
+
+  // 링크 이동 시 변경되는 북마크 데이터 핸들러
+  const handleBookMarkChange = async (bookmarkId: Number) => {
+    const copied = Array.from(list);
+    const moveData = copied.find((v) => v.bookmark_id === bookmarkId);
+    await copied.splice(copied.indexOf(moveData), 1);
+    setList(copied);
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -160,69 +174,82 @@ const MypageBookmarkDetail = () => {
                   {list.map((item, index) => {
                     const { website } = item;
                     return (
-                      <div
-                        key={`mybookmark-${item.bookmark_id}`}
-                        className="dnd-item"
-                        onClick={() => setLink(website.url)}
-                      >
-                        <Draggable
-                          draggableId={`mybookmark-${item.bookmark_id}`}
-                          index={index}
+                      <>
+                        <BookMarkMoveModal
+                          open={showMoveModal}
+                          close={handleMoveModal}
+                          bookmarkId={item.bookmark_id}
+                          currentFolderTitle={folderTitle}
+                          handleBookMarkChange={handleBookMarkChange}
+                        />
+                        <div
+                          key={`mybookmark-${item.bookmark_id}`}
+                          className="dnd-item"
+                          onClick={() => setLink(website.url)}
                         >
-                          {(provided, snapshot) => (
-                            <DnDiv
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style,
-                              )}
-                            >
-                              <div className="dnd-item-element">
-                                <div>
-                                  <span
-                                    title="순서 이동"
-                                    className="pe-7s-menu"
-                                  />
-                                </div>
-                                <Img>
-                                  <img src={website.img} alt="이미지" />
-                                </Img>
-                                <div className="content">
+                          <Draggable
+                            draggableId={`mybookmark-${item.bookmark_id}`}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <DnDiv
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={getItemStyle(
+                                  snapshot.isDragging,
+                                  provided.draggableProps.style,
+                                )}
+                              >
+                                <div className="dnd-item-element">
                                   <div>
-                                    {website.meta_title?.length >= 30
-                                      ? `${website.meta_title.substr(0, 30)}...`
-                                      : website.meta_title}
+                                    <span
+                                      title="순서 이동"
+                                      className="pe-7s-menu"
+                                    />
                                   </div>
-                                  <div className="sub">
-                                    {website.url?.length >= 50
-                                      ? `${website.url.substr(0, 50)}...`
-                                      : website.url}
+                                  <Img>
+                                    <img src={website.img} alt="이미지" />
+                                  </Img>
+                                  <div className="content">
+                                    <div>
+                                      {website.meta_title?.length >= 30
+                                        ? `${website.meta_title.substr(
+                                            0,
+                                            30,
+                                          )}...`
+                                        : website.meta_title}
+                                    </div>
+                                    <div className="sub">
+                                      {website.url?.length >= 50
+                                        ? `${website.url.substr(0, 50)}...`
+                                        : website.url}
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <span
+                                      title="링크 이동"
+                                      className="pe-7s-back-2 icon"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        console.log(item);
+                                        handleMoveModal();
+                                      }}
+                                    ></span>
+                                  </div>
+                                  <div>
+                                    <span
+                                      title="링크 삭제"
+                                      className="pe-7s-trash icon"
+                                      onClick={(e) => linkDelete(e, item)}
+                                    />
                                   </div>
                                 </div>
-                                <div>
-                                  <span
-                                    title="링크 이동"
-                                    className="pe-7s-back-2 icon"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      alert("hi");
-                                    }}
-                                  ></span>
-                                </div>
-                                <div>
-                                  <span
-                                    title="링크 삭제"
-                                    className="pe-7s-trash icon"
-                                    onClick={(e) => linkDelete(e, item)}
-                                  />
-                                </div>
-                              </div>
-                            </DnDiv>
-                          )}
-                        </Draggable>
-                      </div>
+                              </DnDiv>
+                            )}
+                          </Draggable>
+                        </div>
+                      </>
                     );
                   })}
                 </div>
