@@ -69,7 +69,7 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
 };
 
 const Div = styled.div`
-  position: absolute;
+  position: fixed;
   width: 40vh;
   height: 70vh;
   border: ${({ theme }) => theme.border};
