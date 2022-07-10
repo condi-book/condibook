@@ -3,7 +3,7 @@ import { DispatchContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { removeCookie } from "./util/cookie";
 import { Alert } from "layout/Alert";
-import { Button } from "../user/UserDelete";
+import { Button } from "../user/Profile";
 const Logout = () => {
   const navigate = useNavigate();
   const dispatch: any = useContext(DispatchContext);

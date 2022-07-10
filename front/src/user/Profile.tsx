@@ -1,3 +1,4 @@
+import Logout from "auth/Logout";
 import React, { useState } from "react";
 import styled from "styled-components";
 import ProfileModal from "./ProfileModal";
@@ -34,6 +35,7 @@ const Profile = ({ data, handleApply }: ProfileProps) => {
         <div className="container">
           <div className="background">
             <Button onClick={() => setShow((prev) => !prev)}>수정</Button>
+            <Logout />
           </div>
           <div className="top">
             <div className="profile-box">
@@ -181,15 +183,16 @@ const Font = styled.div`
   font-weight: bold;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   margin: 10px;
   font-weight: bold;
   background: none;
   color: white;
-  font-size: 1.3vw;
+  font-size: 1.1vw;
   &:hover {
     background: rgba(255, 255, 255, 0.7);
     color: black;
   }
 `;
+
 export default Profile;
