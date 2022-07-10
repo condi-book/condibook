@@ -4,6 +4,7 @@ import styled from "styled-components";
 import MypageNavbar from "./MyPageNavBar";
 import MypageBookmark from "./MyPageBookMark";
 import MypageScrapedBookmark from "./MyPageScrapedBookMark";
+import SearchButton from "search/SearchButton";
 // import { KeyboardContext } from "../App";
 
 export interface MypageProps {
@@ -24,6 +25,7 @@ export const Mypage = () => {
     <Div>
       {/* {keyboardContext.sidebar === true && <SideBar />} */}
       <SideBar />
+      <SearchButton></SearchButton>
       <div className="mypage-container">
         <div className="mypage-main">
           <MypageNavbar tab={tab} handleClick={handleClick} />

@@ -9,6 +9,7 @@ import TeamCreateModal from "./TeamCreateModal";
 import TeamUserModal from "./TeamUserModal";
 // import { KeyboardContext } from "../App";
 import TeamFolderModal from "./TeamFolderModal";
+import SearchButton from "search/SearchButton";
 
 type ContextType = {
   team: Team;
@@ -98,6 +99,7 @@ const TeamPage = () => {
     <Div>
       {/* {keyboardContext.sidebar === true && <SideBar />} */}
       <SideBar />
+      <SearchButton></SearchButton>
       <div className="team-section">
         <div className="team-wrap">
           <TeamSidebar
