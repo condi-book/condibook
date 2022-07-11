@@ -37,9 +37,7 @@ class Post {
         return result;
     }
     static async findAllList({ offset }) {
-        const excludes = { exclude: ["content"] };
         const result = await PostModel.findAll({
-            attributes: excludes,
             order: [["createdAt", "DESC"]],
             offset: offset,
             limit: 20,
@@ -47,9 +45,7 @@ class Post {
         return result;
     }
     static async findAllByViews({ offset }) {
-        const excludes = { exclude: ["content"] };
         const result = PostModel.findAll({
-            attributes: excludes,
             order: [["views", "DESC"]],
             offset: offset,
             limit: 20,
@@ -57,9 +53,7 @@ class Post {
         return result;
     }
     static async findAllByLikes({ offset }) {
-        const excludes = { exclude: ["content"] };
         const result = PostModel.findAll({
-            attributes: excludes,
             order: [["like_counts", "DESC"]],
             offset: offset,
             limit: 20,
