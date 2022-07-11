@@ -3,6 +3,8 @@ import { createClient } from "redis";
 class RedisClient {
     constructor() {
         this.client = createClient({
+            host: "redis_server",
+            port: 6379,
             socket: {
                 reconnectStrategy() {
                     return new Error();
