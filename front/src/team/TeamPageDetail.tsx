@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { useOutletContextProps } from "./TeamPage";
 import { AxiosError } from "axios";
 import { Alert } from "../layout/Alert";
+import Loading from "layout/Loading";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -36,6 +37,7 @@ const TeamPageDetail = () => {
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
   const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
+  const [isLoading, setIsLoading] = React.useState<boolean>(false); // 미리보기 로딩중인지
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -126,11 +128,12 @@ const TeamPageDetail = () => {
     fetchUpdateTeam();
     if (iframeRef.current !== null) {
       iframeRef.current.onload = () => {
-        try {
-          console.log(iframeRef.current.contentWindow["0"]);
-          setIsBlocked(false);
-        } catch (e) {
+        setIsLoading(false);
+        if (iframeRef.current.contentWindow.length === 0) {
           setIsBlocked(true);
+        }
+        if (iframeRef.current.contentWindow.length > 0) {
+          setIsBlocked(false);
         }
       };
     }
@@ -147,6 +150,8 @@ const TeamPageDetail = () => {
     if (link?.includes(window.location.origin)) {
       setIsCondiBook(true);
     }
+    setIsBlocked(false);
+    setIsLoading(true);
   }, [link]);
   return (
     <Div>
@@ -262,10 +267,11 @@ const TeamPageDetail = () => {
               <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
             </Warning>
           )}
+          {isLoading && <Loading />}
           <iframe
             src={link}
             width="100%"
-            height={!link || isBlocked ? "0%" : "100%"}
+            height={!link || isBlocked || isLoading ? "0%" : "100%"}
             ref={iframeRef}
             loading="lazy"
           ></iframe>
