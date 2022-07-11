@@ -18,18 +18,19 @@ export interface PostPreview {
 
 type StyleProps = {
   value: string;
-  sortState: string;
+  sortState: number;
 };
 
 const CommunityPage = () => {
   const navigate = useNavigate();
-  const [sortState, setSortState] = useState<string>("new");
+  const [sortState, setSortState] = useState<number>(1);
+  const [pageNum, setPageNum] = useState<number>(1);
 
   const radios = React.useMemo(
     () => [
-      { name: "최신순", value: "new" },
-      { name: "좋아요순", value: "like" },
-      { name: "조회수순", value: "view" },
+      { name: "최신순", value: "1" },
+      { name: "좋아요순", value: "2" },
+      { name: "조회수순", value: "3" },
     ],
     [],
   );
@@ -38,7 +39,8 @@ const CommunityPage = () => {
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       const { value } = event.currentTarget;
-      setSortState(value);
+      setPageNum(1);
+      setSortState(parseInt(value));
     },
     [],
   );
@@ -54,6 +56,7 @@ const CommunityPage = () => {
 
     navigate("/community/search");
   };
+
   return (
     <>
       <Div>
@@ -89,7 +92,11 @@ const CommunityPage = () => {
           </Row>
           <Row className="second" style={{ width: "90%" }}>
             <Container style={{ width: "100%" }}>
-              <CommunityPostList sortState={sortState} />
+              <CommunityPostList
+                sortState={sortState}
+                pageNum={pageNum}
+                setPageNum={setPageNum}
+              />
             </Container>
           </Row>
         </div>
@@ -193,8 +200,9 @@ const SortButton = styled.button<StyleProps>`
   border-radius: 5px;
   margin: 0 0.2rem;
   background: ${(props) =>
-    props.sortState === props.value ? props.theme.mainColor : "none"};
-  color: ${(props) => (props.sortState === props.value ? "white" : "black")};
+    props.sortState === parseInt(props.value) ? props.theme.mainColor : "none"};
+  color: ${(props) =>
+    props.sortState === parseInt(props.value) ? "white" : "black"};
   font-size: 1vw;
   font-weight: bold;
   cursor: pointer;

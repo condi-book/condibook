@@ -5,7 +5,9 @@ import useFetch from "./hooks/useFetch";
 import { PostPreview } from "./CommunityPage";
 
 interface CommunityPostListProps {
-  sortState: string;
+  sortState: number;
+  pageNum: number;
+  setPageNum: (value: number) => void;
 }
 class PostPreviewModel implements PostPreview {
   id: string;
@@ -32,8 +34,11 @@ const loadingData: PostPreview[] = Array(20)
   .fill(undefined)
   .map(() => new PostPreviewModel());
 
-const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
-  const [pageNum, setPageNum] = useState(1);
+const CommunityPostList = ({
+  sortState,
+  pageNum,
+  setPageNum,
+}: CommunityPostListProps) => {
   const [posts, setPosts] = useState<PostPreview[]>([]);
   const { hasMore, isLoading } = useFetch(pageNum, sortState, setPosts);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
@@ -49,7 +54,7 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
 
     observerRef.current = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && hasMore) {
-        setPageNum((page) => page + 1);
+        setPageNum(pageNum + 1);
       }
     });
 
@@ -66,10 +71,8 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
   }, [isLoading, posts]);
 
   React.useEffect(() => {
-    setPageNum(1);
     setPosts([]);
   }, [sortState]);
-
   return (
     <Div>
       <Row>
