@@ -2,9 +2,17 @@ import axios from "axios";
 import { Website, Keyword, Category } from "../../db";
 import { AI_SERVER_URL } from "../../config";
 import { parsers } from "../../util/parser/parser";
+import { redisClient } from "../../db/redis";
 
 class websiteSerivce {
     static async createWebsite({ url }) {
+        const cachedUrl = await redisClient.getValue({
+            key: "website",
+            field: url,
+        });
+        if (cachedUrl) {
+            return cachedUrl;
+        }
         // 웹사이트 파싱
         let { title, description, img } = await parsers(url);
         // DB에 이미 존재하는 웹사이트인지 확인
@@ -16,11 +24,20 @@ class websiteSerivce {
                 previous.meta_description === description
             ) {
                 // 그대로 유지
-                return {
+                const result = {
                     website: previous,
                     keywords: previous.keywords,
                     category: previous.category,
                 };
+                // cache
+                await redisClient.setValue({
+                    key: "website",
+                    field: url,
+                    valueObj: result,
+                    ttl: 86400,
+                });
+
+                return result;
             } else {
                 // 다시 AI 결과 받아서 업데이트 하기
                 let keyword = null;
@@ -77,11 +94,20 @@ class websiteSerivce {
 
                 const updatedWebsite = await Website.findByUrl({ url }); // postgresql을 사용해야 업데이트된 레코드를 받을 수 있다.
 
-                return {
+                const result = {
                     website: updatedWebsite,
                     keywords: keyword,
                     category: category,
                 };
+                // cache
+                await redisClient.setValue({
+                    key: "website",
+                    field: url,
+                    valueObj: result,
+                    ttl: 86400,
+                });
+
+                return result;
             }
         }
         // 웹사이트 생성
@@ -139,12 +165,17 @@ class websiteSerivce {
                 toUpdate: { category_id: category.id },
             });
         }
+        const result = { website: newWebsite, keywords: keyword, category };
 
-        return {
-            website: newWebsite,
-            keywords: keyword,
-            category,
-        };
+        // cache
+        await redisClient.setValue({
+            key: "website",
+            field: url,
+            valueObj: result,
+            ttl: 86400,
+        });
+
+        return result;
     }
     static async getAIResponse({ title, description }) {
         let keyword = null;
