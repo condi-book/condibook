@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import theme from "./style/theme";
-import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
+import Main from "./layout/Main";
 import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
 import CommunityPostDetail from "./community/CommunityPostDetail";
@@ -20,6 +20,7 @@ import TeamPage from "./team/TeamPage";
 import TeamPageMain from "./team/TeamPageMain";
 import TeamPageDetail from "./team/TeamPageDetail";
 import { UserProvider } from "store/userStore";
+import NotFound from "layout/NotFound";
 
 // export const KeyboardContext: any = createContext(null);
 
@@ -72,6 +73,7 @@ const App: React.FC = () => {
               element={<CallBackGoogleLogin />}
             />
             <Route path="/" element={<Main />} />
+            <Route path="*" element={<NotFound />} />
             <Route path="/community" element={<Community />}>
               <Route path="" element={<CommunityPage />} />
               <Route path=":postId" element={<CommunityPostDetail />} />
