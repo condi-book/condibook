@@ -1,16 +1,16 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
 import { serverUrl } from "api";
 import styled from "styled-components";
+import { UserContext } from "store/userStore";
 
 const CallBackKakaoLogin = () => {
   const navigate: any = useNavigate();
-  const dispatch: any = useContext(DispatchContext);
+  const { userDispatch }: any = useContext(UserContext);
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
@@ -29,7 +29,7 @@ const CallBackKakaoLogin = () => {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       });
-      await dispatch({
+      await userDispatch({
         type: "LOGIN_SUCCESS",
         payload: user,
       });

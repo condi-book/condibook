@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { GOOGLE_LOGIN_STATE } from "../config";
-import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
 import { serverUrl } from "api";
+import { UserContext } from "store/userStore";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
-  const dispatch: any = useContext(DispatchContext);
+  const { userDispatch }: any = useContext(UserContext);
 
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
@@ -45,7 +45,7 @@ const CallBackGoogleLogin = () => {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       });
-      dispatch({
+      userDispatch({
         type: "LOGIN_SUCCESS",
         payload: user,
       });
