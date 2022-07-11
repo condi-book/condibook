@@ -7,28 +7,30 @@ import { PostPreview } from "./CommunityPage";
 interface CommunityPostListProps {
   sortState: string;
 }
-// class PostPreviewModel implements PostPreview {
-//   id: string;
-//   author: string;
-//   author_name: string;
-//   createdAt: Date;
-//   title: string;
-//   like_counts: number;
-//   updatedAt: Date;
-//   views: number;
+class PostPreviewModel implements PostPreview {
+  id: string;
+  author: string;
+  author_name: string;
+  createdAt: Date;
+  title: string;
+  like_counts: number;
+  updatedAt: Date;
+  views: number;
+  content: string;
 
-//   constructor() {
-//     this.id = `${Math.floor(Math.random() * 10000)}`;
-//     this.author = "";
-//     this.createdAt = new Date();
-//     this.title = "";
-//     this.views = Math.floor(Math.random() * 10);
-//   }
-// }
+  constructor() {
+    this.id = `${Math.floor(Math.random() * 10000)}`;
+    this.author = "CondiBook";
+    this.createdAt = new Date();
+    this.title = "로딩 중 입니다.";
+    this.views = Math.floor(Math.random() * 10);
+    this.content = "로딩 중 입니다.";
+  }
+}
 
-// const loadingData: PostPreview[] = Array(20)
-//   .fill(undefined)
-//   .map(() => new PostPreviewModel());
+const loadingData: PostPreview[] = Array(20)
+  .fill(undefined)
+  .map(() => new PostPreviewModel());
 
 const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
   const [pageNum, setPageNum] = useState(1);
@@ -54,34 +56,31 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
     node && observerRef.current.observe(node);
   };
 
-  const handleChangeSort = () => {
-    setPageNum(1);
-    setPosts([]);
-  };
+  React.useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (posts.length === 0) {
+      setPosts(loadingData);
+    }
+  }, [isLoading, posts]);
 
   React.useEffect(() => {
-    handleChangeSort();
+    setPageNum(1);
+    setPosts([]);
   }, [sortState]);
 
   return (
     <Div>
       <Row>
-        {posts.map((PostPreview: PostPreview) => (
-          <Col key={`preview-${sortState}-${PostPreview.id}`}>
-            <CommunityPostCard PostPreview={PostPreview} />
-          </Col>
-        ))}
+        {posts
+          ? posts.map((PostPreview: PostPreview) => (
+              <Col key={`preview-${sortState}-${PostPreview.id}`}>
+                <CommunityPostCard PostPreview={PostPreview} />
+              </Col>
+            ))
+          : null}
         <div ref={observer} />
-        <>
-          {isLoading && (
-            // loadingData.map((PostPreview: PostPreview) => (
-            //   <Col key={`preview-${sortState}-${PostPreview.id}`}>
-            //     <CommunityPostCard PostPreview={PostPreview} />
-            //   </Col>
-            // ))}
-            <div>loading</div>
-          )}
-        </>
       </Row>
     </Div>
   );

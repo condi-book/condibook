@@ -10,6 +10,7 @@ export interface PostPreview {
   author_name: string;
   createdAt: Date;
   title: string;
+  content: string;
   like_counts: number;
   updatedAt: Date;
   views: number;
