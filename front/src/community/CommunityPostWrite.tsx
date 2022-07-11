@@ -17,7 +17,7 @@ import * as Api from "../api";
 export interface Bookmark {
   id: number;
   url: string;
-  checked: boolean;
+  checked?: boolean;
 }
 
 interface imageBlob {
@@ -59,12 +59,12 @@ const CommunityPostWrite = () => {
     setContent(markDownContent);
   };
 
-  const handleExitButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-    navigate("/community");
-  };
+  // const handleExitButtonClick = (
+  //   event: React.MouseEvent<HTMLButtonElement>,
+  // ) => {
+  //   event.preventDefault();
+  //   navigate("/community");
+  // };
 
   const validateTitleContent = () => {
     if (title === "") {
@@ -93,10 +93,17 @@ const CommunityPostWrite = () => {
       });
       return false;
     }
-    if (content.length > 1000) {
+    if (content.length > 5000) {
       Alert.fire({
         icon: "error",
-        title: "내용은 1000자 이내로 작성해주세요.",
+        title: "내용은 5000자 이내로 작성해주세요.",
+      });
+      return false;
+    }
+    if (postBookmarks.length > 10) {
+      Alert.fire({
+        icon: "error",
+        title: "북마크는 10개까지만 추가할 수 있습니다.",
       });
       return false;
     }
@@ -138,6 +145,7 @@ const CommunityPostWrite = () => {
     }
   };
 
+  // 글 수정하기
   const handlePutButtonClick = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -163,6 +171,10 @@ const CommunityPostWrite = () => {
     }
   };
 
+  const handleDeleteBookmark = (id: number) => {
+    setPostBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== id));
+  };
+
   const fetchPostContent = async () => {
     try {
       const res = await Api.get(`posts/${postId}`);
@@ -179,6 +191,18 @@ const CommunityPostWrite = () => {
       setTitle(fetchedItem?.title);
       setContent(fetchedItem?.content);
       editorRef.current?.getInstance().setMarkdown(fetchedItem?.content);
+      const res2 = await Api.get(`attached/${postId}`);
+      const attachedBookmarkData = res2.data;
+      const bookmarkList = attachedBookmarkData.map((data: any) => {
+        return data.bookmark;
+      });
+      const mappedBookmarkList = bookmarkList.map((bookmark: any) => {
+        return {
+          id: bookmark.id,
+          url: bookmark.website.url,
+        };
+      });
+      setPostBookmarks(mappedBookmarkList);
     } catch (error) {
       const err = error as AxiosError;
       Alert.fire({
@@ -273,13 +297,43 @@ const CommunityPostWrite = () => {
 
   return (
     <Container>
-      <ItemContainer>
+      <TitleContainer>
         <TitleInput
           type="text"
           placeholder="제목을 입력하세요"
           onChange={handleTitleChange}
           value={title}
         />
+        <div className="postBox">
+          {!isModifying ? (
+            <button className="hoverButton" onClick={handlePostButtonClick}>
+              <span>등록하기</span>
+            </button>
+          ) : (
+            <button className="hoverButton" onClick={handlePutButtonClick}>
+              <span>수정하기</span>
+            </button>
+          )}
+        </div>
+      </TitleContainer>
+      <ItemContainer>
+        <BookmarkContainer>
+          <div className="bookmark-wrap">
+            {postBookmarks?.length === 0
+              ? null
+              : postBookmarks.map((bookmark) => (
+                  <div className="bookmark-item" key={bookmark.id}>
+                    <div className="bookmark-item-text">{bookmark.url}</div>
+                    <div
+                      className="bookmark-item-delete"
+                      onClick={() => handleDeleteBookmark(bookmark.id)}
+                    >
+                      <span className="pe-7s-close"></span>
+                    </div>
+                  </div>
+                ))}
+          </div>
+        </BookmarkContainer>
       </ItemContainer>
       <ItemContainer>
         <ToastEditor
@@ -310,28 +364,8 @@ const CommunityPostWrite = () => {
         <AddBookMarkModal
           isModalShow={isModalShow}
           setIsModalShow={setIsModalShow}
-          postBookmarks={postBookmarks}
           setPostBookmarks={setPostBookmarks}
         />
-      </ItemContainer>
-      <ItemContainer>
-        <ButtonContainer>
-          <button className="hoverButton" onClick={handleExitButtonClick}>
-            <span className="pe-7s-back"></span>
-            <span>나가기</span>
-          </button>
-          <div className="postBox">
-            {!isModifying ? (
-              <button className="hoverButton" onClick={handlePostButtonClick}>
-                <span>등록하기</span>
-              </button>
-            ) : (
-              <button className="hoverButton" onClick={handlePutButtonClick}>
-                <span>수정하기</span>
-              </button>
-            )}
-          </div>
-        </ButtonContainer>
       </ItemContainer>
     </Container>
   );
@@ -349,7 +383,7 @@ const Container = styled.div`
   position: relative;
   background: white;
   border-radius: 10px;
-  padding: 10px;
+  padding: 3px;
 `;
 
 const TitleInput = styled.input`
@@ -357,7 +391,7 @@ const TitleInput = styled.input`
   display: block;
   padding: 0px;
   font-size: 2vw;
-  width: 100%;
+  width: 90%;
   resize: none;
   line-height: 1.5;
   outline: none;
@@ -368,7 +402,7 @@ const TitleInput = styled.input`
 const ItemContainer = styled.div`
   max-height: 733.5px;
   opacity: 1;
-  padding-top: 3vw;
+  margin-bottom: 1rem;
   padding-left: 3rem;
   padding-right: 3rem;
   .placeholder {
@@ -377,18 +411,23 @@ const ItemContainer = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
-  height: 4rem;
+const TitleContainer = styled.div`
+  max-height: 733.5px;
+  opacity: 1;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 20px;
 
   .hoverButton {
-    height: 2.5rem;
+    width: 6em;
     padding: 0.5rem 1rem;
     align-items: center;
+    justify-content: center;
     background: ${({ theme }) => theme.profileBackground};
     border-radius: 5px;
     border: none;
@@ -402,13 +441,54 @@ const ButtonContainer = styled.div`
       color: white;
     }
   }
-
-  .pe-7s-back {
-    margin-right: 5px;
-  }
-
   .postBox {
     justify-content: flex-end;
     align-items: center;
+  }
+`;
+
+const BookmarkContainer = styled.div`
+  padding: 0.5rem;
+  background: ${({ theme }) => theme.profileBackground};
+
+  border-radius: 8px;
+  position: relative;
+  .title {
+    margin-top: 0px;
+    font-weight: bold;
+    padding-right: 2rem;
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .bookmark-wrap {
+    height: 8.5rem;
+    border-radius: 5px;
+    background: white;
+    padding: 0.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    .bookmark-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.2rem;
+      .bookmark-item-text {
+        font-size: 1rem;
+        color: black;
+        font-weight: bold;
+        margin-right: 1rem;
+      }
+      .bookmark-item-delete {
+        cursor: pointer;
+        font-size: 1.5rem;
+        &:hover {
+          color: red;
+        }
+      }
+    }
   }
 `;
