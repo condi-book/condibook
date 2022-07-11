@@ -25,6 +25,14 @@ import NotFound from "layout/NotFound";
 // export const KeyboardContext: any = createContext(null);
 
 const App: React.FC = () => {
+  // const sidebarReducer = (state: any, action: any) => {
+  //   switch (action.type) {
+  //     case "PUSH_SIDEBAR":
+  //       return {
+  //         sidebar: !state.sidebar,
+  //       };
+  //   }
+  // };
   // const [sidebarState, dispatcher] = useReducer(sidebarReducer, {
   //   sidebar: true,
   // });

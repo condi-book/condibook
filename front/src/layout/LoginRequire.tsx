@@ -16,9 +16,9 @@ const NotFound = () => {
         }}
       ></div>
       <Container>
-        <img src="static/img/notFound.png" alt="notFound" />
-        <p>페이지를 찾을 수 없습니다.</p>
-        <Button onClick={() => navigate("/")}>🏠 홈으로</Button>
+        <img src="static/img/warning.png" alt="warning" />
+        <p>로그인이 필요한 페이지 입니다.</p>
+        <Button onClick={() => navigate("/login")}>로그인하기</Button>
       </Container>
     </div>
   );

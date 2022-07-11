@@ -45,7 +45,7 @@ const CallBackGoogleLogin = () => {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       });
-      userDispatch({
+      await userDispatch({
         type: "LOGIN_SUCCESS",
         payload: user,
       });
