@@ -146,11 +146,26 @@ class folderService {
                     entity: "해당 사용자의 폴더",
                     action: "조회",
                 });
-            } else if (folder.user_id !== requester.id) {
+            } else if (folder.user_id && folder.user_id !== requester.id) {
                 return {
                     errorMessage:
                         "사용자는 해당 폴더에 접근할 권한이 없습니다.",
                 };
+            } else if (folder.team_id) {
+                const team = await Team.findOne({ team_id: folder.team_id });
+                if (!team) {
+                    return getFailMsg({ entity: "팀", action: "조회" });
+                }
+                const membership = await Membership.findOne({
+                    team_id: team.id,
+                    member_id: requester.id,
+                });
+                if (!membership) {
+                    return {
+                        errorMessage:
+                            "사용자는 해당 폴더를 수정할 권한이 없습니다.",
+                    };
+                }
             }
             // 폴더 상세 정보 수정
             const [affectedRows] = await Folder.updateTitle({
@@ -181,11 +196,22 @@ class folderService {
                     entity: "사용자의 폴더",
                     action: "조회",
                 });
-            } else if (folder.user_id !== requester.id) {
+            } else if (folder.user_id && folder.user_id !== requester.id) {
                 return {
                     errorMessage:
                         "사용자는 해당 폴더에 접근할 권한이 없습니다.",
                 };
+            } else if (folder.team_id) {
+                const team = await Team.findOne({ team_id: folder.team_id });
+                if (!team) {
+                    return getFailMsg({ entity: "팀", action: "조회" });
+                }
+                if (team.manager != requester.id) {
+                    return {
+                        errorMessage:
+                            "사용자는 해당 폴더에 삭제할 권한이 없습니다.",
+                    };
+                }
             }
             // 폴더 삭제
             const result = await Folder.destroyOne({ folder_id: folder.id });

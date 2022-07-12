@@ -27,7 +27,7 @@ def translate():
 
     description_nouns = nouns_extractor(description)
     reserved_bookmark_list = make_reserved_bookmark_list(title_nouns)
-    check, recommend_keywords = keywords_sum_similarity(reserved_bookmark_list,description_nouns)
+    check, recommend_keywords = keywords_sum_similarity(reserved_bookmark_list,description_nouns)  # TODO : refact.
 
     # print('recommend_keywords =',recommend_keywords)
 
@@ -37,14 +37,14 @@ def translate():
     else:
         hashtags = [i for i in recommend_keywords if recommend_keywords[i] == 1]
         
-    category = get_category(hashtags)
-    send = {'hashtags':hashtags,'category':category}
+    category = get_category(hashtags)   # TODO : refact.
+    # send = {'hashtags':hashtags,'category':category}
+    send = {'category':category}
 
     return make_response(send), 200
 
 @app.route('/keyword_extract', methods = ['POST'])
 def recommend_bookmark():
-    # 요구하는 명세서가 어떻게 될지 모르겠음.. 일단 구현.
     req =  request.get_json()
     hashtags = req['hashtags']
 
