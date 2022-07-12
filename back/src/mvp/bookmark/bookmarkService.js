@@ -1,4 +1,4 @@
-import { Bookmark, Website, Folder, User, Team } from "../../db";
+import { Bookmark, Website, Folder, User, Team, Membership } from "../../db";
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 
 class bookmarkService {
@@ -92,11 +92,26 @@ class bookmarkService {
             const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
-            } else if (folder.user_id !== requester.id) {
+            } else if (folder.user_id && folder.user_id !== requester.id) {
                 return {
                     errorMessage:
                         "사용자는 해당 폴더에 접근할 권한이 없습니다.",
                 };
+            } else if (folder.team_id) {
+                const team = await Team.findOne({ team_id: folder.team_id });
+                if (!team) {
+                    return getFailMsg({ entity: "팀", action: "조회" });
+                }
+                const membership = await Membership.findOne({
+                    team_id: team.id,
+                    member_id: requester.id,
+                });
+                if (!membership) {
+                    return {
+                        errorMessage:
+                            "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                    };
+                }
             }
             // 북마크 조회
             let bookmarks = await Bookmark.findAllWithWebsite({
@@ -137,11 +152,26 @@ class bookmarkService {
             const folder = await Folder.findOne({ folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
-            } else if (folder.user_id !== requester.id) {
+            } else if (folder.user_id && folder.user_id !== requester.id) {
                 return {
                     errorMessage:
                         "사용자는 해당 폴더에 접근할 권한이 없습니다.",
                 };
+            } else if (folder.team_id) {
+                const team = await Team.findOne({ team_id: folder.team_id });
+                if (!team) {
+                    return getFailMsg({ entity: "팀", action: "조회" });
+                }
+                const membership = await Membership.findOne({
+                    team_id: team.id,
+                    member_id: requester.id,
+                });
+                if (!membership) {
+                    return {
+                        errorMessage:
+                            "사용자는 해당 폴더를 수정할 권한이 없습니다.",
+                    };
+                }
             }
             // 폴더 내 북마크의 순서 변경
             bookmarks = bookmarks.map((bookmark) => {
@@ -177,11 +207,26 @@ class bookmarkService {
             const folder = await Folder.findOne({ folder_id: folder_id });
             if (!folder) {
                 return getFailMsg({ entity: "폴더", action: "조회" });
-            } else if (folder.user_id !== requester.id) {
+            } else if (folder.user_id && folder.user_id !== requester.id) {
                 return {
                     errorMessage:
                         "사용자는 해당 폴더에 접근할 권한이 없습니다.",
                 };
+            } else if (folder.team_id) {
+                const team = await Team.findOne({ team_id: folder.team_id });
+                if (!team) {
+                    return getFailMsg({ entity: "팀", action: "조회" });
+                }
+                const membership = await Membership.findOne({
+                    team_id: team.id,
+                    member_id: requester.id,
+                });
+                if (!membership) {
+                    return {
+                        errorMessage:
+                            "사용자는 해당 북마크를 수정할 권한이 없습니다.",
+                    };
+                }
             }
             // 폴더 변경
             const [affectedRows] = await Bookmark.updateFolderId({

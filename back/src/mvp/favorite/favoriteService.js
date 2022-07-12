@@ -38,7 +38,7 @@ class favoriteService {
                 if (!membership) {
                     return {
                         errorMessage:
-                            "사용자는 해당 폴더에 접근할 권한이 없습니다.",
+                            "사용자는 해당 폴더에 즐겨찾기할 권한이 없습니다.",
                     };
                 }
             }
@@ -74,11 +74,28 @@ class favoriteService {
                     return {
                         errorMessage: "비정상적인 북마크입니다.",
                     };
-                } else if (folder.user_id !== user.id) {
+                } else if (folder.user_id && folder.user_id !== user.id) {
                     return {
                         errorMessage:
                             "사용자는 해당 북마크에 접근할 권한이 없습니다.",
                     };
+                } else if (folder.team_id) {
+                    const team = await Team.findOne({
+                        team_id: folder.team_id,
+                    });
+                    if (!team) {
+                        return getFailMsg({ entity: "팀", action: "조회" });
+                    }
+                    const membership = await Membership.findOne({
+                        team_id: team.id,
+                        member_id: user.id,
+                    });
+                    if (!membership) {
+                        return {
+                            errorMessage:
+                                "사용자는 해당 북마크에 즐겨찾기할 권한이 없습니다.",
+                        };
+                    }
                 }
             }
             // 북마크 즐겨 찾기 생성
