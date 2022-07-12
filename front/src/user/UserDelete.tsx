@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Api from "../api";
-import { DispatchContext } from "../App";
 import styled from "styled-components";
 import { removeCookie } from "auth/util/cookie";
 import { warningAlert, Alert } from "layout/Alert";
+import { UserContext } from "store/userStore";
 
 const UserDelete = () => {
-  const dispatch: any = useContext(DispatchContext);
+  const { userDispatch }: any = useContext(UserContext);
   const navigate = useNavigate();
 
   // 회원 탈퇴 기능
@@ -23,7 +23,7 @@ const UserDelete = () => {
           expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
         });
 
-        await dispatch({ type: "LOGOUT" });
+        await userDispatch({ type: "LOGOUT" });
         await Alert.fire({
           icon: "success",
           title: "그동안 서비스를 이용해주셔서 감사합니다.",

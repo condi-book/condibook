@@ -1,10 +1,9 @@
-import React, { useReducer, createContext } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import theme from "./style/theme";
-import { loginReducer } from "./reducer";
-import Main from "./layout/Main";
 import GlobalStyle from "./style/GlobalStyle";
+import Main from "./layout/Main";
 import Community from "./community/Community";
 import CommunityPage from "./community/CommunityPage";
 import CommunityPostDetail from "./community/CommunityPostDetail";
@@ -20,9 +19,9 @@ import Search from "search/Search";
 import TeamPage from "./team/TeamPage";
 import TeamPageMain from "./team/TeamPageMain";
 import TeamPageDetail from "./team/TeamPageDetail";
+import { UserProvider } from "store/userStore";
+import NotFound from "layout/NotFound";
 
-export const UserStateContext: any = createContext(null);
-export const DispatchContext: any = createContext(null);
 // export const KeyboardContext: any = createContext(null);
 
 const App: React.FC = () => {
@@ -34,8 +33,6 @@ const App: React.FC = () => {
   //       };
   //   }
   // };
-  // useReducer 훅을 통해 userState 상태와 dispatch함수를 생성함.
-  const [userState, dispatch] = useReducer(loginReducer, { user: null });
   // const [sidebarState, dispatcher] = useReducer(sidebarReducer, {
   //   sidebar: true,
   // });
@@ -69,46 +66,45 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <DispatchContext.Provider value={dispatch}>
-      <UserStateContext.Provider value={userState}>
-        {/* <KeyboardContext.Provider value={sidebarState}> */}
-        <ThemeProvider theme={theme}>
-          <Router>
-            <GlobalStyle />
-            <Routes>
-              <Route
-                path="/callback/login/kakao"
-                element={<CallBackKakaoLogin />}
-              />
-              <Route
-                path="/callback/login/google"
-                element={<CallBackGoogleLogin />}
-              />
-              <Route path="/" element={<Main />} />
-              <Route path="/community" element={<Community />}>
-                <Route path="" element={<CommunityPage />} />
-                <Route path=":postId" element={<CommunityPostDetail />} />
-                <Route path="write" element={<CommunityPostWrite />} />
-                <Route path="search" element={<CommunitySearch />} />
-              </Route>
-              <Route path="/bookmark" element={<Mypage />} />
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/bookmark/:folderId/"
-                element={<MypageBookmarkDetail />}
-              />
-              <Route path="/config" element={<Config />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/team" element={<TeamPage />}>
-                <Route path=":teamid" element={<TeamPageMain />} />
-                <Route path=":teamid/:folderId" element={<TeamPageDetail />} />
-              </Route>
-            </Routes>
-          </Router>
-        </ThemeProvider>
-        {/* </KeyboardContext.Provider> */}
-      </UserStateContext.Provider>
-    </DispatchContext.Provider>
+    <UserProvider>
+      {/* <KeyboardContext.Provider value={sidebarState}> */}
+      <ThemeProvider theme={theme}>
+        <Router>
+          <GlobalStyle />
+          <Routes>
+            <Route
+              path="/callback/login/kakao"
+              element={<CallBackKakaoLogin />}
+            />
+            <Route
+              path="/callback/login/google"
+              element={<CallBackGoogleLogin />}
+            />
+            <Route path="/" element={<Main />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/community" element={<Community />}>
+              <Route path="" element={<CommunityPage />} />
+              <Route path=":postId" element={<CommunityPostDetail />} />
+              <Route path="write" element={<CommunityPostWrite />} />
+              <Route path="search" element={<CommunitySearch />} />
+            </Route>
+            <Route path="/bookmark" element={<Mypage />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/bookmark/:folderId/"
+              element={<MypageBookmarkDetail />}
+            />
+            <Route path="/config" element={<Config />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/team" element={<TeamPage />}>
+              <Route path=":teamid" element={<TeamPageMain />} />
+              <Route path=":teamid/:folderId" element={<TeamPageDetail />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ThemeProvider>
+      {/* </KeyboardContext.Provider> */}
+    </UserProvider>
   );
 };
 

@@ -12,7 +12,7 @@ const iconList = [
   { title: "나의 북마크", className: "pe-7s-folder" },
   { title: "커뮤니티", className: "pe-7s-global" },
   { title: "그룹 북마크", className: "pe-7s-users" },
-  { title: "통합 검색", className: "pe-7s-search" },
+  // { title: "통합 검색", className: "pe-7s-search" },
   { title: "설정", className: "pe-7s-config" },
 ];
 
@@ -43,9 +43,9 @@ const SideBar = () => {
     if (e.currentTarget.id === "pe-7s-global") {
       navigate("/community");
     }
-    if (e.currentTarget.id === "pe-7s-search") {
-      navigate("/search");
-    }
+    // if (e.currentTarget.id === "pe-7s-search") {
+    //   navigate("/search");
+    // }
     if (e.currentTarget.id === "pe-7s-config") {
       setConfigShow((prev: boolean) => !prev);
     }

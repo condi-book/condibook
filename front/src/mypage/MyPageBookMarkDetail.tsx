@@ -8,9 +8,13 @@ import {
 import styled from "styled-components";
 import Modal from "../layout/Modal";
 import SideBar from "../layout/SideBar";
+import BookMarkMoveModal from "./BookMarkMoveModal";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
 import { warningAlert, Alert } from "layout/Alert";
+import Loading from "layout/Loading";
+import { UserContext } from "store/userStore";
+import LoginRequire from "layout/LoginRequire";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -24,16 +28,24 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 });
 
 const MypageBookmarkDetail = () => {
+  const { userState }: any = React.useContext(UserContext);
+  const isLoggedIn = userState?.user !== null;
+  if (!isLoggedIn) {
+    return <LoginRequire />;
+  }
   const params = useParams();
   const iframeRef = React.useRef<HTMLIFrameElement>(null); // iframe ref
   const [list, setList] = useState([]);
   const [link, setLink] = useState("");
   const [show, setShow] = useState(false);
+  const [showMoveModal, setShowMoveModal] = useState(false);
   const [newLink, setNewLink] = useState("");
   const [folderTitle, setFolderTitle] = useState("");
+  const [bookmarkId, setBookmarkId] = useState(0);
   const [newWindowOpen, setNewWindowOpen] = React.useState<boolean>(false); // 새창을 열었는지
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
   const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
+  const [isLoading, setIsLoading] = React.useState<boolean>(false); // 미리보기 로딩중인지
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -62,6 +74,18 @@ const MypageBookmarkDetail = () => {
 
   const handleClick = () => {
     setShow((prev) => !prev);
+  };
+
+  const handleMoveModal = () => {
+    setShowMoveModal((prev) => !prev);
+  };
+
+  // 링크 이동 시 변경되는 북마크 데이터 핸들러
+  const handleBookMarkChange = async (bookmarkId: Number) => {
+    const copied = Array.from(list);
+    const moveData = copied.find((v) => v.bookmark_id === bookmarkId);
+    await copied.splice(copied.indexOf(moveData), 1);
+    setList(copied);
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -109,11 +133,12 @@ const MypageBookmarkDetail = () => {
   React.useEffect(() => {
     if (iframeRef.current !== null) {
       iframeRef.current.onload = () => {
-        try {
-          console.log(iframeRef.current.contentWindow["0"]);
-          setIsBlocked(false);
-        } catch (e) {
+        setIsLoading(false);
+        if (iframeRef.current.contentWindow.length === 0) {
           setIsBlocked(true);
+        }
+        if (iframeRef.current.contentWindow.length > 0) {
+          setIsBlocked(false);
         }
       };
     }
@@ -130,6 +155,8 @@ const MypageBookmarkDetail = () => {
     if (link?.includes(window.location.origin)) {
       setIsCondiBook(true);
     }
+    setIsBlocked(false);
+    setIsLoading(true);
   }, [link]);
 
   return (
@@ -148,6 +175,13 @@ const MypageBookmarkDetail = () => {
             handleChange={handleChange}
             newLink={newLink}
             handlePushData={handlePushData}
+          />
+          <BookMarkMoveModal
+            open={showMoveModal}
+            close={handleMoveModal}
+            bookmarkId={Number(bookmarkId)}
+            currentFolderTitle={folderTitle}
+            handleBookMarkChange={handleBookMarkChange}
           />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">
@@ -203,6 +237,18 @@ const MypageBookmarkDetail = () => {
                                 </div>
                                 <div>
                                   <span
+                                    title="링크 이동"
+                                    className="pe-7s-back-2 icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      console.log(item);
+                                      handleMoveModal();
+                                      setBookmarkId(item.bookmark_id);
+                                    }}
+                                  ></span>
+                                </div>
+                                <div>
+                                  <span
                                     title="링크 삭제"
                                     className="pe-7s-trash icon"
                                     onClick={(e) => linkDelete(e, item)}
@@ -248,10 +294,11 @@ const MypageBookmarkDetail = () => {
               <div>저희 서비스 페이지는 미리보기로 보실 수 없습니다.</div>
             </Warning>
           )}
+          {isLoading && <Loading />}
           <iframe
             src={link}
             width="100%"
-            height={!link || isBlocked ? "0%" : "100%"}
+            height={!link || isBlocked || isLoading ? "0%" : "100%"}
             ref={iframeRef}
             loading="lazy"
           ></iframe>
@@ -345,6 +392,13 @@ const Div = styled.div`
 
       .pe-7s-trash {
         color: ${({ theme }) => theme.subRedColor};
+        &:hover {
+          font-weight: bold;
+        }
+      }
+
+      .pe-7s-back-2 {
+        color: #12c2e9;
         &:hover {
           font-weight: bold;
         }

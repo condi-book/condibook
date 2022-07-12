@@ -1,6 +1,8 @@
 import useDebounce from "hooks/useDebounce";
+import LoginRequire from "layout/LoginRequire";
 import SideBar from "layout/SideBar";
 import React, { useState } from "react";
+import { UserContext } from "store/userStore";
 import styled from "styled-components";
 import * as Api from "../api";
 import SearchList from "./SearchList";
@@ -10,6 +12,11 @@ type StyleProps = {
 };
 
 const Search = () => {
+  const { userState }: any = React.useContext(UserContext);
+  const isLoggedIn = userState?.user !== null;
+  if (!isLoggedIn) {
+    return <LoginRequire />;
+  }
   const [word, setWord] = useState("");
   const [category, setCategory] = useState("global-link");
   // 데이터

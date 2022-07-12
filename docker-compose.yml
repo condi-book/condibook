@@ -16,5 +16,10 @@ services:
     networks:
       - condibook
 
+  redis_server:
+    image: "redis"
+    networks:
+      - condibook
+
 networks:
   condibook:

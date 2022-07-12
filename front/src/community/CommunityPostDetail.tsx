@@ -393,7 +393,7 @@ const CommunityPostDetail = () => {
               </div>
             </Warning>
           )}
-          {isBlocked && (
+          {link && isBlocked && (
             <Warning>
               <img src="/static/img/notify.svg" alt="blocked" />
               <div>미리보기가 거부된 북마크 입니다</div>
@@ -405,10 +405,6 @@ const CommunityPostDetail = () => {
               >
                 새 탭으로 열기
               </button>
-              <div>
-                CondiBook 크롬 확장 프로그램을 설치하시면 미리보기로 보실 수
-                있습니다.
-              </div>
             </Warning>
           )}
           {isCondiBook && (

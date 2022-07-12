@@ -9,6 +9,9 @@ import TeamCreateModal from "./TeamCreateModal";
 import TeamUserModal from "./TeamUserModal";
 // import { KeyboardContext } from "../App";
 import TeamFolderModal from "./TeamFolderModal";
+import SearchButton from "search/SearchButton";
+import { UserContext } from "store/userStore";
+import LoginRequire from "layout/LoginRequire";
 
 type ContextType = {
   team: Team;
@@ -39,6 +42,11 @@ export interface Folder {
 }
 
 const TeamPage = () => {
+  const { userState }: any = React.useContext(UserContext);
+  const isLoggedIn = userState?.user !== null;
+  if (!isLoggedIn) {
+    return <LoginRequire />;
+  }
   // const keyboardContext: any = React.useContext(KeyboardContext);
   const [team, setTeam] = React.useState<Team>(null);
   const [teams, setTeams] = React.useState<Team[]>(null); // 사용자 팀목록
@@ -98,6 +106,7 @@ const TeamPage = () => {
     <Div>
       {/* {keyboardContext.sidebar === true && <SideBar />} */}
       <SideBar />
+      <SearchButton></SearchButton>
       <div className="team-section">
         <div className="team-wrap">
           <TeamSidebar
