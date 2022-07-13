@@ -1,22 +1,15 @@
 import Config from "config/Config";
 import GlobalAddBookmarkButton from "GlobalAddBookMarkButton";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as Api from "../api";
 import Profile from "../user/Profile";
-
-const iconList = [
-  { title: "프로필", className: "pe-7s-user" },
-  { title: "홈", className: "pe-7s-home" },
-  { title: "나의 북마크", className: "pe-7s-folder" },
-  { title: "커뮤니티", className: "pe-7s-global" },
-  { title: "그룹 북마크", className: "pe-7s-users" },
-  // { title: "통합 검색", className: "pe-7s-search" },
-  { title: "설정", className: "pe-7s-config" },
-];
+import { SideBarContext } from "App";
 
 const SideBar = () => {
+  const sideBarContext = useContext<any>(SideBarContext);
+
   useEffect(() => {
     Api.get(`user/info`).then((res) => {
       console.log(res.data);
@@ -27,45 +20,73 @@ const SideBar = () => {
   const [show, setShow] = useState(false);
   const [configShow, setConfigShow] = useState(false);
   const [data, setData] = useState<any>({});
+
   const navigate = useNavigate();
 
   const handleApply = (value: any) => setData(value);
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.currentTarget.id === "pe-7s-user") {
       setShow((prev: boolean) => !prev);
+      if (show) {
+        sideBarContext.dispatcher({ type: "hide-user" });
+      } else {
+        sideBarContext.dispatcher({ type: "pe-7s-user" });
+      }
     }
     if (e.currentTarget.id === "pe-7s-home") {
       navigate("/");
     }
     if (e.currentTarget.id === "pe-7s-folder") {
       navigate("/bookmark");
+      sideBarContext.dispatcher({ type: "pe-7s-folder" });
     }
     if (e.currentTarget.id === "pe-7s-global") {
       navigate("/community");
+      sideBarContext.dispatcher({ type: "pe-7s-global" });
     }
     // if (e.currentTarget.id === "pe-7s-search") {
     //   navigate("/search");
     // }
     if (e.currentTarget.id === "pe-7s-config") {
       setConfigShow((prev: boolean) => !prev);
+      if (configShow) {
+        sideBarContext.dispatcher({ type: "hide-config" });
+      } else {
+        sideBarContext.dispatcher({ type: "pe-7s-config" });
+      }
     }
     if (e.currentTarget.id === "pe-7s-users") {
       navigate("/team");
+      sideBarContext.dispatcher({ type: "pe-7s-users" });
     }
   };
+  // useEffect(() => {
+  //   setIcons(
+  //     iconList.map((icon: any) => {
+  //       if (icon.title === "나의 북마크") {
+  //         return { ...icon, focused: true };
+  //       }
+  //       return { ...icon, focused: false };
+  //     }),
+  //   );
+  // }, []);
 
   return (
     <>
       <Div>
         <Section>
-          {iconList.map((item: any, index: number) => (
+          {sideBarContext.sidebarState.map((item: any, index: number) => (
             <Icon
               title={item.title}
               key={`icon-${index}`}
               id={item.className}
               onClick={handleClick}
             >
-              <span className={`${item.className} sub-icon`}></span>
+              <span
+                className={`${item.className} sub-icon ${
+                  item.focused && "focused"
+                }`}
+              ></span>
               <span className="sub-title">{item.title}</span>
             </Icon>
           ))}
@@ -109,10 +130,13 @@ const Section = styled.section`
     &:hover {
       cursor: pointer;
       background: ${({ theme }) => theme.subBlackColor};
-      // -webkit-background-clip: text;
-      // -webkit-text-fill-color: transparent;
       color: white;
     }
+  }
+
+  .focused {
+    background: ${({ theme }) => theme.subBlackColor};
+    color: white;
   }
 
   .sub-title {

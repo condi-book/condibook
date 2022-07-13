@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import SideBar from "../layout/SideBar";
 import styled from "styled-components";
 import MypageNavbar from "./MyPageNavBar";
@@ -8,6 +8,7 @@ import SearchButton from "search/SearchButton";
 import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
 // import { KeyboardContext } from "../App";
+import { SideBarContext } from "../App";
 
 export interface MypageProps {
   handleClick?: (value: boolean) => void;
@@ -16,6 +17,7 @@ export interface MypageProps {
 }
 
 export const Mypage = () => {
+  const { dispatcher } = useContext(SideBarContext);
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
   const { userState }: any = React.useContext(UserContext);
   const isLoggedIn = userState?.user !== null;
@@ -27,6 +29,8 @@ export const Mypage = () => {
   const handleClick = (value: boolean) => {
     if (value !== tab) setTab((prev) => !prev);
   };
+
+  useEffect(() => dispatcher({ type: "pe-7s-folder" }), []);
 
   return (
     <Div>
