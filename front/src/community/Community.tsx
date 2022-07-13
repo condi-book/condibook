@@ -12,11 +12,13 @@ const Community = () => {
   const { dispatcher } = React.useContext(SideBarContext);
   const { userState }: any = React.useContext(UserContext);
   const isLoggedIn = userState?.user !== null;
+
+  React.useEffect(() => dispatcher({ type: "pe-7s-global" }), []);
+
   if (!isLoggedIn) {
     return <LoginRequire />;
   }
   // const keyboardContext: any = React.useContext(KeyboardContext);
-  React.useEffect(() => dispatcher({ type: "pe-7s-global" }), []);
   return (
     <Div>
       {/* {keyboardContext.sidebar === true && <SideBar />} */}

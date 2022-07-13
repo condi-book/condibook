@@ -21,9 +21,6 @@ export const Mypage = () => {
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
   const { userState }: any = React.useContext(UserContext);
   const isLoggedIn = userState?.user !== null;
-  if (!isLoggedIn) {
-    return <LoginRequire />;
-  }
   // const keyboardContext: any = useContext(KeyboardContext);
 
   const handleClick = (value: boolean) => {
@@ -31,6 +28,11 @@ export const Mypage = () => {
   };
 
   useEffect(() => dispatcher({ type: "pe-7s-folder" }), []);
+
+  // return은 hooks 보다 아래쪽에 위치하도록!
+  if (!isLoggedIn) {
+    return <LoginRequire />;
+  }
 
   return (
     <Div>
