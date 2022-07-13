@@ -66,7 +66,7 @@ const Main = () => {
           <AnimationOnScroll animateIn="animate__fadeIn" className="animation">
             <div className="container">
               <div>
-                <Img src="/static/img/extension.jpg" alt="소개이미지" />
+                <Img src="/static/img/chrome_extension.png" alt="소개이미지" />
               </div>
 
               <div className="content">
@@ -93,7 +93,7 @@ const Main = () => {
                 </P>
               </div>
               <div>
-                <Img src="/static/img/share_bookmark.jpg" alt="소개이미지" />
+                <Img src="/static/img/bookmark_sharing.png" alt="소개이미지" />
               </div>
             </div>
           </AnimationOnScroll>
