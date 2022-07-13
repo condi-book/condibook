@@ -55,7 +55,8 @@ const Main = () => {
         </header>
         <AnimationOnScroll animateIn="animate__fadeIn">
           <div className="part even review">
-            <div className="title">OUR TEAM</div>
+            <h6>OUR TEAM</h6>
+            <div className="title">An original team of developers</div>
             <div className="carousel-wrap">
               <Carousel />
             </div>
@@ -166,9 +167,18 @@ const Container = styled.div`
   .review {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+
+    h6 {
+      text-align: center;
+      letter-spacing: 0.5vw;
+      font-size: 0.8vw;
+
+    }
     }
     .title {
-      margin: 5% 0;
+      margin-bottom: 5%;
+
     }
   }
 
@@ -325,7 +335,10 @@ const Container = styled.div`
       font-weight: 700;
       font-size: 2vw;
       text-align: center;
-      padding: 1% 0;
+      // padding: 1% 0;
+      background: ${({ theme }) => theme.mainColor};
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 
