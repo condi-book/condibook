@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import * as Api from "../api";
 import { Alert } from "layout/Alert";
+import { useParams } from "react-router-dom";
 
 interface GlobalAddProps {
   open: boolean;
@@ -25,8 +26,10 @@ const BookMarkMoveModal = ({
   currentFolderTitle,
   handleBookMarkChange,
 }: GlobalAddProps) => {
+  const params = useParams();
   const [folders, setFolders] = useState([]);
-  const [selectedFolder, setSelectedFolder] = useState(null);
+
+  const [selectedFolder, setSelectedFolder] = useState(params.folderId);
 
   const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const folderId = e.target.value;
@@ -93,7 +96,7 @@ const BookMarkMoveModal = ({
               <Folder>
                 <div style={{ fontWeight: "bold" }}>폴더 위치 *</div>
                 <select
-                  defaultValue={selectedFolder}
+                  defaultValue={params.folderId}
                   onChange={handleFolderChange}
                 >
                   {folders?.map((folder: FolderProps["folder"]) => (
