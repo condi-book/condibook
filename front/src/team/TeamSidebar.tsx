@@ -3,6 +3,7 @@ import styled from "styled-components";
 // import * as Api from "../api";
 import { Team, Folder } from "./TeamPage";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "layout/Alert";
 
 type StyleProps = {
   show: boolean;
@@ -92,7 +93,10 @@ const TeamSidebar = ({
 
   const handleInvite = () => {
     if (tab === "팀을 선택하세요") {
-      alert("팀을 선택해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "팀을 선택해주세요",
+      });
       return;
     }
     setIsBanish(false);
@@ -101,7 +105,10 @@ const TeamSidebar = ({
 
   const handleBanish = () => {
     if (tab === "팀을 선택하세요") {
-      alert("팀을 선택해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "팀을 선택해주세요",
+      });
       return;
     }
     setIsBanish(true);
@@ -110,7 +117,10 @@ const TeamSidebar = ({
 
   const handleAddTeamFolder = () => {
     if (tab === "팀을 선택하세요") {
-      alert("팀을 선택해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "팀을 선택해주세요",
+      });
       return;
     }
     setFolderModalShow(true);

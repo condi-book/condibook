@@ -117,7 +117,10 @@ const CommunityPostDetail = () => {
   // 게시글 수정 이벤트
   const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!checkAuthor(fetchData?.author)) {
-      return alert("글쓴이만 수정 가능합니다.");
+      return Alert.fire({
+        icon: "error",
+        title: "글쓴이만 수정 가능합니다.",
+      });
     }
     e.preventDefault();
     navigate(`/community/write?id=${postId}`);
@@ -127,7 +130,10 @@ const CommunityPostDetail = () => {
     e.preventDefault();
     try {
       if (!checkAuthor(fetchData?.author)) {
-        return alert("글쓴이만 삭제 가능합니다.");
+        return Alert.fire({
+          icon: "error",
+          title: "글쓴이만 삭제 가능합니다.",
+        });
       }
       if (window.confirm("정말로 삭제하시겠습니까?")) {
         await Api.delete(`posts/${postId}`);
@@ -166,7 +172,10 @@ const CommunityPostDetail = () => {
   ) => {
     event.preventDefault();
     if (comment === "") {
-      alert("댓글을 입력해주세요");
+      Alert.fire({
+        icon: "error",
+        title: "댓글을 입력해주세요.",
+      });
       return;
     }
     try {
