@@ -129,7 +129,7 @@ class websiteSerivce {
                 title,
                 description,
             });
-
+            console.log("응답받는 리스폰스", aiResponse);
             keyword = aiResponse.keyword;
             category = aiResponse.category;
 
@@ -186,7 +186,7 @@ class websiteSerivce {
                 title: title,
                 description: description,
             });
-
+            console.log("axios post 요청 trasnlate", res);
             if (res.data.ErrorMessage) {
                 category = res.data.category;
                 throw Error(res.data.ErrorMessage);

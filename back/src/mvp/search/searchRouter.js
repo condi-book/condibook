@@ -13,7 +13,11 @@ searchRouter.get("/community", async (req, res, next) => {
         const type = req.query.type ?? 1; // type = 0 only title, type = 1 title + content
         let info = null;
         info = await elasticSearch.searchPost({ content, pageNumber });
-        if (info == null && info.errorMessage) {
+        const data = info.hits.hits;
+        const data2 = data.map((v) => {
+            return v._source;
+        });
+        if (data2 == null && data2 == "") {
             info = await searchSerivce.getPostByQuery({
                 query,
                 pageNumber,
@@ -25,11 +29,6 @@ searchRouter.get("/community", async (req, res, next) => {
             }
             res.status(200).send(info);
         }
-
-        const data = info.hits.hits;
-        const data2 = data.map((v) => {
-            return v._source;
-        });
         res.status(200).send(data2);
     } catch (error) {
         next(error);
