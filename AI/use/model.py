@@ -134,31 +134,34 @@ def get_keywords(reserved_bookmark_list,description_nouns):
 
 
 def get_category2(reserved_bookmark_list,description_nouns):
-    hashtags = get_keywords(reserved_bookmark_list,description_nouns)
+    try:
+        hashtags = get_keywords(reserved_bookmark_list,description_nouns)
 
-    categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직','채용'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
-    cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직','채용'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
-    category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직','채용', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
-    # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
+        categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직','채용'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
+        cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직','채용'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
+        category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직','채용', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
+        # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
 
-    for i,per in hashtags:
-        if i in category_list:
-            for j in categories:
-                if i in j:
-                    return cate_dic[j]
+        for i,per in hashtags:
+            if i in category_list:
+                for j in categories:
+                    if i in j:
+                        return cate_dic[j]
 
-    weights = [0]*len(categories)
+        weights = [0]*len(categories)
 
-    for i in range(len(categories)):
-        for j,per in hashtags:
-            try:
-                for k in categories[i]:
-                    weights[i] += model.wv.similarity(k,j)
-            except:
-                pass
-            weights[i] = weights[i]/len(categories[i])*per
-            
-    return cate_dic[categories[weights.index(max(weights))]]
+        for i in range(len(categories)):
+            for j,per in hashtags:
+                try:
+                    for k in categories[i]:
+                        weights[i] += model.wv.similarity(k,j)
+                except:
+                    pass
+                weights[i] = weights[i]/len(categories[i])*per
+                
+        return cate_dic[categories[weights.index(max(weights))]]
+    except:
+        return 'etc'
 
 # def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
 #     # description이 없는 경우.. title의 keyword는 있겠지..
