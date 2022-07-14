@@ -5,8 +5,8 @@ import MypageNavbar from "./MyPageNavBar";
 import MypageBookmark from "./MyPageBookMark";
 import MypageScrapedBookmark from "./MyPageScrapedBookMark";
 import SearchButton from "search/SearchButton";
-import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
+import { getCookie } from "auth/util/cookie";
 // import { KeyboardContext } from "../App";
 import { SideBarContext } from "../App";
 
@@ -19,8 +19,10 @@ export interface MypageProps {
 export const Mypage = () => {
   const { dispatcher } = useContext(SideBarContext);
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
-  const { userState }: any = React.useContext(UserContext);
-  const isLoggedIn = userState?.user !== null;
+  const user = getCookie("user");
+  if (!user) {
+    return <LoginRequire />;
+  }
   // const keyboardContext: any = useContext(KeyboardContext);
 
   const handleClick = (value: boolean) => {
@@ -28,11 +30,6 @@ export const Mypage = () => {
   };
 
   useEffect(() => dispatcher({ type: "pe-7s-folder" }), []);
-
-  // return은 hooks 보다 아래쪽에 위치하도록!
-  if (!isLoggedIn) {
-    return <LoginRequire />;
-  }
 
   return (
     <Div>
