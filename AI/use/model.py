@@ -10,7 +10,7 @@ translator = Translator()
 okt = Okt()
 # print(os.listdir('.')) # 작동하는 곳의 현 위치를 나타냄.
 # model = Word2Vec.load('./AI/Model/pretrained/ko.bin')
-model = Word2Vec.load('../model/train1_ko.bin') # 새로운 경로 지정.
+model = Word2Vec.load('../model/last_ko2.bin.bin') # 새로운 경로 지정.
 model_input_words = tuple(model.wv.index2word)
 
 del_arr = '''
