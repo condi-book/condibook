@@ -151,7 +151,7 @@ const TeamPageDetail = () => {
       setIsCondiBook(true);
     }
     setIsBlocked(false);
-    setIsLoading(true);
+    if (link) setIsLoading(true);
   }, [link]);
   return (
     <Div>
@@ -240,7 +240,7 @@ const TeamPageDetail = () => {
           </DragDropContext>
         </div>
         <div className="content box">
-          {list.length === 0 && (
+          {!link && (
             <Empty className="empty">
               <img src="/static/img/bookmark.svg" alt="preview"></img>
               <div>북마크를 추가하여</div>
