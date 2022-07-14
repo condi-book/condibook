@@ -16,7 +16,7 @@ const Header = ({ handleNavigate }: ContextProps) => {
             className="info-button"
             onClick={() =>
               window.open(
-                "https://chrome.google.com/webstore/search/CondiBook?hl=ko",
+                "https://chrome.google.com/webstore/detail/condibook/cgonakfcbbinpfkamomcldbbfmhekdid?hl=ko",
                 "_blank",
               )
             }
