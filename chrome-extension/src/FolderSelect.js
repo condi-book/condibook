@@ -14,7 +14,7 @@ const FolderSelect = ({
   const handleClick = () => {
     const folderId = data.folders.find((f) => f.title === folder).id;
     if (inputValue) {
-      fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
+      fetch("https://kdt-ai4-team14.elicecoding.com/api/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +30,7 @@ const FolderSelect = ({
         console.log("성공");
       });
     } else if (folderId !== null) {
-      fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
+      fetch("https://kdt-ai4-team14.elicecoding.com/api/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const FolderSelect = ({
         console.log(folderId, id);
       });
     } else if (folderId === null) {
-      fetch("http://kdt-ai4-team14.elicecoding.com:5001/bookmarks", {
+      fetch("https://kdt-ai4-team14.elicecoding.com/api/bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -60,7 +60,7 @@ const App = () => {
     setTimeout(function () {
       chrome.cookies
         .get({
-          url: "http://kdt-ai4-team14.elicecoding.com/",
+          url: "https://kdt-ai4-team14.elicecoding.com/",
           name: "userToken",
         })
         .then(async (res) => {
