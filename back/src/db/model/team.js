@@ -63,7 +63,7 @@ class Team {
     }
     static searchTeamByQuery({ content, team_ids }) {
         return FolderModel.findAll({
-            attributes: ["id", "title"],
+            attributes: ["id", "title", "team_id"],
             where: {
                 [Op.and]: [
                     {
@@ -76,6 +76,7 @@ class Team {
                     ),
                 ],
             },
+            include: [{ model: TeamModel }],
             replacements: {
                 search: content,
             },
