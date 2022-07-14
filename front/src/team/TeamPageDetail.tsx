@@ -74,6 +74,7 @@ const TeamPageDetail = () => {
   };
   const handleClick = () => {
     setShow((prev) => !prev);
+    setNewLink("");
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {

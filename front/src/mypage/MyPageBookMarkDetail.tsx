@@ -75,6 +75,7 @@ const MypageBookmarkDetail = () => {
 
   const handleClick = () => {
     setShow((prev) => !prev);
+    setNewLink("");
   };
 
   const handleMoveModal = () => {

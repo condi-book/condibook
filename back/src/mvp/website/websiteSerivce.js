@@ -192,12 +192,12 @@ class websiteSerivce {
                 throw Error(res.data.ErrorMessage);
             }
 
-            keyword = res.data.hashtags.join(",");
+            keyword = res.data.category;
             category = res.data.category;
 
             return { keyword, category };
         } catch (e) {
-            console.log("AI 서버 에러❌");
+            console.log("AI 서버 에러❌", e);
             return { keyword, category };
         }
     }
