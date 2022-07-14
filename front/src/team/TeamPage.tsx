@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet, useOutletContext } from "react-router-dom";
+import { Outlet, useOutletContext, useParams } from "react-router-dom";
 
 import * as Api from "../api";
 import SideBar from "../layout/SideBar";
@@ -57,6 +57,8 @@ const TeamPage = () => {
   const [folderModalShow, setFolderModalShow] = React.useState(false);
   const [isEdit, setIsEdit] = React.useState(false);
   const [isBanish, setIsBanish] = React.useState(false);
+
+  const params = useParams();
 
   const fetchTeamData = async () => {
     try {
@@ -124,7 +126,7 @@ const TeamPage = () => {
             fetchTeamFolderData={fetchTeamFolderData}
           />
           <div className="team-container">
-            {!team && (
+            {!team && Object.keys(params).length === 0 && (
               <NotFound>
                 <img src="/static/img/team.svg"></img>
                 <div>팀을 생성하여 그룹 북마크를 공유하세요</div>
