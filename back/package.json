@@ -9,6 +9,7 @@
     },
     "license": "MIT",
     "dependencies": {
+        "@elastic/elasticsearch": "^8.2.1",
         "@sindresorhus/is": "^4.6.0",
         "axios": "^0.27.2",
         "bcrypt": "^5.0.1",
