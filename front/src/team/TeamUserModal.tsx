@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-// import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import emailjs from "@emailjs/browser";
 import { Team } from "./TeamPage";
@@ -35,6 +35,8 @@ const TeamUserModal = ({
 
   const userID = getCookie("user")?.id;
   const managerID = team?.manager_id;
+
+  const { teamid } = useParams();
 
   const makeHiddenEmail = (email: string, index: number) => {
     return email.substring(0, index - 6) + "*******" + email.substring(index);
@@ -128,7 +130,9 @@ const TeamUserModal = ({
 
   const fetchUserData = async () => {
     try {
-      const teamMembers = await Api.get(`teams/${team.team_id}/members`);
+      const teamMembers = await Api.get(
+        `teams/${team?.team_id ?? teamid}/members`,
+      );
       if (isBanish) {
         setSearchedUsers(teamMembers.data);
       } else {

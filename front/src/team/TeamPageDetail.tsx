@@ -113,7 +113,7 @@ const TeamPageDetail = () => {
     if (!teams) {
       await fetchTeamData();
     }
-    const team = teams.find((v) => v.team_id === parseInt(params.teamid));
+    const team = teams?.find((v) => v.team_id === parseInt(params.teamid));
     await setTeam(team);
 
     await fetchTeamFolderData(parseInt(params.teamid));

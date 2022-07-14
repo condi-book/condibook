@@ -5,6 +5,7 @@ import { Comment } from "./CommunityPostDetail";
 import CalcDate from "./tools/CalcDate";
 import * as Api from "../api";
 import { getCookie } from "auth/util/cookie";
+import { Alert, warningAlert } from "layout/Alert";
 
 interface props {
   comments: Comment[];
@@ -53,16 +54,18 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
     (id: string) => async (e: React.MouseEvent<HTMLButtonElement>) => {
       try {
         e.preventDefault();
-        if (window.confirm("삭제하시겠습니까?")) {
+        warningAlert(e, "해당 댓글을 삭제하시겠습니까?", async () => {
           await Api.delete(`comments/${id}`);
           setComments(
             comments.filter((comment) => {
               return comment.id !== id;
             }),
           );
-        } else {
-          return;
-        }
+          await Alert.fire({
+            icon: "success",
+            title: "댓글 삭제 성공",
+          });
+        });
       } catch (e) {
         alert(e);
       }

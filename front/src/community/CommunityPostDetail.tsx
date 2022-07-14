@@ -8,7 +8,7 @@ import CalcDate from "./tools/CalcDate";
 import CommunityPostComments from "./CommunityPostComments";
 // import { UserStateContext } from "../App";
 import { getCookie } from "auth/util/cookie";
-import { Alert } from "../layout/Alert";
+import { Alert, warningAlert } from "../layout/Alert";
 import Loading from "layout/Loading";
 
 import * as Api from "../api";
@@ -135,12 +135,14 @@ const CommunityPostDetail = () => {
           title: "글쓴이만 삭제 가능합니다.",
         });
       }
-      if (window.confirm("정말로 삭제하시겠습니까?")) {
+      warningAlert(e, "해당 게시글을 삭제하시겠습니까?", async () => {
         await Api.delete(`posts/${postId}`);
+        await Alert.fire({
+          icon: "success",
+          title: "게시글 삭제 성공",
+        });
         navigate("/community");
-      } else {
-        return;
-      }
+      });
     } catch (err) {
       alert(err);
     }

@@ -60,12 +60,21 @@ const TeamPage = () => {
   const [isEdit, setIsEdit] = React.useState(false);
   const [isBanish, setIsBanish] = React.useState(false);
 
-  const params = useParams();
+  const { teamid } = useParams();
 
   const fetchTeamData = async () => {
     try {
       const res = await Api.get("user/teams");
       setTeams(res.data);
+      if (teamid) {
+        const paramsTeam = res.data.find(
+          (team: Team) => team.team_id === Number(teamid),
+        );
+        setTeam(paramsTeam);
+        if (!paramsTeam) {
+          setTeam(null);
+        }
+      }
     } catch (err) {
       console.log(err);
     }
@@ -89,11 +98,6 @@ const TeamPage = () => {
     fetchTeamData();
     dispatcher({ type: "pe-7s-users" });
   }, []);
-
-  React.useEffect(() => {
-    fetchTeamData();
-    fetchTeamFolderData();
-  }, [team]);
 
   React.useEffect(() => {
     if (team?.team_id === null || team?.team_id === undefined) {
@@ -129,7 +133,7 @@ const TeamPage = () => {
             fetchTeamFolderData={fetchTeamFolderData}
           />
           <div className="team-container">
-            {!team && Object.keys(params).length === 0 && (
+            {!team && !teamid && (
               <NotFound>
                 <img src="/static/img/team.svg"></img>
                 <div>팀을 생성하여 그룹 북마크를 공유하세요</div>
