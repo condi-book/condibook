@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as Api from "../api";
 import CalcDate from "./tools/CalcDate";
-import { PostPreview } from "./CommunityPage";
 
 type StyleProps = {
   show: boolean;
@@ -14,7 +13,7 @@ type Tab = "제목" | "제목 + 내용";
 const CommunitySearch = () => {
   const navigate = useNavigate();
   const [show, setShow] = React.useState(false);
-  const [tab, setTab] = React.useState<Tab>("제목");
+  const [tab, setTab] = React.useState<Tab>("제목 + 내용");
   const [word, setWord] = React.useState("");
   // 데이터
   const [data, setData] = React.useState([]);
@@ -29,13 +28,13 @@ const CommunitySearch = () => {
     return (
       <div className="search-main">
         <div className="search-list">
-          {data?.map((item: PostPreview) => (
+          {data?.map((item: any) => (
             <Col key={`search-${item.id}`}>
               <Card onClick={handlePostClick(item.id)}>
                 <CardBody>
                   <CardTitle>{item.title}</CardTitle>
                   <CardinfoText>
-                    <span>{CalcDate(new Date(item.createdAt))}</span>
+                    <span>{CalcDate(new Date(item.createdat))}</span>
                   </CardinfoText>
                 </CardBody>
                 <CardFooter>
@@ -63,13 +62,9 @@ const CommunitySearch = () => {
   const handelSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     ///search/community?order=likes&pageNumber=1&content=g&type=1
-    const url =
-      tab === "제목"
-        ? `search/community?order=likes&pageNumber=1&content=${word}&type=0`
-        : `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
+    const url = `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
     const res = await Api.get(url);
     setData(res.data);
-    console.log(res.data);
   };
 
   // 검색 조건 핸들러
@@ -97,7 +92,6 @@ const CommunitySearch = () => {
                 <span className="pe-7s-angle-down" />
               </div>
               <div className="search-select">
-                <div onClick={handleTab}>제목</div>
                 <div onClick={handleTab}>제목 + 내용</div>
               </div>
             </div>
