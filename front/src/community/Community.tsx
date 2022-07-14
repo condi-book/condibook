@@ -3,16 +3,19 @@ import SideBar from "../layout/SideBar";
 import styled from "styled-components";
 
 import { Outlet } from "react-router-dom";
-import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
+import { getCookie } from "auth/util/cookie";
 // import { KeyboardContext } from "../App";
 
 const Community = () => {
-  const { userState }: any = React.useContext(UserContext);
-  const isLoggedIn = userState?.user !== null;
-  if (!isLoggedIn) {
+  const user = getCookie("user");
+  if (!user) {
     return <LoginRequire />;
   }
+
+  React.useEffect(() => {
+    console.log("user", user);
+  }, []);
   // const keyboardContext: any = React.useContext(KeyboardContext);
   return (
     <Div>

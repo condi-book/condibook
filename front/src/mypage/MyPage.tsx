@@ -5,8 +5,8 @@ import MypageNavbar from "./MyPageNavBar";
 import MypageBookmark from "./MyPageBookMark";
 import MypageScrapedBookmark from "./MyPageScrapedBookMark";
 import SearchButton from "search/SearchButton";
-import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
+import { getCookie } from "auth/util/cookie";
 // import { KeyboardContext } from "../App";
 
 export interface MypageProps {
@@ -17,9 +17,8 @@ export interface MypageProps {
 
 export const Mypage = () => {
   const [tab, setTab] = useState<MypageProps["tab"]>(true);
-  const { userState }: any = React.useContext(UserContext);
-  const isLoggedIn = userState?.user !== null;
-  if (!isLoggedIn) {
+  const user = getCookie("user");
+  if (!user) {
     return <LoginRequire />;
   }
   // const keyboardContext: any = useContext(KeyboardContext);

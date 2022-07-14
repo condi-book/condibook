@@ -13,8 +13,8 @@ import * as Api from "../api";
 import { useParams } from "react-router-dom";
 import { warningAlert, Alert } from "layout/Alert";
 import Loading from "layout/Loading";
-import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
+import { getCookie } from "auth/util/cookie";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -28,9 +28,8 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 });
 
 const MypageBookmarkDetail = () => {
-  const { userState }: any = React.useContext(UserContext);
-  const isLoggedIn = userState?.user !== null;
-  if (!isLoggedIn) {
+  const user = getCookie("user");
+  if (!user) {
     return <LoginRequire />;
   }
   const params = useParams();
