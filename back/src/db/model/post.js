@@ -39,6 +39,7 @@ class Post {
     }
     static async findAllList({ offset }) {
         const result = await PostModel.findAll({
+            where: { is_deleted: false },
             order: [["createdAt", "DESC"]],
             offset: offset,
             limit: 20,
@@ -47,6 +48,7 @@ class Post {
     }
     static async findAllByViews({ offset }) {
         const result = PostModel.findAll({
+            where: { is_deleted: false },
             order: [["views", "DESC"]],
             offset: offset,
             limit: 20,
@@ -55,6 +57,7 @@ class Post {
     }
     static async findAllByLikes({ offset }) {
         const result = PostModel.findAll({
+            where: { is_deleted: false },
             order: [["like_counts", "DESC"]],
             offset: offset,
             limit: 20,
