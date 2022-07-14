@@ -203,6 +203,7 @@ const AddBookMarkModal = ({
           id: data.bookmark_id,
           url: data.website.url,
           checked: false,
+          title: data.website.meta_title,
         };
       });
       setSelectedFolderBookmarks(handledData);
@@ -269,7 +270,9 @@ const AddBookMarkModal = ({
                         }}
                         checked={bookmark.checked}
                       />
-                      <Link onClick={handleClickLink}>{bookmark.url}</Link>
+                      <Link onClick={handleClickLink}>
+                        {bookmark.title ?? bookmark.url}
+                      </Link>
                     </Row>
                   ))
                 )}

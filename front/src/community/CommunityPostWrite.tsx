@@ -17,6 +17,7 @@ import * as Api from "../api";
 export interface Bookmark {
   id: number;
   url: string;
+  title: string;
   checked?: boolean;
 }
 
@@ -200,6 +201,7 @@ const CommunityPostWrite = () => {
         return {
           id: bookmark.id,
           url: bookmark.website.url,
+          title: bookmark.website.meta_title,
         };
       });
       setPostBookmarks(mappedBookmarkList);
@@ -323,7 +325,9 @@ const CommunityPostWrite = () => {
               ? null
               : postBookmarks.map((bookmark) => (
                   <div className="bookmark-item" key={bookmark.id}>
-                    <div className="bookmark-item-text">{bookmark.url}</div>
+                    <div className="bookmark-item-text">
+                      {bookmark.title ?? bookmark.url}
+                    </div>
                     <div
                       className="bookmark-item-delete"
                       onClick={() => handleDeleteBookmark(bookmark.id)}
