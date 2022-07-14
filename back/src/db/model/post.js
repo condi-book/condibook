@@ -6,6 +6,7 @@ import {
     BookmarkModel,
     Sequelize,
     Transaction,
+    LikeModel,
 } from "../schema";
 
 class Post {
@@ -265,6 +266,10 @@ class Post {
             );
 
             await AttachedModel.destroy({
+                where: { [Op.or]: [{ post_id: null }, { post_id: id }] },
+                transaction: t,
+            });
+            await LikeModel.destroy({
                 where: { [Op.or]: [{ post_id: null }, { post_id: id }] },
                 transaction: t,
             });
