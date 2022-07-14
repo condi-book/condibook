@@ -12,6 +12,7 @@ import TeamFolderModal from "./TeamFolderModal";
 import SearchButton from "search/SearchButton";
 import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
+import { SideBarContext } from "../App";
 
 type ContextType = {
   team: Team;
@@ -43,6 +44,7 @@ export interface Folder {
 
 const TeamPage = () => {
   const { userState }: any = React.useContext(UserContext);
+  const { dispatcher } = React.useContext(SideBarContext);
   const isLoggedIn = userState?.user !== null;
   if (!isLoggedIn) {
     return <LoginRequire />;
@@ -84,6 +86,7 @@ const TeamPage = () => {
 
   React.useEffect(() => {
     fetchTeamData();
+    dispatcher({ type: "pe-7s-users" });
   }, []);
 
   React.useEffect(() => {

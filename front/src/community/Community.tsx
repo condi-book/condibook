@@ -6,10 +6,15 @@ import { Outlet } from "react-router-dom";
 import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
 // import { KeyboardContext } from "../App";
+import { SideBarContext } from "../App";
 
 const Community = () => {
+  const { dispatcher } = React.useContext(SideBarContext);
   const { userState }: any = React.useContext(UserContext);
   const isLoggedIn = userState?.user !== null;
+
+  React.useEffect(() => dispatcher({ type: "pe-7s-global" }), []);
+
   if (!isLoggedIn) {
     return <LoginRequire />;
   }

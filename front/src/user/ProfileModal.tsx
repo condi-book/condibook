@@ -218,7 +218,7 @@ const Div = styled.div`
     // line-height: 24px;
     position: absolute;
     right: 42%;
-    top: 60%;
+    top: 63%;
     color: rgb(196, 196, 196);
     font-size: 0.8vw;
     font-weight: 400;

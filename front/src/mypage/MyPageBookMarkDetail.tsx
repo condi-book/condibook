@@ -15,6 +15,7 @@ import { warningAlert, Alert } from "layout/Alert";
 import Loading from "layout/Loading";
 import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
+import { SideBarContext } from "../App";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -28,6 +29,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 });
 
 const MypageBookmarkDetail = () => {
+  const { dispatcher } = React.useContext(SideBarContext);
   const { userState }: any = React.useContext(UserContext);
   const isLoggedIn = userState?.user !== null;
   if (!isLoggedIn) {
@@ -110,6 +112,7 @@ const MypageBookmarkDetail = () => {
   };
 
   useEffect(() => {
+    dispatcher({ type: "pe-7s-folder" });
     Api.get(`folders/${params.folderId}/bookmarks`).then((res) => {
       // setList(res.data);
       console.log("폴더 상세 데이터", res.data);

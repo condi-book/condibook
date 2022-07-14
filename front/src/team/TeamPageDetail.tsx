@@ -215,8 +215,8 @@ const TeamPageDetail = () => {
                                       : website.meta_title}
                                   </div>
                                   <div className="sub">
-                                    {website.url?.length >= 50
-                                      ? `${website.url.substr(0, 50)}...`
+                                    {website.url?.length >= 40
+                                      ? `${website.url.substr(0, 40)}...`
                                       : website.url}
                                   </div>
                                 </div>
