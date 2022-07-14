@@ -16,7 +16,11 @@ const NotFound = () => {
         }}
       ></div>
       <Container>
-        <img src="static/img/warning.png" alt="warning" />
+        <img
+          src="/static/img/warning.svg"
+          alt="warning"
+          style={{ marginBottom: "20px" }}
+        />
         <p>로그인이 필요한 페이지 입니다.</p>
         <Button onClick={() => navigate("/login")}>로그인하기</Button>
       </Container>

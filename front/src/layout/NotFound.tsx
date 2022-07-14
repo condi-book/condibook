@@ -16,7 +16,11 @@ const NotFound = () => {
         }}
       ></div>
       <Container>
-        <img src="static/img/notFound.png" alt="notFound" />
+        <img
+          src="/static/img/notFound.svg"
+          alt="notFound"
+          style={{ marginBottom: "20px" }}
+        />
         <p>페이지를 찾을 수 없습니다.</p>
         <Button onClick={() => navigate("/")}>🏠 홈으로</Button>
       </Container>
