@@ -1,5 +1,5 @@
 from flask import Flask,request,make_response
-from model import nouns_extractor, keywords_sum_similarity, recommend_from_hashtag, make_reserved_bookmark_list, get_category, word_detection
+from model import nouns_extractor,recommend_from_hashtag, make_reserved_bookmark_list, word_detection, get_category2
 
 
 app = Flask(__name__)
@@ -27,17 +27,19 @@ def translate():
 
     description_nouns = nouns_extractor(description)
     reserved_bookmark_list = make_reserved_bookmark_list(title_nouns)
-    check, recommend_keywords = keywords_sum_similarity(reserved_bookmark_list,description_nouns)  # TODO : refact.
+    # check, recommend_keywords = keywords_sum_similarity(reserved_bookmark_list,description_nouns)  # TODO : refact.. done.
 
-    # print('recommend_keywords =',recommend_keywords)
+    # # print('recommend_keywords =',recommend_keywords)
 
-    hashtags = []
-    if check == True:
-        hashtags = sorted(recommend_keywords,key = lambda x: -recommend_keywords[x])[:3]
-    else:
-        hashtags = [i for i in recommend_keywords if recommend_keywords[i] == 1]
+    # hashtags = []
+    # if check == True:
+    #     hashtags = sorted(recommend_keywords,key = lambda x: -recommend_keywords[x])[:3]
+    # else:
+    #     hashtags = [i for i in recommend_keywords if recommend_keywords[i] == 1]
         
-    category = get_category(hashtags)   # TODO : refact.
+    # category = get_category(hashtags)   # TODO : refact.
+    
+    category = get_category2(reserved_bookmark_list, description_nouns) #! refact.. done.
     # send = {'hashtags':hashtags,'category':category}
     send = {'category':category}
 

@@ -29,7 +29,7 @@
 
     1. title로부터 명사 추출 및 유사단어 추출(+유사도) 및 불용어 제거..(명사가 없거나 영어가 아닌 외국어일시 return hashtag:etc)
        (googletrans, word2vec, regex, konlpy)
-    2. description으로부터 명사 추출 및 불용어 제거..(description이 없을 시 return title_nouns) (regex, konlpy)
+    2. description으로부터 명사 추출 및 불용어 제거..(description이 없을 시 return most_similar_cat.) (regex, konlpy)
     3. title_nouns의 명사와 description의 유사도를 비교, 기존의 유사도와 곱연산.
     4. 상위 5개 단어 추출.
     5. category별 단어 비교. similarity_multiple_sum 계산 후 가장 높은 값의 단어 추천.
