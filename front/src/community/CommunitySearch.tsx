@@ -4,16 +4,10 @@ import styled from "styled-components";
 import * as Api from "../api";
 import CalcDate from "./tools/CalcDate";
 
-type StyleProps = {
-  show: boolean;
-};
-
-type Tab = "제목" | "제목 + 내용";
-
 const CommunitySearch = () => {
   const navigate = useNavigate();
-  const [show, setShow] = React.useState(false);
-  const [tab, setTab] = React.useState<Tab>("제목 + 내용");
+  // const [show, setShow] = React.useState(false);
+  // const [tab, setTab] = React.useState("제목 + 내용");
   const [word, setWord] = React.useState("");
   // 데이터
   const [data, setData] = React.useState([]);
@@ -67,11 +61,19 @@ const CommunitySearch = () => {
     setData(res.data);
   };
 
-  // 검색 조건 핸들러
-  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTab((e.target as HTMLElement).textContent as Tab);
-    setShow((prev) => !prev);
+  const handlePressEnter = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const url = `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
+      const res = await Api.get(url);
+      setData(res.data);
+    }
   };
+
+  // 검색 조건 핸들러
+  // const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   setTab((e.target as HTMLElement).textContent);
+  //   setShow((prev) => !prev);
+  // };
 
   // 검색창 초기화 함수
   const handleDelete = () => {
@@ -79,11 +81,11 @@ const CommunitySearch = () => {
   };
 
   return (
-    <Div show={show}>
+    <Div>
       <div className="search-section">
         <div className="search-container">
           <div className="search-box">
-            <div className="search-dropdown">
+            {/* <div className="search-dropdown">
               <div
                 className="search-dropdown-header"
                 onClick={() => setShow((prev) => !prev)}
@@ -94,7 +96,7 @@ const CommunitySearch = () => {
               <div className="search-select">
                 <div onClick={handleTab}>제목 + 내용</div>
               </div>
-            </div>
+            </div> */}
             <div className="search-input">
               <div className="search-input-box">
                 {word && (
@@ -115,6 +117,7 @@ const CommunitySearch = () => {
                 <input
                   value={word}
                   onChange={handleChange}
+                  onKeyPress={handlePressEnter}
                   type="text"
                   placeholder="검색어를 입력하세요"
                 />
@@ -154,7 +157,7 @@ const Col = styled.div`
   }
 `;
 
-const Div = styled.div<StyleProps>`
+const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
@@ -206,8 +209,6 @@ const Div = styled.div<StyleProps>`
         border-radius: 8px;
         background-color: rgb(235, 235, 235);
         z-index: 3;
-        height: ${({ show }) => (show ? "168px" : "50px")};
-        visibility: ${({ show }) => (show ? "visible" : "hidden")};
         transition: height 0.3s ease-out;
         position: absolute;
         top: 0;
