@@ -27,6 +27,13 @@ const CommunityPostComments = ({ comments, setComments }: props) => {
 
   const handleCommentEdit =
     (id: string) => async (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (commentContent.length > 300) {
+        Alert.fire({
+          icon: "error",
+          title: "댓글은 300자 이내로 작성해주세요.",
+        });
+        return;
+      }
       try {
         e.preventDefault();
         const res = await Api.put(`comments/${id}`, {

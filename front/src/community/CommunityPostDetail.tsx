@@ -180,6 +180,13 @@ const CommunityPostDetail = () => {
       });
       return;
     }
+    if (comment.length > 300) {
+      Alert.fire({
+        icon: "error",
+        title: "댓글은 300자 이내로 작성해주세요.",
+      });
+      return;
+    }
     try {
       const body = {
         content: comment,
