@@ -72,7 +72,13 @@ const Modal = ({
           });
         });
       })
-      .catch((err) => errorAlert(err.response.data));
+      .catch((err) => {
+        if (err.response.data === "이미 존재한 북마크입니다.") {
+          errorAlert(err.response.data);
+        } else {
+          errorAlert("정확한 url을 기입해주세요");
+        }
+      });
   }, [newLink]);
 
   return (
