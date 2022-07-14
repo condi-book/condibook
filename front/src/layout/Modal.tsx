@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
-import { Alert } from "./Alert";
+import { Alert, errorAlert } from "./Alert";
 
 interface props {
   open: boolean;
@@ -72,7 +72,7 @@ const Modal = ({
           });
         });
       })
-      .catch((err) => alert(err.response.data));
+      .catch((err) => errorAlert(err.response.data));
   }, [newLink]);
 
   return (

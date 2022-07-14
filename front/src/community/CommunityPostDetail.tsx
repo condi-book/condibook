@@ -285,7 +285,7 @@ const CommunityPostDetail = () => {
       setIsCondiBook(true);
     }
     setIsBlocked(false);
-    setIsLoading(true);
+    if (link) setIsLoading(true);
   }, [link]);
 
   return (

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet, useOutletContext } from "react-router-dom";
+import { Outlet, useOutletContext, useParams } from "react-router-dom";
 
 import * as Api from "../api";
 import SideBar from "../layout/SideBar";
@@ -10,9 +10,9 @@ import TeamUserModal from "./TeamUserModal";
 // import { KeyboardContext } from "../App";
 import TeamFolderModal from "./TeamFolderModal";
 import SearchButton from "search/SearchButton";
-import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
 import { SideBarContext } from "../App";
+import { getCookie } from "auth/util/cookie";
 
 type ContextType = {
   team: Team;
@@ -43,10 +43,9 @@ export interface Folder {
 }
 
 const TeamPage = () => {
-  const { userState }: any = React.useContext(UserContext);
   const { dispatcher } = React.useContext(SideBarContext);
-  const isLoggedIn = userState?.user !== null;
-  if (!isLoggedIn) {
+  const user = getCookie("user");
+  if (!user) {
     return <LoginRequire />;
   }
   // const keyboardContext: any = React.useContext(KeyboardContext);
@@ -60,6 +59,8 @@ const TeamPage = () => {
   const [folderModalShow, setFolderModalShow] = React.useState(false);
   const [isEdit, setIsEdit] = React.useState(false);
   const [isBanish, setIsBanish] = React.useState(false);
+
+  const params = useParams();
 
   const fetchTeamData = async () => {
     try {
@@ -128,7 +129,7 @@ const TeamPage = () => {
             fetchTeamFolderData={fetchTeamFolderData}
           />
           <div className="team-container">
-            {!team && (
+            {!team && Object.keys(params).length === 0 && (
               <NotFound>
                 <img src="/static/img/team.svg"></img>
                 <div>팀을 생성하여 그룹 북마크를 공유하세요</div>

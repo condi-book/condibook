@@ -13,6 +13,7 @@ import { useOutletContextProps } from "./TeamPage";
 import { AxiosError } from "axios";
 import { Alert } from "../layout/Alert";
 import Loading from "layout/Loading";
+import TeamBookMarkMoveModal from "./TeamBookMarkMoveModal";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -38,6 +39,9 @@ const TeamPageDetail = () => {
   const [isBlocked, setIsBlocked] = React.useState<boolean>(false); // 차단되었는지
   const [isCondiBook, setIsCondiBook] = React.useState<boolean>(false); // 미리보기 할 페이지가 우리 페이지 인지
   const [isLoading, setIsLoading] = React.useState<boolean>(false); // 미리보기 로딩중인지
+  const [showMoveModal, setShowMoveModal] = React.useState(false);
+  const [bookmarkId, setBookmarkId] = React.useState(0);
+  const [folderTitle, setFolderTitle] = React.useState("");
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -117,6 +121,19 @@ const TeamPageDetail = () => {
   const fetchBookmarks = async () => {
     const res = await Api.get(`folders/${params.folderId}/bookmarks`);
     setList(res.data.bookmarks);
+    setFolderTitle(res.data.folderTitle);
+  };
+
+  const handleMoveModal = () => {
+    setShowMoveModal((prev) => !prev);
+  };
+
+  // 링크 이동 시 변경되는 북마크 데이터 핸들러
+  const handleBookMarkChange = async (bookmarkId: Number) => {
+    const copied = Array.from(list);
+    const moveData = copied.find((v) => v.bookmark_id === bookmarkId);
+    await copied.splice(copied.indexOf(moveData), 1);
+    setList(copied);
   };
 
   React.useEffect(() => {
@@ -151,7 +168,7 @@ const TeamPageDetail = () => {
       setIsCondiBook(true);
     }
     setIsBlocked(false);
-    setIsLoading(true);
+    if (link) setIsLoading(true);
   }, [link]);
   return (
     <Div>
@@ -167,6 +184,13 @@ const TeamPageDetail = () => {
             handleChange={handleChange}
             newLink={newLink}
             handlePushData={handlePushData}
+          />
+          <TeamBookMarkMoveModal
+            open={showMoveModal}
+            close={handleMoveModal}
+            bookmarkId={Number(bookmarkId)}
+            currentFolderTitle={folderTitle}
+            handleBookMarkChange={handleBookMarkChange}
           />
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="link-list">
@@ -222,6 +246,18 @@ const TeamPageDetail = () => {
                                 </div>
                                 <div>
                                   <span
+                                    title="링크 이동"
+                                    className="pe-7s-back-2 icon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      console.log(item);
+                                      handleMoveModal();
+                                      setBookmarkId(item.bookmark_id);
+                                    }}
+                                  ></span>
+                                </div>
+                                <div>
+                                  <span
                                     title="링크 삭제"
                                     className="pe-7s-trash icon"
                                     onClick={(e) => handleDelete(e, item)}
@@ -240,7 +276,7 @@ const TeamPageDetail = () => {
           </DragDropContext>
         </div>
         <div className="content box">
-          {list.length === 0 && (
+          {!link && (
             <Empty className="empty">
               <img src="/static/img/bookmark.svg" alt="preview"></img>
               <div>북마크를 추가하여</div>
@@ -364,6 +400,13 @@ const Div = styled.div`
 
       .pe-7s-trash {
         color: ${({ theme }) => theme.subRedColor};
+        &:hover {
+          font-weight: bold;
+        }
+      }
+
+      .pe-7s-back-2 {
+        color: #12c2e9;
         &:hover {
           font-weight: bold;
         }

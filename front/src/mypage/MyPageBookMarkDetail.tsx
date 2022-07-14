@@ -13,9 +13,9 @@ import * as Api from "../api";
 import { useParams } from "react-router-dom";
 import { warningAlert, Alert } from "layout/Alert";
 import Loading from "layout/Loading";
-import { UserContext } from "store/userStore";
 import LoginRequire from "layout/LoginRequire";
 import { SideBarContext } from "../App";
+import { getCookie } from "auth/util/cookie";
 
 // 드래그할 때 스타일
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -30,9 +30,8 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 
 const MypageBookmarkDetail = () => {
   const { dispatcher } = React.useContext(SideBarContext);
-  const { userState }: any = React.useContext(UserContext);
-  const isLoggedIn = userState?.user !== null;
-  if (!isLoggedIn) {
+  const user = getCookie("user");
+  if (!user) {
     return <LoginRequire />;
   }
   const params = useParams();
@@ -159,7 +158,7 @@ const MypageBookmarkDetail = () => {
       setIsCondiBook(true);
     }
     setIsBlocked(false);
-    setIsLoading(true);
+    if (link) setIsLoading(true);
   }, [link]);
 
   return (
@@ -270,7 +269,7 @@ const MypageBookmarkDetail = () => {
           </DragDropContext>
         </div>
         <div className="content box">
-          {list.length === 0 && (
+          {!link && (
             <Empty className="empty">
               <img src="/static/img/bookmark.svg" alt="preview"></img>
               <div>북마크를 추가하여</div>
