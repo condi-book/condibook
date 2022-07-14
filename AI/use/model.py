@@ -89,58 +89,59 @@ def nouns_extractor(arr):
 
 # model2 : 예비북마크 list.
 def make_reserved_bookmark_list(lst):
-    reserved_bookmark_list = [(i,1) for i in lst]
-    exist_words = []
+    reserved_bookmark_list = [(i,1) for i in lst if i in model_input_words]
+    # exist_words = []
 
-    for i in lst:
-        if i in model_input_words:
-            exist_words.append(i)
+    reserved_bookmark_list += model.wv.most_similar(positive = [i for i in lst if i in model_input_words])
 
-    if len(exist_words) > 0:
-        reserved_bookmark_list += model.wv.most_similar(positive = exist_words)
+    # for i in lst:
+    #     if i in model_input_words:
+    #         exist_words.append(i)
+
+    # if len(exist_words) > 0:
+    #     reserved_bookmark_list += model.wv.most_similar(positive = exist_words)
     
     return reserved_bookmark_list
 
 # model3 : bookmark_extract func.
 
-def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
-    # description이 없는 경우.. title의 keyword는 있겠지..
+def get_keywords(reserved_bookmark_list,description_nouns):
     if len(description_nouns) == 0:
-        return False, {i[0]:i[1] for i in reserved_bookmark_list}
+        # return False, {i[0]:i[1] for i in reserved_bookmark_list}
+        return reserved_bookmark_list
     
-    # keyword_similarity_sum 구하고 return.
-    keywords_ordered = dict()
-    # print(len(reserved_bookmark_list),len(description_nouns))
+    keywords_ordered = []
     on_description_nouns = [i for i in description_nouns if i in model_input_words]
     
     for i in range(len(reserved_bookmark_list)):
         keyword,per = reserved_bookmark_list[i]
         
-        if keyword in model_input_words:
-            # print(reserved_bookmark_list)
-            temp_num = 1
+        temp_num = 1
             
-            try:
-                temp_num += model.wv.n_similarity([keyword],on_description_nouns)
-            except:
-                pass  # description의 noun이 model에 없는 경우 고려대상에서 제외.
-                
-            # print(temp_num,per)
-            temp_num *= per
+        try:
+            temp_num += model.wv.n_similarity([keyword],on_description_nouns)
+        except:
+            pass  # description의 noun이 model에 없는 경우 고려대상에서 제외.
             
-            keywords_ordered[keyword] = temp_num
-        else:
-            keywords_ordered['!'+keyword] = -1 # title에서 뽑은 noun이 없는 경우. 경고(!)와 함께 value = -1로 표기.
-    
-    return True, keywords_ordered
+        temp_num *= per
+        
+        keywords_ordered.append((keyword,temp_num))
+        
+    # print('keywords_ordered =',keywords_ordered)
 
-def get_category(hashtags):
-    categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
-    cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
-    category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
+    hashtags = sorted(keywords_ordered,key=lambda x: -x[1])
+    return hashtags
+
+
+def get_category2(reserved_bookmark_list,description_nouns):
+    hashtags = get_keywords(reserved_bookmark_list,description_nouns)
+
+    categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직','채용'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
+    cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직','채용'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
+    category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직','채용', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
     # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
 
-    for i in hashtags:
+    for i,per in hashtags:
         if i in category_list:
             for j in categories:
                 if i in j:
@@ -149,15 +150,71 @@ def get_category(hashtags):
     weights = [0]*len(categories)
 
     for i in range(len(categories)):
-        weights[i] = model.wv.n_similarity(categories[i],hashtags)
-
-    # if max(weights) < 0.55:
-    #     return 'etc'
-    # ! max 값에 대한 조정이 필요함. 0.55는 API에 있는 것을 넣어 확인 후 임의로 조정한 것임.. 제거.
-    # ! 최댓값 : 0.53~~
-    # print(weights)
-    
+        for j,per in hashtags:
+            try:
+                for k in categories[i]:
+                    weights[i] += model.wv.similarity(k,j)
+            except:
+                pass
+            weights[i] = weights[i]/len(categories[i])*per
+            
     return cate_dic[categories[weights.index(max(weights))]]
+
+# def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
+#     # description이 없는 경우.. title의 keyword는 있겠지..
+#     if len(description_nouns) == 0:
+#         return False, {i[0]:i[1] for i in reserved_bookmark_list}
+    
+#     # keyword_similarity_sum 구하고 return.
+#     keywords_ordered = dict()
+#     # print(len(reserved_bookmark_list),len(description_nouns))
+#     on_description_nouns = [i for i in description_nouns if i in model_input_words]
+    
+#     for i in range(len(reserved_bookmark_list)):
+#         keyword,per = reserved_bookmark_list[i]
+        
+#         if keyword in model_input_words:
+#             # print(reserved_bookmark_list)
+#             temp_num = 1
+            
+#             try:
+#                 temp_num += model.wv.n_similarity([keyword],on_description_nouns)
+#             except:
+#                 pass  # description의 noun이 model에 없는 경우 고려대상에서 제외.
+                
+#             # print(temp_num,per)
+#             temp_num *= per
+            
+#             keywords_ordered[keyword] = temp_num
+#         else:
+#             keywords_ordered['!'+keyword] = -1 # title에서 뽑은 noun이 없는 경우. 경고(!)와 함께 value = -1로 표기.
+    
+#     return True, keywords_ordered
+
+# def get_category(hashtags):
+#     categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
+#     cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
+#     category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
+#     # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
+
+#     for i in hashtags:
+#         if i in category_list:
+#             for j in categories:
+#                 if i in j:
+#                     return cate_dic[j]
+
+#     weights = [0]*len(categories)
+
+#     for i in range(len(categories)):
+#         weights[i] = model.wv.n_similarity(categories[i],hashtags)
+
+#     # if max(weights) < 0.55:
+#     #     return 'etc'
+#     # ! max 값에 대한 조정이 필요함. 0.55는 API에 있는 것을 넣어 확인 후 임의로 조정한 것임.. 제거.
+#     # ! 최댓값 : 0.53~~
+#     # print(weights)
+    
+#     return cate_dic[categories[weights.index(max(weights))]]
 
 # dict 상위 3개의 value 
 
