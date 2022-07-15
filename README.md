@@ -277,12 +277,12 @@
 
 - 페이지 구조도
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F60246213-34c3-4b54-a350-aace241e3e86%2F%ED%8E%98%EC%9D%B4%EC%A7%80_%EA%B5%AC%EC%A1%B0%EB%8F%84_-_Account_ownership_diagram_(3).png?table=block&id=91903f38-51be-42da-9b19-e222a3e48aa5&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/7fde525972b699847099a2d9c728cf8b/%ED%8E%98%EC%9D%B4%EC%A7%80_%EA%B5%AC%EC%A1%B0%EB%8F%84.png" width="400"/>
 
 - ER Diagram
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F4b85447a-a15c-4279-8cca-5b4e206fad0d%2FUntitled.png?table=block&id=271c9af1-2e7e-4488-9344-a9114dd789ca&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=1970&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/f3938a554f31181735f2f12833cbc3ed/ER_Diagram.png" width="400"/>
 
 - AI 플로우
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fddf19d37-138d-4991-8e64-c910c2054cf2%2FUntitled.png?table=block&id=017b38b1-d2a3-40e2-b7c7-fc03171dc52f&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/00fbf57cec9235c0ce8536a58383863b/AI_flow.png" width="400"/>
