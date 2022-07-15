@@ -1,3 +1,4 @@
+<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F8a7c1510-80e6-4caf-90fd-e5814f79f44b%2F%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-003.png?table=block&id=02fb716b-c2d3-4abb-8aa3-21672738654f&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="300"/>
 
 ## ✨ 서비스 바로가기
 - [CondiBook](https://kdt-ai4-team14.elicecoding.com/)
@@ -268,9 +269,20 @@
 
 ## 5. 프로젝트 구성도
 - [기획서](https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/-/wikis/%EA%B8%B0%ED%9A%8D%EC%84%9C)
-- [프로젝트 구조도](https://www.notion.so/elice/d762893084ef44b488537a55b5dbbb2a)
 - [와이어프레임](https://www.figma.com/file/83qXjmq0mikS83PQzxdppU/%EC%BB%A8%EB%94%94%EB%B6%81?node-id=0%3A1)
-- [페이지 구조도](https://www.notion.so/elice/297ed2164d0243e3a10799e1c672bfc8)
 - [API 명세서](https://documenter.getpostman.com/view/19600896/Uz5MDspk)
-- [ER Diagram](https://www.notion.so/elice/ER-Diagram-0166749ccf484a27b20bc1326be74395)
-- [AI 플로우](https://www.notion.so/elice/AI-5666dd28214a4d938a7acd0b523d6493)
+- 프로젝트 구조도
+
+<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Ff8d34f2f-78b3-4704-af02-c704bd714a8c%2FUntitled.png?table=block&id=d7f42d33-d670-4fe4-9958-0d4c2d89b252&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
+
+- 페이지 구조도
+
+<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F60246213-34c3-4b54-a350-aace241e3e86%2F%ED%8E%98%EC%9D%B4%EC%A7%80_%EA%B5%AC%EC%A1%B0%EB%8F%84_-_Account_ownership_diagram_(3).png?table=block&id=91903f38-51be-42da-9b19-e222a3e48aa5&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
+
+- ER Diagram
+
+<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F4b85447a-a15c-4279-8cca-5b4e206fad0d%2FUntitled.png?table=block&id=271c9af1-2e7e-4488-9344-a9114dd789ca&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=1970&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
+
+- AI 플로우
+
+<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fddf19d37-138d-4991-8e64-c910c2054cf2%2FUntitled.png?table=block&id=017b38b1-d2a3-40e2-b7c7-fc03171dc52f&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="400"/>
