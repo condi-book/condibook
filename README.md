@@ -1,4 +1,4 @@
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F8a7c1510-80e6-4caf-90fd-e5814f79f44b%2F%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-003.png?table=block&id=02fb716b-c2d3-4abb-8aa3-21672738654f&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=2000&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="300"/>
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/e457cdc2ead82effca900badb958f5e9/logopng.png" width="300"/>
 
 ## ✨ 서비스 바로가기
 - [CondiBook](https://kdt-ai4-team14.elicecoding.com/)
