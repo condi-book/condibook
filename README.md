@@ -264,3 +264,15 @@
 | 엄혜진 | 백엔드 |
 | 한우성 | 백엔드 |
 | ALL | 기획, QA |
+
+
+---
+
+## 5. 프로젝트 구성도
+- [기획서](https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/-/wikis/%EA%B8%B0%ED%9A%8D%EC%84%9C)
+- [프로젝트 구조도](https://www.notion.so/elice/d762893084ef44b488537a55b5dbbb2a)
+- [와이어프레임](https://www.figma.com/file/83qXjmq0mikS83PQzxdppU/%EC%BB%A8%EB%94%94%EB%B6%81?node-id=0%3A1)
+- [페이지 구조도](https://www.notion.so/elice/297ed2164d0243e3a10799e1c672bfc8)
+- [API 명세서](https://documenter.getpostman.com/view/19600896/Uz5MDspk)
+- [ER Diagram](https://www.notion.so/elice/ER-Diagram-0166749ccf484a27b20bc1326be74395)
+- [AI 플로우](https://www.notion.so/elice/AI-5666dd28214a4d938a7acd0b523d6493)
