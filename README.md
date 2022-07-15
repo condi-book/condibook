@@ -273,7 +273,7 @@
 - [API 명세서](https://documenter.getpostman.com/view/19600896/Uz5MDspk)
 - 프로젝트 구조도
 
-<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/8377dd055b5369544310c892eae7285a/dd.png" width="400"/>
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/6b60db492b93b05877f2f6eeb420ce8f/first__3_.png" width="400"/>
 
 - 페이지 구조도
 
