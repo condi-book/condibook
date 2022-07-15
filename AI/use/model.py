@@ -8,9 +8,8 @@ os.environ['JAVA_HOME'] = r'/usr/bin/jar'
 regex = re.compile('[ㄱ-ㅎ|\d\ㅏ-ㅣ|가-힣|a-z|0-9]+')
 translator = Translator()
 okt = Okt()
-# print(os.listdir('.')) # 작동하는 곳의 현 위치를 나타냄.
-# model = Word2Vec.load('./AI/Model/pretrained/ko.bin')
-model = Word2Vec.load('../model/last_ko2.bin.bin') # 새로운 경로 지정.
+# print(os.listdir('.')) # 작동하는 곳의 현 위치를 나타냄. # ! 혹시 누군가 사용한다면 유용하게 쓰일 기능입니다.(python과 ipynb의 기본경로가 다르다는 점 주의!) 
+model = Word2Vec.load('../model/last_ko2.bin') # 새로운 경로 지정.
 model_input_words = tuple(model.wv.index2word)
 
 del_arr = '''
@@ -56,10 +55,9 @@ stopwords = tuple(set(del_arr.strip().split()))
 del del_arr
 
 
-# 키워드 추천을 위한 두 개의 함수.
+# 키워드 추천을 위한 네 개의 함수.
 # model1 : nouns_extract func.
 def nouns_extractor(arr):
-    #arr이 ''인 경우.. title은 거의 대부분 있을 수 밖에 없고,description이 없는 경우를 가정할 수 있기 때문.
     if len(arr) == 0:
         return arr
     
@@ -83,31 +81,20 @@ def nouns_extractor(arr):
                 reserverd_nouns.append(i[0])
     
     #불용어 제거 후 return.(중복 가능)
-    # nouns = [i for i in reserverd_nouns if i not in stopwords] 요게 함수쪽으로 들어갈 경우 len(title_nouns) == 0 이 될 수 있음.
-    # print('noun_extractor.reserverd_nouns =',reserverd_nouns)
     return reserverd_nouns
 
-# model2 : 예비북마크 list.
+# model2.
 def make_reserved_bookmark_list(lst):
     reserved_bookmark_list = [(i,1) for i in lst if i in model_input_words]
-    # exist_words = []
 
     reserved_bookmark_list += model.wv.most_similar(positive = [i for i in lst if i in model_input_words])
 
-    # for i in lst:
-    #     if i in model_input_words:
-    #         exist_words.append(i)
-
-    # if len(exist_words) > 0:
-    #     reserved_bookmark_list += model.wv.most_similar(positive = exist_words)
-    
     return reserved_bookmark_list
 
-# model3 : bookmark_extract func.
+# model3 : 키워드 추출 함수.
 
 def get_keywords(reserved_bookmark_list,description_nouns):
     if len(description_nouns) == 0:
-        # return False, {i[0]:i[1] for i in reserved_bookmark_list}
         return reserved_bookmark_list
     
     keywords_ordered = []
@@ -121,18 +108,16 @@ def get_keywords(reserved_bookmark_list,description_nouns):
         try:
             temp_num += model.wv.n_similarity([keyword],on_description_nouns)
         except:
-            pass  # description의 noun이 model에 없는 경우 고려대상에서 제외.
+            pass
             
         temp_num *= per
         
         keywords_ordered.append((keyword,temp_num))
-        
-    # print('keywords_ordered =',keywords_ordered)
 
     hashtags = sorted(keywords_ordered,key=lambda x: -x[1])
     return hashtags
 
-
+# model4 : category 추출 함수.
 def get_category2(reserved_bookmark_list,description_nouns):
     try:
         hashtags = get_keywords(reserved_bookmark_list,description_nouns)
@@ -140,7 +125,6 @@ def get_category2(reserved_bookmark_list,description_nouns):
         categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직','채용'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
         cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직','채용'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
         category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직','채용', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
-        # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
 
         for i,per in hashtags:
             if i in category_list:
@@ -163,79 +147,10 @@ def get_category2(reserved_bookmark_list,description_nouns):
     except:
         return 'etc'
 
-# def keywords_sum_similarity(reserved_bookmark_list,description_nouns):
-#     # description이 없는 경우.. title의 keyword는 있겠지..
-#     if len(description_nouns) == 0:
-#         return False, {i[0]:i[1] for i in reserved_bookmark_list}
-    
-#     # keyword_similarity_sum 구하고 return.
-#     keywords_ordered = dict()
-#     # print(len(reserved_bookmark_list),len(description_nouns))
-#     on_description_nouns = [i for i in description_nouns if i in model_input_words]
-    
-#     for i in range(len(reserved_bookmark_list)):
-#         keyword,per = reserved_bookmark_list[i]
-        
-#         if keyword in model_input_words:
-#             # print(reserved_bookmark_list)
-#             temp_num = 1
-            
-#             try:
-#                 temp_num += model.wv.n_similarity([keyword],on_description_nouns)
-#             except:
-#                 pass  # description의 noun이 model에 없는 경우 고려대상에서 제외.
-                
-#             # print(temp_num,per)
-#             temp_num *= per
-            
-#             keywords_ordered[keyword] = temp_num
-#         else:
-#             keywords_ordered['!'+keyword] = -1 # title에서 뽑은 noun이 없는 경우. 경고(!)와 함께 value = -1로 표기.
-    
-#     return True, keywords_ordered
-
-# def get_category(hashtags):
-#     categories = [('경영'), ('정보', '기술'), ('금융'), ('개발'), ('구인', '구직'), ('건강'), ('환경'), ('뷰티'), ('여행'), ('식당', '카페'), ('자기','공부'),('음식', '요리'),('음악'),('쇼핑')]
-#     cate_dic = {'경영': '경영', ('정보', '기술'): '정보/기술', '금융': '금융', '개발': '개발', ('구인', '구직'): '구인/구직', '건강': '건강', '환경': '환경', '뷰티': '뷰티', '여행': '여행', ('식당', '카페'): '맛집/카페', ('자기', '공부'): '자기계발', ('음식', '요리'): '음식/요리','음악':'음악','쇼핑':'쇼핑'}
-#     category_list = ['경영', '정보', '기술', '금융', '개발', '구인', '구직', '건강', '환경', '뷰티', '여행', '식당', '카페', '자기','공부','음식', '요리','음악','쇼핑']
-#     # it --> 정보, (인크루트) --> del, 맛집 --> 식당, 자기개발 --> 자기 + 공부 로 변경.
-
-#     for i in hashtags:
-#         if i in category_list:
-#             for j in categories:
-#                 if i in j:
-#                     return cate_dic[j]
-
-#     weights = [0]*len(categories)
-
-#     for i in range(len(categories)):
-#         weights[i] = model.wv.n_similarity(categories[i],hashtags)
-
-#     # if max(weights) < 0.55:
-#     #     return 'etc'
-#     # ! max 값에 대한 조정이 필요함. 0.55는 API에 있는 것을 넣어 확인 후 임의로 조정한 것임.. 제거.
-#     # ! 최댓값 : 0.53~~
-#     # print(weights)
-    
-#     return cate_dic[categories[weights.index(max(weights))]]
-
-# dict 상위 3개의 value 
-
-# ================================================
-
-# model4 : 공유 북마크 부분에서 쓰이는 모델. 관심사와 유사한 키워드를 찾아서 뽑은 후 백엔드에 전달, 이 키워드를 이용해 타인의 북마크등을 추천.
-# input : 관심사 키워드 + 워드임베딩된 키워드.
-# ! output : 추천??(서버 내 북마크된 글이 충분히 많아졌을 때!)
-
-# 지금까지 모든 사용자가 북마크하면서 등록된 헤시태그들....  : hashtag_list
-
 def recommend_from_hashtag(hashtags):
 
-    # 요리, 경제, 자전거
-    # ['a','b','c','d','e'... ~~ 'z']
-
-    #관심사 키워드 + bookmark된 키워드 리스트의 목록중 받아온 북마크에 있는 것만 뽑아주기. -- be가 어떻게 짜여졌냐에 따라 수정해야 할 수도?
-    x = model.wv.most_similar(positive = hashtags) # len = 30  --> 바꾸기.
+    #키워드에 따라 유사단어를 추천해주는 함수.
+    x = model.wv.most_similar(positive = hashtags)
     temp = []
     for i in x:
         temp.append(i[0])
@@ -250,5 +165,3 @@ def word_detection(arr):
         return LANGUAGES[x]
     
     return x  # module 내의 constant 단위까지 가서 살펴보았고, if 문은 혹시나 싶어서 넣어둠.
-
-# 뽑아낸 것... short name 보내기?
