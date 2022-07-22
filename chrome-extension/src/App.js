@@ -60,7 +60,7 @@ const App = () => {
     setTimeout(function () {
       chrome.cookies
         .get({
-          url: "http://kdt-ai4-team14.elicecoding.com/",
+          url: "https://kdt-ai4-team14.elicecoding.com/",
           name: "userToken",
         })
         .then(async (res) => {
@@ -73,7 +73,7 @@ const App = () => {
             console.log("링크 가져오는 중");
             console.log("링크 값", answer);
             console.log(cookies);
-            fetch("http://kdt-ai4-team14.elicecoding.com:5001/websites", {
+            fetch("https://kdt-ai4-team14.elicecoding.com/api/websites", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const App = () => {
                 }
               })
               .catch((err) => {
-                console.log(err.message);
+                console.log(err);
                 console.log("에러났어요");
                 setStatus("NOT");
               });

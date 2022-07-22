@@ -5,33 +5,40 @@ import useFetch from "./hooks/useFetch";
 import { PostPreview } from "./CommunityPage";
 
 interface CommunityPostListProps {
-  sortState: string;
+  sortState: number;
+  pageNum: number;
+  setPageNum: (value: number) => void;
 }
-// class PostPreviewModel implements PostPreview {
-//   id: string;
-//   author: string;
-//   author_name: string;
-//   createdAt: Date;
-//   title: string;
-//   like_counts: number;
-//   updatedAt: Date;
-//   views: number;
+class PostPreviewModel implements PostPreview {
+  id: string;
+  author: string;
+  author_name: string;
+  createdAt: Date;
+  title: string;
+  like_counts: number;
+  updatedAt: Date;
+  views: number;
+  content: string;
 
-//   constructor() {
-//     this.id = `${Math.floor(Math.random() * 10000)}`;
-//     this.author = "";
-//     this.createdAt = new Date();
-//     this.title = "";
-//     this.views = Math.floor(Math.random() * 10);
-//   }
-// }
+  constructor() {
+    this.id = `${Math.floor(Math.random() * 10000)}`;
+    this.author = "CondiBook";
+    this.createdAt = new Date();
+    this.title = "로딩 중 입니다.";
+    this.views = Math.floor(Math.random() * 10);
+    this.content = "로딩 중 입니다.";
+  }
+}
 
-// const loadingData: PostPreview[] = Array(20)
-//   .fill(undefined)
-//   .map(() => new PostPreviewModel());
+const loadingData: PostPreview[] = Array(20)
+  .fill(undefined)
+  .map(() => new PostPreviewModel());
 
-const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
-  const [pageNum, setPageNum] = useState(1);
+const CommunityPostList = ({
+  sortState,
+  pageNum,
+  setPageNum,
+}: CommunityPostListProps) => {
   const [posts, setPosts] = useState<PostPreview[]>([]);
   const { hasMore, isLoading } = useFetch(pageNum, sortState, setPosts);
   const observerRef: React.MutableRefObject<null | IntersectionObserver> =
@@ -47,41 +54,36 @@ const CommunityPostList = ({ sortState }: CommunityPostListProps) => {
 
     observerRef.current = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && hasMore) {
-        setPageNum((page) => page + 1);
+        setPageNum(pageNum + 1);
       }
     });
 
     node && observerRef.current.observe(node);
   };
 
-  const handleChangeSort = () => {
-    setPageNum(1);
-    setPosts([]);
-  };
+  React.useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (posts.length === 0) {
+      setPosts(loadingData);
+    }
+  }, [isLoading, posts]);
 
   React.useEffect(() => {
-    handleChangeSort();
+    setPosts([]);
   }, [sortState]);
-
   return (
     <Div>
       <Row>
-        {posts.map((PostPreview: PostPreview) => (
-          <Col key={`preview-${sortState}-${PostPreview.id}`}>
-            <CommunityPostCard PostPreview={PostPreview} />
-          </Col>
-        ))}
+        {posts
+          ? posts.map((PostPreview: PostPreview) => (
+              <Col key={`preview-${sortState}-${PostPreview.id}`}>
+                <CommunityPostCard PostPreview={PostPreview} />
+              </Col>
+            ))
+          : null}
         <div ref={observer} />
-        <>
-          {isLoading && (
-            // loadingData.map((PostPreview: PostPreview) => (
-            //   <Col key={`preview-${sortState}-${PostPreview.id}`}>
-            //     <CommunityPostCard PostPreview={PostPreview} />
-            //   </Col>
-            // ))}
-            <div>loading</div>
-          )}
-        </>
       </Row>
     </Div>
   );

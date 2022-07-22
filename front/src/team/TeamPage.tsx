@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Outlet, useOutletContext } from "react-router-dom";
+import { Outlet, useOutletContext, useParams } from "react-router-dom";
 
 import * as Api from "../api";
 import SideBar from "../layout/SideBar";
@@ -9,6 +9,10 @@ import TeamCreateModal from "./TeamCreateModal";
 import TeamUserModal from "./TeamUserModal";
 // import { KeyboardContext } from "../App";
 import TeamFolderModal from "./TeamFolderModal";
+import SearchButton from "search/SearchButton";
+import LoginRequire from "layout/LoginRequire";
+import { SideBarContext } from "../App";
+import { getCookie } from "auth/util/cookie";
 
 type ContextType = {
   team: Team;
@@ -39,6 +43,11 @@ export interface Folder {
 }
 
 const TeamPage = () => {
+  const { dispatcher } = React.useContext(SideBarContext);
+  const user = getCookie("user");
+  if (!user) {
+    return <LoginRequire />;
+  }
   // const keyboardContext: any = React.useContext(KeyboardContext);
   const [team, setTeam] = React.useState<Team>(null);
   const [teams, setTeams] = React.useState<Team[]>(null); // 사용자 팀목록
@@ -51,10 +60,21 @@ const TeamPage = () => {
   const [isEdit, setIsEdit] = React.useState(false);
   const [isBanish, setIsBanish] = React.useState(false);
 
+  const { teamid } = useParams();
+
   const fetchTeamData = async () => {
     try {
       const res = await Api.get("user/teams");
       setTeams(res.data);
+      if (teamid) {
+        const paramsTeam = res.data.find(
+          (team: Team) => team.team_id === Number(teamid),
+        );
+        setTeam(paramsTeam);
+        if (!paramsTeam) {
+          setTeam(null);
+        }
+      }
     } catch (err) {
       console.log(err);
     }
@@ -76,12 +96,8 @@ const TeamPage = () => {
 
   React.useEffect(() => {
     fetchTeamData();
+    dispatcher({ type: "pe-7s-users" });
   }, []);
-
-  React.useEffect(() => {
-    fetchTeamData();
-    fetchTeamFolderData();
-  }, [team]);
 
   React.useEffect(() => {
     if (team?.team_id === null || team?.team_id === undefined) {
@@ -98,6 +114,7 @@ const TeamPage = () => {
     <Div>
       {/* {keyboardContext.sidebar === true && <SideBar />} */}
       <SideBar />
+      <SearchButton></SearchButton>
       <div className="team-section">
         <div className="team-wrap">
           <TeamSidebar
@@ -116,7 +133,7 @@ const TeamPage = () => {
             fetchTeamFolderData={fetchTeamFolderData}
           />
           <div className="team-container">
-            {!team && (
+            {!team && !teamid && (
               <NotFound>
                 <img src="/static/img/team.svg"></img>
                 <div>팀을 생성하여 그룹 북마크를 공유하세요</div>

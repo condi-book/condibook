@@ -35,7 +35,7 @@ class userService {
                 email: user.email,
                 nickname: user.nickname ?? user.email.split("@")[0],
                 image_url: user.image_url,
-                intro: user.intro ?? null,
+                intro: user.intro ?? "",
                 token: token,
             };
             return result;
@@ -46,6 +46,9 @@ class userService {
 
     static async getKakaoToken(code) {
         try {
+            if (!KAKAO_CLIENT_ID || !CLIENT_URL) {
+                throw new Error("env를 확인해주십시오.");
+            }
             // 코드로 토큰 발급
             const res = await axios.post(
                 "https://kauth.kakao.com/oauth/token",
@@ -84,6 +87,9 @@ class userService {
 
     static async getGoogleToken(code) {
         try {
+            if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !CLIENT_URL) {
+                throw new Error("env를 확인해주십시오.");
+            }
             // 코드로 토큰 발급
             const res = await axios.post(
                 "https://oauth2.googleapis.com/token",
@@ -149,7 +155,7 @@ class userService {
                 email: user.email,
                 nickname: user.nickname,
                 image_url: user.image_url,
-                intro: user.intro ?? null,
+                intro: user.intro ?? "",
                 folderCount: myFolderIds.length,
                 bookmarkCount,
             };
@@ -177,7 +183,7 @@ class userService {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 닉네임 수정
-            const affectedRows = await User.updateNickname({
+            const [affectedRows] = await User.updateNickname({
                 user_id: user.id,
                 nickname,
             });
@@ -198,7 +204,7 @@ class userService {
                 return getFailMsg({ entity: "사용자", action: "조회" });
             }
             // 짧은 소개글 수정
-            const affectedRows = await User.updateIntro({
+            const [affectedRows] = await User.updateIntro({
                 user_id: requester.id,
                 intro,
             });

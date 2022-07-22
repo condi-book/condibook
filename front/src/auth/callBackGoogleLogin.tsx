@@ -1,15 +1,17 @@
 import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import axios from "axios";
 import { GOOGLE_LOGIN_STATE } from "../config";
-import { DispatchContext } from "../App";
 import { setCookie } from "./util/cookie";
 import Loading from "layout/Loading";
 import { Alert } from "layout/Alert";
+import { serverUrl } from "api";
+import { UserContext } from "store/userStore";
 
 const CallBackGoogleLogin = () => {
   const navigate: any = useNavigate();
-  const dispatch: any = useContext(DispatchContext);
+  const { userDispatch }: any = useContext(UserContext);
 
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
@@ -29,7 +31,8 @@ const CallBackGoogleLogin = () => {
     const code = params.get("code");
 
     async function sendCode() {
-      const url = `${window.location.origin}/api/user/login/google`;
+      const url = `${serverUrl}user/login/google`;
+
       const res = await axios.post(url, { code });
       const user = res.data;
 
@@ -42,7 +45,7 @@ const CallBackGoogleLogin = () => {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       });
-      dispatch({
+      await userDispatch({
         type: "LOGIN_SUCCESS",
         payload: user,
       });
@@ -56,7 +59,16 @@ const CallBackGoogleLogin = () => {
     sendCode();
   }, []);
 
-  return <Loading />;
+  return (
+    <Div>
+      <Loading />
+    </Div>
+  );
 };
 
 export default CallBackGoogleLogin;
+
+const Div = styled.div`
+  width: 100%;
+  height: 100vh;
+`;

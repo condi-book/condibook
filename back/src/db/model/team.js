@@ -1,11 +1,4 @@
-import {
-    FolderModel,
-    sequelize,
-    TeamModel,
-    Op,
-    MembershipModel,
-    Sequelize,
-} from "../schema";
+import { FolderModel, sequelize, TeamModel, Op, Sequelize } from "../schema";
 
 class Team {
     static create({ manager_id, name, explanation }) {
@@ -68,22 +61,25 @@ class Team {
             },
         });
     }
-    static searchTeamByQuery({ user_id, content }) {
-        return TeamModel.findAll({
-            attributes: ["id", "name", "explanation"],
-            where: Sequelize.literal(
-                "MATCH (`name`, `explanation`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
-            ),
+    static searchTeamByQuery({ content, team_ids }) {
+        return FolderModel.findAll({
+            attributes: ["id", "title", "team_id"],
+            where: {
+                [Op.and]: [
+                    {
+                        team_id: {
+                            [Op.in]: [...team_ids],
+                        },
+                    },
+                    Sequelize.literal(
+                        "MATCH (`title`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
+                    ),
+                ],
+            },
+            include: [{ model: TeamModel }],
             replacements: {
                 search: content,
             },
-            include: [
-                {
-                    attributes: ["team_id"],
-                    model: MembershipModel,
-                    where: { member_id: user_id },
-                },
-            ],
             raw: true,
             nest: true,
         });

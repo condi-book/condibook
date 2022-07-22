@@ -6,6 +6,7 @@ import {
     BookmarkModel,
     Sequelize,
     Transaction,
+    LikeModel,
 } from "../schema";
 
 class Post {
@@ -16,6 +17,7 @@ class Post {
             views,
             author: user_id,
             author_name: nickname,
+            is_deleted: false,
         });
         return result;
     }
@@ -37,9 +39,8 @@ class Post {
         return result;
     }
     static async findAllList({ offset }) {
-        const excludes = { exclude: ["content"] };
         const result = await PostModel.findAll({
-            attributes: excludes,
+            where: { is_deleted: false },
             order: [["createdAt", "DESC"]],
             offset: offset,
             limit: 20,
@@ -47,9 +48,8 @@ class Post {
         return result;
     }
     static async findAllByViews({ offset }) {
-        const excludes = { exclude: ["content"] };
         const result = PostModel.findAll({
-            attributes: excludes,
+            where: { is_deleted: false },
             order: [["views", "DESC"]],
             offset: offset,
             limit: 20,
@@ -57,9 +57,8 @@ class Post {
         return result;
     }
     static async findAllByLikes({ offset }) {
-        const excludes = { exclude: ["content"] };
         const result = PostModel.findAll({
-            attributes: excludes,
+            where: { is_deleted: false },
             order: [["like_counts", "DESC"]],
             offset: offset,
             limit: 20,
@@ -67,13 +66,19 @@ class Post {
         return result;
     }
     static async searchAllByQuery({ offset, content, type }) {
-        const excludes = { exclude: ["content"] };
+        // const excludes = { exclude: ["content"] };
         if (type == 1) {
             const result = PostModel.findAll({
-                attributes: excludes,
-                where: Sequelize.literal(
-                    "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
-                ),
+                where: {
+                    [Op.and]: [
+                        {
+                            is_deleted: false,
+                        },
+                        Sequelize.literal(
+                            "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
+                        ),
+                    ],
+                },
                 replacements: {
                     search: content,
                 },
@@ -86,9 +91,11 @@ class Post {
             return result;
         }
         const result = PostModel.findAll({
-            attributes: excludes,
             where: {
-                title: { [Op.like]: `%${content}%` },
+                [Op.and]: [
+                    { title: { [Op.like]: `%${content}%` } },
+                    { is_deleted: false },
+                ],
             },
             order: [["createdAt", "DESC"]],
             offset: offset,
@@ -97,13 +104,19 @@ class Post {
         return result;
     }
     static async searchAllByLikes({ offset, content, type }) {
-        const excludes = { exclude: ["content"] };
+        // const excludes = { exclude: ["content"] };
         if (type == 1) {
             const result = PostModel.findAll({
-                attributes: excludes,
-                where: Sequelize.literal(
-                    "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
-                ),
+                where: {
+                    [Op.and]: [
+                        {
+                            is_deleted: false,
+                        },
+                        Sequelize.literal(
+                            "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
+                        ),
+                    ],
+                },
                 replacements: {
                     search: content,
                 },
@@ -114,9 +127,11 @@ class Post {
             return result;
         }
         const result = PostModel.findAll({
-            attributes: excludes,
             where: {
-                title: { [Op.like]: `%${content}%` },
+                [Op.and]: [
+                    { title: { [Op.like]: `%${content}%` } },
+                    { is_deleted: false },
+                ],
             },
             order: [["like_counts", "DESC"]],
             offset: offset,
@@ -125,13 +140,19 @@ class Post {
         return result;
     }
     static async searchAllByViews({ offset, content, type }) {
-        const excludes = { exclude: ["content"] };
+        // const excludes = { exclude: ["content"] };
         if (type == 1) {
             const result = PostModel.findAll({
-                attributes: excludes,
-                where: Sequelize.literal(
-                    "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
-                ),
+                where: {
+                    [Op.and]: [
+                        {
+                            is_deleted: false,
+                        },
+                        Sequelize.literal(
+                            "MATCH (`title`, `content`) AGAINST (:search IN NATURAL LANGUAGE MODE)",
+                        ),
+                    ],
+                },
                 replacements: {
                     search: content,
                 },
@@ -142,9 +163,11 @@ class Post {
             return result;
         }
         const result = PostModel.findAll({
-            attributes: excludes,
             where: {
-                title: { [Op.like]: `%${content}%` },
+                [Op.and]: [
+                    { title: { [Op.like]: `%${content}%` } },
+                    { is_deleted: false },
+                ],
             },
             order: [["views", "DESC"]],
             offset: offset,
@@ -234,12 +257,19 @@ class Post {
     static async deleteOne({ id }) {
         const t = await sequelize.transaction();
         try {
-            const result = await PostModel.destroy({
-                where: { id },
-                transaction: t,
-            });
+            const result = await PostModel.update(
+                { is_deleted: true },
+                {
+                    where: { id },
+                    transaction: t,
+                },
+            );
 
             await AttachedModel.destroy({
+                where: { [Op.or]: [{ post_id: null }, { post_id: id }] },
+                transaction: t,
+            });
+            await LikeModel.destroy({
                 where: { [Op.or]: [{ post_id: null }, { post_id: id }] },
                 transaction: t,
             });
@@ -274,12 +304,15 @@ class Post {
     static async deletePosts({ user_id }) {
         const t = await sequelize.transaction();
         try {
-            await PostModel.destroy({
-                where: {
-                    [Op.or]: [{ author: null }, { author: user_id }],
+            await PostModel.update(
+                { is_deleted: true },
+                {
+                    where: {
+                        [Op.or]: [{ author: null }, { author: user_id }],
+                    },
+                    transaction: t,
                 },
-                transaction: t,
-            });
+            );
             await t.commit();
 
             return { mes: "삭제 완료!" };

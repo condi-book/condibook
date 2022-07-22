@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import * as Api from "../api";
 import { useParams } from "react-router-dom";
-import { Alert } from "./Alert";
+import { Alert, errorAlert } from "./Alert";
 
 interface props {
   open: boolean;
@@ -49,7 +49,7 @@ const Modal = ({
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = React.useCallback(() => {
     const modifiedLink = newLink.startsWith("www")
       ? `https://${newLink}`
       : newLink;
@@ -72,8 +72,14 @@ const Modal = ({
           });
         });
       })
-      .catch((err) => alert(err.response.data));
-  };
+      .catch((err) => {
+        if (err.response.data === "이미 존재한 북마크입니다.") {
+          errorAlert(err.response.data);
+        } else {
+          errorAlert("정확한 url을 기입해주세요");
+        }
+      });
+  }, [newLink]);
 
   return (
     <Div newLink={newLink}>

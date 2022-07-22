@@ -35,6 +35,11 @@ export default function PostSchema(sequelize, DataTypes) {
                 allowNull: false,
                 comment: "게시글 좋아요 갯수",
             },
+            is_deleted: {
+                type: DataTypes.BOOLEAN,
+                default: false,
+                comment: "논리삭제 확인",
+            },
         },
         {
             charset: "utf8mb4",

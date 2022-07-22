@@ -3,18 +3,11 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import * as Api from "../api";
 import CalcDate from "./tools/CalcDate";
-import { PostPreview } from "./CommunityPage";
-
-type StyleProps = {
-  show: boolean;
-};
-
-type Tab = "제목" | "제목 + 내용";
 
 const CommunitySearch = () => {
   const navigate = useNavigate();
-  const [show, setShow] = React.useState(false);
-  const [tab, setTab] = React.useState<Tab>("제목");
+  // const [show, setShow] = React.useState(false);
+  // const [tab, setTab] = React.useState("제목 + 내용");
   const [word, setWord] = React.useState("");
   // 데이터
   const [data, setData] = React.useState([]);
@@ -29,13 +22,13 @@ const CommunitySearch = () => {
     return (
       <div className="search-main">
         <div className="search-list">
-          {data?.map((item: PostPreview) => (
+          {data?.map((item: any) => (
             <Col key={`search-${item.id}`}>
               <Card onClick={handlePostClick(item.id)}>
                 <CardBody>
                   <CardTitle>{item.title}</CardTitle>
                   <CardinfoText>
-                    <span>{CalcDate(new Date(item.createdAt))}</span>
+                    <span>{CalcDate(new Date(item.createdat))}</span>
                   </CardinfoText>
                 </CardBody>
                 <CardFooter>
@@ -63,20 +56,24 @@ const CommunitySearch = () => {
   const handelSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     ///search/community?order=likes&pageNumber=1&content=g&type=1
-    const url =
-      tab === "제목"
-        ? `search/community?order=likes&pageNumber=1&content=${word}&type=0`
-        : `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
+    const url = `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
     const res = await Api.get(url);
     setData(res.data);
-    console.log(res.data);
+  };
+
+  const handlePressEnter = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const url = `search/community?order=likes&pageNumber=1&content=${word}&type=1`;
+      const res = await Api.get(url);
+      setData(res.data);
+    }
   };
 
   // 검색 조건 핸들러
-  const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTab((e.target as HTMLElement).textContent as Tab);
-    setShow((prev) => !prev);
-  };
+  // const handleTab = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   setTab((e.target as HTMLElement).textContent);
+  //   setShow((prev) => !prev);
+  // };
 
   // 검색창 초기화 함수
   const handleDelete = () => {
@@ -84,11 +81,11 @@ const CommunitySearch = () => {
   };
 
   return (
-    <Div show={show}>
+    <Div>
       <div className="search-section">
         <div className="search-container">
           <div className="search-box">
-            <div className="search-dropdown">
+            {/* <div className="search-dropdown">
               <div
                 className="search-dropdown-header"
                 onClick={() => setShow((prev) => !prev)}
@@ -97,10 +94,9 @@ const CommunitySearch = () => {
                 <span className="pe-7s-angle-down" />
               </div>
               <div className="search-select">
-                <div onClick={handleTab}>제목</div>
                 <div onClick={handleTab}>제목 + 내용</div>
               </div>
-            </div>
+            </div> */}
             <div className="search-input">
               <div className="search-input-box">
                 {word && (
@@ -121,6 +117,7 @@ const CommunitySearch = () => {
                 <input
                   value={word}
                   onChange={handleChange}
+                  onKeyPress={handlePressEnter}
                   type="text"
                   placeholder="검색어를 입력하세요"
                 />
@@ -160,7 +157,7 @@ const Col = styled.div`
   }
 `;
 
-const Div = styled.div<StyleProps>`
+const Div = styled.div`
   display: flex;
   flex-direction: row;
   background: #f8f9fc;
@@ -169,7 +166,6 @@ const Div = styled.div<StyleProps>`
   .search-section {
     margin: auto;
     width: 90vw;
-    border: 2px solid red;
     height: 100%;
   }
   .search-container {
@@ -213,8 +209,6 @@ const Div = styled.div<StyleProps>`
         border-radius: 8px;
         background-color: rgb(235, 235, 235);
         z-index: 3;
-        height: ${({ show }) => (show ? "168px" : "50px")};
-        visibility: ${({ show }) => (show ? "visible" : "hidden")};
         transition: height 0.3s ease-out;
         position: absolute;
         top: 0;

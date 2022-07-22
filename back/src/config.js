@@ -13,3 +13,7 @@ export const DB_DIALECT = process.env.DB_DIALECT || "env 확인해주십시오."
 export const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+export const ELASTIC_CLOUD_ID = process.env.ELASTIC_CLOUD_ID;
+export const ELASTIC_USERNAME = process.env.ELASTIC_USERNAME;
+export const ELASTIC_PASSWORD = process.env.ELASTIC_PASSWORD;

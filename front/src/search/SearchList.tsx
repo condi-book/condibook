@@ -78,10 +78,9 @@ const SearchList = ({ handleCategory, searchData, category }: SearchProps) => {
               <div className="card-wrap" key={`search-${item.id}`}>
                 <div
                   className="card"
-                  onClick={() => navigate(`/team/${item.id}`)}
+                  onClick={() => navigate(`/team/${item.team_id}/${item.id}`)}
                 >
-                  <div className="folder-title">{item.name}</div>
-                  <div className="folder-title">{item.explanation}</div>
+                  <div className="folder-title">{item.title}</div>
                   <span className="pe-7s-folder"></span>
                 </div>
               </div>

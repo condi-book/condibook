@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { PostPreview } from "./CommunityPage";
 import CalcDate from "./tools/CalcDate";
 
+const removeMD = require("remove-markdown");
 interface CommunityPostCardProps {
   PostPreview: PostPreview;
 }
@@ -13,7 +14,6 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
   const navigate = useNavigate();
   const createdTime = CalcDate(new Date(PostPreview.createdAt));
 
-  //이후에 버튼이 아닌 title과 description 클릭시 이동으로 변경
   const handleDetailClick = React.useCallback((event: React.MouseEvent) => {
     event.preventDefault();
 
@@ -27,6 +27,7 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
         <CardinfoText>
           <span>{createdTime}</span>
         </CardinfoText>
+        <CardContent>{removeMD(PostPreview.content)}</CardContent>
       </CardBody>
       <CardFooter>
         <div className="userInfo">
@@ -52,6 +53,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 14rem;
+  height: 15rem;
   .imgWrapper {
     display: block;
     color: inherit;
@@ -75,17 +77,17 @@ const CardTitle = styled.h4`
   overflow: hidden;
   font-weight: bold;
 `;
-// const CardText = styled.p`
-//   display: block;
-//   margin: 0px 0px 1.5rem;
-//   word-break: break-word;
-//   overflow-wrap: break-word;
-//   font-size: 0.875rem;
-//   line-height: 1.5;
-//   height: 3.9375rem;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-// `;
+const CardContent = styled.div`
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  line-height: 1.5;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: revert;
+  overflow: hidden;
+  height: 6.2rem;
+  overflow-wrap: break-word;
+`;
 const CardinfoText = styled.div`
   font-size: 0.75rem;
   line-height: 1.5;

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { Bookmark } from "./CommunityPostWrite";
 import * as Api from "../api";
+import { Alert } from "layout/Alert";
 
 type StyleProps = {
   show: boolean;
@@ -21,14 +22,12 @@ interface Folder {
 interface props {
   isModalShow: boolean;
   setIsModalShow: (isModalShow: boolean) => void;
-  postBookmarks: Bookmark[];
   setPostBookmarks: React.Dispatch<React.SetStateAction<Bookmark[]>>;
 }
 
 const AddBookMarkModal = ({
   isModalShow,
   setIsModalShow,
-  postBookmarks,
   setPostBookmarks,
 }: props) => {
   // const [newLink, setNewLink] = React.useState("");
@@ -38,8 +37,7 @@ const AddBookMarkModal = ({
   const [selectedFolderBookmarks, setSelectedFolderBookmarks] = React.useState<
     Bookmark[]
   >([]);
-  const [bookmarkModifiedID, setBookmarkModifiedID] =
-    React.useState<number>(null);
+  const [addBookmarks, setAddBookmarks] = React.useState<Bookmark[]>([]);
 
   // 드랍메뉴에 보여줄 폴더리스트
   const folderList = (
@@ -77,22 +75,26 @@ const AddBookMarkModal = ({
         setSelectedFolderBookmarks((prev) => {
           return prev.map((item) => {
             if (item.id === id) {
+              setAddBookmarks((prev) => {
+                return [...prev, item];
+              });
               return { ...item, checked: true };
             }
             return item;
           });
         });
-        setBookmarkModifiedID(id);
       } else {
         setSelectedFolderBookmarks((current) => {
           return current.map((bookmark) => {
             if (bookmark.id === id) {
+              setAddBookmarks((prev) => {
+                return prev.filter((item) => item.id !== id);
+              });
               return { ...bookmark, checked: false };
             }
             return bookmark;
           });
         });
-        setBookmarkModifiedID(id);
       }
     },
     [selectedFolderBookmarks],
@@ -146,6 +148,39 @@ const AddBookMarkModal = ({
   // 완료버튼을 누르면 모달을 닫기
   const handleComplete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (addBookmarks.length === 0) {
+      Alert.fire({
+        icon: "error",
+        title: "추가할 북마크를 선택해주세요",
+      });
+      return;
+    }
+    setPostBookmarks((prev) => {
+      if (prev.length === 0) {
+        return addBookmarks;
+      } else {
+        const isDuplicate = prev.some((item) =>
+          addBookmarks.some((bookmark) => bookmark.id === item.id),
+        );
+        if (isDuplicate) {
+          Alert.fire({
+            icon: "warning",
+            title: "이미 추가한 북마크가 존재합니다",
+          });
+          const newBookmarks = addBookmarks.filter(
+            (item) => !prev.some((bookmark) => bookmark.id === item.id),
+          );
+          return [...prev, ...newBookmarks];
+        }
+        return [...prev, ...addBookmarks];
+      }
+    });
+    setSelectedFolderBookmarks((prev) => {
+      return prev.map((item) => {
+        return { ...item, checked: false };
+      });
+    });
+    setAddBookmarks([]);
     setIsModalShow(false);
   };
 
@@ -168,6 +203,7 @@ const AddBookMarkModal = ({
           id: data.bookmark_id,
           url: data.website.url,
           checked: false,
+          title: data.website.meta_title,
         };
       });
       setSelectedFolderBookmarks(handledData);
@@ -180,29 +216,6 @@ const AddBookMarkModal = ({
   React.useEffect(() => {
     fetchFolderData();
   }, []);
-
-  // 유저가 선택한 북마크 데이터 세팅 (warning 방지용)
-  React.useEffect(() => {
-    if (bookmarkModifiedID) {
-      const checkedBookmark = postBookmarks.find(
-        (postBookmark) => postBookmark.id === bookmarkModifiedID,
-      ); // id 같은게 있는지 확인
-      if (checkedBookmark) {
-        setPostBookmarks((prev) => {
-          return prev.filter((bookmark) => bookmark.id !== bookmarkModifiedID);
-        }); // 같은게 있으면 지움
-        setBookmarkModifiedID(null);
-      } else {
-        setPostBookmarks((prev) => {
-          const newBookmark = selectedFolderBookmarks.find(
-            (bookmark) => bookmark.id === bookmarkModifiedID,
-          );
-          return [...prev, newBookmark];
-        }); // 같은게 없으면 추가
-        setBookmarkModifiedID(null);
-      }
-    }
-  }, [bookmarkModifiedID, selectedFolderBookmarks, postBookmarks]);
 
   React.useEffect(() => {
     if (tab !== "폴더를 선택하세요") {
@@ -239,7 +252,9 @@ const AddBookMarkModal = ({
           <Col>
             <Row>
               <Col>
-                {selectedFolderBookmarks?.length === 0 ? (
+                {tab ===
+                "폴더를 선택하세요" ? null : selectedFolderBookmarks.length ===
+                  0 ? (
                   <span>폴더에 북마크가 없습니다 북마크를 추가해보세요!</span>
                 ) : (
                   selectedFolderBookmarks.map((bookmark, idx) => (
@@ -255,7 +270,9 @@ const AddBookMarkModal = ({
                         }}
                         checked={bookmark.checked}
                       />
-                      <Link onClick={handleClickLink}>{bookmark.url}</Link>
+                      <Link onClick={handleClickLink}>
+                        {bookmark.title ?? bookmark.url}
+                      </Link>
                     </Row>
                   ))
                 )}
@@ -343,7 +360,7 @@ const Link = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 46rem;
   height: auto;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -354,8 +371,6 @@ const Link = styled.div`
   color: #000;
   word-break: break-word;
   overflow-wrap: break-word;
-  overflow: scroll;
-  overflow-y: scroll;
   text-overflow: ellipsis;
 
   &:hover {

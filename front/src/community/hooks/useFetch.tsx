@@ -4,7 +4,7 @@ import * as Api from "../../api";
 
 const useFetch = (
   page: number,
-  sortState: string,
+  sortState: number,
   setPosts: {
     (value: SetStateAction<PostPreview[]>): void;
     (arg0: {
@@ -21,7 +21,7 @@ const useFetch = (
     try {
       setIsLoading(true);
 
-      if (sortState === "new") {
+      if (sortState === 1) {
         const res = await Api.get(`posts/list?order=new&pageNumber=${page}`);
         const { data } = res;
         if (data.length < 20) {
@@ -31,7 +31,7 @@ const useFetch = (
         }
 
         setPosts((current: any) => [...current, ...data]);
-      } else if (sortState === "like") {
+      } else if (sortState === 2) {
         const res = await Api.get(`posts/list?order=likes&pageNumber=${page}`);
         const { data } = res;
         if (data.length < 20) {
@@ -40,7 +40,7 @@ const useFetch = (
           setHasMore(true);
         }
         setPosts((current: any) => [...current, ...data]);
-      } else if (sortState === "view") {
+      } else if (sortState === 3) {
         const res = await Api.get(`posts/list?order=views&pageNumber=${page}`);
         const { data } = res;
         if (data.length < 20) {

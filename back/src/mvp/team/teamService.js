@@ -47,8 +47,7 @@ class teamService {
             const team = await Team.findOne({ team_id });
             if (!team) {
                 return getFailMsg({ entity: "팀", action: "조회" });
-            }
-            if (team.manager !== host.id) {
+            } else if (team.manager !== host.id) {
                 return {
                     errorMessage: "현재 사용자는 팀에 초대할 권한이 없습니다.",
                 };
@@ -140,6 +139,14 @@ class teamService {
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
             }
+            // 팀 소속 확인
+            const membership = await Membership.findOne({
+                team_id: team.id,
+                member_id: requester.id,
+            });
+            if (!membership) {
+                return getFailMsg({ entity: "멤버십", action: "조회" });
+            }
             // 팀 폴더 확인
             let folders =
                 await Folder.findAllWithBookmarkFDFavoriteByTeamIdUserId({
@@ -179,8 +186,7 @@ class teamService {
             const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
-            }
-            if (team.manager !== requester.id) {
+            } else if (team.manager !== requester.id) {
                 return { errorMessage: "사용자는 권한이 없습니다." };
             }
             //팀 상세정보 수정
@@ -210,8 +216,7 @@ class teamService {
             const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
-            }
-            if (team.manager !== requester.id) {
+            } else if (team.manager !== requester.id) {
                 return { errorMessage: "사용자는 권한이 없습니다." };
             }
             // 사용자 존재 확인 및 소속 여부
@@ -251,8 +256,7 @@ class teamService {
             const requester = await User.findOne({ user_id: requester_id });
             if (!requester) {
                 return getFailMsg({ entity: "요청자", action: "조회" });
-            }
-            if (team.manager !== requester.id) {
+            } else if (team.manager !== requester.id) {
                 return { errorMessage: "사용자는 권한이 없습니다." };
             }
             // 팀 삭제

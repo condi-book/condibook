@@ -32,7 +32,7 @@ const GlobalAddBookMarkModal = ({ open, close }: GlobalAddProps) => {
   const [click, setClick] = useState(false);
 
   const handleInfo = () => {
-    if (link === "") alert("링크를 입력해주세요");
+    if (link === "") errorAlert("링크를 입력해주세요");
     // https:// 붙여주기 처리
     const modifiedLink = link.startsWith("www") ? `https://${link}` : link;
     setLink(modifiedLink);
