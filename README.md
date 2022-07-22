@@ -159,7 +159,7 @@
         
         → [Chrome 웹 스토어](https://chrome.google.com/webstore/search/condibook?hl=ko)
         
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F887a0c58-b088-4982-978c-9268245c9ff3%2Fezgif.com-gif-maker_(14).gif?table=block&id=2e0ad955-64ba-454a-9cab-834b6b064bdd&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/f0afe12e7da560fc65e54cb48f595585/1.gif" width="600px">
 
 ### ⚛ 메인 페이지
 ---
@@ -176,7 +176,7 @@
         - 클릭 시 소셜 로그인 (구글 & 카카오) 페이지로 이동
         - 이미 로그인한 유저의 경우, 클릭 시 마이 페이지로 이동
     
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fb4a080b7-30cf-4b29-965a-fd7a13345f21%2Fezgif.com-gif-maker_(5).gif?table=block&id=5f0b4d9c-bb99-4be9-b31a-7c03c5ac52c5&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/26ddbd3f970144e38f4c4ce1518890ad/2.gif" width="600px">
 
 ### ⚛ 프로필 창
 ---
@@ -187,7 +187,7 @@
 - 수정 버튼 클릭 시 닉네임 설정 및 프로필 소개글 입력 기능
 - 로그아웃 기능
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fd44fac2a-5fd2-42f7-8a13-b114093d7ccd%2Fezgif.com-gif-maker_(9).gif?table=block&id=a4951d50-5b44-41f8-be98-cf2ada309a75&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/de1ffec01f59d05f86d776475043295d/3.gif" width="600px">
 
 ### ⚛ 나의 북마크 페이지
 ---
@@ -203,8 +203,8 @@
         - 미리보기가 불가능한 url일 경우 **`새탭으로 열기`** 버튼 클릭 시  볼 수 있음
     - 스크랩한 북마크 탭에서 좋아요한 게시글  모아보기 기능
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fb23b4253-a0c1-4002-8f50-df95d1533f9e%2Fezgif.com-gif-maker_(8).gif?table=block&id=acb92314-5b94-46f4-99b3-211e6363a84f&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fa7b2c24a-1b42-4137-9a06-acb019e7b27a%2Fezgif.com-gif-maker_(11).gif?table=block&id=3cdd5bda-ff51-4089-b56e-70eabffdade2&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/d88575eff9bee3840a2fe1e7cf6b0841/4.gif" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/8121028c251c712d37c0632062fcccf4/5.gif" width="600px">
 
 ### ⚛ 커뮤니티 페이지
 ---
@@ -229,7 +229,7 @@
     - 검색 기능
         - 제목 + 내용
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fe6c1a7f0-a680-4331-82ff-e968ec14c3df%2Fezgif.com-gif-maker_(13).gif?table=block&id=cb98aefb-daf4-45ca-a2fd-b57fbc40095e&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/43183605cd8da8c5e46d64f4e7a6980d/6.gif" width="600px">
 
 ### ⚛ 그룹(팀) 북마크 페이지
 ---
@@ -251,7 +251,7 @@
     - 미리보기(iframe) 기능
         - 미리보기가 불가능한 url일 경우 **`새탭으로 열기`** 버튼 클릭 시  볼 수 있음
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F3ad3b32c-7650-4f51-9576-c7d8df3590d5%2Fezgif.com-gif-maker_(10).gif?table=block&id=b2df8fa8-414b-4174-bc74-0856b457cd9a&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/d426d51bc7f31934acb9ae59643c771d/7.gif" width="600px">
 
 ### ⚛ 통합 검색 페이지
 ---
@@ -265,7 +265,7 @@
     - 필터 기능 (전체, 내 폴더, 팀 폴더)
     - 검색 결과 선택 시 해당 상세 페이지로 이동
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F22052939-2181-481b-bc7f-4f8ef5b1b412%2Fezgif.com-gif-maker_(12).gif?table=block&id=a63a5836-0e0b-4a64-8ee9-34e158feffe4&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/769aec54678f408ad479c3cf2700dbd1/8.gif" width="600px">
 
 ### ⚛ 설정 창
 ---
@@ -275,7 +275,7 @@
 - 크롬 확장프로그램 다운로드 클릭 시 크롬 웹스토어로 이동
 - 로그아웃 버튼 클릭 시 메인페이지로 이동
 
-<img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F3b1837b2-d109-4d0f-935b-954ad46e3849%2FUntitled.png?table=block&id=6b3e8212-3d1b-4276-8dda-e87338a0d250&spaceId=530d1033-cf9f-41a2-b140-62d3e90887dd&width=1250&userId=bcca9098-2b6f-4374-a441-6a95608c2380&cache=v2" width="600px">
+<img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/dfabcf4081e2831d36a2b4b5f7f29a77/9.png" width="600px">
 
 ---
 
