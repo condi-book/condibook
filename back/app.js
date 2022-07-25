@@ -4,7 +4,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { sequelize } from "./src/db/schema/index.js";
 import { redisClient } from "./src/db/redis/index.js";
-import { elasticSearch } from "./src/db/elasticsearch/index.js";
+// import { elasticSearch } from "./src/db/elasticsearch/index.js";
 import { indexRouter } from "./src/mvp/index.js";
 import { errorMiddleware } from "./src/middlewares/errorMiddleware.js";
 import { PORT } from "./src/config";
@@ -45,5 +45,5 @@ app.listen(PORT, () => {
         }
     });
     // elasticSearch
-    elasticSearch.connectClient();
+    // elasticSearch.connectClient();
 });

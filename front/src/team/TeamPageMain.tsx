@@ -5,7 +5,7 @@ import { useOutletContextProps } from "./TeamPage";
 import TeamPageFolderCard from "./TeamPageFolderCard";
 import * as Api from "../api";
 import { Alert, warningAlert } from "../layout/Alert";
-import { AxiosError } from "axios";
+// import { AxiosError } from "axios";
 import { getCookie } from "../auth/util/cookie";
 
 const TeamPageMain = () => {
@@ -27,33 +27,26 @@ const TeamPageMain = () => {
   const managerID = team?.manager_id;
   const userID = getCookie("user")?.id;
 
-  const handleDeleteTeam =
-    (e: React.MouseEvent<HTMLButtonElement>) => async () => {
-      e.preventDefault();
-      if (userID !== managerID) {
-        return Alert.fire({
-          icon: "error",
-          title: "삭제 권한이 없습니다.",
-        });
-      }
-      try {
-        warningAlert(e, "해당 폴더를 삭제하시겠습니까?", async () => {
-          await Api.delete(`teams/${team.team_id}`);
-          setTeam(null);
-          await Alert.fire({
-            icon: "success",
-            title: "팀 삭제 성공",
-          });
-          navigate("/team");
-        });
-      } catch (err) {
-        const error = err as AxiosError;
-        await Alert.fire({
-          icon: "error",
-          title: "팀 삭제 실패" + error.response?.data,
-        });
-      }
-    };
+  const handleDeleteTeam = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (userID !== managerID) {
+      console.log("삭제 권한이 없습니다.");
+      return Alert.fire({
+        icon: "error",
+        title: "삭제 권한이 없습니다.",
+      });
+    }
+    warningAlert(e, "해당 폴더를 삭제하시겠습니까?", async () => {
+      await Api.delete(`teams/${team.team_id}`);
+      setTeam(null);
+      await Alert.fire({
+        icon: "success",
+        title: "팀 삭제 성공",
+      });
+      await fetchTeamFolderData();
+      navigate("/team");
+    });
+  };
 
   const fetchUpdateData = async () => {
     await fetchTeamFolderData();

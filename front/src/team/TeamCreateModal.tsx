@@ -57,7 +57,7 @@ const TeamCreateModal = ({
         icon: "success",
         title: "팀 생성 성공",
       });
-      fetchTeamData();
+      await fetchTeamData();
       navigate(`/team/${res.data.id}`);
     } catch (err) {
       await Alert.fire({
@@ -107,8 +107,12 @@ const TeamCreateModal = ({
   };
 
   const setTeamData = () => {
-    setName(team?.name);
-    setExplanation(team?.explanation);
+    if (!isEdit) {
+      return;
+    } else {
+      setName(team?.name);
+      setExplanation(team?.explanation);
+    }
   };
 
   React.useEffect(() => {
