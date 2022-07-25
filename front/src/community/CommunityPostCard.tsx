@@ -26,6 +26,7 @@ const CommunityPostCard = ({ PostPreview }: CommunityPostCardProps) => {
         <CardTitle>{PostPreview.title}</CardTitle>
         <CardinfoText>
           <span>{createdTime}</span>
+          <span>{`조회수 ${PostPreview.views} 회`}</span>
         </CardinfoText>
         <CardContent>{removeMD(PostPreview.content)}</CardContent>
       </CardBody>
@@ -91,6 +92,8 @@ const CardContent = styled.div`
 const CardinfoText = styled.div`
   font-size: 0.75rem;
   line-height: 1.5;
+  display: flex;
+  justify-content: space-between;
 `;
 const CardFooter = styled.div`
   padding: 0.2rem 1rem;
