@@ -8,7 +8,7 @@ import {
     sequelize,
     Transaction,
 } from "../schema";
-import { Op } from "../../db";
+import { Op } from "..";
 
 class Bookmark {
     static create({ website_id, folder_id }) {

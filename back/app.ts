@@ -1,6 +1,6 @@
 import "dotenv/config";
 import cors from "cors";
-import express from "express";
+import express, { Express } from "express";
 import cookieParser from "cookie-parser";
 // import { sequelize } from "./src/db/schema/index.js";
 // import { redisClient } from "./src/db/redis/index.js";
@@ -9,7 +9,7 @@ import { indexRouter } from "./src/mvp/index.js";
 // import { errorMiddleware } from "./src/middlewares/errorMiddleware.js";
 import { PORT } from "./src/config";
 
-const app = express();
+const app: Express = express();
 
 app.use(cors());
 app.use(express.json());

@@ -1,3 +1,4 @@
+import { Express } from "express";
 import { userRouter } from "./user/userRouter";
 import { websiteRouter } from "./website/websiteRouter";
 import { bookmarkRouter } from "./bookmark/bookmarkRouter";
@@ -9,7 +10,7 @@ import { likeRouter } from "./like/likeRouter";
 import { attachedRouter } from "./attached/attachedRouter";
 import { favoriteRouter } from "./favorite/favoriteRouter";
 import { searchRouter } from "./search/searchRouter";
-const indexRouter = (app: any): void => {
+const indexRouter = (app: Express): void => {
     app.use("/user", userRouter);
     app.use("/websites", websiteRouter);
     app.use("/bookmarks", bookmarkRouter);
