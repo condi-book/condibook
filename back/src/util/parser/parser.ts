@@ -1,6 +1,6 @@
 import { parser } from "url-meta-scraper";
 
-async function parsers(url) {
+async function parsers(url: any) {
     const meta = await parser(url);
 
     const ogTitle = meta.og?.title || undefined;
