@@ -9,7 +9,7 @@ import { likeRouter } from "./like/likeRouter";
 import { attachedRouter } from "./attached/attachedRouter";
 import { favoriteRouter } from "./favorite/favoriteRouter";
 import { searchRouter } from "./search/searchRouter";
-const indexRouter = (app) => {
+const indexRouter = (app: any): void => {
     app.use("/user", userRouter);
     app.use("/websites", websiteRouter);
     app.use("/bookmarks", bookmarkRouter);
