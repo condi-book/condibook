@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { JWT_SECRET_KEY } from "../config";
+import { Request, Response, NextFunction } from "express";
 
-const loginRequired = (req, res, next) => {
+const loginRequired = (req: Request, res: Response, next: NextFunction) => {
     // request 헤더로부터 authorization bearer 토큰을 받음.
     const userToken = req.headers["authorization"]?.split(" ")[1] ?? "null";
 
