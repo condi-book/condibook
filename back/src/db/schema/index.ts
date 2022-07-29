@@ -1,55 +1,56 @@
-import { Sequelize, DataTypes, Op, Transaction } from "sequelize";
+import { Sequelize, Op, Transaction } from "sequelize";
 import { DB_DATABASE, DB_USER, DB_HOST, DB_PW, DB_DIALECT } from "../../config";
 
 // sequelize 인스턴스 생성
 const sequelize = new Sequelize(DB_DATABASE, DB_USER, DB_PW, {
     host: DB_HOST,
-    dialect: DB_DIALECT,
+    dialect: "mysql",
+    timezone: "+09:00",
     logging: console.log, // Logging (디폴트 설정임)
     query: { raw: true },
 });
 // 모델 정의
 import UserSchema from "./userSchema";
-const UserModel = UserSchema(sequelize, DataTypes);
+const UserModel = UserSchema(sequelize);
 
 import BookmarkSchema from "./bookmarkSchema";
-const BookmarkModel = BookmarkSchema(sequelize, DataTypes);
+const BookmarkModel = BookmarkSchema(sequelize);
 
 import WebsiteSchema from "./websiteSchema";
-const WebsiteModel = WebsiteSchema(sequelize, DataTypes);
+const WebsiteModel = WebsiteSchema(sequelize);
 
 import CategorySchema from "./categorySchema";
-const CategoryModel = CategorySchema(sequelize, DataTypes);
+const CategoryModel = CategorySchema(sequelize);
 
 import KeywordSchema from "./keywordSchema";
-const KeywordModel = KeywordSchema(sequelize, DataTypes);
+const KeywordModel = KeywordSchema(sequelize);
 
 import AttachedSchema from "./attachedSchema";
-const AttachedModel = AttachedSchema(sequelize, DataTypes);
+const AttachedModel = AttachedSchema(sequelize);
 
 import PostSchema from "./postSchema";
-const PostModel = PostSchema(sequelize, DataTypes);
+const PostModel = PostSchema(sequelize);
 
 import CommentSchema from "./commentSchema";
-const CommentModel = CommentSchema(sequelize, DataTypes);
+const CommentModel = CommentSchema(sequelize);
 
 import TeamSchema from "./teamSchema";
-const TeamModel = TeamSchema(sequelize, DataTypes);
+const TeamModel = TeamSchema(sequelize);
 
 import MembershipSchema from "./membershipSchema";
-const MembershipModel = MembershipSchema(sequelize, DataTypes);
+const MembershipModel = MembershipSchema(sequelize);
 
 import LikeSchema from "./likeSchema";
-const LikeModel = LikeSchema(sequelize, DataTypes);
+const LikeModel = LikeSchema(sequelize);
 
 import FolderSchema from "./folderSchema";
-const FolderModel = FolderSchema(sequelize, DataTypes);
+const FolderModel = FolderSchema(sequelize);
 
 import FDFavoriteSchema from "./folderfavoriteSchema";
-const FDFavoriteModel = FDFavoriteSchema(sequelize, DataTypes);
+const FDFavoriteModel = FDFavoriteSchema(sequelize);
 
 import BMFavoriteSchema from "./bookmarkfavoriteSchema";
-const BMFavoriteModel = BMFavoriteSchema(sequelize, DataTypes);
+const BMFavoriteModel = BMFavoriteSchema(sequelize);
 
 // 관계 정의
 

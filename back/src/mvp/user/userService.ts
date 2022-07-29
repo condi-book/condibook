@@ -11,12 +11,14 @@ import {
 import { getSuccessMsg, getFailMsg } from "../../util/message";
 import { folderService } from "../folder/folderService";
 import { bookmarkService } from "../bookmark/bookmarkService";
+import { userIdInput, userInterface } from "../../db/interfaces/userInput";
 class userService {
-    static async login({ nickname, email, image_url }) {
+    static async login(data: userInterface) {
         try {
             // 사용자 조회
-            let user = await User.findOneByEmail({ email });
+            let user = await User.findOneByEmail(data);
             // 존재하지 않은 사용자 -> 계정 생성
+
             if (!user) {
                 user = await User.create({
                     nickname: nickname ?? email.split("@")[0],
@@ -81,7 +83,8 @@ class userService {
             };
             return account;
         } catch (e) {
-            return { errorMessage: e };
+            if (e instanceof Error) {
+                return { errorMessage: e };
         }
     }
 
@@ -133,9 +136,9 @@ class userService {
             return { errorMessage: e };
         }
     }
-    static async getUserInfo({ user_id }) {
+    static async getUserInfo(data: userInterface) {
         try {
-            const user = await User.findOne({ user_id });
+            const user = await User.findOne(data);
             if (!user) {
                 return getFailMsg({ entity: "사용자 계정", action: "조회" });
             }

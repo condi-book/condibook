@@ -1,5 +1,20 @@
-export default function UserSchema(sequelize, DataTypes) {
-    return sequelize.define(
+import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+
+export interface UserInterface {
+    id: number;
+    email: string;
+    nickname: string | null;
+    image_url: string | null;
+    intro: string | null;
+}
+
+export interface UserModel extends Model<UserInterface>, UserInterface {}
+export type UserStatic = typeof Model & {
+    new (values?: object, options?: BuildOptions): UserModel;
+};
+
+export default function UserSchema(sequelize: Sequelize) {
+    return <UserStatic>sequelize.define(
         "user",
         {
             id: {

@@ -1,15 +1,15 @@
 import { UserModel, Op } from "../schema";
-
+import { userIdInput, userInterface } from "../interfaces/userInput";
 class User {
-    static create({ nickname, email, image_url }) {
+    static create(data: userInterface) {
         return UserModel.create({
-            nickname: nickname,
-            email: email,
-            image_url: image_url,
+            nickname: data.nickname,
+            email: data.email,
+            image_url: data.image_url,
         });
     }
-    static findOne({ user_id }) {
-        return UserModel.findOne({ where: { id: user_id } });
+    static findOne(data: userInterface) {
+        return UserModel.findOne({ where: { id: data.user_id } });
     }
     static findOneByEmail({ email }) {
         return UserModel.findOne({ where: { email: email } });
