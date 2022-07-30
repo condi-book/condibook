@@ -1,5 +1,22 @@
-export default function WebsiteSchema(sequelize, DataTypes) {
-    return sequelize.define(
+import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+
+export interface websiteSchemaInterface {
+    id: number;
+    url: string;
+    meta_title: string | null;
+    meta_description: string | null;
+    img: Text | null;
+}
+
+export interface WebsiteModel
+    extends Model<websiteSchemaInterface>,
+        websiteSchemaInterface {}
+export type WebsiteStatic = typeof Model & {
+    new (values?: object, options?: BuildOptions): WebsiteModel;
+};
+
+export default function WebsiteSchema(sequelize: Sequelize) {
+    return <WebsiteStatic>sequelize.define(
         "website",
         {
             id: {

@@ -1,5 +1,20 @@
-export default function TeamSchema(sequelize, DataTypes) {
-    return sequelize.define(
+import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+
+export interface teamSchemaInterface {
+    id: number;
+    name: string;
+    explanation: Text | null;
+}
+
+export interface TeamModel
+    extends Model<teamSchemaInterface>,
+        teamSchemaInterface {}
+export type TeamStatic = typeof Model & {
+    new (values?: object, options?: BuildOptions): TeamModel;
+};
+
+export default function TeamSchema(sequelize: Sequelize) {
+    return <TeamStatic>sequelize.define(
         "team",
         {
             id: {

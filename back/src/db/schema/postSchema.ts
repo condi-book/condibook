@@ -1,5 +1,24 @@
-export default function PostSchema(sequelize, DataTypes) {
-    return sequelize.define(
+import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
+
+export interface postSchemaInterface {
+    id: number;
+    title: string;
+    content: Text | null;
+    views: number;
+    author_name: string;
+    like_counts: number;
+    is_deleted: boolean;
+}
+
+export interface PostModel
+    extends Model<postSchemaInterface>,
+        postSchemaInterface {}
+export type PostStatic = typeof Model & {
+    new (values?: object, options?: BuildOptions): PostModel;
+};
+
+export default function PostSchema(sequelize: Sequelize) {
+    return <PostStatic>sequelize.define(
         "post",
         {
             id: {
@@ -37,7 +56,7 @@ export default function PostSchema(sequelize, DataTypes) {
             },
             is_deleted: {
                 type: DataTypes.BOOLEAN,
-                default: false,
+                defaultValue: false,
                 comment: "논리삭제 확인",
             },
         },

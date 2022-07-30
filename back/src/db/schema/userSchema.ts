@@ -1,6 +1,6 @@
 import { BuildOptions, DataTypes, Model, Sequelize } from "sequelize";
 
-export interface UserInterface {
+export interface userSchemaInterface {
     id: number;
     email: string;
     nickname: string | null;
@@ -8,7 +8,9 @@ export interface UserInterface {
     intro: string | null;
 }
 
-export interface UserModel extends Model<UserInterface>, UserInterface {}
+export interface UserModel
+    extends Model<userSchemaInterface>,
+        userSchemaInterface {}
 export type UserStatic = typeof Model & {
     new (values?: object, options?: BuildOptions): UserModel;
 };

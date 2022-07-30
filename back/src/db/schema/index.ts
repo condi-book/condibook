@@ -1,4 +1,4 @@
-import { Sequelize, Op, Transaction } from "sequelize";
+import { Sequelize, Op, Transaction, DataTypes } from "sequelize";
 import { DB_DATABASE, DB_USER, DB_HOST, DB_PW, DB_DIALECT } from "../../config";
 
 // sequelize 인스턴스 생성
