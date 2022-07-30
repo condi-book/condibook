@@ -85,9 +85,9 @@ class userService {
         } catch (e) {
             if (e instanceof Error) {
                 return { errorMessage: e };
+            }
         }
     }
-
     static async getGoogleToken(code) {
         try {
             if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !CLIENT_URL) {
