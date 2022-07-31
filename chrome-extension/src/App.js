@@ -60,7 +60,7 @@ const App = () => {
     setTimeout(function () {
       chrome.cookies
         .get({
-          url: "https://kdt-ai4-team14.elicecoding.com/",
+          url: "https://condibook.site/",
           name: "userToken",
         })
         .then(async (res) => {
@@ -73,7 +73,7 @@ const App = () => {
             console.log("링크 가져오는 중");
             console.log("링크 값", answer);
             console.log(cookies);
-            fetch("https://kdt-ai4-team14.elicecoding.com/api/websites", {
+            fetch("https://condibook.site/api/websites", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
