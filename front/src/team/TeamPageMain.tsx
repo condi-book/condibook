@@ -15,8 +15,8 @@ const TeamPageMain = () => {
     team,
     teams,
     folders,
-
     setTeam,
+    setFolders,
     fetchTeamFolderData,
     // setFolderModalShow,
   } = useOutletContextProps();
@@ -39,11 +39,11 @@ const TeamPageMain = () => {
     warningAlert(e, "해당 폴더를 삭제하시겠습니까?", async () => {
       await Api.delete(`teams/${team.team_id}`);
       setTeam(null);
+      setFolders([]);
       await Alert.fire({
         icon: "success",
         title: "팀 삭제 성공",
       });
-      await fetchTeamFolderData();
       navigate("/team");
     });
   };
