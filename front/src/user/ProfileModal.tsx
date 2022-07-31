@@ -10,6 +10,7 @@ interface ProfileProps {
 }
 
 const ProfileModal = ({ open, close, handleApply }: ProfileProps) => {
+  const [initialIntro, setInitialIntro] = useState("");
   const [modifiedData, setModifiedData] = useState({
     nickname: "",
     email: "",
@@ -22,7 +23,9 @@ const ProfileModal = ({ open, close, handleApply }: ProfileProps) => {
   // 프로필 수정 버튼 클릭 함수
   const handleClick = async () => {
     await Api.put(`user/nickname`, { nickname: modifiedData.nickname });
-    await Api.put(`user/intro`, { intro: modifiedData.intro });
+    if (modifiedData.intro !== initialIntro) {
+      await Api.put(`user/intro`, { intro: modifiedData.intro });
+    }
     await handleApply(modifiedData);
     await Alert.fire({
       icon: "success",
@@ -35,6 +38,7 @@ const ProfileModal = ({ open, close, handleApply }: ProfileProps) => {
     Api.get(`user/info`).then((res) => {
       console.log(res.data);
       setModifiedData(res.data);
+      setInitialIntro(res.data.intro);
     });
   }, []);
 

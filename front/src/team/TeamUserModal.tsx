@@ -5,9 +5,9 @@ import { Modal } from "react-bootstrap";
 import emailjs from "@emailjs/browser";
 import { Team } from "./TeamPage";
 import * as Api from "../api";
-import { getCookie } from "auth/util/cookie";
-import { Alert } from "../layout/Alert";
 import { AxiosError } from "axios";
+import { Alert } from "../layout/Alert";
+import { getCookie } from "auth/util/cookie";
 
 interface Props {
   userModalShow: boolean;
@@ -60,17 +60,19 @@ const TeamUserModal = ({
   const handleInvite = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await Api.post(`teams/${team.team_id}/members`, {
+      const { data } = await Api.post(`teams/${team.team_id}/members`, {
         invitee_id: selectedUserID,
       });
+      const inviteURL = `${window.location.origin}/invited/${data}`;
       const template = {
         teamName: team.name,
         userEmail: email,
+        inviteURL,
       };
       await emailjs.send("service_v7ltb16", "template_92v5kp9", template);
       await Alert.fire({
         icon: "success",
-        title: "초대 성공",
+        title: "초대 성공, 메일이 발송되었습니다.",
       });
       setUserModalShow(false);
     } catch (err) {
