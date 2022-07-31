@@ -1,4 +1,6 @@
 import { Membership, Team, User, Folder } from "../../db";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET_KEY } from "../../config";
 import { getFailMsg, getSuccessMsg } from "../../util/message";
 import { bookmarkService } from "../bookmark/bookmarkService";
 
@@ -29,7 +31,7 @@ class teamService {
         }
     }
 
-    static async createMembership({ host_id, invitee_id, team_id }) {
+    static async createMemberShipJWT({ host_id, invitee_id, team_id }) {
         try {
             // 초대한 사람, 초대받은 사람 존재 확인
             const host = await User.findOne({ user_id: host_id });
@@ -51,6 +53,55 @@ class teamService {
                 return {
                     errorMessage: "현재 사용자는 팀에 초대할 권한이 없습니다.",
                 };
+            }
+            // 이미 회원인지 존재 확인
+            const previousMembership = await Membership.count({
+                member_id: invitee.id,
+                team_id: team.id,
+            });
+            if (previousMembership > 0) {
+                return { errorMessage: "이미 소속된 회원입니다." };
+            }
+            const payload = {
+                invitee_id: invitee.id,
+                team_id: team.id,
+            };
+            const options = {
+                expiresIn: "1d",
+            };
+            const token = jwt.sign(payload, JWT_SECRET_KEY, options);
+            return token;
+        } catch (e) {
+            return { errorMessage: e };
+        }
+    }
+
+    static async createMembership({ current_user_id, token }) {
+        try {
+            // 현재 로그인 한 사람과 초대한 사람의 일치 여부 확인
+            const currentUser = await User.findOne({
+                user_id: current_user_id,
+            });
+            if (!currentUser) {
+                return getFailMsg({ entity: "사용자", action: "조회" });
+            }
+            const payload = jwt.verify(token, JWT_SECRET_KEY);
+            const invitee_id = payload.invitee_id;
+            const team_id = payload.team_id;
+            const invitee = await User.findOne({ user_id: invitee_id });
+            if (!invitee) {
+                return getFailMsg({
+                    entity: "초대받은 사용자",
+                    action: "조회",
+                });
+            }
+            if (currentUser.id !== invitee.id) {
+                return { errorMessage: "초대받은 해당 유저가 아닙니다." };
+            }
+            // 팀 존재 여부 확인
+            const team = await Team.findOne({ team_id });
+            if (!team) {
+                return getFailMsg({ entity: "팀", action: "조회" });
             }
             // 이미 회원인지 존재 확인
             const previousMembership = await Membership.count({

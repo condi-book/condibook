@@ -19,6 +19,7 @@ import Search from "search/Search";
 import TeamPage from "./team/TeamPage";
 import TeamPageMain from "./team/TeamPageMain";
 import TeamPageDetail from "./team/TeamPageDetail";
+import TeamInvited from "./team/TeamInvited";
 import { UserProvider } from "store/userStore";
 import NotFound from "layout/NotFound";
 
@@ -159,6 +160,7 @@ const App: React.FC = () => {
         <SideBarContext.Provider value={{ sidebarState, dispatcher }}>
           <Router>
             <GlobalStyle />
+
             <Routes>
               <Route
                 path="/callback/login/kakao"
@@ -188,6 +190,7 @@ const App: React.FC = () => {
                 <Route path=":teamid" element={<TeamPageMain />} />
                 <Route path=":teamid/:folderId" element={<TeamPageDetail />} />
               </Route>
+              <Route path="/invited/:token" element={<TeamInvited />} />
             </Routes>
           </Router>
         </SideBarContext.Provider>
