@@ -23,7 +23,7 @@ const TeamPageFolderCard = ({
   fetchTeamFolderData: () => Promise<void>;
 }) => {
   const [view, setView] = React.useState<boolean>(false);
-  const viewMore: any = React.useRef([]);
+  const viewMore = React.useRef([]);
 
   const customFetcher = async (url: string) => {
     if (url) {

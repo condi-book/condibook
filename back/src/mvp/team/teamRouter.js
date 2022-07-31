@@ -23,16 +23,40 @@ teamRouter.post("", loginRequired, async (req, res, next) => {
     }
 });
 
+// 초대 JWT 요청
 teamRouter.post("/:id/members", loginRequired, async (req, res, next) => {
     try {
         const { user_id } = req.current;
         const { invitee_id } = req.body;
         const { id } = req.params;
 
-        const result = await teamService.createMembership({
+        // const result = await teamService.createMembership({
+        //     host_id: user_id,
+        //     invitee_id: invitee_id,
+        //     team_id: id,
+        // });
+
+        const result = await teamService.createMemberShipJWT({
             host_id: user_id,
             invitee_id: invitee_id,
             team_id: id,
+        });
+        checkErrorMessage(result);
+
+        res.status(201).send(result);
+    } catch (e) {
+        next(e);
+    }
+});
+
+teamRouter.post("/verify", loginRequired, async (req, res, next) => {
+    try {
+        const { user_id } = req.current;
+        const { token } = req.body;
+
+        const result = await teamService.createMemberShip({
+            current_user_id: user_id,
+            token,
         });
         checkErrorMessage(result);
 
