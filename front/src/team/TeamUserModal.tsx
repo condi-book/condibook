@@ -5,9 +5,9 @@ import { Modal } from "react-bootstrap";
 import emailjs from "@emailjs/browser";
 import { Team } from "./TeamPage";
 import * as Api from "../api";
-import { getCookie } from "auth/util/cookie";
-import { Alert } from "../layout/Alert";
 import { AxiosError } from "axios";
+import { Alert } from "../layout/Alert";
+import { getCookie } from "auth/util/cookie";
 
 interface Props {
   userModalShow: boolean;

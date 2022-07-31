@@ -19,9 +19,9 @@ import Search from "search/Search";
 import TeamPage from "./team/TeamPage";
 import TeamPageMain from "./team/TeamPageMain";
 import TeamPageDetail from "./team/TeamPageDetail";
+import TeamInvited from "./team/TeamInvited";
 import { UserProvider } from "store/userStore";
 import NotFound from "layout/NotFound";
-import TeamInvited from "team/TeamInvited";
 
 // export const KeyboardContext: any = createContext(null);
 export const SideBarContext: any = createContext(null);

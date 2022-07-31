@@ -18,9 +18,6 @@ const Community = () => {
     return <LoginRequire />;
   }
 
-  React.useEffect(() => {
-    console.log("user", user);
-  }, []);
   // const keyboardContext: any = React.useContext(KeyboardContext);
   return (
     <Div>

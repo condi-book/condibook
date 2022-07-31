@@ -49,12 +49,13 @@ teamRouter.post("/:id/members", loginRequired, async (req, res, next) => {
     }
 });
 
+// 초대 JWT 인증
 teamRouter.post("/verify", loginRequired, async (req, res, next) => {
     try {
         const { user_id } = req.current;
         const { token } = req.body;
 
-        const result = await teamService.createMemberShip({
+        const result = await teamService.createMembership({
             current_user_id: user_id,
             token,
         });
