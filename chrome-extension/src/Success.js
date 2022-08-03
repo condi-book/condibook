@@ -3,7 +3,7 @@ import styled from "styled-components";
 const Success = ({ folder, inputValue, data }) => {
   // 서비스 페이지 새탭으로 열기
   const handleNavigate = () => {
-    window.open("https://kdt-ai4-team14.elicecoding.com/bookmark", "newWindow");
+    window.open("https://condibook.site/bookmark", "newWindow");
   };
 
   return (
@@ -27,14 +27,11 @@ const Success = ({ folder, inputValue, data }) => {
             const folderId = data.folders.find((f) => f.title === folder).id;
             if (folderId) {
               window.open(
-                `https://kdt-ai4-team14.elicecoding.com/bookmark/${folderId}`,
+                `https://condibook.site/bookmark/${folderId}`,
                 "newWindow"
               );
             } else {
-              window.open(
-                "https://kdt-ai4-team14.elicecoding.com/bookmark",
-                "newWindow"
-              );
+              window.open("https://condibook.site/bookmark", "newWindow");
             }
           }}
         >
