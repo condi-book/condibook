@@ -1,7 +1,7 @@
 <img src="https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/e457cdc2ead82effca900badb958f5e9/logopng.png" width="300"/>
 
 ## ✨ 서비스 바로가기 및 시연 영상
-- [CondiBook](https://kdt-ai4-team14.elicecoding.com/)
+- [CondiBook](https://condibook.site/)
 
 ![시연영상](https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/uploads/ebf919ed4871837bc240869ef19d6ba4/ezgif.com-gif-maker__5_.mp4)
 
