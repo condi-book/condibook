@@ -294,7 +294,7 @@
 ---
 
 ## 5. 프로젝트 구성도
-- [기획서](https://kdt-gitlab.elice.io/ai_track/class_04/ai_project/team14/condibook/-/wikis/%EA%B8%B0%ED%9A%8D%EC%84%9C)
+- [기획서](https://github.com/condi-book/condibook/wiki)
 - [와이어프레임](https://www.figma.com/file/83qXjmq0mikS83PQzxdppU/%EC%BB%A8%EB%94%94%EB%B6%81?node-id=0%3A1)
 - [API 명세서](https://documenter.getpostman.com/view/19600896/Uz5MDspk)
 - 프로젝트 구조도
